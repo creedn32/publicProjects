@@ -12,10 +12,14 @@ print("execfile(\"" + inspect.getfile(inspect.currentframe()).encode('string-esc
 print("Cmt: Importing modules...Done.")
 print("Cmt: Open and connect to file...")
 
+filePath = os.path.abspath(os.curdir)
+fileName = "JE\'s To Post"
+fileExtension = ".xlsx"
+excelFilePath = filePath + "\\" + fileName + fileExtension
+
+
 pyautogui.PAUSE = .005
 # pyautogui.FAILSAFE = True
-excelFilePath = "Y:\\Accounting\\12_Creed\\Controlling - Accounting\\Journal Entries\\JE\'s To Post.xlsx"
-# excelFilePath = "C:\\Users\\cnaylor\\Desktop\\FileShare\\Accounting\\12_Creed\\Controlling - Accounting\\Journal Entries\\JE\'s To Post.xlsx"
 excelWb = xlwings.Book(excelFilePath)
 #excelSheetName = "Bank Transactions"
 excelSheetName = "Bank Transactions - Recurring"
