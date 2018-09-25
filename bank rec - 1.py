@@ -1,3 +1,5 @@
+#deal with "In Progress" transactions
+
 print("Cmt: Importing modules...")
 
 import time, win32com.client, os

@@ -1,4 +1,3 @@
-
 print("Cmt: Importing modules...")
 
 import time, win32com.client, os, sys
@@ -14,13 +13,14 @@ def emptyStr(s):
         return ""
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
-#excelApp.Interactive = False
 excelApp.Visible = False
 excelApp.DisplayAlerts = False
 filePath = os.path.abspath(os.curdir)
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 
+rowAfterHeader = 2
+bankDateOrigCol = 14
 
 excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
@@ -38,24 +38,16 @@ excelBankTableSearchSheet = excelWb.Worksheets("Bank Table Search")
 excelBankTableSearchSheet.UsedRange.Clear()
 
 
-
-
 print("Cmt: Open and connect to file...Done.")
 
 firstCell = excelBankTableSheet.Cells(1, 1)
 
-excelBankTableSheet.Range(firstCell, excelBankTableSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count - 1)).Copy(excelBankTableSearchSheet.Cells(1, 1))
-
+excelBankTableSheet.Range(firstCell, excelBankTableSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelBankTableSearchSheet.Cells(1, 1))
 
 excelBankTableSearchSheet.Cells.EntireColumn.AutoFit()
 
-#excelApp.Interactive = True
 excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
 print("Elapsed time is " + str(time.time() - startTime))
-
-
-
-
