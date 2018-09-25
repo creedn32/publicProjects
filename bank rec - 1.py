@@ -1,6 +1,6 @@
 print("Cmt: Importing modules...")
 
-import time, win32com.client, os #inspect, xlwings, pywinauto, pyautogui, win32api
+import time, win32com.client, os
 
 startTime = time.time()
 print("Cmt: Importing modules...Done.")
@@ -63,14 +63,10 @@ while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
     else:
         excelBankTableSheet.Cells(bankTableSheetRow, 14).Value = emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, 2).Value)[:-8] + "/" + emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, 2).Value)[:-6][-2:] + "/" + emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, 2).Value)[:-2][-4:]
 
-        #myStr = emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, 13).Value)[0:200]
         myStr = emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, 13).Value).replace("\n", " ")
         myStr = " ".join(myStr.split())[0:200]
         excelBankTableSheet.Cells(bankTableSheetRow, 13).Value = myStr
         
-        #excelBankTableSheet.Cells(bankTableSheetRow, 13).Replace(chr(10), " ", win32com.client.constants.xlPart)
-        #excelBankTableSheet.Cells(bankTableSheetRow, 13).Replace(chr(13), " ", win32com.client.constants.xlPart)
-
         if excelBankTableSheet.Cells(bankTableSheetRow, 9).Value == "Debit":
             excelBankTableSheet.Cells(bankTableSheetRow, 10).Value = -float(excelBankTableSheet.Cells(bankTableSheetRow, 10).Value)
 
@@ -137,26 +133,6 @@ excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
 print("Elapsed time is " + str(time.time() - startTime))
-
-
-
-##row = 2
-##rng = None
-##
-##
-##while excelBankTableSheet.Cells(row, 1).Value:
-##
-##    if excelBankTableSheet.Cells(row, 9).Value in ["Data", "Ledger Balance", "Collected + 1 Day", "Opening Collected", "One Day Float", "2 Day Float", "3 Day + Float", "MTD Avg Collected", "MTD Avg Neg Collected", "Total Credits", "Number of Credits", "Total Debits", "Number of Debits", "Float Adjustment(s)"] or excelBankTableSheet.Cells(row, 2).Value in ["H", "B"]:
-##        if rng:
-##            rng = excelApp.Union(rng, excelBankTableSheet.Cells(row, 1).EntireRow)
-##        else:
-##            rng = excelBankTableSheet.Cells(row, 1).EntireRow
-##            
-##    
-##    row = row + 1
-##
-##
-##rng.Delete()
 
 
 
