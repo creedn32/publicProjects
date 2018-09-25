@@ -1,6 +1,4 @@
 #on comparison sheet, could write only the necessary columns
-#use find function instead of looping so much
-
 
 print("Cmt: Importing modules...")
 
@@ -80,7 +78,6 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
                     startingSearchRow = foundRange.Row
                     endingSearchRow = excelBankTableSearchSheet.Cells(2, 10).End(win32com.client.constants.xlDown).Row
                     excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(foundRange.Row, 1), excelBankTableSearchSheet.Cells(foundRange.Row, 13)).Copy(excelCompSheet.Cells(gpRow, 1))
-                    #print(str(excelGPTableSheet.Cells(gpRow, 6).Value) + " = " + str(excelCompSheet.Cells(gpRow, 10).Value))
                     excelBankTableSearchSheet.Cells(foundRange.Row, 1).EntireRow.Delete()
                     break
                 
@@ -90,14 +87,10 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
         else:
             break
 
-
-##    if excelGPTableSheet.Cells(gpRow, 6).Value == -1195.77:
-##        print(len(rowsToCheck))
             
     if len(rowsToCheck) == 1:
         if excelGPTableSheet.Cells(gpRow, 12).Value != "Check" or (excelGPTableSheet.Cells(gpRow, 12).Value == "Check" and (len(excelGPTableSheet.Cells(gpRow, 13).Value) not in (5, 6, 7) or excelGPTableSheet.Cells(gpRow, 13).Value[:3] == "ACH")):
             excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(rowsToCheck[0], 1), excelBankTableSearchSheet.Cells(rowsToCheck[0], 13)).Copy(excelCompSheet.Cells(gpRow, 1))
-            #print(str(excelGPTableSheet.Cells(gpRow, 6).Value) + " = " + str(excelCompSheet.Cells(gpRow, 10).Value))
             excelBankTableSearchSheet.Cells(rowsToCheck[0], 1).EntireRow.Delete()
     elif len(rowsToCheck) > 1:
         if excelGPTableSheet.Cells(gpRow, 12).Value == "Check" and len(excelGPTableSheet.Cells(gpRow, 13).Value) in (5, 6, 7):
@@ -105,52 +98,7 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
                if excelBankTableSearchSheet.Cells(rowToCheck, 8).Value == "Check(s) Paid":
                     if int(excelGPTableSheet.Cells(gpRow, 13).Value[-5:]) == excelBankTableSearchSheet.Cells(rowToCheck, 12).Value:
                         excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(rowToCheck, 1), excelBankTableSearchSheet.Cells(rowToCheck, 13)).Copy(excelCompSheet.Cells(gpRow, 1))
-                        #print(str(excelGPTableSheet.Cells(gpRow, 6).Value) + " = " + str(excelCompSheet.Cells(gpRow, 10).Value))
                         excelBankTableSearchSheet.Cells(rowToCheck, 1).EntireRow.Delete()
-
-
-
-
-##
-##    if excelGPTableSheet.Cells(gpRow, 14).Value:
-##
-##        
-##
-##
-##        foundRows = []
-##        
-##        
-##        if len(rowsToCheck) > 0:
-##
-##            #print(rowsToCheck)
-##            
-##            for rowToCheck in rowsToCheck:
-##
-##                #print("row to check is " + str(rowToCheck))
-##
-##                if excelBankTableSearchSheet.Cells(rowToCheck, 12).Value:
-##                    if str(excelGPTableSheet.Cells(gpRow, 13).Value)[:-2][-5:] == str(excelBankTableSearchSheet.Cells(rowToCheck, 12).Value)[:-2][-5:]:
-##                        foundRows.append(bankRow)
-##                  
-##            if len(foundRows) != 1:
-##
-##                if excelGPTableSheet.Cells(gpRow, 12).Value != "Check" or (excelGPTableSheet.Cells(gpRow, 12).Value == "Check" and "ACH" in str(excelGPTableSheet.Cells(gpRow, 13).Value)) or (excelGPTableSheet.Cells(gpRow, 12).Value == "Check" and len(str(excelGPTableSheet.Cells(gpRow, 13).Value)[:-2]) != 5):
-##
-##                    foundRows = []
-##
-##                
-##                    for rowtoCheck in rowsToCheck:
-##                   
-##                        if excelBankTableSearchSheet.Cells(rowToCheck, 8).Value != "Check(s) Paid":
-##                            foundRows.append(rowToCheck)
-##
-##
-##            if len(foundRows) == 1:
-##
-##                excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(foundRows[0], 1), excelBankTableSearchSheet.Cells(foundRows[0], 13)).Copy(excelCompSheet.Cells(gpRow, 1))
-##                excelBankTableSearchSheet.Cells(foundRows[0], 1).EntireRow.Delete()
-
-
 
     #print(str(time.time() - lapStartTime)[0:5])
     gpRow = gpRow + 1
@@ -163,7 +111,3 @@ excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
 print("Elapsed time is " + str(time.time() - startTime))
-
-
-
-

@@ -1,4 +1,3 @@
-
 print("Cmt: Importing modules...")
 
 import time, win32com.client, os, sys
@@ -14,7 +13,6 @@ def emptyStr(s):
         return ""
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
-#excelApp.Interactive = False
 excelApp.Visible = False
 excelApp.DisplayAlerts = False
 filePath = os.path.abspath(os.curdir)
@@ -38,8 +36,6 @@ excelBankTableSearchSheet = excelWb.Worksheets("Bank Table Search")
 excelBankTableSearchSheet.UsedRange.Clear()
 
 
-
-
 print("Cmt: Open and connect to file...Done.")
 
 firstCell = excelBankTableSheet.Cells(1, 1)
@@ -49,13 +45,8 @@ excelBankTableSheet.Range(excelBankTableSheet.Cells(2, 14), excelBankTableSheet.
 
 excelBankTableSearchSheet.Cells.EntireColumn.AutoFit()
 
-#excelApp.Interactive = True
 excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
 print("Elapsed time is " + str(time.time() - startTime))
-
-
-
-
