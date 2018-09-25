@@ -36,39 +36,50 @@ excelBankSheet = excelWb.Worksheets("Bank Data")
 excelGPSheet = excelWb.Worksheets("GP Data")
 excelBankTableSheet = excelWb.Worksheets("Bank Table")
 excelGPTableSheet = excelWb.Worksheets("GP Table")
-maxRows = 7000
+#maxRows = 7000
 excelBankTableSheet.UsedRange.Clear()
 excelGPTableSheet.UsedRange.Clear()
 
+rowAfterHeader = 2
+bankTypeCol = 8
+bankDateCol = 14
+bankOrigDateCol = 2
+bankDescCol = 13
+bankAmountCol = 10
+bankColumns = 13
+gpNameCol = 15
+gpTransferCol = 17
+gpAmountCol = 6
+gpTrxTypeCol = 12
 
 print("Cmt: Open and connect to file...Done.")
 
-excelBankTableSheet.Cells(1, 14).Value = "B Date C"
+excelBankTableSheet.Cells(1, bankColumns + 1).Value = "B Date C"
 
-for col in range(1, 14):
+for col in range(1, bankColumns):
     excelBankTableSheet.Cells(1, col).Value = "B " + excelBankSheet.Cells(1, col).Value 
 
 
-firstCell = excelBankSheet.Cells(2, 1)
-excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelBankTableSheet.Cells(2, 1))
+firstCell = excelBankSheet.Cells(rowAfterHeader, 1)
+excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelBankTableSheet.Cells(rowAfterHeader, 1))
 
 
-bankTableSheetRow = 2
+bankTableSheetRow = rowAfterHeader
 
 while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
 
-    if excelBankTableSheet.Cells(bankTableSheetRow, 8).Value in ["Data", "Ledger Balance", "Collected + 1 Day", "Opening Collected", "One Day Float", "2 Day Float", "3 Day + Float", "MTD Avg Collected", "MTD Avg Neg Collected", "Total Credits", "Number of Credits", "Total Debits", "Number of Debits", "Float Adjustment(s)"] or excelBankTableSheet.Cells(bankTableSheetRow, 1).Value in ["H", "B", "T"]:
+    if excelBankTableSheet.Cells(bankTableSheetRow, bankTypeCol).Value in ["Data", "Ledger Balance", "Collected + 1 Day", "Opening Collected", "One Day Float", "2 Day Float", "3 Day + Float", "MTD Avg Collected", "MTD Avg Neg Collected", "Total Credits", "Number of Credits", "Total Debits", "Number of Debits", "Float Adjustment(s)"] or excelBankTableSheet.Cells(bankTableSheetRow, 1).Value in ["H", "B", "T"]:
        excelBankTableSheet.Rows(bankTableSheetRow).EntireRow.Delete()
        bankTableSheetRow = bankTableSheetRow - 1
     else:
-        excelBankTableSheet.Cells(bankTableSheetRow, 14).Value = emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, 2).Value)[:-8] + "/" + emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, 2).Value)[:-6][-2:] + "/" + emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, 2).Value)[:-2][-4:]
+        excelBankTableSheet.Cells(bankTableSheetRow, bankDateCol).Value = emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-8] + "/" + emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-6][-2:] + "/" + emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-2][-4:]
 
-        myStr = emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, 13).Value).replace("\n", " ")
+        myStr = emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
         myStr = " ".join(myStr.split())[0:200]
-        excelBankTableSheet.Cells(bankTableSheetRow, 13).Value = myStr
+        excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value = myStr
         
         if excelBankTableSheet.Cells(bankTableSheetRow, 9).Value == "Debit":
-            excelBankTableSheet.Cells(bankTableSheetRow, 10).Value = -float(excelBankTableSheet.Cells(bankTableSheetRow, 10).Value)
+            excelBankTableSheet.Cells(bankTableSheetRow, bankAmountCol).Value = -float(excelBankTableSheet.Cells(bankTableSheetRow, bankAmountCol).Value)
 
     
 
@@ -76,8 +87,8 @@ while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
 
         
 
-    if bankTableSheetRow == maxRows:
-        break
+    #if bankTableSheetRow == maxRows:
+    #    break
     
 
 
@@ -87,33 +98,33 @@ for col in range(1, 17):
 
 
 
-firstCell = excelGPSheet.Cells(2, 1)
-excelGPSheet.Range(firstCell, excelGPSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelGPTableSheet.Cells(2, 1))
+firstCell = excelGPSheet.Cells(rowAfterHeader, 1)
+excelGPSheet.Range(firstCell, excelGPSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelGPTableSheet.Cells(rowAfterHeader, 1))
 
 
 
-gpTableSheetRow = 2
+gpTableSheetRow = rowAfterHeader
 
 while excelGPTableSheet.Cells(gpTableSheetRow, 1).Value:
     
-    if excelGPTableSheet.Cells(gpTableSheetRow, 15).Value:
-        if excelGPTableSheet.Cells(gpTableSheetRow, 15).Value[0:11] == "Transfer To":
-            excelGPTableSheet.Cells(gpTableSheetRow, 17).Value = "Out"
-        elif excelGPTableSheet.Cells(gpTableSheetRow, 15).Value[0:13] == "Transfer From":
-           excelGPTableSheet.Cells(gpTableSheetRow, 17).Value = "In"
+    if excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value:
+        if excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value[0:11] == "Transfer To":
+            excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "Out"
+        elif excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value[0:13] == "Transfer From":
+           excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "In"
 
     if excelGPTableSheet.Cells(gpTableSheetRow, 12).Value:
-        if not excelGPTableSheet.Cells(gpTableSheetRow, 17).Value:
-            if excelGPTableSheet.Cells(gpTableSheetRow, 12).Value in ["Increase Adjustment", "Deposit"]:
-                excelGPTableSheet.Cells(gpTableSheetRow, 17).Value = "In"
-            if excelGPTableSheet.Cells(gpTableSheetRow, 12).Value in ["Decrease Adjustment", "Withdrawl", "Check"]:
-                excelGPTableSheet.Cells(gpTableSheetRow, 17).Value = "Out"
+        if not excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value:
+            if excelGPTableSheet.Cells(gpTableSheetRow, gpTrxTypeCol).Value in ["Increase Adjustment", "Deposit"]:
+                excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "In"
+            if excelGPTableSheet.Cells(gpTableSheetRow, gpTrxTypeCol).Value in ["Decrease Adjustment", "Withdrawl", "Check"]:
+                excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "Out"
 
-    if excelGPTableSheet.Cells(gpTableSheetRow, 17).Value == "Out" and excelGPTableSheet.Cells(gpTableSheetRow, 6).Value:
-        excelGPTableSheet.Cells(gpTableSheetRow, 6).Value = -float(excelGPTableSheet.Cells(gpTableSheetRow, 6).Value)
+    if excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value == "Out" and excelGPTableSheet.Cells(gpTableSheetRow, gpAmountCol).Value:
+        excelGPTableSheet.Cells(gpTableSheetRow, gpAmountCol).Value = -float(excelGPTableSheet.Cells(gpTableSheetRow, gpAmountCol).Value)
 
-    if gpTableSheetRow == maxRows:
-        break
+    #if gpTableSheetRow == maxRows:
+    #    break
 
     #print(gpTableSheetRow)
 
