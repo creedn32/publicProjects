@@ -14,6 +14,16 @@ def emptyStr(s):
     else:
         return ""
 
+
+
+def emptyCell(f):
+    if f:
+        return float(f)
+    else:
+        return 0
+
+
+
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = False
 excelApp.DisplayAlerts = False
@@ -52,7 +62,7 @@ gpTrxTypeCol = 12
 
 print("Cmt: Open and connect to file...Done.")
 
-#excelBankTableSheet.Cells(1, 8).Value = "B Date C"
+excelBankTableSheet.Cells(1, bankColumns + 1).Value = "B Amount"
 
 for col in range(1, bankColumns + 1):
     excelBankTableSheet.Cells(1, col).Value = "B " + excelBankSheet.Cells(1, col).Value 
@@ -60,6 +70,16 @@ for col in range(1, bankColumns + 1):
 
 firstCell = excelBankSheet.Cells(rowAfterHeader, 1)
 excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelBankTableSheet.Cells(rowAfterHeader, 1))
+
+
+
+bankTableSheetRow = rowAfterHeader
+
+while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
+    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = emptyCell(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - emptyCell(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
+    bankTableSheetRow = bankTableSheetRow + 1
+
+
 
 
 

@@ -41,7 +41,7 @@ excelCompSheet.UsedRange.Clear()
 
 
 rowAfterHeader = 2
-bankColumns = 7
+bankColumns = 8
 bankTableSearchCol = 8
 gpColumns = 17
 gpSearchValueCol = 6
