@@ -56,7 +56,7 @@ print("Cmt: Open and connect to file...Done.")
 
 excelBankTableSheet.Cells(1, bankColumns + 1).Value = "B Date C"
 
-for col in range(1, bankColumns):
+for col in range(1, bankColumns + 1):
     excelBankTableSheet.Cells(1, col).Value = "B " + excelBankSheet.Cells(1, col).Value 
 
 
@@ -92,8 +92,8 @@ while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
     
 
 
-excelGPTableSheet.Cells(1, 17).Value = "G Transfer"
-for col in range(1, 17):
+excelGPTableSheet.Cells(1, gpTransferCol).Value = "G Transfer"
+for col in range(1, gpTransferCol):
     excelGPTableSheet.Cells(1, col).Value = "G " + excelGPSheet.Cells(1, col).Value
 
 
@@ -113,7 +113,7 @@ while excelGPTableSheet.Cells(gpTableSheetRow, 1).Value:
         elif excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value[0:13] == "Transfer From":
            excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "In"
 
-    if excelGPTableSheet.Cells(gpTableSheetRow, 12).Value:
+    if excelGPTableSheet.Cells(gpTableSheetRow, gpTrxTypeCol).Value:
         if not excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value:
             if excelGPTableSheet.Cells(gpTableSheetRow, gpTrxTypeCol).Value in ["Increase Adjustment", "Deposit"]:
                 excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "In"
