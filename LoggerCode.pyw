@@ -1,5 +1,3 @@
-
-   
 import pyHook, pythoncom, sys, logging , os , winsound , time
 
 
