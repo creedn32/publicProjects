@@ -19,6 +19,8 @@ filePath = os.path.abspath(os.curdir)
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 
+rowAfterHeader = 2
+bankDateOrigCol = 14
 
 excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
@@ -41,7 +43,7 @@ print("Cmt: Open and connect to file...Done.")
 firstCell = excelBankTableSheet.Cells(1, 1)
 
 excelBankTableSheet.Range(firstCell, excelBankTableSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count - 1)).Copy(excelBankTableSearchSheet.Cells(1, 1))
-excelBankTableSheet.Range(excelBankTableSheet.Cells(2, 14), excelBankTableSheet.Cells(2, 14).End(win32com.client.constants.xlDown)).Copy(excelBankTableSearchSheet.Cells(2, 2))
+excelBankTableSheet.Range(excelBankTableSheet.Cells(rowAfterHeader, bankDateOrigCol), excelBankTableSheet.Cells(rowAfterHeader, bankDateOrigCol).End(win32com.client.constants.xlDown)).Copy(excelBankTableSearchSheet.Cells(rowAfterHeader, 2))
 
 excelBankTableSearchSheet.Cells.EntireColumn.AutoFit()
 
