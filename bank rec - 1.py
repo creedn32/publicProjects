@@ -1,6 +1,6 @@
 print("Cmt: Importing modules...")
 
-import time, win32com.client, os #inspect, xlwings, pywinauto, pyautogui, win32api
+import time, win32com.client, os
 
 startTime = time.time()
 print("Cmt: Importing modules...Done.")
@@ -40,61 +40,70 @@ maxRows = 7000
 excelBankTableSheet.UsedRange.Clear()
 excelGPTableSheet.UsedRange.Clear()
 
+rowAfterHeader = 2
+bankColumns = 7
+gpNameCol = 15
+gpTransferCol = 17
+gpAmountCol = 6
+gpTrxTypeCol = 12
+
 
 print("Cmt: Open and connect to file...Done.")
 
-excelBankTableSheet.Cells(1, 8).Value = "B Date C"
+#excelBankTableSheet.Cells(1, 8).Value = "B Date C"
 
-for col in range(1, 8):
+for col in range(1, bankColumns + 1):
     excelBankTableSheet.Cells(1, col).Value = "B " + excelBankSheet.Cells(1, col).Value 
 
 
-firstCell = excelBankSheet.Cells(1, 1)
-excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelBankTableSheet.Cells(1, 1))
+firstCell = excelBankSheet.Cells(rowAfterHeader, 1)
+excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelBankTableSheet.Cells(rowAfterHeader, 1))
 
 
 
 
-excelGPTableSheet.Cells(1, 17).Value = "G Transfer"
-for col in range(1, 17):
+excelGPTableSheet.Cells(1, gpTransferCol).Value = "G Transfer"
+
+for col in range(1, gpTransferCol):
     excelGPTableSheet.Cells(1, col).Value = "G " + excelGPSheet.Cells(1, col).Value
 
 
 
-firstCell = excelGPSheet.Cells(1, 1)
-excelGPSheet.Range(firstCell, excelGPSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelGPTableSheet.Cells(1, 1))
+firstCell = excelGPSheet.Cells(rowAfterHeader, 1)
+excelGPSheet.Range(firstCell, excelGPSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelGPTableSheet.Cells(rowAfterHeader, 1))
 
 
 
-gpTableSheetRow = 2
+gpTableSheetRow = rowAfterHeader
 
 while excelGPTableSheet.Cells(gpTableSheetRow, 1).Value:
     
-    if excelGPTableSheet.Cells(gpTableSheetRow, 15).Value:
-        if excelGPTableSheet.Cells(gpTableSheetRow, 15).Value[0:11] == "Transfer To":
-            excelGPTableSheet.Cells(gpTableSheetRow, 17).Value = "Out"
-        elif excelGPTableSheet.Cells(gpTableSheetRow, 15).Value[0:13] == "Transfer From":
-           excelGPTableSheet.Cells(gpTableSheetRow, 17).Value = "In"
+    if excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value:
+        if excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value[0:11] == "Transfer To":
+            excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "Out"
+        elif excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value[0:13] == "Transfer From":
+           excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "In"
 
-    if excelGPTableSheet.Cells(gpTableSheetRow, 12).Value:
-        if not excelGPTableSheet.Cells(gpTableSheetRow, 17).Value:
-            if excelGPTableSheet.Cells(gpTableSheetRow, 12).Value in ["Increase Adjustment", "Deposit"]:
-                excelGPTableSheet.Cells(gpTableSheetRow, 17).Value = "In"
-            if excelGPTableSheet.Cells(gpTableSheetRow, 12).Value in ["Decrease Adjustment", "Withdrawl", "Check"]:
-                excelGPTableSheet.Cells(gpTableSheetRow, 17).Value = "Out"
+    if excelGPTableSheet.Cells(gpTableSheetRow, gpTrxTypeCol).Value:
+        if not excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value:
+            if excelGPTableSheet.Cells(gpTableSheetRow, gpTrxTypeCol).Value in ["Increase Adjustment", "Deposit"]:
+                excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "In"
+            if excelGPTableSheet.Cells(gpTableSheetRow, gpTrxTypeCol).Value in ["Decrease Adjustment", "Withdrawl", "Check"]:
+                excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "Out"
 
-    if excelGPTableSheet.Cells(gpTableSheetRow, 17).Value == "Out" and excelGPTableSheet.Cells(gpTableSheetRow, 6).Value:
-        excelGPTableSheet.Cells(gpTableSheetRow, 6).Value = -float(excelGPTableSheet.Cells(gpTableSheetRow, 6).Value)
+    if excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value == "Out" and excelGPTableSheet.Cells(gpTableSheetRow, gpAmountCol).Value:
+        excelGPTableSheet.Cells(gpTableSheetRow, gpAmountCol).Value = -float(excelGPTableSheet.Cells(gpTableSheetRow, gpAmountCol).Value)
 
-    if gpTableSheetRow == maxRows:
-        break
+    #if gpTableSheetRow == maxRows:
+    #    break
+
+    #print(gpTableSheetRow)
 
     gpTableSheetRow = gpTableSheetRow + 1
 
 
 
 excelBankSheet.Cells.EntireColumn.AutoFit()
-
 excelGPSheet.Cells.EntireColumn.AutoFit()
 
 excelBankTableSheet.Cells.EntireColumn.AutoFit()
