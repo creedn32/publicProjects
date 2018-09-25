@@ -49,8 +49,8 @@ for col in range(1, 14):
     excelBankTableSheet.Cells(1, col).Value = "B " + excelBankSheet.Cells(1, col).Value 
 
 
-firstCell = excelBankSheet.Cells(1, 1)
-excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelBankTableSheet.Cells(1, 1))
+firstCell = excelBankSheet.Cells(2, 1)
+excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelBankTableSheet.Cells(2, 1))
 
 
 bankTableSheetRow = 2
@@ -87,8 +87,8 @@ for col in range(1, 17):
 
 
 
-firstCell = excelGPSheet.Cells(1, 1)
-excelGPSheet.Range(firstCell, excelGPSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelGPTableSheet.Cells(1, 1))
+firstCell = excelGPSheet.Cells(2, 1)
+excelGPSheet.Range(firstCell, excelGPSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count)).Copy(excelGPTableSheet.Cells(2, 1))
 
 
 
@@ -115,12 +115,14 @@ while excelGPTableSheet.Cells(gpTableSheetRow, 1).Value:
     if gpTableSheetRow == maxRows:
         break
 
+    #print(gpTableSheetRow)
+
     gpTableSheetRow = gpTableSheetRow + 1
 
 
 
-excelBankSheet.Cells.EntireColumn.AutoFit()
 
+excelBankSheet.Cells.EntireColumn.AutoFit()
 excelGPSheet.Cells.EntireColumn.AutoFit()
 
 excelBankTableSheet.Cells.EntireColumn.AutoFit()
