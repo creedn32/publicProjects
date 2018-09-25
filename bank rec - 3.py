@@ -1,14 +1,12 @@
 #on comparison sheet, could write only the necessary columns
 #use find function instead of looping so much
-#create a module to import with the emptyStr(s) function
-#use faster method to copy data
 
 
 print("Cmt: Importing modules...")
 
-import time, win32com.client, os
+import time, win32com.client, os, sys
 
-start_time = time.time()
+startTime = time.time()
 print("Cmt: Importing modules...Done.")
 print("Cmt: Open and connect to file...")
 
@@ -19,96 +17,104 @@ def emptyStr(s):
         return ""
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
+excelApp.Visible = True
+excelApp.DisplayAlerts = False
 filePath = os.path.abspath(os.curdir)
-fileName = "Bank_Rec.xlsx"
+fileName = "Bank Rec"
+fileExtension = ".xlsx"
 
-excelApp.Workbooks.Open(filePath + "\\" + fileName)
-excelWb = excelApp.Workbooks(fileName)
+
+excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
+excelApp.Calculation = win32com.client.constants.xlCalculationManual
+excelBackupWb = excelApp.Workbooks(fileName + fileExtension)
+excelBackupWb.SaveAs(Filename=filePath + "\\" + fileName + " Before Running 3" + fileExtension, FileFormat=51)
+excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
+excelBackupWb.Close()
+
+
+excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
+excelApp.Calculation = win32com.client.constants.xlCalculationManual
+excelWb = excelApp.Workbooks(fileName  + fileExtension)
 
 excelGPTableSheet = excelWb.Worksheets("GP Table")
 excelBankTableSearchSheet = excelWb.Worksheets("Bank Table Search")
 excelCompSheet = excelWb.Worksheets("Comparison")
-excelApp.Visible = True
+excelCompSheet.UsedRange.Clear()
+
+
 
 print("Cmt: Open and connect to file...Done.")
 
 
-excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(1, 1), excelBankTableSearchSheet.Cells(1, 7)).Copy()
-excelCompSheet.Range(excelCompSheet.Cells(1, 1), excelCompSheet.Cells(1, 7)).PasteSpecial(Paste=win32com.client.constants.xlPasteValues)
+excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(1, 1), excelBankTableSearchSheet.Cells(1, 13)).Copy(excelCompSheet.Cells(1, 1))
+excelGPTableSheet.Range(excelGPTableSheet.Cells(1, 1), excelGPTableSheet.Cells(1, 17)).Copy(excelCompSheet.Cells(1, 14))
 
-excelGPTableSheet.Range(excelGPTableSheet.Cells(1, 1), excelGPTableSheet.Cells(1, 18)).Copy()
-excelCompSheet.Range(excelCompSheet.Cells(1, 8), excelCompSheet.Cells(1, 25)).PasteSpecial(Paste=win32com.client.constants.xlPasteValues)
-
+gpRow = 2
 
 
-row = 2
-
-
-while excelGPTableSheet.Cells(row, 1).Value:
+while excelGPTableSheet.Cells(gpRow, 1).Value:
+    lapStartTime = time.time()
 
     #put in GP data
-   
-    excelGPTableSheet.Range(excelGPTableSheet.Cells(row, 1), excelGPTableSheet.Cells(row, 18)).Copy()
-    excelCompSheet.Range(excelCompSheet.Cells(row, 8), excelCompSheet.Cells(row, 25)).PasteSpecial(Paste=win32com.client.constants.xlPasteValues)
-
+    
+    excelGPTableSheet.Range(excelGPTableSheet.Cells(gpRow, 1), excelGPTableSheet.Cells(gpRow, 17)).Copy(excelCompSheet.Cells(gpRow, 14))
 
     #check bank data
 
+    rowsToCheck = []
 
-    if excelGPTableSheet.Cells(row, 14).Value:
+    startingSearchRow = 2
+    endingSearchRow = excelBankTableSearchSheet.Cells(2, 10).End(win32com.client.constants.xlDown).Row
+    searchText = excelGPTableSheet.Cells(gpRow, 6).Value
 
+    while startingSearchRow <= excelBankTableSearchSheet.Cells(2, 10).End(win32com.client.constants.xlDown).Row:
+        
+        foundRange = excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(startingSearchRow, 10), excelBankTableSearchSheet.Cells(startingSearchRow, 10).End(win32com.client.constants.xlDown)).Find(What=searchText, LookAt=win32com.client.constants.xlWhole) 
 
-        bankRow = 2
-        foundRows = []
+        if foundRange:
 
-
-        while excelBankTableSearchSheet.Cells(bankRow, 1).Value:
-
-            if excelGPTableSheet.Cells(row, 7).Value == excelBankTableSearchSheet.Cells(bankRow, 7).Value:
+            if excelGPTableSheet.Cells(gpRow, 12).Value == "Check" and excelBankTableSearchSheet.Cells(foundRange.Row, 8).Value == "Check(s) Paid":
                 
-                foundRows.append(bankRow)
+                if int(excelGPTableSheet.Cells(gpRow, 13).Value[-5:]) == excelBankTableSearchSheet.Cells(foundRange.Row, 12).Value and len(excelGPTableSheet.Cells(gpRow, 13).Value) in (5, 6, 7):
 
-            bankRow = bankRow + 1
+                    startingSearchRow = foundRange.Row
+                    endingSearchRow = excelBankTableSearchSheet.Cells(2, 10).End(win32com.client.constants.xlDown).Row
+                    excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(foundRange.Row, 1), excelBankTableSearchSheet.Cells(foundRange.Row, 13)).Copy(excelCompSheet.Cells(gpRow, 1))
+                    excelBankTableSearchSheet.Cells(foundRange.Row, 1).EntireRow.Delete()
+                    break
+                
+    
+            rowsToCheck.append(foundRange.Row)
+            startingSearchRow = foundRange.Row + 1
+        else:
+            break
 
-
-        #print(foundRows)    
-                  
-##        if len(foundRows) != 1:
-
-             
-##            if excelGPTableSheet.Cells(row, 13).Value != "Check" or (excelGPTableSheet.Cells(row, 13).Value == "Check" and "ACH" in str(excelGPTableSheet.Cells(row, 14).Value)) or (excelGPTableSheet.Cells(row, 13).Value == "Check" and len(str(excelGPTableSheet.Cells(row, 14).Value)[:-2]) != 5):
-##                secondBankRow = 2
-##                foundRows = []
-##
-##                
-##                while excelBankTableSearchSheet.Cells(secondBankRow, 1).Value:
-##
-##                   
-##                    if excelGPTableSheet.Cells(row, 7).Value == excelBankTableSearchSheet.Cells(secondBankRow, 11).Value and excelBankTableSearchSheet.Cells(secondBankRow, 9).Value != "Check(s) Paid":
-##                        foundRows.append(secondBankRow)
-##
-##                    secondBankRow = secondBankRow + 1
-##
-##
 
             
-        if len(foundRows) == 1:
+    if len(rowsToCheck) == 1:
+        if excelGPTableSheet.Cells(gpRow, 12).Value != "Check" or (excelGPTableSheet.Cells(gpRow, 12).Value == "Check" and (len(excelGPTableSheet.Cells(gpRow, 13).Value) not in (5, 6, 7) or excelGPTableSheet.Cells(gpRow, 13).Value[:3] == "ACH")):
+            excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(rowsToCheck[0], 1), excelBankTableSearchSheet.Cells(rowsToCheck[0], 13)).Copy(excelCompSheet.Cells(gpRow, 1))
+            excelBankTableSearchSheet.Cells(rowsToCheck[0], 1).EntireRow.Delete()
+    elif len(rowsToCheck) > 1:
+        if excelGPTableSheet.Cells(gpRow, 12).Value == "Check" and len(excelGPTableSheet.Cells(gpRow, 13).Value) in (5, 6, 7):
+            for rowToCheck in rowsToCheck:
+               if excelBankTableSearchSheet.Cells(rowToCheck, 8).Value == "Check(s) Paid":
+                    if int(excelGPTableSheet.Cells(gpRow, 13).Value[-5:]) == excelBankTableSearchSheet.Cells(rowToCheck, 12).Value:
+                        excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(rowToCheck, 1), excelBankTableSearchSheet.Cells(rowToCheck, 13)).Copy(excelCompSheet.Cells(gpRow, 1))
+                        excelBankTableSearchSheet.Cells(rowToCheck, 1).EntireRow.Delete()
 
-            excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(foundRows[0], 1), excelBankTableSearchSheet.Cells(foundRows[0], 7)).Copy()
-            excelCompSheet.Range(excelCompSheet.Cells(row, 1), excelCompSheet.Cells(row, 7)).PasteSpecial(Paste=win32com.client.constants.xlPasteValues)
-            
-            excelBankTableSearchSheet.Cells(foundRows[0], 1).EntireRow.Delete()
 
-    
-    excelWb.Save()                
-    row = row + 1
 
-    
+    gpRow = gpRow + 1
+
+
 
 excelCompSheet.Cells.EntireColumn.AutoFit()
-
-
-print("Elapsed time is " + str(time.time() - start_time))
+excelApp.DisplayAlerts = True
+excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
+excelWb.Save()
+excelApp.Visible = True
+print("Elapsed time is " + str(time.time() - startTime))
 
 
 

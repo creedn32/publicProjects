@@ -1,9 +1,9 @@
 
 print("Cmt: Importing modules...")
 
-import time, win32com.client, os
+import time, win32com.client, os, sys
 
-start_time = time.time()
+startTime = time.time()
 print("Cmt: Importing modules...Done.")
 print("Cmt: Open and connect to file...")
 
@@ -14,35 +14,47 @@ def emptyStr(s):
         return ""
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
+#excelApp.Interactive = False
+excelApp.Visible = False
+excelApp.DisplayAlerts = False
 filePath = os.path.abspath(os.curdir)
-print(filePath)
-fileName = "Bank_Rec.xlsx"
+fileName = "Bank Rec"
+fileExtension = ".xlsx"
 
-excelApp.Workbooks.Open(filePath + "\\" + fileName)
-excelWb = excelApp.Workbooks(fileName)
+
+excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
+excelApp.Calculation = win32com.client.constants.xlCalculationManual
+excelBackupWb = excelApp.Workbooks(fileName + fileExtension)
+excelBackupWb.SaveAs(Filename=filePath + "\\" + fileName + " Before Running 2" + fileExtension, FileFormat=51)
+excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
+excelBackupWb.Close()
+
+excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
+excelApp.Calculation = win32com.client.constants.xlCalculationManual
+excelWb = excelApp.Workbooks(fileName + fileExtension)
 
 excelBankTableSheet = excelWb.Worksheets("Bank Table")
 excelBankTableSearchSheet = excelWb.Worksheets("Bank Table Search")
-excelApp.Visible = True
+excelBankTableSearchSheet.UsedRange.Clear()
+
+
+
 
 print("Cmt: Open and connect to file...Done.")
 
+firstCell = excelBankTableSheet.Cells(1, 1)
 
-row = 1
-
-while excelBankTableSheet.Cells(row, 1).Value:
-    for bankCol in range(1, 7):
-        excelBankTableSearchSheet.Cells(row, bankCol).Value = excelBankTableSheet.Cells(row, bankCol).Value
-
-    excelBankTableSearchSheet.Cells(row, 7).Value = excelBankTableSheet.Cells(row, 9).Value
-
-    row = row + 1
+excelBankTableSheet.Range(firstCell, excelBankTableSheet.Cells(firstCell.CurrentRegion.Rows.Count, firstCell.CurrentRegion.Columns.Count - 1)).Copy(excelBankTableSearchSheet.Cells(1, 1))
 
 
 excelBankTableSearchSheet.Cells.EntireColumn.AutoFit()
-excelWb.Save()
 
-print("Elapsed time is " + str(time.time() - start_time))
+#excelApp.Interactive = True
+excelApp.DisplayAlerts = True
+excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
+excelWb.Save()
+excelApp.Visible = True
+print("Elapsed time is " + str(time.time() - startTime))
 
 
 
