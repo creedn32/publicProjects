@@ -39,14 +39,16 @@ excelBankTableSearchSheet = excelWb.Worksheets("Bank Table Search")
 excelCompSheet = excelWb.Worksheets("Comparison")
 excelCompSheet.UsedRange.Clear()
 
+rowAfterHeader = 2
 bankColumns = 13
-gpColumns = 17
+bankTrxTypeCol = 8
+bankTrxNumCol = 12
 bankTableSearchCol = 10
+gpColumns = 17
 gpSearchValueCol = 6
 gpTrxTypeCol = 12
 gpTrxNumCol = 13
-bankTrxTypeCol = 8
-bankTrxNumCol = 12
+
 
 print("Cmt: Open and connect to file...Done.")
 
@@ -54,7 +56,7 @@ print("Cmt: Open and connect to file...Done.")
 excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(1, 1), excelBankTableSearchSheet.Cells(1, bankColumns)).Copy(excelCompSheet.Cells(1, 1))
 excelGPTableSheet.Range(excelGPTableSheet.Cells(1, 1), excelGPTableSheet.Cells(1, gpColumns)).Copy(excelCompSheet.Cells(1, bankColumns + 1))
 
-gpRow = 2
+gpRow = rowAfterHeader
 
 
 while excelGPTableSheet.Cells(gpRow, 1).Value:
@@ -68,11 +70,11 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
 
     rowsToCheck = []
 
-    startingSearchRow = 2
+    startingSearchRow = rowAfterHeader
     endingSearchRow = excelBankTableSearchSheet.Cells(2, bankTableSearchCol).End(win32com.client.constants.xlDown).Row
     searchText = excelGPTableSheet.Cells(gpRow, gpSearchValueCol).Value
 
-    while startingSearchRow <= excelBankTableSearchSheet.Cells(2, bankTableSearchCol).End(win32com.client.constants.xlDown).Row:
+    while startingSearchRow <= excelBankTableSearchSheet.Cells(rowAfterHeader, bankTableSearchCol).End(win32com.client.constants.xlDown).Row:
         
         foundRange = excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(startingSearchRow, bankTableSearchCol), excelBankTableSearchSheet.Cells(startingSearchRow, bankTableSearchCol).End(win32com.client.constants.xlDown)).Find(What=searchText, LookAt=win32com.client.constants.xlWhole) 
 
@@ -83,7 +85,7 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
                 if int(excelGPTableSheet.Cells(gpRow, gpTrxNumCol).Value[-5:]) == excelBankTableSearchSheet.Cells(foundRange.Row, bankTrxNumCol).Value and len(excelGPTableSheet.Cells(gpRow, gpTrxNumCol).Value) in (5, 6, 7):
 
                     startingSearchRow = foundRange.Row
-                    endingSearchRow = excelBankTableSearchSheet.Cells(2, bankTableSearchCol).End(win32com.client.constants.xlDown).Row
+                    endingSearchRow = excelBankTableSearchSheet.Cells(rowAfterHeader, bankTableSearchCol).End(win32com.client.constants.xlDown).Row
                     excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(foundRange.Row, 1), excelBankTableSearchSheet.Cells(foundRange.Row, bankColumns)).Copy(excelCompSheet.Cells(gpRow, 1))
                     excelBankTableSearchSheet.Cells(foundRange.Row, 1).EntireRow.Delete()
                     break
