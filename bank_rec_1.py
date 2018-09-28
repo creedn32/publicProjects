@@ -2,19 +2,11 @@
 
 print("Cmt: Importing modules...")
 
-import time, win32com.client, os
+import time, win32com.client, os, creed_toolpack
 
 startTime = time.time()
 print("Cmt: Importing modules...Done.")
 print("Cmt: Open and connect to file...")
-
-
-def emptyCell(f):
-    if f:
-        return float(f)
-    else:
-        return 0
-
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = False
@@ -68,7 +60,7 @@ excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Row
 bankTableSheetRow = rowAfterHeader
 
 while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
-    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = emptyCell(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - emptyCell(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
+    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = creed_toolpack.emptyCell(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - creed_toolpack.emptyCell(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
     bankTableSheetRow = bankTableSheetRow + 1
 
 
