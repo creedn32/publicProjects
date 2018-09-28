@@ -8,20 +8,12 @@ startTime = time.time()
 print("Cmt: Importing modules...Done.")
 print("Cmt: Open and connect to file...")
 
-def emptyStr(s):
-    if s:
-        return str(s)
-    else:
-        return ""
-
-
 
 def emptyCell(f):
     if f:
         return float(f)
     else:
         return 0
-
 
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
