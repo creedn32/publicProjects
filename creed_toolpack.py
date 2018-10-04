@@ -5,9 +5,18 @@ def emptyStr(s):
         return ""
 
 
-
-def emptyCell(f):
-    if f:
-        return float(f)
+def singleSpaceCell(s)
+    if s:
+        if s == " ":
+            return 0
+        else:
+            return s
     else:
-        return 0
+        return s
+
+
+##def emptyCell(f):
+##    if f:
+##        return float(f)
+##    else:
+##        return 0
