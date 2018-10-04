@@ -5,12 +5,9 @@ def emptyStr(s):
         return ""
 
 
-def singleSpaceCell(s)
-    if s:
-        if s == " ":
-            return 0
-        else:
-            return s
+def singleSpaceCell(s):
+    if s == " ":
+        return 0
     else:
         return s
 
