@@ -1,6 +1,6 @@
 print("Cmt: Importing modules...")
 
-import time, win32com.client, os, creed_toolpack
+import time, win32com.client, os, creed_modules.creed_toolpack
 
 startTime = time.time()
 print("Cmt: Importing modules...Done.")
@@ -66,9 +66,9 @@ while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
        excelBankTableSheet.Rows(bankTableSheetRow).EntireRow.Delete()
        bankTableSheetRow = bankTableSheetRow - 1
     else:
-        excelBankTableSheet.Cells(bankTableSheetRow, bankDateCol).Value = creed_toolpack.emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-8] + "/" + creed_toolpack.emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-6][-2:] + "/" + creed_toolpack.emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-2][-4:]
+        excelBankTableSheet.Cells(bankTableSheetRow, bankDateCol).Value = creed_modules.creed_toolpack.emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-8] + "/" + creed_modules.creed_toolpack.emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-6][-2:] + "/" + creed_modules.creed_toolpack.emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-2][-4:]
 
-        myStr = creed_toolpack.emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
+        myStr = creed_modules.creed_toolpack.emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
         myStr = " ".join(myStr.split())[0:200]
         excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value = myStr
         
