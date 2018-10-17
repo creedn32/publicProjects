@@ -20,13 +20,16 @@ fileName = "JE's To Post"
 fileExtension = ".xlsx"
 excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
 
-excelApp.Calculation = win32com.client.constants.xlCalculationManual
-excelWb = excelApp.Workbooks(fileName + fileExtension)
-excelBankTransactionsSheet = excelWb.Worksheets("Bank Transactions")
 pyautogui.PAUSE = 0
 # pyautogui.FAILSAFE = True
 bankTransactionsRow = 2
+
+excelApp.Calculation = win32com.client.constants.xlCalculationManual
+excelWb = excelApp.Workbooks(fileName + fileExtension)
+excelBankTransactionsSheet = excelWb.Worksheets("Bank Transactions")
+excelBankTransactionsSheet = excelWb.Worksheets("Bank Transactions - Recurring")
 bankTransactionsRow = 961
+bankTransactionsRow = 389
 
 for win in pywinauto.findwindows.find_elements():
     gpWinTitleShort = "Bank Transaction Entry"
