@@ -1,10 +1,11 @@
+#make entering data more uniform by using elif's and tabbing all after entering
+
+
 print("Cmt: Importing modules...")
 
 import os, pywinauto, pyautogui, win32com.client, time, win32api # sys   
 
 print("Cmt: Importing modules...Done.")
-
-print("Cmt: Open and connect to file...")
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.DisplayAlerts = False
@@ -16,10 +17,12 @@ excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
 
 excelWb = excelApp.Workbooks(fileName + fileExtension)
-
 excelBankTransfersSheet = excelWb.Worksheets("Bank Transfers")
 
 pyautogui.PAUSE = 0
+
+print("Cmt: Open and connect to file...")
+
 bankTransfersRow = 3
 bankTransfersRow = 729
 
