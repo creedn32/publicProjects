@@ -77,7 +77,6 @@ while excelBankTransfersSheet.Cells(bankTransfersRow, 1).Value:
             pyautogui.press("tab")
 
 
-        print(1)
         excelBankTransfersSheet.Cells(bankTransfersRow, 1).EntireRow.Interior.Color = 5296274
         excelWb.Save()
 
