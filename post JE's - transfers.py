@@ -55,8 +55,6 @@ while excelBankTransfersSheet.Cells(bankTransfersRow, 1).Value:
 
 
             if x == 1:
-                #string = "090718"
-                #string = ('%02d' % excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.month) + ('%02d' % excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.day) + str(excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.year)
                 string = ('%02d' % excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.month) + ('%02d' % excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.day) + str(excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.year)
             else:
                 string = str(excelBankTransfersSheet.Cells(bankTransfersRow, x).Value)
@@ -68,8 +66,6 @@ while excelBankTransfersSheet.Cells(bankTransfersRow, 1).Value:
             for letter in string:
                 pyautogui.press(letter)
 
-            #if x == 3:
-                #pyautogui.press("tab")
             if x == 5:
                  pyautogui.press("tab")
                  pyautogui.press("tab")
