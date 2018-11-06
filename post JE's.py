@@ -27,9 +27,9 @@ bankTransactionsRow = 2
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
 excelWb = excelApp.Workbooks(fileName + fileExtension)
 excelBankTransactionsSheet = excelWb.Worksheets("Bank Transactions")
-excelBankTransactionsSheet = excelWb.Worksheets("Bank Transactions - Recurring")
+#excelBankTransactionsSheet = excelWb.Worksheets("Bank Transactions - Recurring")
 bankTransactionsRow = 961
-bankTransactionsRow = 389
+#bankTransactionsRow = 389
 
 for win in pywinauto.findwindows.find_elements():
     gpWinTitleShort = "Bank Transaction Entry"

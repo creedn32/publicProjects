@@ -24,7 +24,7 @@ pyautogui.PAUSE = 0
 print("Cmt: Open and connect to file...")
 
 bankTransfersRow = 3
-bankTransfersRow = 729
+bankTransfersRow = 750
 
 
 for win in pywinauto.findwindows.find_elements():
@@ -41,7 +41,7 @@ print("Cmt: Open and connect to file...Done.")
 
 while excelBankTransfersSheet.Cells(bankTransfersRow, 1).Value:
 
-##    print(excelBankTransfersSheet.Cells(bankTransfersRow, 1).Interior.Color)
+    #print(excelBankTransfersSheet.Cells(bankTransfersRow, 1).Interior.Color)
 
     if excelBankTransfersSheet.Cells(bankTransfersRow, 1).Interior.Color == 16777215:
     
@@ -77,9 +77,13 @@ while excelBankTransfersSheet.Cells(bankTransfersRow, 1).Value:
             pyautogui.press("tab")
 
 
+        print(1)
+        excelBankTransfersSheet.Cells(bankTransfersRow, 1).EntireRow.Interior.Color = 5296274
+        excelWb.Save()
+
         while True:
             if win32api.GetKeyState(0x01) == -127 or win32api.GetKeyState(0x01) == -128:
-                print("left button clicked")
+                print("left button clicked " + win32api.GetKeyState(0x01))
                 time.sleep(1.5)
                 break
 
