@@ -1,6 +1,6 @@
 print("Cmt: Importing modules...")
 
-import time, win32com.client, os, re, datetime
+import time, win32com.client, os, re
 
 print("Cmt: Importing modules...Done.")
 print("Cmt: Open and connect to file...")
@@ -23,19 +23,11 @@ pasteCol = 3
 
 ##while excelFromRobinhoodSheet.Cells(copyRow, 1).Value:
 ##
-####    if (copyRow - 0) % 3 == 0:
-####        pasteCol = 3
-####    elif (copyRow - 1) % 3 == 0:
-####        pasteCol = 4
-####    elif (copyRow - 2) % 3 == 0:
-####        pasteCol = 5
 ##
 ##    if pasteCol > 5 and re.search(" shares at \$", excelFromRobinhoodSheet.Cells(copyRow, 1).Value) == None:
 ##        pasteCol = 3
 ##        pasteRow = pasteRow + 1
 ##        
-####    if copyRow % 3 == 0 and copyRow != 3:
-####        pasteRow = pasteRow + 1
 ##
 ##    excelFromRobinhoodSheet.Cells(copyRow, 1).Copy(excelFromRobinhoodSheet.Cells(pasteRow, pasteCol))
 ##
