@@ -51,7 +51,7 @@ print("Cmt: Open and connect to file...Done.")
 excelBankTableSheet.Cells(1, bankColumns + 1).Value = "B Date C"
 
 for col in range(1, bankColumns + 1):
-    excelBankTableSheet.Cells(1, col).Value = "B " + excelBankSheet.Cells(1, col).Value 
+    excelBankTableSheet.Cells(1, col).Value = "B " + excelBankSheet.Cells(1, col).Value
 
 
 firstCell = excelBankSheet.Cells(rowAfterHeader, 1)
@@ -71,19 +71,19 @@ while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
         myStr = creed_modules.creed_toolpack.emptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
         myStr = " ".join(myStr.split())[0:200]
         excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value = myStr
-        
+
         if excelBankTableSheet.Cells(bankTableSheetRow, 9).Value == "Debit":
             excelBankTableSheet.Cells(bankTableSheetRow, bankAmountCol).Value = -float(excelBankTableSheet.Cells(bankTableSheetRow, bankAmountCol).Value)
 
-    
+
 
     bankTableSheetRow = bankTableSheetRow + 1
 
-        
+
 
     #if bankTableSheetRow == maxRows:
     #    break
-    
+
 
 
 excelGPTableSheet.Cells(1, gpTransferCol).Value = "G Transfer"
@@ -100,7 +100,7 @@ excelGPSheet.Range(firstCell, excelGPSheet.Cells(firstCell.CurrentRegion.Rows.Co
 gpTableSheetRow = rowAfterHeader
 
 while excelGPTableSheet.Cells(gpTableSheetRow, 1).Value:
-    
+
     if excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value:
         if excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value[0:11] == "Transfer To":
             excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "Out"
@@ -140,12 +140,3 @@ excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
 print("Elapsed time is " + str(time.time() - startTime))
-
-
-
-
-
-
-
-
-
