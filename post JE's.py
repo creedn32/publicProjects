@@ -28,8 +28,8 @@ excelApp.Calculation = win32com.client.constants.xlCalculationManual
 excelWb = excelApp.Workbooks(fileName + fileExtension)
 excelBankTransactionsSheet = excelWb.Worksheets("Bank Transactions")
 #excelBankTransactionsSheet = excelWb.Worksheets("Bank Transactions - Recurring")
-bankTransactionsRow = 961
-#bankTransactionsRow = 389
+bankTransactionsRow = 993
+#bankTransactionsRow = 403
 
 for win in pywinauto.findwindows.find_elements():
     gpWinTitleShort = "Bank Transaction Entry"
@@ -42,7 +42,7 @@ pywinauto.win32functions.SetForegroundWindow(pywinauto.findwindows.find_window(t
 print("Cmt: Open and connect to file...Done.")
 
 
-while excelBankTransactionsSheet.Cells(bankTransactionsRow, 1).Value:
+while excelBankTransactionsSheet.Cells(bankTransactionsRow, 1).Value or excelBankTransactionsSheet.Cells(bankTransactionsRow, 7).Value:
 
     if excelBankTransactionsSheet.Cells(bankTransactionsRow, 1).Interior.Color == 16777215 and excelBankTransactionsSheet.Cells(bankTransactionsRow, 8).Value:
     
