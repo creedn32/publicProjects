@@ -48,15 +48,15 @@ while excelTransactionsSheet.Cells(transRow, 1).Value:
                 while str(excelTransactionsSheet.Cells(checkRow, 2).Value) + str(excelTransactionsSheet.Cells(checkRow, 3).Value) + str(excelTransactionsSheet.Cells(checkRow, 4).Value) + str(excelTransactionsSheet.Cells(checkRow, 6).Value) == currentStockBrokerLotDate and excelTransactionsSheet.Cells(checkRow, 1).Value == "Sell Stock":
 
                     if "Gain On Sale" in excelTransactionsSheet.Cells(checkRow, 7).Value or "Loss On Sale" in excelTransactionsSheet.Cells(checkRow, 7).Value: 
-                        excelTransactionsSheet.Cells(checkRow, 8).Value = round(excelTransactionsSheet.Cells(checkRow, 8).Value, 2) + currentSum + (-currentSum)
+                        excelTransactionsSheet.Cells(checkRow, 8).Value = round(excelTransactionsSheet.Cells(checkRow, 8).Value, 2) + currentSum #+ (-currentSum)
 
-                        #excelTransactionsSheet.Cells(checkRow, 1).EntireRow.Insert()
+                        excelTransactionsSheet.Cells(checkRow, 1).EntireRow.Insert()
                         
                         for i in range(1, 7):
-                            excelTransactionsSheet.Cells(checkRow, i).Value = excelTransactionsSheet.Cells(checkRow, i).Value
+                            excelTransactionsSheet.Cells(checkRow, i).Value = excelTransactionsSheet.Cells(checkRow - 1, i).Value
 
-                        excelTransactionsSheet.Cells(checkRow, 7).Value = excelTransactionsSheet.Cells(checkRow, 7).Value # "Gain On Sale (Excluded From Tax)"
-                        excelTransactionsSheet.Cells(checkRow, 8).Value = excelTransactionsSheet.Cells(checkRow, 8).Value # -currentSum
+                        excelTransactionsSheet.Cells(checkRow, 7).Value = "Gain On Sale (Excluded From Tax)" #excelTransactionsSheet.Cells(checkRow, 7).Value # 
+                        excelTransactionsSheet.Cells(checkRow, 8).Value = -currentSum #excelTransactionsSheet.Cells(checkRow, 8).Value # 
                         
                         break
                 
