@@ -37,21 +37,30 @@ while excelTransactionsSheet.Cells(transRow, 1).Value:
                 
                 sumRow = sumRow + 1
 
-            if currentSum > 0:
-                print(currentSum)
-
-                sumRow = transRow
-                currentSum = 0
+            currentSum = round(currentSum, 2)
             
-                while str(excelTransactionsSheet.Cells(sumRow, 2).Value) + str(excelTransactionsSheet.Cells(sumRow, 3).Value) + str(excelTransactionsSheet.Cells(sumRow, 4).Value) + str(excelTransactionsSheet.Cells(sumRow, 6).Value) == currentStockBrokerLotDate and excelTransactionsSheet.Cells(transRow, 1).Value == "Sell Stock":
-
-                    if excelTransactionsSheet.Cells(sumRow, 7).Value == "Sale Fee Expense" or excelTransactionsSheet.Cells(sumRow, 7).Value == "Regulatory Fee Expense" :
-                        currentSum = currentSum + excelTransactionsSheet.Cells(sumRow, 8).Value
+            if currentSum > 0:
                 
-                    sumRow = sumRow + 1
+                print("Gain On Sale (Excluded From Tax): " + str(currentSum))
 
-                print(currentSum)
+                checkRow = transRow
+            
+                while str(excelTransactionsSheet.Cells(checkRow, 2).Value) + str(excelTransactionsSheet.Cells(checkRow, 3).Value) + str(excelTransactionsSheet.Cells(checkRow, 4).Value) + str(excelTransactionsSheet.Cells(checkRow, 6).Value) == currentStockBrokerLotDate and excelTransactionsSheet.Cells(checkRow, 1).Value == "Sell Stock":
 
+                    if "Gain On Sale" in excelTransactionsSheet.Cells(checkRow, 7).Value or "Loss On Sale" in excelTransactionsSheet.Cells(checkRow, 7).Value: 
+                        excelTransactionsSheet.Cells(checkRow, 8).Value = round(excelTransactionsSheet.Cells(checkRow, 8).Value, 2) + currentSum + (-currentSum)
+
+                        #excelTransactionsSheet.Cells(checkRow, 1).EntireRow.Insert()
+                        
+                        for i in range(1, 7):
+                            excelTransactionsSheet.Cells(checkRow, i).Value = excelTransactionsSheet.Cells(checkRow, i).Value
+
+                        excelTransactionsSheet.Cells(checkRow, 7).Value = excelTransactionsSheet.Cells(checkRow, 7).Value # "Gain On Sale (Excluded From Tax)"
+                        excelTransactionsSheet.Cells(checkRow, 8).Value = excelTransactionsSheet.Cells(checkRow, 8).Value # -currentSum
+                        
+                        break
+                
+                    checkRow = checkRow + 1
  
     transRow = transRow + 1
 
