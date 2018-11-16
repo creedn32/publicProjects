@@ -34,17 +34,24 @@ while excelTransactionsSheet.Cells(transRow, 1).Value:
 
                 if excelTransactionsSheet.Cells(sumRow, 7).Value == "Sale Fee Expense" or excelTransactionsSheet.Cells(sumRow, 7).Value == "Regulatory Fee Expense" :
                     currentSum = currentSum + excelTransactionsSheet.Cells(sumRow, 8).Value
-                    #print(excelTransactionsSheet.Cells(sumRow, 8).Value)
-
-                #print(str(round(currentSum, 2)) + " " + str(excelTransactionsSheet.Cells(sumRow, 7).Value))
                 
                 sumRow = sumRow + 1
 
             if currentSum > 0:
                 print(currentSum)
 
+                sumRow = transRow
+                currentSum = 0
+            
+                while str(excelTransactionsSheet.Cells(sumRow, 2).Value) + str(excelTransactionsSheet.Cells(sumRow, 3).Value) + str(excelTransactionsSheet.Cells(sumRow, 4).Value) + str(excelTransactionsSheet.Cells(sumRow, 6).Value) == currentStockBrokerLotDate and excelTransactionsSheet.Cells(transRow, 1).Value == "Sell Stock":
 
-            #print("new one: " + currentStockBrokerLotDate)
+                    if excelTransactionsSheet.Cells(sumRow, 7).Value == "Sale Fee Expense" or excelTransactionsSheet.Cells(sumRow, 7).Value == "Regulatory Fee Expense" :
+                        currentSum = currentSum + excelTransactionsSheet.Cells(sumRow, 8).Value
+                
+                    sumRow = sumRow + 1
+
+                print(currentSum)
+
  
     transRow = transRow + 1
 
