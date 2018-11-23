@@ -1,4 +1,4 @@
-print("Importing, setting up variables and object...")
+print("Importing, setting up variables, and setting up objects...")
 
 import win32com.client, time, datetime, bs4, random, os #, sys
 from selenium import webdriver
