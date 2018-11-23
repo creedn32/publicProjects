@@ -2,6 +2,8 @@ import win32com.client, time, datetime, bs4, random, os #, sys
 from selenium import webdriver
 #from selenium.webdriver.common.by import By
 
+
+
 filePath = os.path.abspath(os.curdir)
 fileName = "Monthly Purchase Process"
 fileExtension = ".xlsx"
@@ -11,7 +13,7 @@ excelApp.Visible = True
 
 
 stockWb = excelApp.Workbooks(fileName + fileExtension)  
-stockListSheet = stockWb.Worksheets[1]
+#stockListSheet = stockWb.Worksheets[1]
 
 
 
@@ -23,7 +25,7 @@ for sheet in stockWb.Worksheets:
 
 
 
-pageLoadTime = 15
+pageLoadTime = 7
 chromeDriverCapabilities = webdriver.common.desired_capabilities.DesiredCapabilities.CHROME
 chromeDriverCapabilities["pageLoadStrategy"] = "none"
 chromeDriver = webdriver.Chrome(desired_capabilities=chromeDriverCapabilities)
@@ -34,27 +36,42 @@ chromeDriver.maximize_window()
 randomOrderList = list(range(6, stockListSheet.Cells(6, 1).End(win32com.client.constants.xlDown).Row + 1))
 random.shuffle(randomOrderList)
 
-    
+currentPages = ("Statistics", "Income Statement", "Balance Sheet")
+
+
 
 for stockListSheetRow in randomOrderList:
+
+    print("Open Yahoo! Finance...")    
 
     chromeDriver.get("https://finance.yahoo.com/")
     time.sleep(pageLoadTime)
 
-    chromeDriver.find_element_by_name("p").clear()
+    print("Loaded")
+
+    print("Open stock page...")
+
+    inputElement = chromeDriver.find_element_by_name("yfin-usr-qry")
 
     for eachChar in stockListSheet.Cells(stockListSheetRow, 1).Value:
-        chromeDriver.find_element_by_name("p").send_keys(eachChar)
+        print(eachChar)
+        inputElement.send_keys(eachChar)
         time.sleep(1)
     
-    #chromeDriver.find_element_by_name("p").send_keys(stockListSheet.Cells(row, 1).Value)
     time.sleep(pageLoadTime/6)
-    chromeDriver.find_element_by_name("input").submit()
+    inputElement.submit()
     time.sleep(pageLoadTime)
-        
-    currentPage = "Statistics"
+
+    print("Loaded")
+
+    print("Create xPath...")
+    
+    currentPage = currentPages[0]
     bsObj = bs4.BeautifulSoup(chromeDriver.page_source, "html.parser")
 
+    print(bsObj(text=currentPage))
+
+    
     for bsElem in bsObj(text=currentPage):
         bsParentElem = bsElem.parent
         print("bs element parent: " + str(bsParentElem.parent))
@@ -65,6 +82,7 @@ for stockListSheetRow in randomOrderList:
 
     xPathStr = "//" + bsParentElem.name + "[" + "text()='" + bsParentElem.contents[0] + "'"
 
+    
     for key, value in bsParentElem.attrs.items():
         if isinstance(value, (list, tuple)):
             for eachValue in value:
@@ -76,6 +94,8 @@ for stockListSheetRow in randomOrderList:
     xPathStr = xPathStr + "]"
 
     print(xPathStr)
+
+    print("Done")
 
     for chromeDriverElem in chromeDriver.find_elements_by_xpath(xPathStr):
         print("selenium " + str(chromeDriverElem.get_attribute("outerHTML")))
@@ -102,7 +122,7 @@ for stockListSheetRow in randomOrderList:
 
 
 
-    currentPage = "Income Statement"
+    currentPage = currentPages[1]
     xPathStr = "//*[text()='" + currentPage + "']"
     chromeDriver.get("https://finance.yahoo.com/quote/" + stockListSheet.Cells(stockListSheetRow, 1).Value + "/financials?q=" + stockListSheet.Cells(stockListSheetRow, 1).Value)
     time.sleep(pageLoadTime)
@@ -129,7 +149,7 @@ for stockListSheetRow in randomOrderList:
 
 
 
-    currentPage = "Balance Sheet"
+    currentPage = currentPages[2]
     xPathStr = "//*[text()='" + currentPage + "']"
     chromeDriver.get("https://finance.yahoo.com/quote/" + stockListSheet.Cells(stockListSheetRow, 1).Value + "/financials?q=" + stockListSheet.Cells(stockListSheetRow, 1).Value)
     time.sleep(pageLoadTime)
