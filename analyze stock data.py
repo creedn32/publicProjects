@@ -49,7 +49,7 @@ stockListWb = excelApp.Workbooks(stockListFileName)
 
 col = {
         "Ticker Col": 1,
-	"Data": {
+	    "Data": {
 		"Statistics": {
 			"Date": 4,
 			"Last Col": 11,
