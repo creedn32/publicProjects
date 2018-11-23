@@ -1,8 +1,11 @@
-print("Importing, setting up variables, and setting up objects...")
+print("Importing modules, setting up variables, and setting up objects...")
 
-import win32com.client, time, datetime, bs4, random, os #, sys
+import win32com.client, time, datetime, bs4, random, os
 from selenium import webdriver
-#from selenium.webdriver.common.by import By
+
+def downloadFullPath(downloadFolder, currStock):
+    return os.path.abspath("..") + "\\Stock_Data_Data\\Downloaded HTML Files\\" + downloadFolder + "\\" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + "-" + currStock + "-from yahoo.html"
+
 
 filePath = os.path.abspath(os.curdir)
 fileName = "Monthly Purchase Process"
@@ -32,7 +35,7 @@ chromeDriver.maximize_window()
 randomOrderList = list(range(6, stockListSheet.Cells(6, 1).End(win32com.client.constants.xlDown).Row + 1))
 random.shuffle(randomOrderList)
 
-currentPage = {0:
+stockPages = {0:
                     {"name": "Statistics",
                      "folderName": "Statistics"},
                 1:
@@ -47,18 +50,19 @@ print("Done")
 
 for stockListSheetRow in randomOrderList:
 
-    print("Open Yahoo! Finance...")    
+    print("Navigate to Yahoo! Finance...")
 
+    currentStock = stockListSheet.Cells(stockListSheetRow, 1).Value
     chromeDriver.get("https://finance.yahoo.com/")
     time.sleep(pageLoadTime)
 
-    print("Loaded")
+    print("Done")
 
-    print("Open stock page...")
+    print("Navigate to general stock page for " + currentStock + "...")
 
     inputElement = chromeDriver.find_element_by_name("yfin-usr-qry")
 
-    for eachChar in stockListSheet.Cells(stockListSheetRow, 1).Value:
+    for eachChar in currentStock:
         inputElement.send_keys(eachChar)
         time.sleep(1)
     
@@ -66,93 +70,104 @@ for stockListSheetRow in randomOrderList:
     inputElement.submit()
     time.sleep(pageLoadTime)
 
-    print("Loaded")
-
-    print("Create xPath...")
-    
-
-    bsObj = bs4.BeautifulSoup(chromeDriver.page_source, "html.parser")
-
-
-    for bsElem in bsObj(text=currentPage[0]["name"]):
-        bsParentElem = bsElem.parent
-        print("bs element parent: " + str(bsParentElem.parent))
-        print("bs element parent attributes: " + str(bsParentElem.attrs))
-        print("bs element parent contents: " + str(bsParentElem.contents))
-        print("bs element parent name: " + str(bsParentElem.name))
-
-
-    xPathStr = "//" + bsParentElem.name + "[" + "text()='" + bsParentElem.contents[0] + "'"
-
-    
-    for key, value in bsParentElem.attrs.items():
-        if isinstance(value, (list, tuple)):
-            for eachValue in value:
-                xPathStr = xPathStr + " and " + "@" + key + "=" + eachValue
-        else:
-            xPathStr = xPathStr + " and " + "@" + key + "=" + value
-    
-
-    xPathStr = xPathStr + "]"
-
-    print("xPath is: " + xPathStr)
-
     print("Done")
 
-    for chromeDriverElem in chromeDriver.find_elements_by_xpath(xPathStr):
-        print("selenium " + str(chromeDriverElem.get_attribute("outerHTML")))
+    for i in range(0, 3):
+
+        currentPage = stockPages[i]["name"]
+        xPathStr = ""
+        print("Build xPath for " + currentPage + " link to click for " + currentStock + "...")
+    
+        if currentPage == "Statistics":
+
+            bsObj = bs4.BeautifulSoup(chromeDriver.page_source, "html.parser")
+
+            for bsElem in bsObj(text=currentPage):
+                bsParentElem = bsElem.parent
+                print("On the " + currentStock + " general stock page, an element was found for building xPath for " + currentPage + ", bs element parent: " + str(bsParentElem.parent))
+                print("On the " + currentStock + " general stock page, an element was found for building xPath for " + currentPage + ", bs element parent attributes: " + str(bsParentElem.attrs))
+                print("On the " + currentStock + " general stock page, an element was found for building xPath for " + currentPage + ", bs element parent contents: " + str(bsParentElem.contents))
+                print("On the " + currentStock + " general stock page, an element was found for building xPath for " + currentPage + ", bs element parent name: " + str(bsParentElem.name))
+        
+        
+            xPathStr = "//" + bsParentElem.name + "[" + "text()='" + bsParentElem.contents[0] + "'"
+        
+            
+            for key, value in bsParentElem.attrs.items():
+                if isinstance(value, (list, tuple)):
+                    for eachValue in value:
+                        xPathStr = xPathStr + " and " + "@" + key + "=" + eachValue
+                else:
+                    xPathStr = xPathStr + " and " + "@" + key + "=" + value
+            
+        
+            xPathStr = xPathStr + "]"
+            print(currentPage + " xPath has been built for " + currentStock + ": " + xPathStr)
+    
+            print("Using xPath, find " + currentPage + " link on page...")
+    
+            for chromeDriverElem in chromeDriver.find_elements_by_xpath(xPathStr):
+                print("Using xPath, this link was found: " + str(chromeDriverElem.get_attribute("outerHTML")))
+                print("Click on the link...")
+
+                try:
+                    chromeDriver.execute_script("arguments[0].click();", chromeDriverElem)
+                    time.sleep(pageLoadTime + 5)
+
+
+                    with open(downloadFullPath(stockPages[i]["folderName"], currentStock), "w") as fileWriteContainer:
+                        fileWriteContainer.write(chromeDriver.page_source)
+
+                    print("Clicked " + currentPage + " link for " + currentStock + ", loaded page, and saved it to the hard drive.")
+
+                    break
+
+                except:
+                    print("Tried clicking " + currentPage + " link, for " + currentStock + ", but there was an error.")
+
+        else:
+
+            xPathStr = "//*[text()='" + currentPage + "']"
+            print(currentPage + " xPath has been built for " + currentStock + ": " + xPathStr)
+
+            print("Navigate to Financials page for " + currentStock + "...")
+
+            chromeDriver.get("https://finance.yahoo.com/quote/" + currentStock + "/financials?q=" + currentStock)
+            time.sleep(pageLoadTime)
+
+            print("Done")
+
+            for chromeDriverElem in chromeDriver.find_elements_by_xpath(xPathStr):
+
+                print("Using xPath, this link was found: " + str(chromeDriverElem.get_attribute("outerHTML")))
+                print("Click on the link...")
+    
+                try:
+                    chromeDriver.execute_script("arguments[0].click();", chromeDriverElem)
+                    time.sleep(pageLoadTime + 5)
+
+                    with open(downloadFullPath(stockPages[i]["folderName"], currentStock), "w") as fileWriteContainer:
+                        fileWriteContainer.write(chromeDriver.page_source)
+
+                    print("Clicked " + currentPage + " link for " + currentStock + ", loaded page, and saved it to the hard drive.")
+
+                    break
+    
+    
+                except:
+                    print("Tried clicking " + currentPage + " link, for " + currentStock + ", but there was an error.")
+    
+    
+            
+        
+        
+   
 
         
-    try:
-        chromeDriver.execute_script("arguments[0].click();", chromeDriverElem)
-        time.sleep(pageLoadTime + 5)
 
-        
-        downloadFilePath = os.path.abspath("..") + "\\Stock_Data_Data\\Downloaded HTML Files\\" + currentPage[0]["folderName"] + "\\"
-        downloadFileName = datetime.datetime.now().strftime("%Y%m%d%H%M%S") + "-" + stockListSheet.Cells(stockListSheetRow, 1).Value + "-from yahoo.html"            
-
-        print(downloadFilePath + downloadFileName)
-    
-        with open(downloadFilePath + downloadFileName, "w") as fileWriteContainer:
-            fileWriteContainer.write(chromeDriver.page_source)        
-    
-        print(stockListSheet.Cells(stockListSheetRow, 1).Value + " - Found " + currentPage[0]["name"] + " link, clicked it, loaded page, and saved it to the hard drive.")
-
-
-    except:
-        print(stockListSheet.Cells(stockListSheetRow, 1).Value + " - Error in traversing the DOM looking for " + currentPage[0]["name"] + ".")
-
-
-    for i in range(1, 3):
-        xPathStr = "//*[text()='" + currentPage[i]["name"] + "']"
-        chromeDriver.get("https://finance.yahoo.com/quote/" + stockListSheet.Cells(stockListSheetRow, 1).Value + "/financials?q=" + stockListSheet.Cells(stockListSheetRow, 1).Value)
-        time.sleep(pageLoadTime)
-
-
-        for element in chromeDriver.find_elements_by_xpath(xPathStr):
-            try:
-                element.click()
-                time.sleep(pageLoadTime)
-
-                downloadFilePath = filePath + "\\Downloaded HTML Files\\" + currentPage[i]["folderName"] + "\\"
-                downloadFileName = datetime.datetime.now().strftime('%Y%m%d%H%M%S') + "-" + stockListSheet.Cells(stockListSheetRow, 1).Value + "-from yahoo.html"
-
-                with open(downloadFilePath + downloadFileName, "w") as fileWriteContainer:
-                    fileWriteContainer.write(chromeDriver.page_source)
-
-                print(stockListSheet.Cells(stockListSheetRow, 1).Value + " - Found " + currentPage[i]["name"] + " link, clicked it, loaded page, and saved it to the hard drive.")
-
-                break
-
-
-            except:
-                print(stockListSheet.Cells(stockListSheetRow, 1).Value + " - Error in traversing the DOM looking for " + currentPage[i]["name"] + ".")
-
-
-
-    #currentPage = currentPage[2]
-    #xPathStr = "//*[text()='" + currentPage + "']"
-    #chromeDriver.get("https://finance.yahoo.com/quote/" + stockListSheet.Cells(stockListSheetRow, 1).Value + "/financials?q=" + stockListSheet.Cells(stockListSheetRow, 1).Value)
+    #stockPages = stockPages[2]
+    #xPathStr = "//*[text()='" + stockPages + "']"
+    #chromeDriver.get("https://finance.yahoo.com/quote/" + currentStock + "/financials?q=" + currentStock)
     #time.sleep(pageLoadTime)
 
 
@@ -163,18 +178,18 @@ for stockListSheetRow in randomOrderList:
     #         element.click()
     #         time.sleep(pageLoadTime)
     #
-    #         downloadFilePath = filePath + "\\Downloaded HTML Files\\" + currentPage + "s" + "\\"
-    #         downloadFileName = datetime.datetime.now().strftime("%Y%m%d%H%M%S") + "-" + stockListSheet.Cells(stockListSheetRow, 1).Value + "-from yahoo.html"
+    #         downloadFilePath = filePath + "\\Downloaded HTML Files\\" + stockPages + "s" + "\\"
+    #         downloadFileName = datetime.datetime.now().strftime("%Y%m%d%H%M%S") + "-" + currentStock + "-from yahoo.html"
     #
     #         with open(downloadFilePath + downloadFileName, "w") as fileWriteContainer:
     #             fileWriteContainer.write(chromeDriver.page_source)
     #
-    #         print(stockListSheet.Cells(stockListSheetRow, 1).Value + " - Found " + currentPage + " link, clicked it, loaded page, and saved it to the hard drive.")
+    #         print(currentStock + " - Found " + stockPages + " link, clicked it, loaded page, and saved it to the hard drive.")
     #
     #         break
     #
     #
     #     except:
-    #         print(stockListSheet.Cells(stockListSheetRow, 1).Value + " - Error in traversing the DOM looking for " + currentPage + ".")
+    #         print(currentStock + " - Error in traversing the DOM looking for " + stockPages + ".")
     #
     #
