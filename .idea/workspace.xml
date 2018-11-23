@@ -43,7 +43,7 @@
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="51">
-              <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+              <caret line="3" column="6" lean-forward="true" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -185,11 +185,26 @@
       <option name="project" value="LOCAL" />
       <updated>1543001114528</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="update .gitignore">
+      <created>1543001416088</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1543001416088</updated>
+    </task>
+    <task id="LOCAL-00003" summary="update .gitignore again">
+      <created>1543001486871</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1543001486871</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50040483" side_tool="true" visible="true" weight="0.32737032" />
@@ -249,7 +264,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="modified print statement" />
     <MESSAGE value="update idea file" />
-    <option name="LAST_COMMIT_MESSAGE" value="update idea file" />
+    <MESSAGE value="update .gitignore" />
+    <MESSAGE value="update .gitignore again" />
+    <option name="LAST_COMMIT_MESSAGE" value="update .gitignore again" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -322,7 +339,7 @@
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
-          <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+          <caret line="3" column="6" lean-forward="true" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
         </state>
       </provider>
     </entry>
