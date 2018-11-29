@@ -7,7 +7,7 @@ import bs4, re, os, win32com.client, sys
 
 # get Excel going
 
-stockListFilePath = os.path.abspath(os.curdir)
+stockListFilePath = os.path.abspath("..") + "\\Stock_Data_Data"
 fileName = "Monthly Purchase Process"
 fileExtension = ".xlsx"
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')

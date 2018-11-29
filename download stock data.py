@@ -8,7 +8,7 @@ def downloadFullPath(downloadFolder, currStock):
     return os.path.abspath("..") + "\\Stock_Data_Data\\Downloaded HTML Files\\" + downloadFolder + "\\" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + "-" + currStock + "-from yahoo.html"
 
 
-filePath = os.path.abspath(os.curdir)
+filePath = os.path.abspath("..") + "\\Stock_Data_Data"
 fileName = "Monthly Purchase Process"
 fileExtension = ".xlsx"
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
@@ -81,7 +81,7 @@ for stockListSheetRow in randomOrderList:
 
         if currentPage == "Statistics":
 
-            print("Build xPath for " + currentPage + " link to click for " + currentStock + ". Will print out xPath when it has been built..")
+            print("Build xPath for " + currentPage + " link to click for " + currentStock + ". Will print out xPath when it has been built...")
 
             bsObj = bs4.BeautifulSoup(chromeDriver.page_source, "html.parser")
 
