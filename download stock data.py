@@ -25,7 +25,7 @@ for sheet in stockWb.Worksheets:
         stockListSheet = sheet
 
 
-pageLoadTime = 15
+pageLoadTime = 15/3
 chromeDriverCapabilities = webdriver.common.desired_capabilities.DesiredCapabilities.CHROME
 chromeDriverCapabilities["pageLoadStrategy"] = "none"
 chromeDriver = webdriver.Chrome(desired_capabilities=chromeDriverCapabilities)
@@ -135,15 +135,22 @@ for stockListSheetRow in randomOrderList:
                 chromeDriver.execute_script("arguments[0].click();", chromeDriverElem)
                 time.sleep(pageLoadTime + 5)
 
+
+
+
+                #with open("C:\Users\cnaylor\Desktop\me.txt", "w+") as fileWriteContainer:
+                #    fileWriteContainer.write("1")
+
+
                 with open(downloadFullPath(stockPages[i]["folderName"], currentStock), "w") as fileWriteContainer:
-                    fileWriteContainer.write(chromeDriver.page_source)
+                    fileWriteContainer.write(chromeDriver.page_source.encode('utf-8'))
 
                 print(
                     "Clicked " + currentPage + " link for " + currentStock + ", loaded page, and saved it to the hard drive.")
 
                 break
 
-            except:
-                print("Tried clicking " + currentPage + " link, for " + currentStock + ", but there was an error.")
+            except Exception as e:
+                print("Tried clicking " + currentPage + " link, for " + currentStock + ", but there was an error. " + str(e))
 
 
