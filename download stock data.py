@@ -25,7 +25,7 @@ for sheet in stockWb.Worksheets:
         stockListSheet = sheet
 
 
-pageLoadTime = 15/3
+pageLoadTime = 15
 chromeDriverCapabilities = webdriver.common.desired_capabilities.DesiredCapabilities.CHROME
 chromeDriverCapabilities["pageLoadStrategy"] = "none"
 chromeDriver = webdriver.Chrome(desired_capabilities=chromeDriverCapabilities)
