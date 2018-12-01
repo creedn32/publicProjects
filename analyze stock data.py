@@ -181,9 +181,9 @@ while listSheet.Cells(row, col["tickerCol"]).Value:
 
                             if dataPoint == "Market Cap (intraday)":
                                 if str(dataToWrite[-1:]) == "B":
-                                    listSheet.Cells(row, dataPtCol + 1).Value = float(dataToWrite[:-1]) * 1000000000
+                                    listSheet.Cells(row, dataPtCol + 1).Value = float(dataToWrite[:-1]) * 1000000#000
                                 elif str(dataToWrite[-1:]) == "M":
-                                    listSheet.Cells(row, dataPtCol + 1).Value = float(dataToWrite[:-1]) * 1000000
+                                    listSheet.Cells(row, dataPtCol + 1).Value = float(dataToWrite[:-1]) * 1000#000
 
                             else:
 
@@ -191,6 +191,11 @@ while listSheet.Cells(row, col["tickerCol"]).Value:
 
                         else:
                             listSheet.Cells(row, dataPtCol + 1).Value = "Element does not exist in HTML"
+
+    listSheet.Cells(row, 28).Formula = "=IFERROR(M" + str(row) + "/AA" + str(row) + ",0)"
+    listSheet.Cells(row, 29).Formula = "=IFERROR(U" + str(row) + "/S" + str(row) + ", \"N/A\")"
+    listSheet.Cells(row, 30).Formula = "=IF(AB" + str(row) + "=0,IF(G" + str(row) + "=\"N/A\",I" + str(row) + ",G" + str(row) + "),AB" + str(row) + ")"
+    listSheet.Cells(row, 31).Formula = "=IF(AND(AD" + str(row) + "<$B$1,AD" + str(row) + "<>0,AC" + str(row) + "<$B$2,S" + str(row) + ">0),\"Passed Test\","")"
 
     row = row + 1
 
