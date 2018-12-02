@@ -1,3 +1,4 @@
 *.xlsx
 *.log
 .idea/
+config.py
