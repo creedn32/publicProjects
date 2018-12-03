@@ -3,6 +3,8 @@ print("Importing modules, setting up variables, and setting up objects...")
 import win32com.client, time, datetime, bs4, os, config
 from selenium import webdriver
 
+def downloadFullPath():
+    return os.path.abspath("..") + "\\Stock_Data_Data\\Table HTML Files\\" + str(50) + "M" + "-" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".html"
 
 
 pageLoadTime = 15
@@ -26,5 +28,16 @@ chromeDriver.find_element_by_xpath("//*[@id=\"login\"]").click()
 time.sleep(pageLoadTime)
 
 
+for i in range(50, 100, 50):
+    print(i)
+    chromeDriver.find_element_by_xpath("//*[@id=\"MinimumMarketCap\"]").clear()
+    chromeDriver.find_element_by_xpath("//*[@id=\"MinimumMarketCap\"]").send_keys(i)
+    chromeDriver.find_element_by_xpath("//*[@id=\"Select30\"][@value=\"false\"]").click()
+    chromeDriver.find_element_by_xpath("//*[@id=\"stocks\"]").click()
+    time.sleep(pageLoadTime)
 
+    print(downloadFullPath())
+
+    with open(downloadFullPath(), "w") as fileWriteContainer:
+        fileWriteContainer.write(chromeDriver.page_source)
 
