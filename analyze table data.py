@@ -18,6 +18,7 @@ folderName = "Table HTML Files"
 filePath = os.path.abspath("..") + "\\Stock_Data_Data\\" + folderName + "\\"
 
 for fileName in os.listdir(filePath):
+    print(fileName.split("-")[0])
     currentHTMLFile = open(filePath + fileName)
     beautifulSoupObject = bs4.BeautifulSoup(currentHTMLFile, "html.parser")
     tables = beautifulSoupObject.find(id="tableform").find_all("table")
@@ -32,7 +33,7 @@ for fileName in os.listdir(filePath):
             list_of_cells = []
             colNum = 2
 
-            listSheet.Cells(rowNum, 1).Value = "$50M"
+            listSheet.Cells(rowNum, 1).Value = fileName.split("-")[0][:-1]
 
             for cell in row.findAll('td'):
                 text = cell.text.replace('&nbsp;', '')
