@@ -3,6 +3,9 @@ print("Importing modules, setting up variables, and setting up objects...")
 import win32com.client, time, datetime, bs4, random, os
 import selenium.webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+
+binary = FirefoxBinary("C:\\Program Files\\Mozilla Firefox")
 
 
 def downloadFullPath(downloadFolder, currStock):
@@ -32,18 +35,27 @@ pageLoadTime = 15
 #chromeOptions = webdriver.ChromeOptions()
 #chromeOptions.add_argument('--proxy-server=http://%s' % PROXY)
 #chrome = webdriver.Chrome(chrome_options=chrome_options)
-#selenDriverCapabilities = webdriver.common.desired_capabilities.DesiredCapabilities.FIREFOX
-#selenDriverCapabilities["pageLoadStrategy"] = "none"
+selenDriverCapabilities = selenium.webdriver.common.desired_capabilities.DesiredCapabilities.EDGE
+selenDriverCapabilities["pageLoadStrategy"] = "none"
 
-selenDriver = selenium.webdriver.Edge() #(desired_capabilities=selenDriverCapabilities)
+#selenDriver = selenium.webdriver.Edge(capabilities=selenDriverCapabilities) #desired_capabilities=selenDriverCapabilities) #, executable_path="C:\\Users\\creed\\Computer\\Setup Files\\Portable Applications\\MicrosoftWebDriver.exe")  #(desired_capabilities=selenDriverCapabilities)
+selenDriver = selenium.webdriver.Firefox(capabilities=selenDriverCapabilities)
 
 #selenDriver = webdriver.Chrome(desired_capabilities=selenDriverCapabilities, options=chromeOptions)
 #selenDriver.set_window_position(-1000, 0)
 #selenDriver.maximize_window()
    
-   
-   
-randomOrderList = list(range(6, stockListSheet.Cells(6, 1).End(win32com.client.constants.xlDown).Row + 1))
+dateLimit = 20181203000000
+randomOrderList = []
+
+for row in range(6, stockListSheet.Cells(6, 1).End(win32com.client.constants.xlDown).Row + 1):
+    if "No" in [str(stockListSheet.Cells(row, 4).Value)[:2], str(stockListSheet.Cells(row, 14).Value)[:2], str(stockListSheet.Cells(row, 22).Value)[2:]] or int(stockListSheet.Cells(row, 4).Value) < dateLimit or int(stockListSheet.Cells(row, 14).Value) < dateLimit or int(stockListSheet.Cells(row, 22).Value) < dateLimit:
+        randomOrderList.append(row)
+    row = row + 1
+
+
+#randomOrderList = list(range(6, stockListSheet.Cells(6, 1).End(win32com.client.constants.xlDown).Row + 1))
+
 random.shuffle(randomOrderList)
 
 stockPages = {0:
@@ -62,7 +74,8 @@ print("Done")
 print("Navigate to Yahoo! Finance...")
 
 selenDriver.get("https://finance.yahoo.com/")
-time.sleep(pageLoadTime * 2)
+print(1)
+time.sleep(pageLoadTime)
 
 print("Done")
 
@@ -73,8 +86,6 @@ for stockListSheetRow in randomOrderList:
     print("Navigate to general stock page for " + currentStock + "...")
 
     inputElement = selenDriver.find_element_by_xpath("//*[@id=\"fin-srch-assist\"]/input")
-
-    print(1)
 
     for eachChar in currentStock:
         inputElement.send_keys(eachChar)
