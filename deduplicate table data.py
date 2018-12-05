@@ -1,4 +1,4 @@
-import os, win32com.client
+import os, win32com.client, sys
 
 # get Excel going
 
@@ -23,16 +23,17 @@ print(lastCell)
 
 listSheet.Range(firstCell, lastCell).Sort(Key1=listSheet.Cells(2, 5), Order1=win32com.client.constants.xlDescending, Key2=listSheet.Cells(2, 1), Order2=win32com.client.constants.xlAscending, Key3=listSheet.Cells(2, 2), Order3=win32com.client.constants.xlAscending, Header=win32com.client.constants.xlYes, Orientation=win32com.client.constants.xlSortColumns)
 
+#sys.exit()
 
-# try:
-#     stockWb.Worksheets("Step 1A - Temp Data2").Delete()
-# except:
-#     print("Error")
-#
-# newSheet = stockWb.Worksheets.Add(After=listSheet)
-# #newSheet = stockWb.ActiveSheet
-# newSheet.Name = "Step 1A - Temp Data2"
-# listSheet.Cells.Copy(Destination=newSheet.Range("A1"))
+try:
+    stockWb.Worksheets("Step 1A - Temp Data2").Delete()
+except:
+    print("Error")
+
+newSheet = stockWb.Worksheets.Add(After=listSheet)
+#newSheet = stockWb.ActiveSheet
+newSheet.Name = "Step 1A - Temp Data2"
+listSheet.Cells.Copy(Destination=newSheet.Range("A1"))
 
 
 print(1)

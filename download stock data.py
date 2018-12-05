@@ -1,7 +1,8 @@
 print("Importing modules, setting up variables, and setting up objects...")
 
 import win32com.client, time, datetime, bs4, random, os
-from selenium import webdriver
+import selenium.webdriver
+from selenium.webdriver.common.keys import Keys
 
 
 def downloadFullPath(downloadFolder, currStock):
@@ -26,13 +27,22 @@ for sheet in stockWb.Worksheets:
 
 
 pageLoadTime = 15
-chromeDriverCapabilities = webdriver.common.desired_capabilities.DesiredCapabilities.CHROME
-chromeDriverCapabilities["pageLoadStrategy"] = "none"
-chromeDriver = webdriver.Chrome(desired_capabilities=chromeDriverCapabilities)
-chromeDriver.set_window_position(-1000, 0)
-chromeDriver.maximize_window()
+
+#PROXY = "162.243.108.161:8080" # IP:PORT or HOST:PORT
+#chromeOptions = webdriver.ChromeOptions()
+#chromeOptions.add_argument('--proxy-server=http://%s' % PROXY)
+#chrome = webdriver.Chrome(chrome_options=chrome_options)
+#selenDriverCapabilities = webdriver.common.desired_capabilities.DesiredCapabilities.FIREFOX
+#selenDriverCapabilities["pageLoadStrategy"] = "none"
+
+selenDriver = selenium.webdriver.Edge() #(desired_capabilities=selenDriverCapabilities)
+
+#selenDriver = webdriver.Chrome(desired_capabilities=selenDriverCapabilities, options=chromeOptions)
+#selenDriver.set_window_position(-1000, 0)
+#selenDriver.maximize_window()
    
-    
+   
+   
 randomOrderList = list(range(6, stockListSheet.Cells(6, 1).End(win32com.client.constants.xlDown).Row + 1))
 random.shuffle(randomOrderList)
 
@@ -51,8 +61,7 @@ print("Done")
 
 print("Navigate to Yahoo! Finance...")
 
-chromeDriver.get("https://finance.yahoo.com/")
-# chromeDriver.get("https://www.google.com/")
+selenDriver.get("https://finance.yahoo.com/")
 time.sleep(pageLoadTime * 2)
 
 print("Done")
@@ -63,14 +72,16 @@ for stockListSheetRow in randomOrderList:
     currentStock = stockListSheet.Cells(stockListSheetRow, 1).Value
     print("Navigate to general stock page for " + currentStock + "...")
 
-    inputElement = chromeDriver.find_element_by_name("yfin-usr-qry")
+    inputElement = selenDriver.find_element_by_xpath("//*[@id=\"fin-srch-assist\"]/input")
+
+    print(1)
 
     for eachChar in currentStock:
         inputElement.send_keys(eachChar)
         time.sleep(1)
 
     time.sleep(pageLoadTime / 6)
-    inputElement.submit()
+    inputElement.send_keys(Keys.RETURN)
     time.sleep(pageLoadTime)
     print("Done")
 
@@ -83,7 +94,7 @@ for stockListSheetRow in randomOrderList:
 
             print("Build xPath for " + currentPage + " link to click for " + currentStock + ". Will print out xPath when it has been built...")
 
-            bsObj = bs4.BeautifulSoup(chromeDriver.page_source, "html.parser")
+            bsObj = bs4.BeautifulSoup(selenDriver.page_source, "html.parser")
 
             for bsElem in bsObj(text=currentPage):
                 bsParentElem = bsElem.parent
@@ -117,7 +128,7 @@ for stockListSheetRow in randomOrderList:
             if currentPage == "Income Statement":
                 print("Navigate to Financials page for " + currentStock + "...")
 
-                chromeDriver.get("https://finance.yahoo.com/quote/" + currentStock + "/financials?q=" + currentStock)
+                selenDriver.get("https://finance.yahoo.com/quote/" + currentStock + "/financials?q=" + currentStock)
                 time.sleep(pageLoadTime)
                 print("Done")
 
@@ -127,23 +138,18 @@ for stockListSheetRow in randomOrderList:
         print(currentPage + " xPath has been built for " + currentStock + ": " + xPathStr)
         print("Using xPath, find " + currentPage + " link on page...")
 
-        for chromeDriverElem in chromeDriver.find_elements_by_xpath(xPathStr):
-            print("Using xPath, this link was found: " + str(chromeDriverElem.get_attribute("outerHTML")))
+        for selenDriverElem in selenDriver.find_elements_by_xpath(xPathStr):
+            print("Using xPath, this link was found: " + str(selenDriverElem.get_attribute("outerHTML")))
             print("Click on the link...")
 
             try:
-                chromeDriver.execute_script("arguments[0].click();", chromeDriverElem)
+                selenDriver.execute_script("arguments[0].click();", selenDriverElem)
                 time.sleep(pageLoadTime + 5)
 
 
 
-
-                #with open("C:\Users\cnaylor\Desktop\me.txt", "w+") as fileWriteContainer:
-                #    fileWriteContainer.write("1")
-
-
                 with open(downloadFullPath(stockPages[i]["folderName"], currentStock), "w") as fileWriteContainer:
-                    fileWriteContainer.write(chromeDriver.page_source.encode('utf-8'))
+                    fileWriteContainer.write(str(selenDriver.page_source.encode('utf-8')))
 
                 print(
                     "Clicked " + currentPage + " link for " + currentStock + ", loaded page, and saved it to the hard drive.")
