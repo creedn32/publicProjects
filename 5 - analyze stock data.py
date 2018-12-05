@@ -96,6 +96,9 @@ print("Done renaming and deleting files.")
 
 # go through each stock on the list
 
+
+listSheet.Range(listSheet.Cells(6, 4), listSheet.Cells(listSheet.Rows.Count, listSheet.Columns.Count)).ClearContents()
+
 row = 6
 
 while listSheet.Cells(row, col["tickerCol"]).Value:
@@ -133,7 +136,7 @@ while listSheet.Cells(row, col["tickerCol"]).Value:
             # if you didn't find a file, put that information in the cells
         
              for i in range(currDateCol, col["finStats"][currPage]["lastCol"] + 1):
-                    listSheet.Cells(row, i).Value = "No " + currPage + " file found for this stock."
+                    listSheet.Cells(row, i).Value = "No " + currPage + " file found."
         else:
 
             # if you did find a file, go to it and load it
