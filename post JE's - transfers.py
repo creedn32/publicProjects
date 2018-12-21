@@ -24,7 +24,7 @@ pyautogui.PAUSE = 0
 print("Cmt: Open and connect to file...")
 
 bankTransfersRow = 3
-bankTransfersRow = 750
+bankTransfersRow = 793
 
 
 for win in pywinauto.findwindows.find_elements():
@@ -78,7 +78,7 @@ while excelBankTransfersSheet.Cells(bankTransfersRow, 1).Value:
 
         while True:
             if win32api.GetKeyState(0x01) == -127 or win32api.GetKeyState(0x01) == -128:
-                print("left button clicked " + win32api.GetKeyState(0x01))
+                print("left button clicked " + str(win32api.GetKeyState(0x01)))
                 time.sleep(1.5)
                 break
 
