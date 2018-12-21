@@ -31,20 +31,38 @@ for sheet in stockWb.Worksheets:
 
 pageLoadTime = 15
 
+
+#Proxy
 #PROXY = "162.243.108.161:8080" # IP:PORT or HOST:PORT
 #chromeOptions = webdriver.ChromeOptions()
 #chromeOptions.add_argument('--proxy-server=http://%s' % PROXY)
 #chrome = webdriver.Chrome(chrome_options=chrome_options)
-selenDriverCapabilities = selenium.webdriver.common.desired_capabilities.DesiredCapabilities.EDGE
+
+
+
+
+#Chrome
+selenDriverCapabilities = selenium.webdriver.common.desired_capabilities.DesiredCapabilities.CHROME
 selenDriverCapabilities["pageLoadStrategy"] = "none"
+selenDriver = selenium.webdriver.Chrome(desired_capabilities=selenDriverCapabilities) #, options=chromeOptions)
 
+
+
+
+#Edge
+#selenDriverCapabilities = selenium.webdriver.common.desired_capabilities.DesiredCapabilities.EDGE
+#selenDriverCapabilities["pageLoadStrategy"] = "none"
 #selenDriver = selenium.webdriver.Edge(capabilities=selenDriverCapabilities) #desired_capabilities=selenDriverCapabilities) #, executable_path="C:\\Users\\creed\\Computer\\Setup Files\\Portable Applications\\MicrosoftWebDriver.exe")  #(desired_capabilities=selenDriverCapabilities)
-selenDriver = selenium.webdriver.Firefox(capabilities=selenDriverCapabilities)
+#selenDriver = selenium.webdriver.Edge() #(capabilities=selenDriverCapabilities)
 
-#selenDriver = webdriver.Chrome(desired_capabilities=selenDriverCapabilities, options=chromeOptions)
-#selenDriver.set_window_position(-1000, 0)
-#selenDriver.maximize_window()
-   
+
+
+#Window
+selenDriver.set_window_position(-1000, 0)
+selenDriver.maximize_window()
+
+
+
 dateLimit = 20181203000000
 randomOrderList = []
 
