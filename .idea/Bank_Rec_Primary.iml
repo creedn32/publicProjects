@@ -4,6 +4,9 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Bank_Rec_Secondary" />
+    <orderEntry type="module" module-name="Controlling_Fixed_Assets" />
+    <orderEntry type="module" module-name="accounting_example" />
   </component>
   <component name="TestRunnerService">
     <option name="projectConfiguration" value="Nosetests" />
