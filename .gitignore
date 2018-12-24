@@ -1,5 +1,1 @@
-*.xlsx
-*.log
 .idea/
-config.py
-*.pyc

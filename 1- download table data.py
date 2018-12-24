@@ -1,20 +1,18 @@
 print("Importing modules, setting up variables, and setting up objects...")
 
 import time, datetime, os, sys, random, json
-
-
-with open(os.path.abspath("..") + "\\private_data\\stock_data\\config.txt", "rb") as f:
-     print(f)
-     print(f.read())
-     dataStore = json.load(f)
-
-sys.exit()
-
-
 from selenium import webdriver
 
+# with open(os.path.abspath("..") + "\\private_data\\stock_data\\config.json", "w") as outfile:
+#     json.dump(data, outfile, sort_keys=True, indent=4)
+#     # sort_keys, indent are optional and used for pretty-write
+
+with open(os.path.abspath("..") + "\\private_data\\stock_data\\config.json") as dataFile:
+    data = json.load(dataFile)
+
+
 def downloadFullPath(limit):
-    return os.path.abspath("..") + "\\Stock_Data_Data\\Table HTML Files\\" + str(limit) + "M" + "-" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".html"
+    return os.path.abspath("..") + "\\private_data\\stock_data\\table html files\\" + str(limit) + "M" + "-" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".html"
 
 limitsList = []
 
@@ -36,14 +34,14 @@ chromeDriver = webdriver.Chrome(desired_capabilities=chromeDriverCapabilities)
 chromeDriver.set_window_position(-1000, 0)
 chromeDriver.maximize_window()
 
-chromeDriver.get(config.website)
+chromeDriver.get(data["website"])
 time.sleep(pageLoadTime)
 
 chromeDriver.find_element_by_xpath("//*[@id=\"blogin\"]/li[2]/a").click()
 time.sleep(pageLoadTime / 3)
 
-chromeDriver.find_element_by_xpath("//*[@id=\"Email\"]").send_keys(config.username)
-chromeDriver.find_element_by_xpath("//*[@id=\"Password\"]").send_keys(config.password)
+chromeDriver.find_element_by_xpath("//*[@id=\"Email\"]").send_keys(data["username"])
+chromeDriver.find_element_by_xpath("//*[@id=\"Password\"]").send_keys(data["password"])
 chromeDriver.find_element_by_xpath("//*[@id=\"login\"]").click()
 time.sleep(pageLoadTime)
 
