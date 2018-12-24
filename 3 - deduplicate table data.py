@@ -2,15 +2,15 @@ import os, win32com.client, sys
 
 # get Excel going
 
-stockListFilePath = os.path.abspath("..") + "\\Stock_Data_Data"
+stockListFilePath = os.path.abspath("..") + "\\private_data\\stock_data"
 fileName = "Monthly Purchase Process"
 fileExtension = ".xlsx"
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.DisplayAlerts = False
-excelApp.Calculation = win32com.client.constants.xlCalculationManual
-
 excelApp.Workbooks.Open(stockListFilePath + "\\" + fileName + fileExtension)
+excelApp.Calculation = win32com.client.constants.xlCalculationManual
 excelApp.Visible = True
+
 
 stockWb = excelApp.Workbooks(fileName + fileExtension)
 listSheet = stockWb.Worksheets["Step 1A - Temp Data"]
@@ -23,8 +23,6 @@ print(lastCell)
 
 listSheet.Range(firstCell, lastCell).Sort(Key1=listSheet.Cells(2, 5), Order1=win32com.client.constants.xlDescending, Key2=listSheet.Cells(2, 1), Order2=win32com.client.constants.xlAscending, Key3=listSheet.Cells(2, 2), Order3=win32com.client.constants.xlAscending, Header=win32com.client.constants.xlYes, Orientation=win32com.client.constants.xlSortColumns)
 
-#sys.exit()
-
 try:
     stockWb.Worksheets("Step 1A - Temp Data2").Delete()
 except:
@@ -35,13 +33,10 @@ newSheet = stockWb.Worksheets.Add(After=listSheet)
 newSheet.Name = "Step 1A - Temp Data2"
 listSheet.Cells.Copy(Destination=newSheet.Range("A1"))
 
-
-print(1)
-
 row = 3
 
 while listSheet.Cells(row, 1).Value:
-    #print("row is " + str(row))
+    print("row is " + str(row))
     dupCheckRow = row + 1
     while listSheet.Cells(dupCheckRow, 1).Value:
         #print(dupCheckRow)
@@ -51,6 +46,7 @@ while listSheet.Cells(row, 1).Value:
             dupCheckRow = dupCheckRow - 1
         dupCheckRow = dupCheckRow + 1
     row = row + 1
+
 
 
 excelApp.DisplayAlerts = True
