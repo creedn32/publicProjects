@@ -1,6 +1,16 @@
 print("Importing modules, setting up variables, and setting up objects...")
 
-import time, datetime, os, config, sys, random
+import time, datetime, os, sys, random, json
+
+
+with open(os.path.abspath("..") + "\\private_data\\stock_data\\config.txt", "rb") as f:
+     print(f)
+     print(f.read())
+     dataStore = json.load(f)
+
+sys.exit()
+
+
 from selenium import webdriver
 
 def downloadFullPath(limit):
