@@ -1,18 +1,18 @@
 print("Importing modules, setting up variables, and setting up objects...")
 
-import win32com.client, time, datetime, bs4, random, os
+import win32com.client, time, datetime, bs4, random, os, sys
 import selenium.webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
-binary = FirefoxBinary("C:\\Program Files\\Mozilla Firefox")
+#binary = FirefoxBinary("C:\\Program Files\\Mozilla Firefox")
 
 
 def downloadFullPath(downloadFolder, currStock):
-    return os.path.abspath("..") + "\\Stock_Data_Data\\Downloaded HTML Files\\" + downloadFolder + "\\" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + "-" + currStock + "-from yahoo.html"
+    return os.path.abspath("..") + "\\private_data\\stock_data\\downloaded html files\\" + downloadFolder + "\\" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + "-" + currStock + "-from yahoo.html"
 
 
-filePath = os.path.abspath("..") + "\\Stock_Data_Data"
+filePath = os.path.abspath("..") + "\\private_data\\stock_data"
 fileName = "Monthly Purchase Process"
 fileExtension = ".xlsx"
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
@@ -66,8 +66,8 @@ selenDriver.maximize_window()
 dateLimit = 20181203000000
 randomOrderList = []
 
-for row in range(6, stockListSheet.Cells(6, 1).End(win32com.client.constants.xlDown).Row + 1):
-    if "No" in [str(stockListSheet.Cells(row, 4).Value)[:2], str(stockListSheet.Cells(row, 14).Value)[:2], str(stockListSheet.Cells(row, 22).Value)[2:]] or int(stockListSheet.Cells(row, 4).Value) < dateLimit or int(stockListSheet.Cells(row, 14).Value) < dateLimit or int(stockListSheet.Cells(row, 22).Value) < dateLimit:
+for row in range(6, stockListSheet.Cells(3, 1).End(win32com.client.constants.xlDown).Row + 1):
+    if "No" in [str(stockListSheet.Cells(row, 7).Value)[:2], str(stockListSheet.Cells(row, 17).Value)[:2], str(stockListSheet.Cells(row, 25).Value)[2:]] or int(stockListSheet.Cells(row, 7).Value) < dateLimit or int(stockListSheet.Cells(row, 17).Value) < dateLimit or int(stockListSheet.Cells(row, 25).Value) < dateLimit:
         randomOrderList.append(row)
     row = row + 1
 
@@ -100,7 +100,7 @@ print("Done")
 
 for stockListSheetRow in randomOrderList:
 
-    currentStock = stockListSheet.Cells(stockListSheetRow, 1).Value
+    currentStock = stockListSheet.Cells(stockListSheetRow, 3).Value
     print("Navigate to general stock page for " + currentStock + "...")
 
     inputElement = selenDriver.find_element_by_xpath("//*[@id=\"fin-srch-assist\"]/input")
