@@ -198,17 +198,25 @@ while listSheet.Cells(row, col["tickerCol"]).Value:
                         else:
                             listSheet.Cells(row, dataPtCol + 1).Value = "Element does not exist in HTML"
 
-    listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 1).Formula = "=IFERROR(P" + str(row) + "/AD" + str(row) + ",0)"
-    print("=IFERROR(ADDRESS(" + str(row) + "," + "16" + ")/" + "ADDRESS(" + str(row) + "," + "30" + "),0)")
 
-    listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 2).Formula = "=IFERROR(X" + str(row) + "/V" + str(row) + ", \"N/A\")"
-    print("=IFERROR(ADDRESS(" + str(row) + "," + "24" + ")/ADDRESS(" + str(row) + "," + "22" + "), \"N/A\")")
+    peRatioCol = col["finStats"]["Income Statement"]["lastCol"] + 1
+    liabToEquityCol = col["finStats"]["Income Statement"]["lastCol"] + 2
+    finalPECol = col["finStats"]["Income Statement"]["lastCol"] + 3
+    trailPECol = col["finStats"]["Statistics"]["dataPts"]["Trailing P/E"] + 1
+    totalStockEqCol = col["finStats"]["Balance Sheet"]["dataPts"]["Total Stockholder Equity"] + 1
 
-    listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 3).Formula = "=IF(AE" + str(row) + "=0,IF(J" + str(row) + "=\"N/A\",L" + str(row) + ",J" + str(row) + "),AE" + str(row) + ")"
-    print("=IF(ADDRESS(" + str(row) + "," + "31" + ")=0,IF(ADDRESS(" + str(row) + "," + "10" + ")=\"N/A\",ADDRESS(" + str(row) + "," + "12" + "),ADDRESS(" + str(row) + "," + "10" + ")),ADDRESS(" + str(row) + "," + "31" + "))")
 
-    listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 4).Formula = "=IF(AND(AG" + str(row) + "<$B$1,AG" + str(row) + "<>0,AF" + str(row) + "<$B$2,V" + str(row) + ">0),\"Passed Test\","")"
-    print("=IF(AND(ADDRESS(" + str(row) + "," + "33" + ")<" + col["peLimit"] + ",ADDRESS(" + str(row) + "," + "33" + ")<>0,ADDRESS(" + str(row) + "," + "32" + ")<" + col["deLimit"] + ",ADDRESS(" + str(row) + "," + "22" + ")>0),\"Passed Test\","")")
+    #listSheet.Cells(row, peRatioCol).Formula = "=IFERROR(P" + str(row) + "/AD" + str(row) + ",0)"
+    listSheet.Cells(row, peRatioCol).Formula = "=IFERROR(INDIRECT(ADDRESS(" + str(row) + "," + str(col["finStats"]["Statistics"]["dataPts"]["Market Cap (intraday)"] + 1) + "))/" + "INDIRECT(ADDRESS(" + str(row) + "," + str(col["finStats"]["Income Statement"]["dataPts"]["Net Income"] + 1) + ")),0)"
+
+    #listSheet.Cells(row, liabToEquityCol).Formula = "=IFERROR(X" + str(row) + "/V" + str(row) + ", \"N/A\")"
+    listSheet.Cells(row, liabToEquityCol).Formula = "=IFERROR(INDIRECT(ADDRESS(" + str(row) + "," + str(col["finStats"]["Balance Sheet"]["dataPts"]["Total Liabilities"] + 1) + "))/INDIRECT(ADDRESS(" + str(row) + "," + str(totalStockEqCol) + ")), \"N/A\")"
+
+    #listSheet.Cells(row, finalPECol).Formula = "=IF(AE" + str(row) + "=0,IF(J" + str(row) + "=\"N/A\",L" + str(row) + ",J" + str(row) + "),AE" + str(row) + ")"
+    listSheet.Cells(row, finalPECol).Formula = "=IF(INDIRECT(ADDRESS(" + str(row) + "," + str(peRatioCol) + "))=0,IF(INDIRECT(ADDRESS(" + str(row) + "," + str(trailPECol) + "))=\"N/A\",INDIRECT(ADDRESS(" + str(row) + "," + str(col["finStats"]["Statistics"]["dataPts"]["Forward P/E"] + 1) + ")),INDIRECT(ADDRESS(" + str(row) + "," + str(trailPECol) + "))),INDIRECT(ADDRESS(" + str(row) + "," + str(peRatioCol) + ")))"
+
+    #listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 4).Formula = "=IF(AND(AG" + str(row) + "<$B$1,AG" + str(row) + "<>0,AF" + str(row) + "<$B$2,V" + str(row) + ">0),\"Passed Test\","")"
+    listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 4).Formula = "=IF(AND(INDIRECT(ADDRESS(" + str(row) + "," + str(finalPECol) + "))<" + col["peLimit"] + ",INDIRECT(ADDRESS(" + str(row) + "," + str(finalPECol) + "))<>0,INDIRECT(ADDRESS(" + str(row) + "," + str(liabToEquityCol) + "))<" + col["deLimit"] + ",INDIRECT(ADDRESS(" + str(row) + "," + str(totalStockEqCol) + "))>0),\"Passed Test\","")"
 
     row = row + 1
 
