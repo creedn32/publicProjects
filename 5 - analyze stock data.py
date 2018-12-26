@@ -7,7 +7,7 @@ import bs4, re, os, win32com.client, sys
 
 # get Excel going
 
-stockListFilePath = os.path.abspath("..") + "\\Stock_Data_Data"
+stockListFilePath = os.path.abspath("..") + "\\private_data\\stock_data"
 fileName = "Monthly Purchase Process"
 fileExtension = ".xlsx"
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
@@ -25,39 +25,42 @@ for sheet in stockWb.Worksheets:
 
 
 col = {
-        "tickerCol": 1,
+        "topRow": 6,
+        "tickerCol": 3,
+        "peLimit": "$B$1",
+        "deLimit": "$B$2",
 	    "finStats": {
 		"Statistics": {
             "folderName": "Statistics",
-			"dateCol": 4,
-			"lastCol": 11,
-			"tickerMatchCol": 5,
+			"dateCol": 7,
+			"lastCol": 16,
+			"tickerMatchCol": 8,
 			"dataPts": {
-                                "Trailing P/E": 6,
-                                "Forward P/E": 8,
-                                "Total Debt/Equity": 10,
-                                "Market Cap (intraday)": 12
+                                "Trailing P/E": 9,
+                                "Forward P/E": 11,
+                                "Total Debt/Equity": 13,
+                                "Market Cap (intraday)": 15
                                 }
 		},
 		"Balance Sheet": {
             "folderName": "Balance Sheets",
-			"dateCol": 14,
-			"lastCol": 21,
-			"tickerMatchCol": 15,
+			"dateCol": 17,
+			"lastCol": 24,
+			"tickerMatchCol": 18,
                         "dataPts": {
-                                "Total Assets": 16,
-                                "Total Stockholder Equity": 18,
-                                "Total Liabilities": 20
+                                "Total Assets": 19,
+                                "Total Stockholder Equity": 21,
+                                "Total Liabilities": 23
                                 }
 		},
 		"Income Statement": {
             "folderName": "Income Statements",
-			"dateCol": 22,
-			"lastCol": 27,
-			"tickerMatchCol": 23,
+			"dateCol": 25,
+			"lastCol": 30,
+			"tickerMatchCol": 26,
                         "dataPts": {
-                                "Total Revenue": 24,
-                                "Net Income": 26
+                                "Total Revenue": 27,
+                                "Net Income": 29
                                 }
 		}
         }
@@ -68,7 +71,7 @@ col = {
 for currPage in col["finStats"]:
 
     folderName = col["finStats"][currPage]["folderName"]
-    filePath = os.path.abspath("..") + "\\Stock_Data_Data\\Downloaded HTML Files\\" + folderName + "\\"
+    filePath = os.path.abspath("..") + "\\private_data\\stock_data\\downloaded html files\\" + folderName + "\\"
     filesToRename = []
 
     for fileNameOld in os.listdir(filePath):
@@ -97,9 +100,9 @@ print("Done renaming and deleting files.")
 # go through each stock on the list
 
 
-listSheet.Range(listSheet.Cells(6, 4), listSheet.Cells(listSheet.Rows.Count, listSheet.Columns.Count)).ClearContents()
+listSheet.Range(listSheet.Cells(col["topRow"], col["finStats"]["Statistics"]["dateCol"]), listSheet.Cells(listSheet.Rows.Count, listSheet.Columns.Count)).ClearContents()
 
-row = 6
+row = col["topRow"]
 
 while listSheet.Cells(row, col["tickerCol"]).Value:
 
@@ -112,7 +115,7 @@ while listSheet.Cells(row, col["tickerCol"]).Value:
     for currPage in col["finStats"]:
 
         folderName = col["finStats"][currPage]["folderName"]
-        downloadFolder = os.path.abspath("..") + "\\Stock_Data_Data\\Downloaded HTML Files\\" + folderName + "\\"
+        downloadFolder = os.path.abspath("..") + "\\private_data\\stock_data\\downloaded html files\\" + folderName + "\\"
         currDateCol = col["finStats"][currPage]["dateCol"]
         dateCellVal = listSheet.Cells(row, currDateCol).Value
         newestFileDate = 0 if not isinstance(dateCellVal, int) else int(dateCellVal)
@@ -195,10 +198,17 @@ while listSheet.Cells(row, col["tickerCol"]).Value:
                         else:
                             listSheet.Cells(row, dataPtCol + 1).Value = "Element does not exist in HTML"
 
-    listSheet.Cells(row, 28).Formula = "=IFERROR(M" + str(row) + "/AA" + str(row) + ",0)"
-    listSheet.Cells(row, 29).Formula = "=IFERROR(U" + str(row) + "/S" + str(row) + ", \"N/A\")"
-    listSheet.Cells(row, 30).Formula = "=IF(AB" + str(row) + "=0,IF(G" + str(row) + "=\"N/A\",I" + str(row) + ",G" + str(row) + "),AB" + str(row) + ")"
-    listSheet.Cells(row, 31).Formula = "=IF(AND(AD" + str(row) + "<$B$1,AD" + str(row) + "<>0,AC" + str(row) + "<$B$2,S" + str(row) + ">0),\"Passed Test\","")"
+    listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 1).Formula = "=IFERROR(P" + str(row) + "/AD" + str(row) + ",0)"
+    print("=IFERROR(ADDRESS(" + str(row) + "," + "16" + ")/" + "ADDRESS(" + str(row) + "," + "30" + "),0)")
+
+    listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 2).Formula = "=IFERROR(X" + str(row) + "/V" + str(row) + ", \"N/A\")"
+    print("=IFERROR(ADDRESS(" + str(row) + "," + "24" + ")/ADDRESS(" + str(row) + "," + "22" + "), \"N/A\")")
+
+    listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 3).Formula = "=IF(AE" + str(row) + "=0,IF(J" + str(row) + "=\"N/A\",L" + str(row) + ",J" + str(row) + "),AE" + str(row) + ")"
+    print("=IF(ADDRESS(" + str(row) + "," + "31" + ")=0,IF(ADDRESS(" + str(row) + "," + "10" + ")=\"N/A\",ADDRESS(" + str(row) + "," + "12" + "),ADDRESS(" + str(row) + "," + "10" + ")),ADDRESS(" + str(row) + "," + "31" + "))")
+
+    listSheet.Cells(row, col["finStats"]["Income Statement"]["lastCol"] + 4).Formula = "=IF(AND(AG" + str(row) + "<$B$1,AG" + str(row) + "<>0,AF" + str(row) + "<$B$2,V" + str(row) + ">0),\"Passed Test\","")"
+    print("=IF(AND(ADDRESS(" + str(row) + "," + "33" + ")<" + col["peLimit"] + ",ADDRESS(" + str(row) + "," + "33" + ")<>0,ADDRESS(" + str(row) + "," + "32" + ")<" + col["deLimit"] + ",ADDRESS(" + str(row) + "," + "22" + ")>0),\"Passed Test\","")")
 
     row = row + 1
 
