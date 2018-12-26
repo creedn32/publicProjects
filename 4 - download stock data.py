@@ -32,6 +32,24 @@ for sheet in stockWb.Worksheets:
 pageLoadTime = 15
 
 
+stockPages = {0:
+                    {"name": "Statistics",
+                     "folderName": "Statistics"},
+                1:
+                    {"name": "Income Statement",
+                     "folderName": "Income Statements"},
+                2:
+                    {"name": "Balance Sheet",
+                     "folderName": "Balance Sheets"}
+                }
+
+colNum = {"topRow": 6,
+          "statDownDate": 7,
+          "bsDownDate": 17,
+          "isDownDate": 25,
+          "ticker": 3}
+
+
 #Proxy
 #PROXY = "162.243.108.161:8080" # IP:PORT or HOST:PORT
 #chromeOptions = webdriver.ChromeOptions()
@@ -61,13 +79,11 @@ selenDriver = selenium.webdriver.Chrome(desired_capabilities=selenDriverCapabili
 selenDriver.set_window_position(-1000, 0)
 selenDriver.maximize_window()
 
-
-
 dateLimit = 20181203000000
 randomOrderList = []
 
-for row in range(6, stockListSheet.Cells(3, 1).End(win32com.client.constants.xlDown).Row + 1):
-    if "No" in [str(stockListSheet.Cells(row, 7).Value)[:2], str(stockListSheet.Cells(row, 17).Value)[:2], str(stockListSheet.Cells(row, 25).Value)[2:]] or int(stockListSheet.Cells(row, 7).Value) < dateLimit or int(stockListSheet.Cells(row, 17).Value) < dateLimit or int(stockListSheet.Cells(row, 25).Value) < dateLimit:
+for row in range(colNum["topRow"], stockListSheet.Cells(colNum["topRow"] - 1, 1).End(win32com.client.constants.xlDown).Row + 1):
+    if "No" in [str(stockListSheet.Cells(row, colNum["statDownDate"]).Value)[:2], str(stockListSheet.Cells(row, colNum["bsDownDate"]).Value)[:2], str(stockListSheet.Cells(row, colNum["isDownDate"]).Value)[2:]] or int(stockListSheet.Cells(row, colNum["statDownDate"]).Value) < dateLimit or int(stockListSheet.Cells(row, colNum["bsDownDate"]).Value) < dateLimit or int(stockListSheet.Cells(row, colNum["isDownDate"]).Value) < dateLimit:
         randomOrderList.append(row)
     row = row + 1
 
@@ -75,17 +91,6 @@ for row in range(6, stockListSheet.Cells(3, 1).End(win32com.client.constants.xlD
 #randomOrderList = list(range(6, stockListSheet.Cells(6, 1).End(win32com.client.constants.xlDown).Row + 1))
 
 random.shuffle(randomOrderList)
-
-stockPages = {0:
-                    {"name": "Statistics",
-                     "folderName": "Statistics"},
-                1:
-                    {"name": "Income Statement",
-                     "folderName": "Income Statements"},
-                2:
-                    {"name": "Balance Sheet",
-                     "folderName": "Balance Sheets"}
-                }
 
 print("Done")
 
@@ -95,12 +100,12 @@ selenDriver.get("https://finance.yahoo.com/")
 print(1)
 time.sleep(pageLoadTime)
 
-print("Done")
+print(randomOrderList)
 
 
 for stockListSheetRow in randomOrderList:
 
-    currentStock = stockListSheet.Cells(stockListSheetRow, 3).Value
+    currentStock = stockListSheet.Cells(stockListSheetRow, colNum["ticker"]).Value
     print("Navigate to general stock page for " + currentStock + "...")
 
     inputElement = selenDriver.find_element_by_xpath("//*[@id=\"fin-srch-assist\"]/input")
