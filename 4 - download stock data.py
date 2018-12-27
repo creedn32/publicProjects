@@ -1,6 +1,6 @@
 print("Importing modules, setting up variables, and setting up objects...")
 
-cutOffDate = 20181206000000
+cutOffDate = 20181206
 cutOffDate = cutOffDate * 1000000
 
 import win32com.client, time, datetime, bs4, random, os, sys
