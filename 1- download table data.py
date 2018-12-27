@@ -55,5 +55,5 @@ for i in limitsList:
     time.sleep(pageLoadTime)
 
     with open(downloadFullPath(i), "w") as fileWriteContainer:
-        fileWriteContainer.write(chromeDriver.page_source)
+        fileWriteContainer.write(str(chromeDriver.page_source.encode('utf-8')))
 
