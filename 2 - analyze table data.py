@@ -1,3 +1,7 @@
+
+cutOffDate = 20181227
+cutOffDate = cutOffDate * 1000000
+
 import bs4, os, win32com.client
 
 # get Excel going
@@ -19,13 +23,16 @@ listSheet = stockWb.Worksheets["Step 1A - Temp Data"]
 folderName = "table html files"
 filePath = os.path.abspath("..") + "\\private_data\\stock_data\\" + folderName + "\\"
 
-cutOffDate = 20181223
+
 
 listSheet.Range(listSheet.Cells(3, 1), listSheet.Cells(listSheet.Rows.Count, listSheet.Columns.Count)).Clear()
 
 for fileName in os.listdir(filePath):
 
-    if int(fileName.split("-")[1][:-5]) > cutOffDate * 1000000:
+    #print(fileName.split("-")[1][:-5])
+    #print(cutOffDate)
+
+    if int(fileName.split("-")[1][:-5]) > cutOffDate:
         print(fileName.split("-")[0])
         currentHTMLFile = open(filePath + fileName)
         beautifulSoupObject = bs4.BeautifulSoup(currentHTMLFile, "html.parser")

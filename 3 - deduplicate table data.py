@@ -21,6 +21,7 @@ lastCell = listSheet.Cells(listSheet.Cells(2, 1).End(win32com.client.constants.x
 print(firstCell)
 print(lastCell)
 
+# listSheet.Range(firstCell, lastCell).Sort(Key1=listSheet.Cells(2, 1), Order1=win32com.client.constants.xlAscending, Key2=listSheet.Cells(2, 2), Order2=win32com.client.constants.xlAscending, Header=win32com.client.constants.xlYes, Orientation=win32com.client.constants.xlSortColumns)
 listSheet.Range(firstCell, lastCell).Sort(Key1=listSheet.Cells(2, 5), Order1=win32com.client.constants.xlDescending, Key2=listSheet.Cells(2, 1), Order2=win32com.client.constants.xlAscending, Key3=listSheet.Cells(2, 2), Order3=win32com.client.constants.xlAscending, Header=win32com.client.constants.xlYes, Orientation=win32com.client.constants.xlSortColumns)
 
 try:
