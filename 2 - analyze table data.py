@@ -16,7 +16,7 @@ excelApp.Calculation = win32com.client.constants.xlCalculationManual
 excelApp.Visible = True
 
 stockWb = excelApp.Workbooks(fileName + fileExtension)
-listSheet = stockWb.Worksheets["Step 1A - Temp Data"]
+listSheet = stockWb.Worksheets["Step 2 - From Website"]
 
 # find the last sheet
 
