@@ -1,5 +1,8 @@
 print("Importing modules, setting up variables, and setting up objects...")
 
+cutOffDate = 20181206000000
+cutOffDate = cutOffDate * 1000000
+
 import win32com.client, time, datetime, bs4, random, os, sys
 import selenium.webdriver
 from selenium.webdriver.common.keys import Keys
@@ -79,11 +82,11 @@ selenDriver = selenium.webdriver.Chrome(desired_capabilities=selenDriverCapabili
 selenDriver.set_window_position(-1000, 0)
 selenDriver.maximize_window()
 
-dateLimit = 20181203000000
+
 randomOrderList = []
 
 for row in range(colNum["topRow"], stockListSheet.Cells(colNum["topRow"] - 1, 1).End(win32com.client.constants.xlDown).Row + 1):
-    if "No" in [str(stockListSheet.Cells(row, colNum["statDownDate"]).Value)[:2], str(stockListSheet.Cells(row, colNum["bsDownDate"]).Value)[:2], str(stockListSheet.Cells(row, colNum["isDownDate"]).Value)[2:]] or int(stockListSheet.Cells(row, colNum["statDownDate"]).Value) < dateLimit or int(stockListSheet.Cells(row, colNum["bsDownDate"]).Value) < dateLimit or int(stockListSheet.Cells(row, colNum["isDownDate"]).Value) < dateLimit:
+    if "No" in [str(stockListSheet.Cells(row, colNum["statDownDate"]).Value)[:2], str(stockListSheet.Cells(row, colNum["bsDownDate"]).Value)[:2], str(stockListSheet.Cells(row, colNum["isDownDate"]).Value)[2:]] or int(stockListSheet.Cells(row, colNum["statDownDate"]).Value) < cutOffDate or int(stockListSheet.Cells(row, colNum["bsDownDate"]).Value) < cutOffDate or int(stockListSheet.Cells(row, colNum["isDownDate"]).Value) < cutOffDate:
         randomOrderList.append(row)
     row = row + 1
 
