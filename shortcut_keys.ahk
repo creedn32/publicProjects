@@ -1,0 +1,38 @@
+;Key
+;#   Win (Windows logo key)
+;!   Alt
+;^   Control
+;+   Shift
+;&   An ampersand may be used between any two keys or mouse buttons to combine them into a custom hotkey.
+;http://ahkscript.org/docs/Tutorial.htm#s21
+
+; ------------------------------------
+; VIM Like Shortcuts for All Programs
+; ------------------------------------
+; These assume you have remapped Left-Windows to F13 using sharpkeys2
+; I also typically remap Caps Lock to Left-Windows as well.
+; Have VIM like movement in various applications is extremely ;useful!
+
+
+#a::
+    Run "C:\Program Files\Everything\Everything.exe"
+
+F13 & m::
+    SendInput {Blind}{Down}
+return
+
+F13 & u::
+    SendInput {Blind}{Up}
+return
+
+F13 & j::
+    SendInput {Blind}{Left}
+return
+
+F13 & k::
+    SendInput {Blind}{Right}
+return
+
+#IfWinActive Executor
+    Tab::
+        SendInput {Blind}{Right}{End}
