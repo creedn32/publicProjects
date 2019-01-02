@@ -34,7 +34,6 @@ F13 & k::
 return
 
 
-
 #IfWinActive Executor
     Tab::
         SendInput {Blind}{Right}{End}
