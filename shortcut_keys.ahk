@@ -14,8 +14,8 @@
 ; Have VIM like movement in various applications is extremely ;useful!
 
 
-#a::
-    Run "C:\Program Files\Everything\Everything.exe"
+;#a::
+    ;Run "C:\Program Files\Everything\Everything.exe"
 
 F13 & m::
     SendInput {Blind}{Down}
@@ -33,6 +33,25 @@ F13 & k::
     SendInput {Blind}{Right}
 return
 
+
+
 #IfWinActive Executor
     Tab::
         SendInput {Blind}{Right}{End}
+    return
+
+    LCtrl & m::
+        SendInput {Down}
+    return
+
+    LCtrl & u::
+        SendInput {Up}
+    return
+
+    LCtrl & j::
+        SendInput {Left}
+    return
+
+    LCtrl & k::
+        SendInput {Right}
+    return
