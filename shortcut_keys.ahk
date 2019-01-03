@@ -33,23 +33,42 @@ F13 & k::
     SendInput {Blind}{Right}
 return
 
-Sc029 & m::
-    SendInput {Blind}{Down}
+
+
+;Sc029 & m::
+;    SendInput {Blind}{Down}
+;return
+
+;Sc029 & u::
+;    SendInput {Blind}{Up}
+;return
+
+;Sc029 & j::
+;    SendInput {Blind}{Left}
+;return
+
+;Sc029 & k::
+;    SendInput {Blind}{Right}
+;return
+
+
+
+
+LCtrl & m::
+    SendInput {Down}
 return
 
-Sc029 & u::
-    SendInput {Blind}{Up}
+LCtrl & u::
+    SendInput {Up}
 return
 
-Sc029 & j::
-    SendInput {Blind}{Left}
+LCtrl & j::
+    SendInput {Left}
 return
 
-Sc029 & k::
-    SendInput {Blind}{Right}
+LCtrl & k::
+    SendInput {Right}
 return
-
-
 
 
 
