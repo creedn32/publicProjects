@@ -1,9 +1,9 @@
-#make entering data more uniform by using elif's and tabbing all after entering
+# make entering data more uniform by using elif's and tabbing all after entering
 
 
 print("Cmt: Importing modules...")
 
-import os, pywinauto, pyautogui, win32com.client, time, win32api # sys   
+import os, pywinauto, pyautogui, win32com.client, time, win32api  # sys
 
 print("Cmt: Importing modules...Done.")
 
@@ -26,52 +26,48 @@ print("Cmt: Open and connect to file...")
 bankTransfersRow = 3
 bankTransfersRow = 793
 
-
 for win in pywinauto.findwindows.find_elements():
     gpWinTitleShort = "Bank Transfer Entry"
     if win.name[:len(gpWinTitleShort)] == gpWinTitleShort:
-        gpWinTitleFull = win.name                          
+        gpWinTitleFull = win.name
 
 pywinauto.win32functions.SetForegroundWindow(pywinauto.findwindows.find_window(title=gpWinTitleFull))
 
 excelApp.Visible = True
 print("Cmt: Open and connect to file...Done.")
 
-
-
 while excelBankTransfersSheet.Cells(bankTransfersRow, 1).Value:
 
-    #print(excelBankTransfersSheet.Cells(bankTransfersRow, 1).Interior.Color)
+    # print(excelBankTransfersSheet.Cells(bankTransfersRow, 1).Interior.Color)
 
     if excelBankTransfersSheet.Cells(bankTransfersRow, 1).Interior.Color == 16777215:
-    
+
         print("Row " + str(bankTransfersRow) + " will be entered.")
-        
+
         pyautogui.press(["tab", "tab"])
 
         for x in range(1, 6):
-            #print("x is " + str(x))
+            # print("x is " + str(x))
             print(excelBankTransfersSheet.Cells(bankTransfersRow, x).Value)
 
-
             if x == 1:
-                string = ('%02d' % excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.month) + ('%02d' % excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.day) + str(excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.year)
+                string = ('%02d' % excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.month) + (
+                            '%02d' % excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.day) + str(
+                    excelBankTransfersSheet.Cells(bankTransfersRow, x).Value.year)
             else:
                 string = str(excelBankTransfersSheet.Cells(bankTransfersRow, x).Value)
 
-
             if x == 4:
                 pyautogui.press("tab")
-                
+
             for letter in string:
                 pyautogui.press(letter)
 
             if x == 5:
-                 pyautogui.press("tab")
-                 pyautogui.press("tab")
-                
-            pyautogui.press("tab")
+                pyautogui.press("tab")
+                pyautogui.press("tab")
 
+            pyautogui.press("tab")
 
         excelBankTransfersSheet.Cells(bankTransfersRow, 1).EntireRow.Interior.Color = 5296274
         excelWb.Save()
@@ -82,12 +78,8 @@ while excelBankTransfersSheet.Cells(bankTransfersRow, 1).Value:
                 time.sleep(1.5)
                 break
 
-    
     bankTransfersRow = bankTransfersRow + 1
-
-
 
 excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
-
