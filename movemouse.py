@@ -1,17 +1,15 @@
 import pyautogui
-pyautogui.PAUSE = 1
+import time
+pyautogui.PAUSE = 0
 
-
-# for i in range(1):
-#    pyautogui.moveTo(100, 100, duration=0.25)
-#    pyautogui.moveTo(200, 100, duration=0.25)
-#    pyautogui.moveTo(200, 200, duration=0.25)
-#    pyautogui.moveTo(100, 200, duration=0.25)
 
 print(pyautogui.position())
 
+pyautogui.click(840, 40)
+time.sleep(1)
 
-for i in range(2):
-    pyautogui.click(648, 347)
-    pyautogui.dragRel(90, 0, duration=1)
+for i in range(500):
+    pyautogui.moveTo(740, 200, duration=0)
+    pyautogui.dragRel(160, 0, duration=1)
+    time.sleep(1)
 
