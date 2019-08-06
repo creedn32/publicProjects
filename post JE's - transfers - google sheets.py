@@ -1,6 +1,6 @@
 print("Comment: Importing modules, setting up variables, and grabbing window...")
 
-import gspread, datetime, pywinauto, pyautogui, time
+import gspread, datetime, pywinauto, pyautogui, time, win32api
 from oauth2client.service_account import ServiceAccountCredentials
 
 pyautogui.PAUSE = 0
@@ -36,40 +36,44 @@ row = 2
 
 while gsheetJournalEntriesToPost.cell(row, 1).value:
 
+    print("Row " + str(row) + " will be entered.")
 
-    if row == 2:
+    for col in range(1, 6):
 
-        print("Row " + str(row) + " will be entered.")
+        numberTabs = 1
+        string = gsheetJournalEntriesToPost.cell(row, col).value
 
-        for col in range(1, 6):
+        if col == 1:
+            dateObj = datetime.datetime.strptime(gsheetJournalEntriesToPost.cell(row, col).value, '%m/%d/%Y')
+            #print(dateObj.strftime('%m').lstrip('0'))
+            #print(dateObj.strftime('%m'))
+            #print(dateObj.strftime('%d').lstrip('0'))
+            #print(dateObj.strftime('%d'))
+            #print(dateObj.strftime('%Y'))
 
-            numberTabs = 1
-            string = gsheetJournalEntriesToPost.cell(row, col).value
+            string = dateObj.strftime('%m%d%Y')
 
-            if col == 1:
-                dateObj = datetime.datetime.strptime(gsheetJournalEntriesToPost.cell(row, col).value, '%m/%d/%Y')
-                #print(dateObj.strftime('%m').lstrip('0'))
-                #print(dateObj.strftime('%m'))
-                #print(dateObj.strftime('%d').lstrip('0'))
-                #print(dateObj.strftime('%d'))
-                #print(dateObj.strftime('%Y'))
+        elif col == 3:
+            numberTabs = 2
 
-                string = dateObj.strftime('%m%d%Y')
-
-            elif col == 3:
-                numberTabs = 2
-                
-            elif col == 4:
-                string = gsheetJournalEntriesToPost.cell(row, col).value.lstrip('$').replace('.', '').replace(',', '')
+        elif col == 4:
+            string = gsheetJournalEntriesToPost.cell(row, col).value.lstrip('$').replace('.', '').replace(',', '')
 
 
-            print(string)
-            
-            for letter in string:
-                pyautogui.press(letter)
+        print(string)
 
-            for i in range(0, numberTabs):
-                pyautogui.press('tab')
+        for letter in string:
+            pyautogui.press(letter)
+
+        for i in range(0, numberTabs):
+            pyautogui.press('tab')
+
+
+    while True:
+        if win32api.GetKeyState(0x01) == -127 or win32api.GetKeyState(0x01) == -128:
+            print("left button clicked")
+            time.sleep(4)
+            break
 
 
     row = row + 1
