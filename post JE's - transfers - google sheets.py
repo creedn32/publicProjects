@@ -1,7 +1,6 @@
 print("Comment: Importing modules, setting up variables, and grabbing window...")
 
 import gspread, datetime, pyautogui, time, win32api
-#import pywinauto
 from oauth2client.service_account import ServiceAccountCredentials
 
 pyautogui.PAUSE = 0
@@ -15,17 +14,6 @@ gsheetJournalEntriesToPost = googleSheetApp.open('Journal Entries To Post').shee
 
 
 gpWinTitleShort = "Bank Transfer Entry"
-
-#for win in pywinauto.findwindows.find_elements():
-    
-    #print(win.name[:len(gpWinTitleShort)])
-    
-    #if win.name[:len(gpWinTitleShort)] == gpWinTitleShort:
-    #    gpWinTitleFull = win.name
-
-#print(gpWinTitleFull)
-
-#pywinauto.win32functions.SetForegroundWindow(pywinauto.findwindows.find_window(title=gpWinTitleFull))
 
 print("Comment: Importing modules, setting up variables, and grabbing window...Done.")
 
@@ -81,13 +69,5 @@ while gsheetJournalEntriesToPost.cell(row, 1).value:
 
 
 
-
-#prettyPrinter = pprint.PrettyPrinter()
-# results = sheet.cell(2, 2).value
-# pp.pprint(results)
-#
-# sheet.update_cell(2, 2, 'Loan Sweep Transaction')
-# results = sheet.cell(2, 2).value
-# pp.pprint(results)
 
 
