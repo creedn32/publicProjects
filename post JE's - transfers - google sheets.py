@@ -1,12 +1,13 @@
 print("Comment: Importing modules, setting up variables, and grabbing window...")
 
-import gspread, datetime, pywinauto, pyautogui, time, win32api
+import gspread, datetime, pyautogui, time, win32api
+#import pywinauto
 from oauth2client.service_account import ServiceAccountCredentials
 
 pyautogui.PAUSE = 0
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive']
 #credentialsPath = 'C:\\Users\\cnaylor\\Desktop\\testSheets\\creds.json'
-credentialsPath = 'C:\\Users\\cnaylor.001\\Desktop\\testSheets\creds.json'
+credentialsPath = 'C:\\Users\\cnaylor.001\\Desktop\     \testSheets\creds.json'
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
 googleSheetApp = gspread.authorize(credentials)
@@ -15,16 +16,16 @@ gsheetJournalEntriesToPost = googleSheetApp.open('Journal Entries To Post').shee
 
 gpWinTitleShort = "Bank Transfer Entry"
 
-for win in pywinauto.findwindows.find_elements():
+#for win in pywinauto.findwindows.find_elements():
     
     #print(win.name[:len(gpWinTitleShort)])
     
-    if win.name[:len(gpWinTitleShort)] == gpWinTitleShort:
-        gpWinTitleFull = win.name 
+    #if win.name[:len(gpWinTitleShort)] == gpWinTitleShort:
+    #    gpWinTitleFull = win.name
 
 #print(gpWinTitleFull)
 
-pywinauto.win32functions.SetForegroundWindow(pywinauto.findwindows.find_window(title=gpWinTitleFull))
+#pywinauto.win32functions.SetForegroundWindow(pywinauto.findwindows.find_window(title=gpWinTitleFull))
 
 print("Comment: Importing modules, setting up variables, and grabbing window...Done.")
 
