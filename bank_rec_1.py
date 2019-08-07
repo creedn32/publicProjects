@@ -2,7 +2,11 @@
 
 print("Cmt: Importing modules...")
 
+import sys
+sys.path.append('..')
+
 import time, win32com.client, os, creed_modules.creed_toolpack
+
 
 startTime = time.time()
 print("Cmt: Importing modules...Done.")
@@ -49,7 +53,7 @@ print("Cmt: Open and connect to file...Done.")
 excelBankTableSheet.Cells(1, bankColumns + 1).Value = "B Amount"
 
 for col in range(1, bankColumns + 1):
-    excelBankTableSheet.Cells(1, col).Value = "B " + excelBankSheet.Cells(1, col).Value 
+    excelBankTableSheet.Cells(1, col).Value = "B " + excelBankSheet.Cells(1, col).Value
 
 
 firstCell = excelBankSheet.Cells(rowAfterHeader, 1)
@@ -83,7 +87,7 @@ excelGPSheet.Range(firstCell, excelGPSheet.Cells(firstCell.CurrentRegion.Rows.Co
 gpTableSheetRow = rowAfterHeader
 
 while excelGPTableSheet.Cells(gpTableSheetRow, 1).Value:
-    
+
     if excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value:
         if excelGPTableSheet.Cells(gpTableSheetRow, gpNameCol).Value[0:11] == "Transfer To":
             excelGPTableSheet.Cells(gpTableSheetRow, gpTransferCol).Value = "Out"
