@@ -1,3 +1,4 @@
 *.xlsx
 *.pyc
 .idea/
+creds.json
