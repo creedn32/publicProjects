@@ -1,13 +1,13 @@
 print("Comment: Importing modules and setting up variables...")
 
-import gspread, datetime, pyautogui, time, win32api
+import gspread, pyautogui, datetime, win32api, time
 from oauth2client.service_account import ServiceAccountCredentials
 
 
 pyautogui.PAUSE = 0
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive']
-credentialsPath = 'C:\\Users\\cnaylor\\Desktop\\testSheets\\creds.json'
-#credentialsPath = 'C:\\Users\\cnaylor.001\\Desktop\\testSheets\creds.json'
+credentialsPath = 'C:\\Users\\cnaylor\\Desktop\\creds.json'
+
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
 googleSheetApp = gspread.authorize(credentials)
