@@ -4,6 +4,7 @@
 ;^   Control
 ;+   Shift
 ;&   An ampersand may be used between any two keys or mouse buttons to combine them into a custom hotkey.
+
 ;http://ahkscript.org/docs/Tutorial.htm#s21
 
 ; ------------------------------------
