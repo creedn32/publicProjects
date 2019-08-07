@@ -17,6 +17,7 @@ def repetitiveKeyPress(numberOfTabs, keyToPress):
     for i in range(0, numberOfTabs):
         pyautogui.press(keyToPress)
 
+time.sleep(2)
 print("Comment: Importing modules and setting up variables...Done.")
 
 
