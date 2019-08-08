@@ -50,7 +50,7 @@ while googleSheetBankTransfers.cell(row, 1).value:
         string = googleSheetBankTransfers.cell(row, col).value
 
         if col == 1:
-            dateObj = datetime.datetime.strptime(googleSheetBankTransfers.cell(row, col).value, "%m/%d/%Y")
+            dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
             #print(dateObj.strftime('%m').lstrip('0'))
             #print(dateObj.strftime('%m'))
             #print(dateObj.strftime('%d').lstrip('0'))
@@ -63,7 +63,7 @@ while googleSheetBankTransfers.cell(row, 1).value:
             numberTabs = 2
 
         elif col == 4:
-            string = googleSheetBankTransfers.cell(row, col).value.lstrip("$").replace(".", "").replace(",", "")
+            string = string.lstrip("$").replace(".", "").replace(",", "")
 
 
         for letter in string:

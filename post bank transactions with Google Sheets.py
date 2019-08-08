@@ -48,11 +48,13 @@ with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
     listenerObj.join()
 
 
-row = 3
+row = 2
 
 while googleSheetBankTransactions.cell(row, 1).value:
 
     print("Row " + str(row) + " will be populated into the Great Plains entry window.")
+    optionVar = googleSheetBankTransactions.cell(row, 1).value
+    typeVar = googleSheetBankTransactions.cell(row, 2).value
 
     for col in range(1, 10):
 
@@ -61,24 +63,26 @@ while googleSheetBankTransactions.cell(row, 1).value:
 
 
         if col == 1:
-            if googleSheetBankTransactions.cell(row, col).value == "Enter Transaction":
-                pyautogui.press(["down", "up", "up", "up"])
-            elif googleSheetBankTransactions.cell(row, col).value == "Enter Receipt":
-                pyautogui.press(["down", "up", "up", "up", "down"])
+
+            pyautogui.press(["down", "up", "up", "up"])
+
+            if optionVar == "Enter Receipt":
+                pyautogui.press("down")
 
         elif col == 2:
-            if googleSheetBankTransactions.cell(row, col).value == "Check":
-                pyautogui.press(["down", "up", "up", "up"])
-            if googleSheetBankTransactions.cell(row, col).value == "Cash":
-                pyautogui.press(["down", "up", "up", "up", "down"])
-            if googleSheetBankTransactions.cell(row, col).value == "Increase Adjustment":
-                pyautogui.press(["down", "up", "up", "up", "down", "down"])
-            if googleSheetBankTransactions.cell(row, col).value == "Decrease Adjustment":
-                pyautogui.press(["down", "up", "up", "up", "down", "down", "down"])
+
+            pyautogui.press(["down", "up", "up", "up"])
+
+            if typeVar == "Cash":
+                pyautogui.press("down")
+            elif typeVar == "Increase Adjustment":
+                creed_modules.creed_toolpack.repetitiveKeyPress(2, "down")
+            elif typeVar == "Decrease Adjustment":
+                creed_modules.creed_toolpack.repetitiveKeyPress(3, "down")
 
 
         elif col == 3:
-            dateObj = datetime.datetime.strptime(googleSheetBankTransactions.cell(row, col).value, "%m/%d/%Y")
+            dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
             string = dateObj.strftime("%m%d%Y")
 
         elif col == 4:
@@ -89,15 +93,15 @@ while googleSheetBankTransactions.cell(row, 1).value:
 
 
         elif col == 8:
-            string = googleSheetBankTransactions.cell(row, col).value.replace("-", "")
+            string = string.replace("-", "")
 
-            if googleSheetBankTransactions.cell(row, 1).value != "Enter Transaction" or (googleSheetBankTransactions.cell(row, 1).value == "Enter Transaction" and googleSheetBankTransactions.cell(row, 2).value != "Enter Transaction" not in ["Check", "Decrease Adjustment"]):
+            if optionVar != "Enter Transaction" or (optionVar == "Enter Transaction" and typeVar not in ["Check", "Decrease Adjustment"]):
                 numberTabs = 2
 
 
 
         if col in [7, 9]:
-            string = googleSheetBankTransactions.cell(row, col).value.lstrip("$").replace(".", "").replace(",", "")
+            string = string.lstrip("$").replace(".", "").replace(",", "")
 
 
         if col not in [1, 2]:
