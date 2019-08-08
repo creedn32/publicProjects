@@ -6,7 +6,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 pyautogui.PAUSE = 0
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive']
-credentialsPath = 'creds.json'
+credentialsPath = 'C:\\Users\\cnaylor\\Desktop\\Portable Procedures\\repos\\private_data\\post_journal_entries\\creds.json'
 
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
@@ -21,7 +21,7 @@ time.sleep(2)
 print("Comment: Importing modules and setting up variables...Done.")
 
 
-row = 2
+row = 24
 
 while googleSheetJournalEntries.cell(row, 1).value:
 
@@ -81,6 +81,8 @@ while googleSheetJournalEntries.cell(row, 1).value:
             break
 
 
+
+    row = row + 1
 
 
 
