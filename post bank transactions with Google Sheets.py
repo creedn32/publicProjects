@@ -1,25 +1,26 @@
 print("Comment: Importing modules and setting up variables...")
 
-#Things to do:
+#Things to do:USB SWEEP
 #
 ##Check if modules are already imported
+##Listen for mouse click release
 
 
 import sys
-sys.path.append('..')
+sys.path.append("..")
 
 import gspread, pyautogui, datetime, creed_modules.creed_toolpack, pynput.mouse
 from oauth2client.service_account import ServiceAccountCredentials
 
 
 pyautogui.PAUSE = 0
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive']
-credentialsPath = 'C:\\Users\\cnaylor\\Desktop\\Portable Procedures\\repos\\private_data\\post_journal_entries\\creds.json'
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
+credentialsPath = "C:\\Users\\cnaylor\\Desktop\\Portable Procedures\\repos\\private_data\\post_journal_entries\\creds.json"
 
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
 googleSheetApp = gspread.authorize(credentials)
-googleSheetJournalEntries = googleSheetApp.open('Journal Entries To Post').worksheet('Bank Transfers')
+googleSheetBankTransactions = googleSheetApp.open("Journal Entries To Post").worksheet("Bank Transactions")
 
 
 def functionOnClick(x, y, button, pressed):
@@ -30,57 +31,101 @@ def functionOnClick(x, y, button, pressed):
 print("Comment: Importing modules and setting up variables...Done.")
 
 
+# with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
+#     print("Click on 'Maximize' to prepare window for posting...")
+#     listenerObj.join()
+#
+# time.sleep(1)
+
+
+
 with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
     print("Click on 'Clear' to begin posting...")
     listenerObj.join()
 
 
+row = 2
 
-row = 24
-
-while googleSheetJournalEntries.cell(row, 1).value:
+while googleSheetBankTransactions.cell(row, 1).value:
 
     print("Row " + str(row) + " will be populated into the Great Plains entry window.")
 
-    creed_modules.creed_toolpack.repetitiveKeyPress(2, 'tab')
 
-    for col in range(1, 6):
+    for col in range(1, 10):
 
         numberTabs = 1
-        string = googleSheetJournalEntries.cell(row, col).value
+        string = googleSheetBankTransactions.cell(row, col).value
 
         if col == 1:
-            dateObj = datetime.datetime.strptime(googleSheetJournalEntries.cell(row, col).value, '%m/%d/%Y')
-            #print(dateObj.strftime('%m').lstrip('0'))
-            #print(dateObj.strftime('%m'))
-            #print(dateObj.strftime('%d').lstrip('0'))
-            #print(dateObj.strftime('%d'))
-            #print(dateObj.strftime('%Y'))
+            pass
+        #     if googleSheetBankTransactions.cell(row, col).value == "Enter Transaction":
+        #         pyautogui.press(["down", "up", "up", "up"])
+        #     elif googleSheetBankTransactions.cell(row, col).value == "Enter Receipt":
+        #         pyautogui.press(["down", "up", "up", "up", "down"])
 
-            string = dateObj.strftime('%m%d%Y')
+        elif col == 2:
+            pass
+        #     if googleSheetBankTransactions.cell(row, col).value == "Check":
+        #         pyautogui.press(["down", "up", "up", "up"])
+        #     if googleSheetBankTransactions.cell(row, col).value == "Cash":
+        #         pyautogui.press(["down", "up", "up", "up", "down"])
+        #     if googleSheetBankTransactions.cell(row, col).value == "Increase Adjustment":
+        #         pyautogui.press(["down", "up", "up", "up", "down", "down"])
+        #     if googleSheetBankTransactions.cell(row, col).value == "Decrease Adjustment":
+        #         debitFirst = False
+
+        #         print("here")
+        #         # pyautogui.PAUSE = 1
+        #         time.sleep(1)
+        #         pyautogui.press('down')
+        #
+        #
+        #
+        #         time.sleep(20)
+        #         pyautogui.press(["down", "up", "up", "up", "down", "down", "down"])
+
 
         elif col == 3:
-            numberTabs = 2
+            dateObj = datetime.datetime.strptime(googleSheetBankTransactions.cell(row, col).value, "%m/%d/%Y")
+            string = dateObj.strftime("%m%d%Y")
 
         elif col == 4:
-            string = googleSheetJournalEntries.cell(row, col).value.lstrip('$').replace('.', '').replace(',', '')
+            numberTabs = 2
+
+        elif col == 7:
+            numberTabs = 6
+
+            # if googleSheetBankTransactions.cell(row, 1).value == "Enter Transaction":
+            #     if googleSheetBankTransactions.cell(row, 2).value in ["Check", "Decrease Adjustment"]:
+            #         numberTabs = 6
+
+        elif col == 8:
+            string = googleSheetBankTransactions.cell(row, col).value.replace("-","")
 
 
-        for letter in string:
-
-            if ord(letter) in (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(range(40, 44)) + list(range(33, 39))):
-
-                pyautogui.PAUSE = .0000000000001
-                pyautogui.keyDown('shift')
-                pyautogui.press(letter)
-                pyautogui.keyUp('shift')
-                pyautogui.PAUSE = 0
-
-            else:
-                pyautogui.press(letter)
+        if col in [7, 9]:
+            string = googleSheetBankTransactions.cell(row, col).value.lstrip("$").replace(".", "").replace(",", "")
 
 
-        creed_modules.creed_toolpack.repetitiveKeyPress(numberTabs, 'tab')
+
+        if col not in [1, 2]:
+
+            for letter in string:
+
+                if ord(letter) in (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
+                        range(40, 44)) + list(range(33, 39))):
+
+                    pyautogui.PAUSE = .0000000000001
+                    pyautogui.keyDown("shift")
+                    pyautogui.press(letter)
+                    pyautogui.keyUp("shift")
+                    pyautogui.PAUSE = 0
+
+                else:
+                    pyautogui.press(letter)
+
+
+        creed_modules.creed_toolpack.repetitiveKeyPress(numberTabs, "tab")
 
 
     with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
