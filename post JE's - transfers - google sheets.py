@@ -1,6 +1,13 @@
+#check if modules are already imported
+
+
+
 print("Comment: Importing modules and setting up variables...")
 
-import gspread, pyautogui, datetime, win32api, time
+import sys
+sys.path.append('..')
+
+import gspread, pyautogui, datetime, win32api, time, creed_modules.creed_toolpack
 from oauth2client.service_account import ServiceAccountCredentials
 
 
@@ -11,14 +18,11 @@ credentialsPath = 'C:\\Users\\cnaylor\\Desktop\\Portable Procedures\\repos\\priv
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
 googleSheetApp = gspread.authorize(credentials)
-googleSheetJournalEntries = googleSheetApp.open('Journal Entries To Post').worksheet('Transfer Entries')
+googleSheetJournalEntries = googleSheetApp.open('Journal Entries To Post').worksheet('Bank Transfers')
 
-def repetitiveKeyPress(numberOfTabs, keyToPress):
-    for i in range(0, numberOfTabs):
-        pyautogui.press(keyToPress)
+print("Comment: Importing modules and setting up variables...Done.")
 
 time.sleep(2)
-print("Comment: Importing modules and setting up variables...Done.")
 
 
 row = 24
@@ -27,7 +31,7 @@ while googleSheetJournalEntries.cell(row, 1).value:
 
     print("Row " + str(row) + " will be entered.")
 
-    repetitiveKeyPress(2, 'tab')
+    creed_modules.creed_toolpack.repetitiveKeyPress(2, 'tab')
 
     for col in range(1, 6):
 
@@ -51,25 +55,23 @@ while googleSheetJournalEntries.cell(row, 1).value:
             string = googleSheetJournalEntries.cell(row, col).value.lstrip('$').replace('.', '').replace(',', '')
 
 
-        # print(string)
-
-
         for letter in string:
 
             if ord(letter) in (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(range(40, 44)) + list(range(33, 39))):
 
                 pyautogui.PAUSE = .0000000000001
-                pyautogui.keyDown("shift")
+                pyautogui.keyDown('shift')
                 pyautogui.press(letter)
-                pyautogui.keyUp("shift")
+                pyautogui.keyUp('shift')
                 pyautogui.PAUSE = 0
 
             else:
                 pyautogui.press(letter)
 
 
-        repetitiveKeyPress(numberTabs, 'tab')
+        creed_modules.creed_toolpack.repetitiveKeyPress(numberTabs, 'tab')
 
+    print("Waiting for left button click...")
 
     while True:
 
@@ -77,9 +79,7 @@ while googleSheetJournalEntries.cell(row, 1).value:
 
         if keyPressed in [-127, -128]:
             print("left button clicked: " + str(keyPressed))
-            time.sleep(.25)
             break
-
 
 
     row = row + 1
