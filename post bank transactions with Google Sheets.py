@@ -19,7 +19,6 @@ scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\creds.json"))
 
 
-
 credentials = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
 googleSheetApp = gspread.authorize(credentials)
 googleSheetBankTransactions = googleSheetApp.open("Journal Entries To Post").worksheet("Bank Transactions")
