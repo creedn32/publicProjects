@@ -5,6 +5,7 @@ print("Comment: Importing modules and setting up variables...")
 ##Check if modules are already imported
 
 
+
 import sys
 sys.path.append("..")
 
@@ -21,7 +22,7 @@ credentialsPath = "C:\\Users\\creed\\Box Sync\\Developer\\PortableGit\\repos\\pr
 credentials = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
 googleSheetApp = gspread.authorize(credentials)
 # googleSheetBankTransfers = googleSheetApp.open("Journal Entries To Post").worksheet("Bank Transfers")
-googleSheetBankTransfers = googleSheetApp.open("Journal Entries To Post").sheet1
+googleSheetBankTransfers = googleSheetApp.open("Journal Entries To Post - Public").worksheet("Transfers")
 
 
 
