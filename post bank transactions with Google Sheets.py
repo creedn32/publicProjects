@@ -37,7 +37,6 @@ if win32api.GetKeyState(win32con.VK_NUMLOCK) == 1:
 print("Comment: Importing modules and setting up variables...Done.")
 
 
-
 with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
     print("Click on 'Clear' to begin posting...")
     listenerObj.join()
