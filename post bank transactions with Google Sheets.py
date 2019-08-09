@@ -12,15 +12,20 @@ sys.path.append("..")
 import gspread, pyautogui, datetime, creed_modules.creed_toolpack, pynput.mouse, win32api, win32con
 from oauth2client.service_account import ServiceAccountCredentials
 
+
 numLockChanged = False
 pyautogui.PAUSE = 0
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
+# credentialsPath = "C:\\Users\\creed\\Box Sync\\Developer\\PortableGit\\repos\\private_data\\post_journal_entries\\creds.json"
 credentialsPath = "C:\\Users\\cnaylor\\Desktop\\Portable Procedures\\repos\\private_data\\post_journal_entries\\creds.json"
+
+
 
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
 googleSheetApp = gspread.authorize(credentials)
 googleSheetBankTransactions = googleSheetApp.open("Journal Entries To Post").worksheet("Bank Transactions")
+# googleSheetBankTransactions = googleSheetApp.open("Journal Entries To Post - Public").worksheet("Transactions")
 
 
 def functionOnClick(x, y, button, pressed):
@@ -34,12 +39,6 @@ if win32api.GetKeyState(win32con.VK_NUMLOCK) == 1:
 
 print("Comment: Importing modules and setting up variables...Done.")
 
-
-# with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
-#     print("Click on 'Maximize' to prepare window for posting...")
-#     listenerObj.join()
-#
-# time.sleep(1)
 
 
 
@@ -101,6 +100,10 @@ while googleSheetBankTransactions.cell(row, 1).value:
 
 
         if col in [7, 9]:
+
+            if len(string.split(".")) == 1:
+                string = string + "00"
+
             string = string.lstrip("$").replace(".", "").replace(",", "")
 
 
