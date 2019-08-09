@@ -3,6 +3,8 @@ print("Comment: Importing modules and setting up variables...")
 #Things to do:
 #
 ##Check if modules are already imported
+##relative path for credentials
+
 
 
 
@@ -15,7 +17,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 pyautogui.PAUSE = 0
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-credentialsPath = "C:\\Users\\creed\\Box Sync\\Developer\\PortableGit\\repos\\private_data\\post_journal_entries2\\creds.json"
+# credentialsPath = "C:\\Users\\creed\\Box Sync\\Developer\\PortableGit\\repos\\private_data\\post_journal_entries\\creds.json"
+credentialsPath = "C:\\Users\\cnaylor\\Desktop\\Portable Procedures\\repos\\private_data\\post_journal_entries\\creds.json"
 
 
 
@@ -67,6 +70,10 @@ while googleSheetBankTransfers.cell(row, 1).value:
             numberTabs = 2
 
         elif col == 4:
+
+            if len(string.split(".")) == 1:
+                string = string + "00"
+
             string = string.lstrip("$").replace(".", "").replace(",", "")
 
 
