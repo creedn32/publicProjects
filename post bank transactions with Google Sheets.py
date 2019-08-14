@@ -9,7 +9,7 @@ print("Comment: Importing modules and setting up variables...")
 import sys
 sys.path.append("..")
 
-import gspread, pyautogui, datetime, creed_modules.creed_toolpack, pynput.mouse, win32api, win32con, os
+import gspread, pyautogui, datetime, creed_modules.creed_toolpack, pynput.mouse, win32api, win32con, os, time
 from oauth2client.service_account import ServiceAccountCredentials
 
 
@@ -19,9 +19,10 @@ scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\creds.json"))
 
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
-googleSheetApp = gspread.authorize(credentials)
-googleSheetBankTransactions = googleSheetApp.open("Journal Entries To Post").worksheet("Bank Transactions")
+credentialsObj = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
+googleSheetApp = gspread.authorize(credentialsObj)
+# googleSheetBankTransactions = googleSheetApp.open("Journal Entries To Post").worksheet("Bank Transactions")
+googleSheetBankTransactions = googleSheetApp.open("Journal Entries To Post").worksheet("Bank Transactions - Recurring")
 # googleSheetBankTransactions = googleSheetApp.open("Journal Entries To Post - Public").worksheet("Transactions")
 
 
@@ -42,7 +43,7 @@ with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
     listenerObj.join()
 
 
-row = 2
+row = 9
 
 while googleSheetBankTransactions.cell(row, 1).value:
 
@@ -126,7 +127,7 @@ while googleSheetBankTransactions.cell(row, 1).value:
         print("'Post' or 'Clear' this entry to continue...")
         listenerObj.join()
 
-
+    time.sleep(1)
     row = row + 1
 
 
