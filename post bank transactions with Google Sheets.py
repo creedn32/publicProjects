@@ -30,6 +30,7 @@ def functionOnClick(x, y, button, pressed):
     print("Mouse clicked at {0}, {1} with {2} and pressed is {3}".format(x, y, button, pressed))
     listenerObj.stop()
 
+
 if win32api.GetKeyState(win32con.VK_NUMLOCK) == 1:
     pyautogui.press("numlock")
     numLockChanged = True
