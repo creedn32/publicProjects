@@ -10,10 +10,10 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 # If modifying these scopes, delete the file token.pickle.
-googleScopes = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # The ID and range of the spreadsheet.
-spreadsheetID = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
+spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
 rangeName = "Transfers"
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleToken.pickle"))
@@ -50,8 +50,8 @@ def main():
     serviceObj = build("sheets", "v4", credentials=credentialsObj)
 
     # Call the Sheets API
-    googleSheet = serviceObj.spreadsheets()
-    result = googleSheet.values().get(spreadsheetId=spreadsheetID, range=rangeName).execute()
+    googleSheetsObj = serviceObj.spreadsheets()
+    result = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range=rangeName).execute()
     googleSheetCells = result.get("values", [])
 
 
@@ -61,12 +61,37 @@ def main():
 
         # creed_modules.creed_toolpack.repetitiveKeyPress(2, "tab")
 
-        for col in range(0, 5):
-            numberTabs = 1
-            string = googleSheetCells[row][col]
-            print(string)
+        # for col in range(0, 5):
+        #     numberTabs = 1
+        #     string = googleSheetCells[row][col]
+        #     print(string)
 
 
+    requestDictionary = {"requests": [
+        {"updateSheetProperties": []
+         }
+    ]}
+
+
+    requests = []
+    # Change the spreadsheet's title.
+    requests.append({
+        'updateSpreadsheetProperties': {
+            'properties': {
+                'title': "this title is new"
+            },
+            'fields': 'title'
+        }
+    })
+
+    body = {
+        'requests': requests
+    }
+
+
+    print(body)
+
+    # serviceObj.spreadsheets().batchUpdate(spreadsheetID=spreadsheetIDStr, body=body).execute()
 
 
 
