@@ -1,7 +1,8 @@
 import sys
 sys.path.append("..")
 from pprint import pprint
-import pyautogui, datetime, creed_modules.creed_toolpack, pynput.mouse
+from creed_modules import creed_toolpack
+import pyautogui, datetime, pynput.mouse
 
 # from __future__ import print_function
 import pickle
@@ -16,6 +17,7 @@ googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleToken.pickle"))
+
 
 def main():
 
@@ -50,20 +52,32 @@ def main():
     for sheet in googleSheetsMetaData:
         googleSheetsDictionary[sheet["properties"]["title"]] = sheet
 
+    googleSheetBankTransactions = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range="Transactions").execute()["values"]
 
-    cellValues = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range="Transactions").execute()
-    pprint(cellValues["values"])
+    for row in googleSheetBankTransactions:
+        row.insert(0, "Blank Space")
+
+        googleSheetBankTransactions.insert(0, ["Blank Space"])
+
+    #
+    # for row in range(1, len(googleSheetBankTransactions)):
+    #     print("Row " + str(row) + " will be populated into the Great Plains entry window.")
+        # optionVar = googleSheetBankTransactions[row][1]
+        # typeVar = googleSheetBankTransactions[row][2]
+        # print(optionVar)
+        # print(typeVar)
 
 
 
-    # result = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range=rangeName).execute()
+    # print(creed_toolpack.returnCellValue(1, 2, cellValues))
 
-    # googleSheetCells = result.get("values", [])
+
+
 
 
     # for row in range(1, len(googleSheetCells)):
     #
-    #     print("Row " + str(row) + " will be populated into the Great Plains entry window.")
+    #
 
         # creed_modules.creed_toolpack.repetitiveKeyPress(2, "tab")
 
