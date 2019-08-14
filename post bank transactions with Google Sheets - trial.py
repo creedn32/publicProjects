@@ -1,5 +1,6 @@
 import sys
 sys.path.append("..")
+from pprint import pprint
 import pyautogui, datetime, creed_modules.creed_toolpack, pynput.mouse
 
 # from __future__ import print_function
@@ -13,7 +14,6 @@ from google.auth.transport.requests import Request
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 
 spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
-rangeName = "Transfers"
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleToken.pickle"))
 
@@ -43,17 +43,27 @@ def main():
             pickle.dump(credentialsObj, tokenObj)
 
     serviceObj = build("sheets", "v4", credentials=credentialsObj)
-
-    # Call the Sheets API
-
     googleSheetsObj = serviceObj.spreadsheets()
-    result = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range=rangeName).execute()
-    googleSheetCells = result.get("values", [])
+    googleSheetsMetaData = googleSheetsObj.get(spreadsheetId=spreadsheetIDStr).execute()["sheets"]
+    googleSheetsDictionary = {}
+
+    for sheet in googleSheetsMetaData:
+        googleSheetsDictionary[sheet["properties"]["title"]] = sheet
 
 
-    for row in range(1, len(googleSheetCells)):
+    cellValues = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range="Transactions").execute()
+    pprint(cellValues["values"])
 
-        print("Row " + str(row) + " will be populated into the Great Plains entry window.")
+
+
+    # result = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range=rangeName).execute()
+
+    # googleSheetCells = result.get("values", [])
+
+
+    # for row in range(1, len(googleSheetCells)):
+    #
+    #     print("Row " + str(row) + " will be populated into the Great Plains entry window.")
 
         # creed_modules.creed_toolpack.repetitiveKeyPress(2, "tab")
 
@@ -79,7 +89,7 @@ def main():
     requestDictionary["requests"][0]["repeatCell"]["range"] = {}
     print(requestDictionary)
 
-    requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = 0
+    requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = googleSheetsDictionary["Transactions"]["properties"]["sheetId"]
     # requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
     requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 1
     print(requestDictionary)
@@ -94,8 +104,8 @@ def main():
     print(requestDictionary)
 
     requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["red"] = 1.0
-    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 0.0
-    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 0.0
+    requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 1.0
+    requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 1.0
     print(requestDictionary)
 
     requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
