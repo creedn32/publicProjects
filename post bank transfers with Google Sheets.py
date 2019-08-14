@@ -6,7 +6,6 @@ print("Comment: Importing modules and setting up variables...")
 
 
 
-
 import sys
 sys.path.append("..")
 
@@ -16,8 +15,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 pyautogui.PAUSE = 0
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-# credentialsPath = "C:\\Users\\creed\\Box Sync\\Developer\\PortableGit\\repos\\private_data\\post_journal_entries\\creds.json"
-credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\creds.json"))
+# credentialsPath = "C:\\Users\\creed\\Box Sync\\Developer\\PortableGit\\repos\\private_data\\post_journal_entries\\myCredentials.json"
+credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\myCredentials.json"))
 
 
 
