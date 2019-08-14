@@ -27,9 +27,6 @@ def main():
     # created automatically when the authorization flow completes for the first
     # time.
 
-    print(credentialsPath)
-    print(tokenPath)
-
 
     if os.path.exists(tokenPath):
         with open(tokenPath, 'rb') as tokenObj:

@@ -16,7 +16,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 numLockChanged = False
 pyautogui.PAUSE = 0
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\creds.json"))
+credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\myCredentials.json"))
 
 
 credentialsObj = ServiceAccountCredentials.from_json_keyfile_name(credentialsPath, scope)
