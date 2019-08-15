@@ -18,6 +18,15 @@ def repetitiveKeyPress(numberOfTabs, keyToPress):
         pyautogui.press(keyToPress)
 
 
+def functionOnClick(x, y, button, pressed):
+    if not pressed:
+        print("Mouse {2} was {0} at {1}.".format("pressed" if pressed else "released", (x, y), button))
+        return False
+
+
+
+
+
 # def returnCellValue(row, column, array):
 #     value = array[row - 1][column - 1]
 #     return value
