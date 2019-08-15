@@ -2,15 +2,13 @@ print("Comment: Importing modules and setting up variables...")
 
 import sys
 sys.path.append("..")
+
 from pprint import pprint
 from creed_modules import creed_toolpack
-import pyautogui, datetime, pynput.mouse, win32api, win32con, time
+import pyautogui, datetime, pynput.mouse, win32api, time, win32con
 
-import pickle
-import os.path
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
+import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
+
 
 
 def functionOnClick(x, y, button, pressed):
@@ -42,9 +40,9 @@ if os.path.exists(tokenPath):
 
 if not credentialsObj or not credentialsObj.valid:
     if credentialsObj and credentialsObj.expired and credentialsObj.refresh_token:
-        credentialsObj.refresh(Request())
+        credentialsObj.refresh(google.auth.transport.requests.Request())
     else:
-        flowObj = InstalledAppFlow.from_client_secrets_file(credentialsPath, googleScopes)
+        flowObj = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(credentialsPath, googleScopes)
         credentialsObj = flowObj.run_local_server(port=0)
     # Save the credentials for the next run
     with open(tokenPath, "wb") as tokenObj:
@@ -52,11 +50,11 @@ if not credentialsObj or not credentialsObj.valid:
 
 
 
-googleSheetsObj = build("sheets", "v4", credentials=credentialsObj).spreadsheets()
+googleSheetsObj = googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
 googleSheetsData = googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
 googleSheetsDictionary = {}
 
-# print(str(googleSheetsMetaData).replace("'", "\""))
+# print(str(googleSheetsData).replace("'", "\""))
 
 
 
