@@ -121,7 +121,9 @@ for sheet in googleSheetsData["sheets"]:
                 except KeyError:
                     cellColorTotal = 3
 
-                if cellColorTotal == 3:
+                if cellColorTotal == 3 and googleSheetValues[rowCount - 1][0] != "Enter/Edit":
+
+
                     # print("First cell in this row is white")
 
                     time.sleep(2)
