@@ -126,7 +126,7 @@ for sheet in googleSheetsData["sheets"]:
 
                     # print("First cell in this row is white")
 
-                    time.sleep(2)
+                    time.sleep(1)
 
                     # row = y + 1
                     print("Row " + str(rowCount) + " will be populated into the Great Plains entry window.")
@@ -225,6 +225,7 @@ for sheet in googleSheetsData["sheets"]:
 
 if numLockChanged:
     pyautogui.press("numlock")
+
 
 
 
