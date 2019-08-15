@@ -1,4 +1,4 @@
-import pyautogui
+
 
 def convertNothingToEmptyStr(s):
     if s:
@@ -14,6 +14,8 @@ def convertSingleSpaceToZero(s):
         return s
 
 def repetitiveKeyPress(numberOfTabs, keyToPress):
+    import pyautogui
+
     for i in range(0, numberOfTabs):
         pyautogui.press(keyToPress)
 
@@ -24,6 +26,13 @@ def functionOnClick(x, y, button, pressed):
         return False
 
 
+#
+# def emptyCell(f):
+#     if f:
+#         return float(f)
+#     else:
+#         return 0
+
 
 
 
@@ -33,8 +42,3 @@ def functionOnClick(x, y, button, pressed):
 
 
 
-##def emptyCell(f):
-##    if f:
-##        return float(f)
-##    else:
-##        return 0
