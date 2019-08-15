@@ -17,11 +17,15 @@ def functionOnClick(x, y, button, pressed):
 
 
 # If modifying these scopes, delete the file token.pickle.
-googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
+
+changeCellColor = False
 spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
+spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
 sheetName = "Transactions"
+sheetName = "Bank Transactions"
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleToken.pickle"))
+googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
 numLockChanged = False
 pyautogui.PAUSE = 0
@@ -97,122 +101,125 @@ with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
 
 for sheet in googleSheetsData["sheets"]:
 
-    if sheet["properties"]["title"] == "Transactions":
-
-        currentGoogleSheet = sheet["data"][0]["rowData"]
+    if sheet["properties"]["title"] == sheetName:
 
         rowCount = 1
 
-        for row in currentGoogleSheet:
+        for row in sheet["data"][0]["rowData"]:
 
-            if rowCount > 1:
+            print(rowCount)
 
-                print("row: " + str(rowCount))
-
-                try:
-                    cellColorTotal = row["values"][0]["userEnteredFormat"]["backgroundColor"]["red"] + row["values"][0]["userEnteredFormat"]["backgroundColor"]["green"] + row["values"][0]["userEnteredFormat"]["backgroundColor"]["blue"]
-                except KeyError:
-                    cellColorTotal = 3
-
-                if cellColorTotal == 3:
-                    # print("First cell in this row is white")
-
-                    time.sleep(1)
-
-                    # row = y + 1
-                    print("Row " + str(rowCount) + " will be populated into the Great Plains entry window.")
-
-
-                    optionVar = googleSheetBankTransactions[rowCount - 1][1 - 1]
-                    typeVar = googleSheetBankTransactions[rowCount - 1][2 - 1]
-
-                    for col in range(1, 10):
-
-                        numberTabs = 1
-                        string = googleSheetBankTransactions[rowCount - 1][col - 1]
-
-
-                        if col == 1:
-
-                            pyautogui.press(["down", "up", "up", "up"])
-
-                            if optionVar == "Enter Receipt":
-                                pyautogui.press("down")
-
-                        elif col == 2:
-
-                            pyautogui.press(["down", "up", "up", "up"])
-
-                            if typeVar == "Cash":
-                                pyautogui.press("down")
-                            elif typeVar == "Increase Adjustment":
-                                creed_toolpack.repetitiveKeyPress(2, "down")
-                            elif typeVar == "Decrease Adjustment":
-                                creed_toolpack.repetitiveKeyPress(3, "down")
-
-
-                        elif col == 3:
-                            dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
-                            string = dateObj.strftime("%m%d%Y")
-
-                        elif col == 4:
-                            numberTabs = 2
-
-                        elif col == 7:
-                            numberTabs = 6
-
-
-                        elif col == 8:
-                            string = string.replace("-", "")
-
-                            if optionVar != "Enter Transaction" or (optionVar == "Enter Transaction" and typeVar not in ["Check", "Decrease Adjustment"]):
-                                numberTabs = 2
-
-
-                        if col in [7, 9]:
-
-                            if len(string.split(".")) == 1:
-                                string = string + "00"
-
-                            string = string.lstrip("$").replace(".", "").replace(",", "")
-
-
-                        if col not in [1, 2]:
-
-                            for letter in string:
-
-                                if ord(letter) in (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
-                                        range(40, 44)) + list(range(33, 39))):
-
-                                    pyautogui.PAUSE = .0000000000001
-                                    pyautogui.keyDown("shift")
-                                    pyautogui.press(letter)
-                                    pyautogui.keyUp("shift")
-                                    pyautogui.PAUSE = 0
-
-                                else:
-                                    pyautogui.press(letter)
-
-
-                        creed_toolpack.repetitiveKeyPress(numberTabs, "tab")
-
-
-                    with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
-                        print("Click on 'Post' or 'Clear' to continue with this entry...")
-                        listenerObj.join()
-
-                    requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = rowCount - 1
-                    requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = rowCount
-
-                    googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestDictionary).execute()
-
-
-
+            # if rowCount > 1:
+            #
+            #     # print("row: " + str(rowCount))
+            #
+            #     try:
+            #         cellColorTotal = row["values"][0]["userEnteredFormat"]["backgroundColor"]["red"] + row["values"][0]["userEnteredFormat"]["backgroundColor"]["green"] + row["values"][0]["userEnteredFormat"]["backgroundColor"]["blue"]
+            #     except KeyError:
+            #         cellColorTotal = 3
+            #
+            #     if cellColorTotal == 3:
+            #         # print("First cell in this row is white")
+            #
+            #         time.sleep(1)
+            #
+            #         # row = y + 1
+            #         print("Row " + str(rowCount) + " will be populated into the Great Plains entry window.")
+            #
+            #
+            #         optionVar = googleSheetBankTransactions[rowCount - 1][1 - 1]
+            #         typeVar = googleSheetBankTransactions[rowCount - 1][2 - 1]
+            #
+            #         for col in range(1, 10):
+            #
+            #             numberTabs = 1
+            #             string = googleSheetBankTransactions[rowCount - 1][col - 1]
+            #
+            #
+            #             if col == 1:
+            #
+            #                 pyautogui.press(["down", "up", "up", "up"])
+            #
+            #                 if optionVar == "Enter Receipt":
+            #                     pyautogui.press("down")
+            #
+            #             elif col == 2:
+            #
+            #                 pyautogui.press(["down", "up", "up", "up"])
+            #
+            #                 if typeVar == "Cash":
+            #                     pyautogui.press("down")
+            #                 elif typeVar == "Increase Adjustment":
+            #                     creed_toolpack.repetitiveKeyPress(2, "down")
+            #                 elif typeVar == "Decrease Adjustment":
+            #                     creed_toolpack.repetitiveKeyPress(3, "down")
+            #
+            #
+            #             elif col == 3:
+            #                 dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
+            #                 string = dateObj.strftime("%m%d%Y")
+            #
+            #             elif col == 4:
+            #                 numberTabs = 2
+            #
+            #             elif col == 7:
+            #                 numberTabs = 6
+            #
+            #
+            #             elif col == 8:
+            #                 string = string.replace("-", "")
+            #
+            #                 if optionVar != "Enter Transaction" or (optionVar == "Enter Transaction" and typeVar not in ["Check", "Decrease Adjustment"]):
+            #                     numberTabs = 2
+            #
+            #
+            #             if col in [7, 9]:
+            #
+            #                 if len(string.split(".")) == 1:
+            #                     string = string + "00"
+            #
+            #                 string = string.lstrip("$").replace(".", "").replace(",", "")
+            #
+            #
+            #             if col not in [1, 2]:
+            #
+            #                 for letter in string:
+            #
+            #                     if ord(letter) in (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
+            #                             range(40, 44)) + list(range(33, 39))):
+            #
+            #                         pyautogui.PAUSE = .0000000000001
+            #                         pyautogui.keyDown("shift")
+            #                         pyautogui.press(letter)
+            #                         pyautogui.keyUp("shift")
+            #                         pyautogui.PAUSE = 0
+            #
+            #                     else:
+            #                         pyautogui.press(letter)
+            #
+            #
+            #             creed_toolpack.repetitiveKeyPress(numberTabs, "tab")
+            #
+            #
+            #         with pynput.mouse.Listener(on_click=functionOnClick) as listenerObj:
+            #             print("Click on 'Post' or 'Clear' to continue with this entry...")
+            #             listenerObj.join()
+            #
+            #         requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = rowCount - 1
+            #         requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = rowCount
+            #
+            #         if changeCellColor:
+            #             googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestDictionary).execute()
+            #
+            #
+            #
 
             rowCount = rowCount + 1
 
 
 
+if numLockChanged:
+    pyautogui.press("numlock")
 
 
 
