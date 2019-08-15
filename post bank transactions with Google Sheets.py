@@ -66,10 +66,10 @@ for sheet in googleSheetsData["sheets"]:
     # print(sheet["data"][0]["rowData"])
     # print(sheet)
 
-    if sheet["properties"]["title"] = "Transactions":
+    if sheet["properties"]["title"] == "Transactions":
 
-    for row in sheet["data"][0]["rowData"]:
-        print(row["values"])
+        for row in sheet["data"][0]["rowData"]:
+            print(row["values"])
 
     #     # for column in row["values"]:
     #     #     print(column)
