@@ -12,15 +12,15 @@ import pyautogui, datetime, pynput.mouse, win32api, win32con
 import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 
 
-
+#ID of public Google Sheet
+# spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
+#ID of private Google Sheet
+spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
 
 
 # If modifying these scopes, delete the file token.pickle.
 
 changeCellColor = False
-spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
-spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
-sheetName = "Transactions"
 sheetName = "Bank Transactions"
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleToken.pickle"))
@@ -125,10 +125,9 @@ for sheet in googleSheetsData["sheets"]:
 
 
                     # print("First cell in this row is white")
+                    # time.sleep(1)
 
-                    time.sleep(1)
 
-                    # row = y + 1
                     print("Row " + str(rowCount) + " will be populated into the Great Plains entry window.")
 
 
