@@ -22,8 +22,8 @@ spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
 
 changeCellColor = False
 sheetName = "Bank Transactions"
-credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleCredentials.json"))
-tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\post_journal_entries\\googleToken.pickle"))
+credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json"))
+tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
 numLockChanged = False
