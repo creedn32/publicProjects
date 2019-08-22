@@ -7,10 +7,10 @@ startTime = time.time()
 
 import sys
 sys.path.append("..")
+from creed_modules import creedFunctions
 
 
 # from pprint import pprint
-from creed_modules import creed_toolpack
 import pyautogui, datetime, pynput.mouse
 
 
