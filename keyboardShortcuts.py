@@ -7,7 +7,8 @@ from creed_modules import creedFunctions
 
 
 def functionComboDetected():
-    print("Combo detected")
+    pass
+    # print("Combo detected")
 
 
 def functionOnPress(key):
