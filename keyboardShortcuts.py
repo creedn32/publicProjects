@@ -8,6 +8,8 @@ def functionComboDetected():
 
 
 def functionOnPress(key):
+    global comboReleased
+
     # print("Key was pressed: " + str(key))
 
     if key in comboList:
@@ -16,19 +18,15 @@ def functionOnPress(key):
         currentList.append(key)
         print("currentSet is " + str(currentList))
 
-    if currentList == comboList:
+    if list(dict.fromkeys(currentList)) == comboList and comboReleased:
+        comboReleased = False
         functionComboDetected()
 
 
 def functionOnRelease(key):
     # print("Key was released: " + str(key))
     global capsLockReleaseCount
-
-    if key in comboList:
-        # print(str(key) + " is one of the combo keys")
-        currentList.pop()
-        print("currentSet is " + str(currentList))
-
+    global comboReleased
 
     if key == keyboard.Key.caps_lock:
 
@@ -39,14 +37,24 @@ def functionOnRelease(key):
         capsLockReleaseCount = capsLockReleaseCount + 1
 
 
+    if key in comboList:
+        # print(str(key) + " is one of the combo keys")
+        currentList[:] = [x for x in currentList if x != key]
+        # currentList.pop()
+        print("currentSet is " + str(currentList))
+
+    if len(currentList) == 0:
+        comboReleased = True
+        print("currentList is empty")
 
 
-
-
-comboList = [keyboard.Key.caps_lock, keyboard.KeyCode(char="s")]
+# comboList = [keyboard.Key.caps_lock, keyboard.KeyCode(char="s")]
+comboList = [keyboard.Key.ctrl_l, keyboard.KeyCode(char="s")]
 # currentSet = set()
 currentList = []
 capsLockReleaseCount = 0
+comboReleased = True
+
 
 
 if win32api.GetKeyState(win32con.VK_CAPITAL) == 1:
@@ -54,11 +62,8 @@ if win32api.GetKeyState(win32con.VK_CAPITAL) == 1:
 
 
 
-
-
 with keyboard.Listener(on_press=functionOnPress, on_release=functionOnRelease) as listenerObj:
     listenerObj.join()
-
 
 
 
