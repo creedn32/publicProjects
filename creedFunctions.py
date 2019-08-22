@@ -26,6 +26,13 @@ def functionOnClick(x, y, button, pressed):
         return False
 
 
+def pynputPressRel(controllerObj, keyToPress):
+    controllerObj.press(keyToPress)
+    controllerObj.release(keyToPress)
+
+
+
+
 #
 # def emptyCell(f):
 #     if f:
