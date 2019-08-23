@@ -24,18 +24,12 @@ def functionKeyPress(event):
 
 
 
-
 def functionKeyRelease(event):
   if event.Key in comboList:
     currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
 
   if len(currentPressedKeys) == 0:
     keyDownInfoObj.comboReleased = True
-
-
-  # if pyWinhook.GetKeyState(pyWinhook.HookConstants.VKeyToID('VK_CONTROL')) > 0 and pyWinhook.HookConstants.IDToName(
-  #         event.KeyID) == "S":
-  #   functionComboDetected()
 
 
   print(event.Key)
@@ -45,8 +39,6 @@ def functionKeyRelease(event):
     return False
   else:
     return True
-
-
 
 
 
@@ -61,24 +53,6 @@ def OnKeyboardEvent(event):
 
 
 
-  # print('MessageName: %s' % event.MessageName)
-  # print('Message: %s' % event.Message)
-  # print('Time: %s' % event.Time)
-  # print('Window: %s' % event.Window)
-  # print('WindowName: %s' % event.WindowName)
-  # print('Ascii: %s' % event.Ascii, chr(event.Ascii))
-  # print('Key: %s' % event.Key)
-  # print('KeyID: %s' % event.KeyID)
-  # print('ScanCode: %s' % event.ScanCode)
-  # print('Extended: %s' % event.Extended)
-  # print('Injected: %s' % event.Injected)
-  # print('Alt %s' % event.Alt)
-  # print('Transition %s' % event.Transition)
-  # print('---')
-
-
-  # return True to pass the event to other handlers
-  # return False to stop the event from propagating
 
 
 
@@ -92,7 +66,7 @@ class keyDownInfo():
 
 
 keyDownInfoObj = keyDownInfo(True)
-comboList = ["F13", "A"]
+comboList = ["S", "A"]
 currentPressedKeys = []
 
 
@@ -106,3 +80,27 @@ pythoncom.PumpMessages()
 
 
 
+
+
+
+
+
+
+# print('MessageName: %s' % event.MessageName)
+# print('Message: %s' % event.Message)
+# print('Time: %s' % event.Time)
+# print('Window: %s' % event.Window)
+# print('WindowName: %s' % event.WindowName)
+# print('Ascii: %s' % event.Ascii, chr(event.Ascii))
+# print('Key: %s' % event.Key)
+# print('KeyID: %s' % event.KeyID)
+# print('ScanCode: %s' % event.ScanCode)
+# print('Extended: %s' % event.Extended)
+# print('Injected: %s' % event.Injected)
+# print('Alt %s' % event.Alt)
+# print('Transition %s' % event.Transition)
+# print('---')
+
+
+# return True to pass the event to other handlers
+# return False to stop the event from propagating
