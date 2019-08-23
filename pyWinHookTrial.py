@@ -2,18 +2,16 @@ import pyWinhook
 import pythoncom
 
 
-
 def OnKeyboardEvent(event):
-  # print(event.KeyID)
 
-  # ctrl_pressed = pyHook.GetKeyState(pyHook.HookConstants.VKeyToID('VK_CONTROL') >> 15)
+  print(pyWinhook.GetKeyState(0x20))
+  
+  if pyWinhook.GetKeyState(0x41) > 0 and pyWinhook.HookConstants.IDToName(event.KeyID) == "S":
+    print("Combo detected")
 
-  # print(pyWinhook.GetKeyState(pyWinhook.HookConstants.VKeyToID('VK_CONTROL')))
 
-  print(pyWinhook.GetKeyState(pyWinhook.HookConstants.VKeyToID('VK_CONTROL')))
+  return True
 
-  if pyWinhook.HookConstants.IDToName(event.KeyID) == 'C':
-    print("c pressed")
 
 
 
@@ -34,14 +32,13 @@ def OnKeyboardEvent(event):
 
   # return True to pass the event to other handlers
   # return False to stop the event from propagating
-  return True
+
+
 
 
 hookManagerObj = pyWinhook.HookManager()
 hookManagerObj.KeyDown = OnKeyboardEvent
 hookManagerObj.HookKeyboard()
-
 pythoncom.PumpMessages()
-
 
 
