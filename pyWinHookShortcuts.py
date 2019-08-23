@@ -5,17 +5,15 @@ import pyautogui
 
 
 def functionComboDetected():
-    print("Combo detected")
-    keyDownInfoObj.autoKeyDown = "W"
-    pyautogui.press("w")
+    # print("Combo detected")
+    keyDownInfoObj.autoKeyDown = "Left"
+    pyautogui.press("Left".lower())
 
 
 def functionAutoKeyPress(event):
-
     # print("Key pressed down automatically: " + event.Key)
-    print(str(currentPressedKeys))
+    # print(str(currentPressedKeys))
     return True
-
 
 
 def functionKeyPress(event):
@@ -23,8 +21,8 @@ def functionKeyPress(event):
     if event.Key in comboList:
         currentPressedKeys.append(event.Key)
 
-    if list(dict.fromkeys(currentPressedKeys)) == comboList and keyDownInfoObj.comboReleased:
-        keyDownInfoObj.comboReleased = True
+    if list(dict.fromkeys(currentPressedKeys)) == comboList:
+        # keyDownInfoObj.comboReleased = True
         functionComboDetected()
 
     # print("Key pressed down: " + event.Key)
@@ -43,14 +41,17 @@ def functionKeyRelease(event):
     if event.Key in comboList:
         currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
 
-    if len(currentPressedKeys) == 0:
-        keyDownInfoObj.comboReleased = True
+    # if len(currentPressedKeys) == 0:
+    #     pass
+        # keyDownInfoObj.comboReleased = True
 
     if event.Key == keyDownInfoObj.autoKeyDown:
-        # print("Key released automaticaly: " + event.Key)
         keyDownInfoObj.autoKeyDown = None
-    else:
-        pass
+
+        # print("Key released automaticaly: " + event.Key)
+
+    # else:
+    #     pass
         # print("Key released: " + event.Key)
 
     print(str(currentPressedKeys))
@@ -88,7 +89,7 @@ class keyDownInfo():
 
 
 keyDownInfoObj = keyDownInfo(True, None)
-comboList = ["Capital", "J"]
+comboList = [["Capital", "J"], ["Capital", "K"], ["Capital", "U"], ["Capital", "M"]]
 currentPressedKeys = []
 # keyboardControllerObj = keyboard.Controller()
 
