@@ -1,22 +1,19 @@
 import pyWinhook
 import pythoncom
-# import pyautogui
-from pynput import keyboard
+import pyautogui
+# from pynput import keyboard
 
 
 def functionComboDetected():
     print("Combo detected")
-    keyDownInfoObj.autoKeyDown = keyboard.KeyCode(char="w")
-    # hookManagerObj.UnhookKeyboard()
-    keyboardControllerObj.press(keyboard.KeyCode(char="w"))
-    # hookManagerObj.HookKeyboard()
+    keyDownInfoObj.autoKeyDown = "W"
+    pyautogui.press("w")
 
 
 def functionAutoKeyPress(event):
 
-    print("Key pressed down automatically: " + event.Key)
-    # print(str(currentPressedKeys))
-
+    # print("Key pressed down automatically: " + event.Key)
+    print(str(currentPressedKeys))
     return True
 
 
@@ -27,11 +24,11 @@ def functionKeyPress(event):
         currentPressedKeys.append(event.Key)
 
     if list(dict.fromkeys(currentPressedKeys)) == comboList and keyDownInfoObj.comboReleased:
-        keyDownInfoObj.comboReleased = False
+        keyDownInfoObj.comboReleased = True
         functionComboDetected()
 
-    print("Key pressed down: " + event.Key)
-    # print(str(currentPressedKeys))
+    # print("Key pressed down: " + event.Key)
+    print(str(currentPressedKeys))
 
 
     if comboList[0] in currentPressedKeys:
@@ -43,21 +40,20 @@ def functionKeyPress(event):
 
 def functionKeyRelease(event):
 
-
-
     if event.Key in comboList:
         currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
 
     if len(currentPressedKeys) == 0:
         keyDownInfoObj.comboReleased = True
-        keyDownInfoObj.autoKeyDown = None
-
 
     if event.Key == keyDownInfoObj.autoKeyDown:
+        # print("Key released automaticaly: " + event.Key)
+        keyDownInfoObj.autoKeyDown = None
+    else:
         pass
+        # print("Key released: " + event.Key)
 
-    print("Key released: " + event.Key)
-    # print(str(currentPressedKeys))
+    print(str(currentPressedKeys))
 
     if comboList[0] in currentPressedKeys:
         return False
@@ -94,7 +90,7 @@ class keyDownInfo():
 keyDownInfoObj = keyDownInfo(True, None)
 comboList = ["Capital", "J"]
 currentPressedKeys = []
-keyboardControllerObj = keyboard.Controller()
+# keyboardControllerObj = keyboard.Controller()
 
 
 hookManagerObj = pyWinhook.HookManager()
