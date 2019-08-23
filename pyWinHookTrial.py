@@ -6,36 +6,58 @@ def functionComboDetected():
     print("Combo detected")
 
 
+def functionKeyPress(event):
+
+  if event.Key in comboList:
+    currentPressedKeys.append(event.Key)
+
+  if list(dict.fromkeys(currentPressedKeys)) == comboList and keyDownInfoObj.comboReleased:
+    keyDownInfoObj.comboReleased = False
+    functionComboDetected()
+
+  print(event.Key)
+
+  if comboList[0] in currentPressedKeys:
+    return False
+  else:
+    return True
+
+
+
+
+def functionKeyRelease(event):
+  if event.Key in comboList:
+    currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
+
+  if len(currentPressedKeys) == 0:
+    keyDownInfoObj.comboReleased = True
+
+
+  # if pyWinhook.GetKeyState(pyWinhook.HookConstants.VKeyToID('VK_CONTROL')) > 0 and pyWinhook.HookConstants.IDToName(
+  #         event.KeyID) == "S":
+  #   functionComboDetected()
+
+
+  print(event.Key)
+
+
+  if comboList[0] in currentPressedKeys:
+    return False
+  else:
+    return True
+
+
+
+
+
+
 def OnKeyboardEvent(event):
 
   if event.MessageName == "key down":
-    if event.Key in comboList:
-      currentPressedKeys.append(event.Key)
-
-    if list(dict.fromkeys(currentPressedKeys)) == comboList and keyDownInfoObj.comboReleased:
-        keyDownInfoObj.comboReleased = False
-        functionComboDetected()
-
-    if comboList[0] in currentPressedKeys:
-      keyDownInfoObj.turnOffKeys = True
-
+    return functionKeyPress(event)
 
   if event.MessageName == "key up":
-    if event.Key in comboList:
-      currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
-
-    if len(currentPressedKeys) == 0:
-      keyDownInfoObj.comboReleased = True
-
-  if pyWinhook.GetKeyState(pyWinhook.HookConstants.VKeyToID('VK_CONTROL')) > 0 and pyWinhook.HookConstants.IDToName(event.KeyID) == "S":
-    print("Combo detected")
-
-  if comboList[0] not in currentPressedKeys:
-    keyDownInfoObj.turnOffKeys = False
-
-
-
-  print(currentPressedKeys)
+    return functionKeyRelease(event)
 
 
 
@@ -58,23 +80,19 @@ def OnKeyboardEvent(event):
   # return True to pass the event to other handlers
   # return False to stop the event from propagating
 
-  if keyDownInfoObj.turnOffKeys:
-    return False
-  else:
-    return True
 
 
 
 
 class keyDownInfo():
-  def __init__(self, comboReleased, turnOffKeys):
+  def __init__(self, comboReleased):
     self.comboReleased = comboReleased
-    self.turnOffKeys = turnOffKeys
-
-keyDownInfoObj = keyDownInfo(True, False)
 
 
-comboList = ["A", "S"]
+
+
+keyDownInfoObj = keyDownInfo(True)
+comboList = ["F13", "A"]
 currentPressedKeys = []
 
 
@@ -83,6 +101,7 @@ hookManagerObj.KeyDown = OnKeyboardEvent
 hookManagerObj.KeyUp = OnKeyboardEvent
 hookManagerObj.HookKeyboard()
 pythoncom.PumpMessages()
+
 
 
 
