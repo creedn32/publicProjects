@@ -1,55 +1,80 @@
 import pyWinhook
 import pythoncom
+# import pyautogui
+from pynput import keyboard
 
 
 def functionComboDetected():
     print("Combo detected")
+    keyDownInfoObj.autoKeyDown = keyboard.KeyCode(char="w")
+    # hookManagerObj.UnhookKeyboard()
+    keyboardControllerObj.press(keyboard.KeyCode(char="w"))
+    # hookManagerObj.HookKeyboard()
+
+
+def functionAutoKeyPress(event):
+
+    print("Key pressed down automatically: " + event.Key)
+    # print(str(currentPressedKeys))
+
+    return True
+
 
 
 def functionKeyPress(event):
 
-  if event.Key in comboList:
-    currentPressedKeys.append(event.Key)
+    if event.Key in comboList:
+        currentPressedKeys.append(event.Key)
 
-  if list(dict.fromkeys(currentPressedKeys)) == comboList and keyDownInfoObj.comboReleased:
-    keyDownInfoObj.comboReleased = False
-    functionComboDetected()
+    if list(dict.fromkeys(currentPressedKeys)) == comboList and keyDownInfoObj.comboReleased:
+        keyDownInfoObj.comboReleased = False
+        functionComboDetected()
 
-  print(event.Key)
+    print("Key pressed down: " + event.Key)
+    # print(str(currentPressedKeys))
 
-  if comboList[0] in currentPressedKeys:
-    return False
-  else:
-    return True
+
+    if comboList[0] in currentPressedKeys:
+        return False
+    else:
+        return True
 
 
 
 def functionKeyRelease(event):
-  if event.Key in comboList:
-    currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
-
-  if len(currentPressedKeys) == 0:
-    keyDownInfoObj.comboReleased = True
 
 
-  print(event.Key)
+
+    if event.Key in comboList:
+        currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
+
+    if len(currentPressedKeys) == 0:
+        keyDownInfoObj.comboReleased = True
+        keyDownInfoObj.autoKeyDown = None
 
 
-  if comboList[0] in currentPressedKeys:
-    return False
-  else:
-    return True
+    if event.Key == keyDownInfoObj.autoKeyDown:
+        pass
+
+    print("Key released: " + event.Key)
+    # print(str(currentPressedKeys))
+
+    if comboList[0] in currentPressedKeys:
+        return False
+    else:
+        return True
 
 
 
 
 def OnKeyboardEvent(event):
 
-  if event.MessageName == "key down":
-    return functionKeyPress(event)
-
-  if event.MessageName == "key up":
-    return functionKeyRelease(event)
+    if event.MessageName == "key down" and keyDownInfoObj.autoKeyDown != None:
+        return functionAutoKeyPress(event)
+    elif event.MessageName == "key down":
+        return functionKeyPress(event)
+    elif event.MessageName == "key up":
+        return functionKeyRelease(event)
 
 
 
@@ -59,15 +84,17 @@ def OnKeyboardEvent(event):
 
 
 class keyDownInfo():
-  def __init__(self, comboReleased):
-    self.comboReleased = comboReleased
+    def __init__(self, comboReleased, autoKeyDown):
+        self.comboReleased = comboReleased
+        self.autoKeyDown = autoKeyDown
 
 
 
 
-keyDownInfoObj = keyDownInfo(True)
-comboList = ["S", "A"]
+keyDownInfoObj = keyDownInfo(True, None)
+comboList = ["Capital", "J"]
 currentPressedKeys = []
+keyboardControllerObj = keyboard.Controller()
 
 
 hookManagerObj = pyWinhook.HookManager()
@@ -75,6 +102,7 @@ hookManagerObj.KeyDown = OnKeyboardEvent
 hookManagerObj.KeyUp = OnKeyboardEvent
 hookManagerObj.HookKeyboard()
 pythoncom.PumpMessages()
+
 
 
 
