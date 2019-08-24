@@ -1,7 +1,5 @@
-import pyWinhook
-import pythoncom
-import pyautogui
-
+import pyWinhook, pythoncom, pyautogui
+import win32gui, win32process, psutil
 
 
 def functionComboDetected(output):
@@ -20,6 +18,19 @@ def functionKeyPress(event):
 
     # print(comboList)
     toReturn = True
+
+    if event.Key == "Tab":
+        win32guiObj = win32gui
+        win32guiObj.GetWindowText(win32guiObj.GetForegroundWindow())
+        processID = win32process.GetWindowThreadProcessId(win32guiObj.GetForegroundWindow())
+        # print(psutil.Process(processID[-1]))
+
+        if psutil.Process(processID[-1]).name() == "Executor.exe":
+            keyDownInfoObj.autoKeyDown = "Tab"
+            # pyautogui.press("right")
+            toReturn = True
+
+
 
     for combo in comboList:
 
