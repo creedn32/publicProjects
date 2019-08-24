@@ -6,6 +6,7 @@ def functionComboDetected(output):
     print("Combo detected")
 
     for outKey in output:
+        if outKey != "Alt":
         keyDownInfoObj.autoKeyDown = outKey #output[0].upper() + output[1:]
         pyautogui.press(outKey.lower())
 
@@ -137,7 +138,7 @@ comboList = [
                 {"inputKeys": ["F13", "U"], "outputKeys": ["Up"]},
                 {"inputKeys": ["Capital", "M"], "outputKeys": ["Down"]},
                 {"inputKeys": ["F13", "M"], "outputKeys": ["Down"]},
-                {"inputKeys": ["F13", "A"], "outputKeys": ["Down"]}
+                {"inputKeys": ["F13", "A"], "outputKeys": ["Space", "Space"]}
             ]
 
 
