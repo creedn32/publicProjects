@@ -49,8 +49,8 @@ def functionKeyPress(event):
             toReturn = False
 
 
-    print("Key pressed down: " + event.Key)
-    print("Allowed to send press to OS? " + str(toReturn))
+    # print("Key pressed down: " + event.Key)
+    # print("Allowed to send press to OS? " + str(toReturn))
     return toReturn
 
 
@@ -77,8 +77,8 @@ def functionKeyRelease(event):
         if combo["inputKeys"][0] in currentPressedKeys:
             toReturn = False
 
-    print("Key released: " + event.Key)
-    print("Allowed to send release to OS? " + str(toReturn))
+    # print("Key released: " + event.Key)
+    # print("Allowed to send release to OS? " + str(toReturn))
     return toReturn
 
 
@@ -119,11 +119,6 @@ comboList = [
                 {"inputKeys": ["F13", "M"], "outputKeys": "Down"}
             ]
 
-
-#
-# conditionallyRemappedKeys = [
-#                     {"inputKeys": ["Tab"], "outputKeys": "Right"},
-# ]
 
 
 currentPressedKeys = []
