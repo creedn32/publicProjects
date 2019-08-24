@@ -31,6 +31,19 @@ def pynputPressRel(controllerObj, keyToPress):
     controllerObj.release(keyToPress)
 
 
+def printPythonInfo(var):
+    from pprint import pprint
+
+    pprint("Printed: " + str(var))
+    pprint(var)
+
+    pprint("Printed help: " + str(var))
+    pprint(help(var))
+
+    pprint("Printed dir: " + str(var))
+    pprint(dir(var))
+
+
 
 
 #
