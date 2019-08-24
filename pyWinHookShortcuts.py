@@ -9,7 +9,7 @@ def functionComboDetected(output):
 
 
 def functionAutoKeyPress(event):
-    # print("Key pressed down automatically: " + event.Key)
+    print("Key pressed down automatically: " + event.Key)
     # print(str(currentPressedKeys))
     return True
 
@@ -26,9 +26,9 @@ def functionKeyPress(event):
         # print(psutil.Process(processID[-1]))
 
         if psutil.Process(processID[-1]).name() == "Executor.exe":
-            keyDownInfoObj.autoKeyDown = "Tab"
-            # pyautogui.press("right")
-            toReturn = True
+            keyDownInfoObj.notAllowedToRelease = "Tab"
+            pyautogui.press("right")
+            toReturn = False
 
 
 
@@ -44,12 +44,13 @@ def functionKeyPress(event):
         if list(dict.fromkeys(currentPressedKeys)) == combo["inputKeys"]:
             functionComboDetected(combo["outputKeys"])
 
-        # print("Key pressed down: " + event.Key)
-
 
         if combo["inputKeys"][0] in currentPressedKeys:
             toReturn = False
 
+
+    print("Key pressed down: " + event.Key)
+    print("Allowed to send press to OS? " + str(toReturn))
     return toReturn
 
 
@@ -60,6 +61,10 @@ def functionKeyRelease(event):
 
     if event.Key == keyDownInfoObj.autoKeyDown:
         keyDownInfoObj.autoKeyDown = None
+
+    if event.Key == keyDownInfoObj.notAllowedToRelease:
+        toReturn = False
+        keyDownInfoObj.notAllowedToRelease = None
 
 
     for combo in comboList:
@@ -72,6 +77,8 @@ def functionKeyRelease(event):
         if combo["inputKeys"][0] in currentPressedKeys:
             toReturn = False
 
+    print("Key released: " + event.Key)
+    print("Allowed to send release to OS? " + str(toReturn))
     return toReturn
 
 
@@ -92,15 +99,15 @@ def OnKeyboardEvent(event):
 
 
 
-
 class keyDownInfo():
-    def __init__(self, autoKeyDown):
+    def __init__(self, autoKeyDown, notAllowedToRelease):
         self.autoKeyDown = autoKeyDown
+        self.notAllowedToRelease = notAllowedToRelease
 
 
 
 
-keyDownInfoObj = keyDownInfo(None)
+keyDownInfoObj = keyDownInfo(None, None)
 comboList = [
                 {"inputKeys": ["Capital", "J"], "outputKeys": "Left"},
                 {"inputKeys": ["F13", "J"], "outputKeys": "Left"},
@@ -111,6 +118,12 @@ comboList = [
                 {"inputKeys": ["Capital", "M"], "outputKeys": "Down"},
                 {"inputKeys": ["F13", "M"], "outputKeys": "Down"}
             ]
+
+
+#
+# conditionallyRemappedKeys = [
+#                     {"inputKeys": ["Tab"], "outputKeys": "Right"},
+# ]
 
 
 currentPressedKeys = []
