@@ -92,14 +92,18 @@ class keyDownInfo():
 keyDownInfoObj = keyDownInfo(None)
 comboList = [
                 {"inputKeys": ["Capital", "J"], "outputKeys": "Left"},
+                {"inputKeys": ["F13", "J"], "outputKeys": "Left"},
                 {"inputKeys": ["Capital", "K"], "outputKeys": "Right"},
+                {"inputKeys": ["F13", "K"], "outputKeys": "Right"},
                 {"inputKeys": ["Capital", "U"], "outputKeys": "Up"},
-                {"inputKeys": ["Capital", "M"], "outputKeys": "Down"}
+                {"inputKeys": ["F13", "U"], "outputKeys": "Up"},
+                {"inputKeys": ["Capital", "M"], "outputKeys": "Down"},
+                {"inputKeys": ["F13", "M"], "outputKeys": "Down"}
             ]
 
 
 currentPressedKeys = []
-
+pyautogui.PAUSE = 0
 
 hookManagerObj = pyWinhook.HookManager()
 hookManagerObj.KeyDown = OnKeyboardEvent
