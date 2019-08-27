@@ -1,26 +1,27 @@
 import pyWinhook, pythoncom, pyautogui
-import win32gui, win32process, psutil
+import win32gui, win32process
+
+    # , psutil
 
 
 def functionComboDetected(output):
     print("Combo detected")
 
     for outKey in output:
-        if outKey != "Alt":
-            keyDownInfoObj.autoKeyDown = outKey #output[0].upper() + output[1:]
+        keyDownInfoObj.autoKeyDown = outKey #output[0].upper() + output[1:]
         pyautogui.press(outKey.lower())
 
 
 def functionAutoKeyPress(event):
     print("Key pressed down automatically: " + event.Key)
     # print(str(currentPressedKeys))
-    return 1
+    return True
 
 
 def functionKeyPress(event):
 
     # print(comboList)
-    toReturn = 1
+    toReturn = True
 
     if event.Key == "Tab":
         win32guiObj = win32gui
@@ -31,7 +32,7 @@ def functionKeyPress(event):
         if psutil.Process(processID[-1]).name() == "Executor.exe":
             keyDownInfoObj.notAllowedToRelease = "Tab"
             pyautogui.press("right")
-            toReturn = 0
+            toReturn = False
 
 
 
@@ -46,7 +47,7 @@ def functionKeyPress(event):
 
 
         if combo["inputKeys"][0] in currentPressedKeys:
-            toReturn = 0
+            toReturn = False
 
     print('MessageName: %s' % event.MessageName)
     print('Message: %s' % event.Message)
@@ -72,10 +73,10 @@ def functionKeyPress(event):
 
 def functionKeyRelease(event):
 
-    toReturn = 0
+    toReturn = False
 
     if event.Key == keyDownInfoObj.notAllowedToRelease:
-        toReturn = 0
+        toReturn = False
         keyDownInfoObj.notAllowedToRelease = None
 
 
@@ -87,7 +88,7 @@ def functionKeyRelease(event):
             currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
 
         if combo["inputKeys"][0] in currentPressedKeys:
-            toReturn = 0
+            toReturn = False
 
 
     if event.Key == keyDownInfoObj.autoKeyDown:
@@ -131,14 +132,14 @@ class keyDownInfo():
 keyDownInfoObj = keyDownInfo(None, None)
 comboList = [
                 {"inputKeys": ["Capital", "J"], "outputKeys": ["Left"]},
-                {"inputKeys": ["F13", "J"], "outputKeys": ["Left"]},
+                # {"inputKeys": ["F13", "J"], "outputKeys": ["Left"]},
                 {"inputKeys": ["Capital", "K"], "outputKeys": ["Right"]},
-                {"inputKeys": ["F13", "K"], "outputKeys": ["Right"]},
+                # {"inputKeys": ["F13", "K"], "outputKeys": ["Right"]},
                 {"inputKeys": ["Capital", "U"], "outputKeys": ["Up"]},
-                {"inputKeys": ["F13", "U"], "outputKeys": ["Up"]},
-                {"inputKeys": ["Capital", "M"], "outputKeys": ["Down"]},
-                {"inputKeys": ["F13", "M"], "outputKeys": ["Down"]},
-                {"inputKeys": ["F13", "A"], "outputKeys": ["Alt", "Space"]}
+                # {"inputKeys": ["F13", "U"], "outputKeys": ["Up"]},
+                {"inputKeys": ["Capital", "M"], "outputKeys": ["Down"]}
+                # {"inputKeys": ["F13", "M"], "outputKeys": ["Down"]}
+                # {"inputKeys": ["F13", "A"], "outputKeys": ["Alt", "Space"]}
             ]
 
 
