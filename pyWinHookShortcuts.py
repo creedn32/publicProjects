@@ -6,8 +6,15 @@ def functionComboDetected(output):
     # print("Combo detected")
 
     for outKey in output:
-        keyDownInfoObj.autoKeyDown = outKey #output[0].upper() + output[1:]
-        pyautogui.press(outKey.lower())
+        keyDownInfoObj.autoKeyDown = outKey
+        # keyDownInfoObj.autoKeyDown.append(outKey)
+        # print(1)
+        # print(keyDownInfoObj.autoKeyDown)
+        pyautogui.keyDown(outKey.lower())
+
+    for outKey in reversed(output):
+        pyautogui.keyUp(outKey.lower())
+
 
 
 def functionAutoKeyPress(event):
@@ -47,50 +54,60 @@ def functionKeyPress(event):
         if combo["inputKeys"][0] in currentPressedKeys:
             toReturn = False
 
-    print('MessageName: %s' % event.MessageName)
-    print('Message: %s' % event.Message)
-    print('Time: %s' % event.Time)
-    print('Window: %s' % event.Window)
-    print('WindowName: %s' % event.WindowName)
-    print('Ascii: %s' % event.Ascii, chr(event.Ascii))
-    print('Key: %s' % event.Key)
-    print('KeyID: %s' % event.KeyID)
-    print('ScanCode: %s' % event.ScanCode)
-    print('Extended: %s' % event.Extended)
-    print('Injected: %s' % event.Injected)
-    print('Alt %s' % event.Alt)
-    print('Transition %s' % event.Transition)
-    print('---')
+    # print('MessageName: %s' % event.MessageName)
+    # print('Message: %s' % event.Message)
+    # print('Time: %s' % event.Time)
+    # print('Window: %s' % event.Window)
+    # print('WindowName: %s' % event.WindowName)
+    # print('Ascii: %s' % event.Ascii, chr(event.Ascii))
+    # print('Key: %s' % event.Key)
+    # print('KeyID: %s' % event.KeyID)
+    # print('ScanCode: %s' % event.ScanCode)
+    # print('Extended: %s' % event.Extended)
+    # print('Injected: %s' % event.Injected)
+    # print('Alt %s' % event.Alt)
+    # print('Transition %s' % event.Transition)
+    # print('---')
 
     # print(str(currentPressedKeys))
     # print("Key pressed down: " + event.Key)
     # print("Allowed to send press to OS? " + str(toReturn))
+
     return toReturn
 
 
 
 def functionKeyRelease(event):
 
-    toReturn = False
+    toReturn = True
 
-    if event.Key == keyDownInfoObj.notAllowedToRelease:
-        toReturn = False
-        keyDownInfoObj.notAllowedToRelease = None
+    # if event.Key == keyDownInfoObj.notAllowedToRelease:
+    #     toReturn = False
+    #     keyDownInfoObj.notAllowedToRelease = None
+
 
 
     for combo in comboList:
 
         if event.Key in combo["inputKeys"]:
 
+            # if list(dict.fromkeys(currentPressedKeys)) == combo["inputKeys"] and combo["waitUntilRelease"]:
+            #     functionComboDetected(combo["outputKeys"], combo["waitUntilRelease"])
+
             #remove that key from currentPressedKeys
             currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
 
-        if combo["inputKeys"][0] in currentPressedKeys:
-            toReturn = False
+
+    if "Capital" in currentPressedKeys:
+        toReturn = False
+
+
 
 
     if event.Key == keyDownInfoObj.autoKeyDown:
         keyDownInfoObj.autoKeyDown = None
+
+        # keyDownInfoObj.autoKeyDown = [x for x in keyDownInfoObj.autoKeyDown if x != event.Key]
 
 
     # print(str(currentPressedKeys))
@@ -128,6 +145,7 @@ class keyDownInfo():
 
 
 keyDownInfoObj = keyDownInfo(None, None)
+
 comboList = [
                 {"inputKeys": ["Capital", "J"], "outputKeys": ["Left"]},
                 # {"inputKeys": ["F13", "J"], "outputKeys": ["Left"]},
@@ -135,11 +153,11 @@ comboList = [
                 # {"inputKeys": ["F13", "K"], "outputKeys": ["Right"]},
                 {"inputKeys": ["Capital", "U"], "outputKeys": ["Up"]},
                 # {"inputKeys": ["F13", "U"], "outputKeys": ["Up"]},
-                {"inputKeys": ["Capital", "M"], "outputKeys": ["Down"]}
+                {"inputKeys": ["Capital", "M"], "outputKeys": ["Down"]},
                 # {"inputKeys": ["F13", "M"], "outputKeys": ["Down"]}
                 # {"inputKeys": ["F13", "A"], "outputKeys": ["Alt", "Space"]}
+                {"inputKeys": ["Capital", "A"], "outputKeys": ["Space"]}
             ]
-
 
 
 currentPressedKeys = []
@@ -159,26 +177,18 @@ pythoncom.PumpMessages()
 
 
 
+
+
 # if len(currentPressedKeys) == 0:
         #     pass
 
-
-
-
-            # print("Key released automaticaly: " + event.Key)
+           # print("Key released automaticaly: " + event.Key)
 
         # else:
         #     pass
             # print("Key released: " + event.Key)
 
         # print(str(currentPressedKeys))
-
-
-
-
-
-
-
 
 # print('MessageName: %s' % event.MessageName)
 # print('Message: %s' % event.Message)
