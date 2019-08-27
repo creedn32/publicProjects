@@ -2,18 +2,25 @@ import pyWinhook, pythoncom, pyautogui
 # import win32gui, win32process, psutil
 
 
-def functionComboDetected(output):
+def functionComboDetected(outputCombo):
     # print("Combo detected")
 
-    for outKey in output:
-        keyDownInfoObj.autoKeyDown = outKey
+    for outKey in outputCombo:
+        keyDownInfoObj.autoKeyDown.append(outKey)
         # keyDownInfoObj.autoKeyDown.append(outKey)
         # print(1)
         # print(keyDownInfoObj.autoKeyDown)
         pyautogui.keyDown(outKey.lower())
 
-    for outKey in reversed(output):
+
+    for outKey in reversed(outputCombo):
         pyautogui.keyUp(outKey.lower())
+
+
+    # for outKey in output:
+    #     keyDownInfoObj.autoKeyDown.append(outKey)
+    #     pyautogui.press(outKey)
+
 
 
 
@@ -48,11 +55,12 @@ def functionKeyPress(event):
 
 
         if list(dict.fromkeys(currentPressedKeys)) == combo["inputKeys"]:
-            functionComboDetected(combo["outputKeys"])
+            functionComboDetected(combo["outputComboKeys"])
 
 
         if combo["inputKeys"][0] in currentPressedKeys:
             toReturn = False
+
 
     # print('MessageName: %s' % event.MessageName)
     # print('Message: %s' % event.Message)
@@ -102,10 +110,8 @@ def functionKeyRelease(event):
         toReturn = False
 
 
-
-
-    if event.Key == keyDownInfoObj.autoKeyDown:
-        keyDownInfoObj.autoKeyDown = None
+    if event.Key in keyDownInfoObj.autoKeyDown:
+        keyDownInfoObj.autoKeyDown[:] = [x for x in keyDownInfoObj.autoKeyDown if x != event.Key]
 
         # keyDownInfoObj.autoKeyDown = [x for x in keyDownInfoObj.autoKeyDown if x != event.Key]
 
@@ -120,7 +126,9 @@ def functionKeyRelease(event):
 
 def OnKeyboardEvent(event):
 
-    if event.MessageName == "key down" and keyDownInfoObj.autoKeyDown != None:
+    if event.MessageName == "key down" and event.Key in keyDownInfoObj.autoKeyDown:
+        print("event.Key: " + event.Key)
+        print("keyDownInfoObj.autoKeyDown: " + str(keyDownInfoObj.autoKeyDown))
         return functionAutoKeyPress(event)
     elif event.MessageName == "key down":
         return functionKeyPress(event)
@@ -144,19 +152,15 @@ class keyDownInfo():
 
 
 
-keyDownInfoObj = keyDownInfo(None, None)
+keyDownInfoObj = keyDownInfo([], None)
+
 
 comboList = [
-                {"inputKeys": ["Capital", "J"], "outputKeys": ["Left"]},
-                # {"inputKeys": ["F13", "J"], "outputKeys": ["Left"]},
-                {"inputKeys": ["Capital", "K"], "outputKeys": ["Right"]},
-                # {"inputKeys": ["F13", "K"], "outputKeys": ["Right"]},
-                {"inputKeys": ["Capital", "U"], "outputKeys": ["Up"]},
-                # {"inputKeys": ["F13", "U"], "outputKeys": ["Up"]},
-                {"inputKeys": ["Capital", "M"], "outputKeys": ["Down"]},
-                # {"inputKeys": ["F13", "M"], "outputKeys": ["Down"]}
-                # {"inputKeys": ["F13", "A"], "outputKeys": ["Alt", "Space"]}
-                {"inputKeys": ["Capital", "A"], "outputKeys": ["Space"]}
+                {"inputKeys": ["Capital", "J"], "outputComboKeys": ["Left"]},
+                {"inputKeys": ["Capital", "K"], "outputComboKeys": ["Right"]},
+                {"inputKeys": ["Capital", "U"], "outputComboKeys": ["Up"]},
+                {"inputKeys": ["Capital", "M"], "outputComboKeys": ["Down"]},
+                {"inputKeys": ["Capital", "A"], "outputComboKeys": ["Alt", "Space"], "outputKeys": ["A", "D"]}
             ]
 
 
