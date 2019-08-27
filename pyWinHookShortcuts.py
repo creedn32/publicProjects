@@ -1,11 +1,9 @@
 import pyWinhook, pythoncom, pyautogui
-import win32gui, win32process
-
-    # , psutil
+# import win32gui, win32process, psutil
 
 
 def functionComboDetected(output):
-    print("Combo detected")
+    # print("Combo detected")
 
     for outKey in output:
         keyDownInfoObj.autoKeyDown = outKey #output[0].upper() + output[1:]
@@ -13,7 +11,7 @@ def functionComboDetected(output):
 
 
 def functionAutoKeyPress(event):
-    print("Key pressed down automatically: " + event.Key)
+    # print("Key pressed down automatically: " + event.Key)
     # print(str(currentPressedKeys))
     return True
 
@@ -23,16 +21,16 @@ def functionKeyPress(event):
     # print(comboList)
     toReturn = True
 
-    if event.Key == "Tab":
-        win32guiObj = win32gui
-        win32guiObj.GetWindowText(win32guiObj.GetForegroundWindow())
-        processID = win32process.GetWindowThreadProcessId(win32guiObj.GetForegroundWindow())
-        # print(psutil.Process(processID[-1]))
-
-        if psutil.Process(processID[-1]).name() == "Executor.exe":
-            keyDownInfoObj.notAllowedToRelease = "Tab"
-            pyautogui.press("right")
-            toReturn = False
+    # if event.Key == "Tab":
+    #     win32guiObj = win32gui
+    #     win32guiObj.GetWindowText(win32guiObj.GetForegroundWindow())
+    #     processID = win32process.GetWindowThreadProcessId(win32guiObj.GetForegroundWindow())
+    #     # print(psutil.Process(processID[-1]))
+    #
+    #     if psutil.Process(processID[-1]).name() == "Executor.exe":
+    #         keyDownInfoObj.notAllowedToRelease = "Tab"
+    #         pyautogui.press("right")
+    #         toReturn = False
 
 
 
@@ -64,9 +62,9 @@ def functionKeyPress(event):
     print('Transition %s' % event.Transition)
     print('---')
 
-    print(str(currentPressedKeys))
-    print("Key pressed down: " + event.Key)
-    print("Allowed to send press to OS? " + str(toReturn))
+    # print(str(currentPressedKeys))
+    # print("Key pressed down: " + event.Key)
+    # print("Allowed to send press to OS? " + str(toReturn))
     return toReturn
 
 
@@ -95,9 +93,9 @@ def functionKeyRelease(event):
         keyDownInfoObj.autoKeyDown = None
 
 
-    print(str(currentPressedKeys))
-    print("Key released: " + event.Key)
-    print("Allowed to send release to OS? " + str(toReturn))
+    # print(str(currentPressedKeys))
+    # print("Key released: " + event.Key)
+    # print("Allowed to send release to OS? " + str(toReturn))
     return toReturn
 
 
@@ -112,7 +110,7 @@ def OnKeyboardEvent(event):
     elif event.MessageName == "key up":
         return functionKeyRelease(event)
     else:
-        return 1
+        return True
 
 
 
