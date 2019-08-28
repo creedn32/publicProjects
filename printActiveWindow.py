@@ -1,6 +1,38 @@
-import win32gui, win32con
-import pywinauto
-import time
+# import win32gui, win32con
+#
+# import time
+# import psutil
+
+
+import pywinauto, sys
+sys.path.append("..")
+from creed_modules import creedFunctions
+
+
+windowsExplorerApp = pywinauto.Application(backend="uia").connect(path="explorer.exe")
+systemTrayObj = windowsExplorerApp.window(class_name="Shell_TrayWnd")
+systemTrayObj.child_window(title="Executor").click()
+
+creedFunctions.printPythonInfo(systemTrayObj.child_window(title="Executor"))
+
+
+
+
+#
+# executorApp = pywinauto.Application().connect(path = r"C:\Users\cnaylor\Desktop\Portable Applications\Other\Executor64bit\Executor64bit\Executor.exe")
+#
+#
+# # for i in executorApp.windows():
+# #     print(i)
+#
+# executorWindow = executorApp["hwndwrapper.DialogWrapper - 'Executor', TApplication"]
+# executorWindow.Minimize()
+
+
+
+# for i in pywinauto.findwindows.find_windows():
+#     print(i)
+
 
 
 # , win32process, psutil
@@ -21,22 +53,22 @@ import time
 
 
 
-def enumHandler(hwnd, lParam):
-    if win32gui.GetWindowText(hwnd) == "Executor":
-        infoObj.windowToMaximize = hwnd
-        print(win32gui.GetWindowText(hwnd))
-        print(hwnd)
-        print(win32gui.IsWindowVisible(hwnd))
-
-
-
-
-class info():
-    def __init__(self, windowToMaximize):
-        self.windowToMaximize = windowToMaximize
-
-infoObj = info(None)
-win32gui.EnumWindows(enumHandler, None)
+# def enumHandler(hwnd, lParam):
+#     if win32gui.GetWindowText(hwnd) == "Executor":
+#         infoObj.windowToMaximize = hwnd
+#         print(win32gui.GetWindowText(hwnd))
+#         print(hwnd)
+#         print(win32gui.IsWindowVisible(hwnd))
+#
+#
+#
+#
+# class info():
+#     def __init__(self, windowToMaximize):
+#         self.windowToMaximize = windowToMaximize
+#
+# infoObj = info(None)
+# win32gui.EnumWindows(enumHandler, None)
 
 
 

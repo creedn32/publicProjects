@@ -1,4 +1,6 @@
 import pyWinhook, pythoncom, pyautogui
+
+
 # import win32gui, win32process, psutil
 
 
@@ -11,6 +13,23 @@ def functionComboDetected(outputCombo):
 
     for outKey in reversed(outputCombo):
         pyautogui.keyUp(outKey.lower())
+
+
+
+def functionOtherComboDetected(outputKeys):
+
+
+    # windowsExplorerApp = pywinauto.Application(backend="uia").connect(path="explorer.exe")
+    # systemTrayObj = windowsExplorerApp.window(class_name="Shell_TrayWnd")
+    # systemTrayObj.child_window(title="Executor").click()
+
+    # windowsExplorerApp = pywinauto.Application(backend="uia").connect(path="explorer.exe")
+    print(1)
+
+
+    # for outKey in outputKeys:
+    #     pyautogui.press(outKey.lower())
+
 
 
 
@@ -44,7 +63,10 @@ def functionKeyPress(event):
 
 
         if list(dict.fromkeys(currentPressedKeys)) == combo["inputKeys"]:
-            functionComboDetected(combo["outputComboKeys"])
+            if "outputComboKeys" in combo.keys():
+                functionComboDetected(combo["outputComboKeys"])
+            else:
+                functionOtherComboDetected(combo["outputKeys"])
 
 
         if combo["inputKeys"][0] in currentPressedKeys:
@@ -120,7 +142,7 @@ comboList = [
                 {"inputKeys": ["Capital", "K"], "outputComboKeys": ["Right"]},
                 {"inputKeys": ["Capital", "U"], "outputComboKeys": ["Up"]},
                 {"inputKeys": ["Capital", "M"], "outputComboKeys": ["Down"]},
-                {"inputKeys": ["Capital", "A"], "outputComboKeys": ["Alt", "Space"], "outputKeys": ["A", "D"]}
+                {"inputKeys": ["Capital", "A"], "outputComboKeys": ["Alt", "U"]}
             ]
 
 
