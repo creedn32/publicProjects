@@ -13,9 +13,9 @@ import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, go
 
 
 #ID of public Google Sheet
-spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
+# spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
 #ID of private Google Sheet
-# spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
+spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
 
 
 # If modifying these scopes, delete the file token.pickle.
@@ -93,7 +93,7 @@ if win32api.GetKeyState(win32con.VK_NUMLOCK) == 1:
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
-with pynput.mouse.Listener(on_click=creed_toolpack.functionOnClick) as listenerObj:
+with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
     print("Click on 'Clear' to begin posting...")
     listenerObj.join()
 
@@ -154,9 +154,9 @@ for sheet in googleSheetsData["sheets"]:
                             if typeVar == "Cash":
                                 pyautogui.press("down")
                             elif typeVar == "Increase Adjustment":
-                                creed_toolpack.repetitiveKeyPress(2, "down")
+                                creedFunctions.repetitiveKeyPress(2, "down")
                             elif typeVar == "Decrease Adjustment":
-                                creed_toolpack.repetitiveKeyPress(3, "down")
+                                creedFunctions.repetitiveKeyPress(3, "down")
 
 
                         elif col == 3:
@@ -202,10 +202,10 @@ for sheet in googleSheetsData["sheets"]:
                                     pyautogui.press(letter)
 
 
-                        creed_toolpack.repetitiveKeyPress(numberTabs, "tab")
+                        creedFunctions.repetitiveKeyPress(numberTabs, "tab")
 
 
-                    with pynput.mouse.Listener(on_click=creed_toolpack.functionOnClick) as listenerObj:
+                    with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
                         print("Click on 'Post' or 'Clear' to continue with this entry...")
                         listenerObj.join()
 
