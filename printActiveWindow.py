@@ -1,5 +1,7 @@
 import win32gui, win32con
 import pywinauto
+import time
+
 
 # , win32process, psutil
 # import time
@@ -24,6 +26,8 @@ def enumHandler(hwnd, lParam):
         infoObj.windowToMaximize = hwnd
         print(win32gui.GetWindowText(hwnd))
         print(hwnd)
+        print(win32gui.IsWindowVisible(hwnd))
+
 
 
 
@@ -35,7 +39,15 @@ infoObj = info(None)
 win32gui.EnumWindows(enumHandler, None)
 
 
-# win32gui.ShowWindow(infoObj.windowToMaximize, win32con.SW_MAXIMIZE)
+
+# win32gui.ShowWindow(198822, win32con.SW_MAXIMIZE)
+# win32gui.ShowWindow(1246954, win32con.SW_MAXIMIZE)
+# win32gui.SetForegroundWindow(1442984)
+
+
+
+
+
 
 
 

@@ -119,9 +119,11 @@ comboList = [
                 {"inputKeys": ["Capital", "J"], "outputComboKeys": ["Left"]},
                 {"inputKeys": ["Capital", "K"], "outputComboKeys": ["Right"]},
                 {"inputKeys": ["Capital", "U"], "outputComboKeys": ["Up"]},
-                {"inputKeys": ["Capital", "M"], "outputComboKeys": ["Down"]}
-                # {"inputKeys": ["Capital", "A"], "outputComboKeys": ["Alt", "Space"], "outputKeys": ["A", "D"]}
+                {"inputKeys": ["Capital", "M"], "outputComboKeys": ["Down"]},
+                {"inputKeys": ["Capital", "A"], "outputComboKeys": ["Alt", "Space"], "outputKeys": ["A", "D"]}
             ]
+
+
 
 
 currentPressedKeys = []
