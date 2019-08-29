@@ -54,6 +54,21 @@ def convertKey(key):
 
 
 
+
+def convertKey(key):
+    if key == "lmenu":
+        return "alt"
+    elif key == "oem_1":
+        return ":"
+    elif key == "oem_5":
+        return "\\"
+    else:
+        return key
+
+
+
+
+
 # def pynputPressRel(controllerObj, keyToPress):
 #     controllerObj.press(keyToPress)
 #     controllerObj.release(keyToPress)
