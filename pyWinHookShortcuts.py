@@ -1,4 +1,5 @@
 import pyWinhook, pythoncom, pyautogui
+import time
 
 
 # import win32gui, win32process, psutil
@@ -21,13 +22,19 @@ def functionComboDetected(outputCombo, **otherArg):
         else:
             pyautogui.keyUp(outKey.lower())
 
-    time.sleep(2)
+    time.sleep(.1)
 
-    if otherArg:
-        for char in otherArg["outputString"]:
-            pyautogui.press(char)
+    # if otherArg:
+        # pyautogui.press("c")
+    #     for char in otherArg["outputString"]:
+    #         pyautogui.press(char)
+    #
 
 
+
+
+
+def functionAutoKeyPress(event):
 
     print("Key pressed down automatically: " + event.Key)
     print("Key pressed down automatically: " + event.Key)
@@ -96,9 +103,6 @@ def functionKeyRelease(event):
             #remove that key from currentPressedKeys
             currentPressedKeys.remove(event.Key)
             # currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
-
-
-
 
 
 
@@ -201,7 +205,7 @@ pythoncom.PumpMessages()
 # def functionOtherComboDetected(outputKeys):
 #
 #
-#     # windowsExplorerApp = pywinauto.Application(backend="uia").connect(path="explorer.exe")
+#k     # windowsExplorerApp = pywinauto.Application(backend="uia").connect(path="explorer.exe")
 #     # systemTrayObj = windowsExplorerApp.window(class_name="Shell_TrayWnd")
 #     # systemTrayObj.child_window(title="Executor").click()
 #
