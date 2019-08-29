@@ -1,9 +1,9 @@
 import pyWinhook, pythoncom, pyautogui, win32gui, time
 
 
-import sys
-sys.path.append("..")
-from creed_modules import creedFunctions
+# import sys
+# sys.path.append("..")
+# from creed_modules import creedFunctions
 
 
 
@@ -15,11 +15,11 @@ def functionComboDetected(outputCombo, **otherArg):
 
         for outKey in outputCombo:
             keyDownInfoObj.autoKeyDown.append(outKey)
-            pyautogui.keyDown(creedFunctions.convertKey(outKey, pyHookToAutoGui))
+            pyautogui.keyDown(convertKey(outKey))
 
 
         for outKey in reversed(outputCombo):
-            pyautogui.keyUp(creedFunctions.convertKey(outKey, pyHookToAutoGui))
+            pyautogui.keyUp(convertKey(outKey))
 
         if otherArg:
             for i in range(1, 10):
@@ -34,10 +34,10 @@ def functionComboDetected(outputCombo, **otherArg):
                         for outKey in list:
                             keyDownInfoObj.autoKeyDown.append(outKey)
 
-                            pyautogui.keyDown(creedFunctions.convertKey(outKey, pyHookToAutoGui))
+                            pyautogui.keyDown(convertKey(outKey))
 
                         for outKey in reversed(list):
-                            pyautogui.keyUp(creedFunctions.convertKey(outKey, pyHookToAutoGui))
+                            pyautogui.keyUp(convertKey(outKey))
 
                     break
 
@@ -59,9 +59,9 @@ def functionKeyPress(event):
 
     if event.Key == "Tab":
         if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
-            # print("tabbed")
-            pyautogui.press("right")
-            toReturn = False
+            print("tabbed")
+            # pyautogui.press("right")
+            # toReturn = False
 
 
 
@@ -143,6 +143,22 @@ def OnKeyboardEvent(event):
 
 
 
+
+def convertKey(key):
+    for i in pyHookToAutoGui:
+        if i[0] == key:
+            return i[1]
+
+    for i in pyHookToAutoGuiWithoutModifier:
+        if i[0] == key:
+            print(key)
+            return i[1]
+
+    return key
+
+
+
+
 def createPathList(path):
 
     pathList = []
@@ -152,28 +168,33 @@ def createPathList(path):
         keyToAppend = []
 
         for i in autoGuiToPyHook:
-            if i[1] == key:
+            if i[1] == key.lower():
                 keyToAppend = i[0]
 
         if not keyToAppend:
             for i in pyHookToAutoGui:
-                if i[1] == key:
+                if i[1] == key.lower():
                     keyToAppend.append(i[0])
 
         if not keyToAppend:
             for i in characterToDesc:
-                if i[1] == key:
+                if i[1] == key.lower():
                     keyToAppend.append(i[0])
 
 
+
         if not keyToAppend:
-            keyToAppend.append(key)
+            keyToAppend.append(key.lower())
 
         pathList.append(keyToAppend)
 
+    if pathList[-1][0] != "oem_5":
+        pathList.append(["oem_5"])
+
+
     pathList.insert(0, ["back"])
     pathList.insert(0, ["lcontrol", "a"])
-    # print(str(pathList).replace("'", "\""))
+    print(str(pathList).replace("'", "\""))
 
     return pathList
 
@@ -190,7 +211,6 @@ class keyDownInfo():
 
 pyHookToAutoGui = [
     ["lmenu", "alt"],
-    ["oem_1", ":"],
     ["oem_5", "\\"],
     ["lshift", "shift"],
     ["back", "backspace"],
@@ -203,8 +223,15 @@ characterToDesc = [
 ]
 
 
+pyHookToAutoGuiWithoutModifier = [
+    ["oem_1", ":"],
+    ["oem_minus", "_"]
+]
+
+
 autoGuiToPyHook = [
-    [["lshift", "oem_1"], ":"]
+    [["lshift", "oem_1"], ":"],
+    [["lshift", "oem_minus"], "_"]
 ]
 
 
@@ -215,8 +242,11 @@ comboList = [
                 {"inputKeys": {"capital", "k"}, "outputComboKeys": ["right"]},
                 {"inputKeys": {"capital", "u"}, "outputComboKeys": ["up"]},
                 {"inputKeys": {"capital", "m"}, "outputComboKeys": ["down"]},
-                {"inputKeys": {"capital", "c"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\")},
-                {"inputKeys": {"capital", "s"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\nas\\synologydrive\\computer\\setup files\\")},
+                {"inputKeys": {"capital", "d"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"C:\Users\cnaylor\Desktop")},
+                {"inputKeys": {"capital", "a"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"Y:\Accounting")},
+                {"inputKeys": {"capital", "c"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"Y:\Accounting\12_Creed")},
+                # {"inputKeys": {"capital", "a"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"C:\users\creed")},
+                # {"inputKeys": {"capital", "s"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\nas\\synologydrive\\computer\\setup files\\")},
                 {"inputKeys": {"capital", "h"}, "printToScreen": "hi"}
             ]
 
