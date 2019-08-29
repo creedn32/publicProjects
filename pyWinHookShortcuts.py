@@ -1,4 +1,4 @@
-import pyWinhook, pythoncom, pyautogui
+import pyWinhook, pythoncom, pyautogui, win32gui
 import time
 
 
@@ -7,28 +7,55 @@ import time
 
 def functionComboDetected(outputCombo, **otherArg):
 
-    for outKey in outputCombo:
-        keyDownInfoObj.autoKeyDown.append(outKey)
+    print(keyDownInfoObj.autoKeyDown)
 
-        if outKey == "Lmenu":
-            pyautogui.keyDown("alt")
-        else:
-            pyautogui.keyDown(outKey.lower())
+    if not keyDownInfoObj.autoKeyDown:
+
+        # print(1)
 
 
-    for outKey in reversed(outputCombo):
-        if outKey == "Lmenu":
-            pyautogui.keyUp("alt")
-        else:
-            pyautogui.keyUp(outKey.lower())
 
-    time.sleep(.1)
+        fillForm = False
 
-    # if otherArg:
-        # pyautogui.press("c")
-    #     for char in otherArg["outputString"]:
-    #         pyautogui.press(char)
-    #
+        if otherArg:
+            if win32gui.GetWindowText(win32gui.GetForegroundWindow()) != "Executor":
+                fillForm = True
+
+
+
+
+
+        for outKey in outputCombo:
+            keyDownInfoObj.autoKeyDown.append(outKey)
+
+            if outKey == "Lmenu":
+                pyautogui.keyDown("alt")
+            else:
+                pyautogui.keyDown(outKey.lower())
+
+
+        for outKey in reversed(outputCombo):
+            if outKey == "Lmenu":
+                pyautogui.keyUp("alt")
+            else:
+                pyautogui.keyUp(outKey.lower())
+
+
+        if fillForm:
+            for char in range(1, 2):
+                # pass
+                # print(char)
+                keyDownInfoObj.autoKeyDown.append("D")
+                pyautogui.press("D")
+
+
+
+        # if otherArg and otherArg["fillForm"]:
+        #
+
+        #     for char in otherArg["outputString"]:
+        #         pyautogui.press(char)
+        #
 
 
 
@@ -36,7 +63,7 @@ def functionComboDetected(outputCombo, **otherArg):
 
 def functionAutoKeyPress(event):
 
-    print("Key pressed down automatically: " + event.Key)
+
     print("Key pressed down automatically: " + event.Key)
     print("Allowed to send automatic press to OS? " + str(True))
     return True
@@ -44,7 +71,7 @@ def functionAutoKeyPress(event):
 
 def functionKeyPress(event):
 
-    print("press")
+    # print("press")
 
 
     toReturn = True
@@ -68,14 +95,16 @@ def functionKeyPress(event):
             currentPressedKeys.append(event.Key)
 
 
-        if list(dict.fromkeys(currentPressedKeys)) == combo["inputKeys"]:
+        if currentPressedKeys == combo["inputKeys"]:
             if "outputComboKeys" in combo.keys():
                 if "outputString" in combo.keys():
                     functionComboDetected(combo["outputComboKeys"], outputString=combo["outputString"])
                 else:
                     functionComboDetected(combo["outputComboKeys"])
+            elif "printToScreen" in combo.keys():
+                print(combo["printToScreen"])
 
-        if "Capital" in currentPressedKeys:
+        if event.Key not in keyDownInfoObj.autoKeyDown and "Capital" in currentPressedKeys:
             toReturn = False
 
 
@@ -88,29 +117,42 @@ def functionKeyPress(event):
 
 def functionKeyRelease(event):
 
-    print("release")
+    # print("release")
 
     toReturn = True
 
-    if event.Key == "Capital":
-        toReturn = False
+
+    #
+    # if event.Key == "Capital":
+    #     toReturn = False
 
 
     for combo in comboList:
 
         if event.Key in combo["inputKeys"] and event.Key in currentPressedKeys:
 
+            #
             #remove that key from currentPressedKeys
             currentPressedKeys.remove(event.Key)
+            toReturn = False
             # currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
 
-
+    # if event.Key == "D":
+    #     print(toReturn)
+    #
+    # print("keydown is " + str(keyDownInfoObj.autoKeyDown))
+    # print("event.key is " + str(event.Key))
 
     if event.Key in keyDownInfoObj.autoKeyDown:
+        # if event.Key == "D":
+        #     print("here: " + str(toReturn))
         keyDownInfoObj.autoKeyDown.remove(event.Key)
         # keyDownInfoObj.autoKeyDown[:] = [x for x in keyDownInfoObj.autoKeyDown if x != event.Key]
     elif "Capital" in currentPressedKeys:
         toReturn = False
+
+        if event.Key == "D":
+            print("here " + str(toReturn))
 
 
 
@@ -179,7 +221,8 @@ comboList = [
                 {"inputKeys": ["Capital", "K"], "outputComboKeys": ["Right"]},
                 {"inputKeys": ["Capital", "U"], "outputComboKeys": ["Up"]},
                 {"inputKeys": ["Capital", "M"], "outputComboKeys": ["Down"]},
-                {"inputKeys": ["Capital", "A"], "outputComboKeys": ["Lmenu", "Space"], "outputString": "C:\\Users\\creed"}
+                {"inputKeys": ["Capital", "A"], "outputComboKeys": ["Lmenu", "Space"], "outputString": "C:\\Users\\creed"},
+                {"inputKeys": ["Capital", "S"], "printToScreen": "hi"}
             ]
 
 
