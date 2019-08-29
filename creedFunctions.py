@@ -55,15 +55,6 @@ def convertKey(key):
 
 
 
-def convertKey(key, dataMap):
-    for i in dataMap:
-        if i[0] == key:
-            return i[1]
-    return key
-
-
-
-
 
 # def pynputPressRel(controllerObj, keyToPress):
 #     controllerObj.press(keyToPress)
