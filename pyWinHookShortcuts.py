@@ -39,8 +39,8 @@ def functionComboDetected(outputCombo, **otherArg):
             for char in otherArg["outputString"]:
                 print(creedFunctions.convertKey(char))
                 keyDownInfoObj.autoKeyDown.append(char)
-                pyautogui.press(creedFunctions.convertKey(char))
-
+                pyautogui.hotkey(creedFunctions.convertKey(char))
+                # pyautogui.press(char)
 
 
         # if otherArg and otherArg["fillForm"]:
