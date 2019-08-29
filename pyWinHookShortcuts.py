@@ -1,5 +1,5 @@
-import pyWinhook, pythoncom, pyautogui, win32gui
-import time
+import pyWinhook, pythoncom, pyautogui, win32gui, time
+
 
 import sys
 sys.path.append("..")
@@ -17,11 +17,11 @@ def functionComboDetected(outputCombo, **otherArg):
 
         for outKey in outputCombo:
             keyDownInfoObj.autoKeyDown.append(outKey)
-            pyautogui.keyDown(creedFunctions.convertKey(outKey))
+            pyautogui.keyDown(creedFunctions.convertKey(outKey, pyHookToAutoGui))
 
 
         for outKey in reversed(outputCombo):
-            pyautogui.keyUp(creedFunctions.convertKey(outKey))
+            pyautogui.keyUp(creedFunctions.convertKey(outKey, pyHookToAutoGui))
 
         if otherArg:
             time.sleep(.07)
@@ -33,10 +33,10 @@ def functionComboDetected(outputCombo, **otherArg):
                     for outKey in list:
                         keyDownInfoObj.autoKeyDown.append(outKey)
 
-                        pyautogui.keyDown(creedFunctions.convertKey(outKey))
+                        pyautogui.keyDown(creedFunctions.convertKey(outKey, pyHookToAutoGui))
 
                     for outKey in reversed(list):
-                        pyautogui.keyUp(creedFunctions.convertKey(outKey))
+                        pyautogui.keyUp(creedFunctions.convertKey(outKey, pyHookToAutoGui))
 
 
 
@@ -73,7 +73,7 @@ def functionAutoKeyPress(event):
 
 def functionKeyPress(event):
 
-    print(str(event.Key))
+    # print(str(event.Key))
 
     toReturn = True
 
@@ -104,8 +104,9 @@ def functionKeyPress(event):
             elif "printToScreen" in combo.keys():
                 print(combo["printToScreen"])
 
-        if event.Key.lower() not in keyDownInfoObj.autoKeyDown and "capital" in currentPressedKeys:
-            toReturn = False
+
+    if event.Key.lower() not in keyDownInfoObj.autoKeyDown and "capital" in currentPressedKeys:
+        toReturn = False
 
 
     # print("Key pressed: " + event.Key.lower())
@@ -117,40 +118,26 @@ def functionKeyPress(event):
 
 def functionKeyRelease(event):
 
-    # print("release")
-
     toReturn = True
 
+    if event.Key.lower() not in keyDownInfoObj.autoKeyDown and event.Key.lower() in currentPressedKeys:
 
-    #
-    # if event.Key == "Capital":
-    #     toReturn = False
+        # for combo in comboList:
+
+            # if event.Key.lower() in combo["inputKeys"]:
+
+                #remove that key from currentPressedKeys
+        currentPressedKeys.remove(event.Key.lower())
+        toReturn = False
+                # currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
+
+        # if "capital" in currentPressedKeys:
+        #     toReturn = False
 
 
-    for combo in comboList:
-
-        if event.Key.lower() in combo["inputKeys"] and event.Key.lower() in currentPressedKeys:
-
-            #
-            #remove that key from currentPressedKeys
-            currentPressedKeys.remove(event.Key.lower())
-            toReturn = False
-            # currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
-
-    # if event.Key == "D":
-    #     print(toReturn)
-    #
-    # print("keydown is " + str(keyDownInfoObj.autoKeyDown))
-    # print("event.key is " + str(event.Key))
-
-    if event.Key.lower() in keyDownInfoObj.autoKeyDown:
-        # if event.Key == "D":
-        #     print("here: " + str(toReturn))
+    elif event.Key.lower() in keyDownInfoObj.autoKeyDown:
         keyDownInfoObj.autoKeyDown.remove(event.Key.lower())
         # keyDownInfoObj.autoKeyDown[:] = [x for x in keyDownInfoObj.autoKeyDown if x != event.Key]
-    elif "capital" in currentPressedKeys:
-        toReturn = False
-
 
 
     # print(str(currentPressedKeys))
@@ -185,7 +172,52 @@ class keyDownInfo():
 
 
 
-keyDownInfoObj = keyDownInfo([])
+
+pyHookToAutoGui = [
+    ["lmenu", "alt"],
+    ["oem_1", ":"],
+    ["oem_5", "\\"],
+    ["lshift", "shift"],
+    ["back", "backspace"],
+    ["lcontrol", "ctrl"]
+]
+
+
+autoGuiToPyHook = [
+    [["lshift", "oem_1"], ":"]
+]
+
+
+pathList = []
+
+for key in "c:\\users\\creed\\":
+
+    keyToAppend = []
+
+    for i in autoGuiToPyHook:
+        if i[1] == key:
+            keyToAppend = i[0]
+
+    if not keyToAppend:
+        for i in pyHookToAutoGui:
+            if i[1] == key:
+                keyToAppend.append(i[0])
+
+
+    if not keyToAppend:
+        keyToAppend.append(key)
+
+
+    pathList.append(keyToAppend)
+
+
+
+pathList.insert(0, ["back"])
+pathList.insert(0, ["lcontrol", "a"])
+pathListStr = str(pathList).replace("'", "\"")
+# print(pathListStr)
+
+
 
 
 comboList = [
@@ -193,22 +225,14 @@ comboList = [
                 {"inputKeys": ["capital", "k"], "outputComboKeys": ["right"]},
                 {"inputKeys": ["capital", "u"], "outputComboKeys": ["up"]},
                 {"inputKeys": ["capital", "m"], "outputComboKeys": ["down"]},
-                {"inputKeys": ["capital", "a"], "outputComboKeys": ["lmenu", "space"], "outputString": [["lcontrol", "a"], ["back"], ["c"], ["lshift", "oem_1"], ["oem_5"], ["u"], ["s"], ["e"], ["r"], ["s"], ["oem_5"], ["c"], ["r"], ["e"], ["e"], ["d"], ["oem_5"]]},
+                {"inputKeys": ["capital", "a"], "outputComboKeys": ["lmenu", "space"], "outputString": pathList},
                 {"inputKeys": ["capital", "s"], "printToScreen": "hi"}
             ]
 
 
-
+keyDownInfoObj = keyDownInfo([])
 currentPressedKeys = []
 pyautogui.PAUSE = 0
-
-
-# pathList = []
-#
-# for char in "c:\\users\\creed":
-#     pathList.append(char)
-#
-# print(pathList)
 
 
 
