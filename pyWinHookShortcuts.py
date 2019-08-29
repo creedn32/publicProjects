@@ -6,8 +6,6 @@ sys.path.append("..")
 from creed_modules import creedFunctions
 
 
-# import win32gui, win32process, psutil
-
 
 def functionComboDetected(outputCombo, **otherArg):
 
@@ -15,31 +13,42 @@ def functionComboDetected(outputCombo, **otherArg):
 
     if not keyDownInfoObj.autoKeyDown:
 
-        fillForm = False
-
-        if otherArg:
-            if win32gui.GetWindowText(win32gui.GetForegroundWindow()) != "Executor":
-                fillForm = True
-
+        # fillForm = False
 
         for outKey in outputCombo:
             keyDownInfoObj.autoKeyDown.append(outKey)
-
-            if outKey == "lmenu":
-                pyautogui.keyDown("alt")
-            else:
-                pyautogui.keyDown(outKey.lower())
+            pyautogui.keyDown(creedFunctions.convertKey(outKey))
 
 
         for outKey in reversed(outputCombo):
-            pyautogui.keyUp(creedFunctions.convertKey(outKey.lower()))
+            pyautogui.keyUp(creedFunctions.convertKey(outKey))
 
-        if fillForm:
-            time.sleep(.05)
-            for char in otherArg["outputString"]:
-                print(creedFunctions.convertKey(char))
-                keyDownInfoObj.autoKeyDown.append(char)
-                pyautogui.hotkey(creedFunctions.convertKey(char))
+        if otherArg:
+            time.sleep(.07)
+
+            if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
+
+                for list in otherArg["outputString"]:
+
+                    for outKey in list:
+                        keyDownInfoObj.autoKeyDown.append(outKey)
+
+                        pyautogui.keyDown(creedFunctions.convertKey(outKey))
+
+                    for outKey in reversed(list):
+                        pyautogui.keyUp(creedFunctions.convertKey(outKey))
+
+
+
+
+
+
+
+            # for list in otherArg["outputString"]:
+            #     pass
+                # print(creedFunctions.convertKey(char))
+                # keyDownInfoObj.autoKeyDown.append(char)
+                # pyautogui.hotkey(creedFunctions.convertKey(char))
                 # pyautogui.press(char)
 
 
@@ -78,7 +87,6 @@ def functionKeyPress(event):
     #         keyDownInfoObj.notAllowedToRelease = "Tab"
     #         pyautogui.press("right")
     #         toReturn = False
-
 
 
     for combo in comboList:
@@ -143,9 +151,6 @@ def functionKeyRelease(event):
     elif "capital" in currentPressedKeys:
         toReturn = False
 
-        if event.Key.lower() == "d":
-            print("here " + str(toReturn))
-
 
 
     # print(str(currentPressedKeys))
@@ -188,7 +193,7 @@ comboList = [
                 {"inputKeys": ["capital", "k"], "outputComboKeys": ["right"]},
                 {"inputKeys": ["capital", "u"], "outputComboKeys": ["up"]},
                 {"inputKeys": ["capital", "m"], "outputComboKeys": ["down"]},
-                {"inputKeys": ["capital", "a"], "outputComboKeys": ["lmenu", "space"], "outputString": ["c", "oem_1", "oem_5", "u", "s", "e", "r", "s", "oem_5", "c", "r", "e", "e", "d"]},
+                {"inputKeys": ["capital", "a"], "outputComboKeys": ["lmenu", "space"], "outputString": [["lcontrol", "a"], ["back"], ["c"], ["lshift", "oem_1"], ["oem_5"], ["u"], ["s"], ["e"], ["r"], ["s"], ["oem_5"], ["c"], ["r"], ["e"], ["e"], ["d"], ["oem_5"]]},
                 {"inputKeys": ["capital", "s"], "printToScreen": "hi"}
             ]
 
