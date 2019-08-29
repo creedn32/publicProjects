@@ -22,20 +22,24 @@ def functionComboDetected(outputCombo, **otherArg):
             pyautogui.keyUp(creedFunctions.convertKey(outKey, pyHookToAutoGui))
 
         if otherArg:
-            time.sleep(.07)
+            for i in range(1, 10):
+                time.sleep(.01)
 
-            if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
+                if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
 
-                for list in otherArg["outputString"]:
+                    # print("in")
 
-                    for outKey in list:
-                        keyDownInfoObj.autoKeyDown.append(outKey)
+                    for list in otherArg["outputString"]:
 
-                        pyautogui.keyDown(creedFunctions.convertKey(outKey, pyHookToAutoGui))
+                        for outKey in list:
+                            keyDownInfoObj.autoKeyDown.append(outKey)
 
-                    for outKey in reversed(list):
-                        pyautogui.keyUp(creedFunctions.convertKey(outKey, pyHookToAutoGui))
+                            pyautogui.keyDown(creedFunctions.convertKey(outKey, pyHookToAutoGui))
 
+                        for outKey in reversed(list):
+                            pyautogui.keyUp(creedFunctions.convertKey(outKey, pyHookToAutoGui))
+
+                    break
 
 
 
@@ -63,8 +67,8 @@ def functionKeyPress(event):
 
     for combo in comboList:
 
-        if event.Key.lower() in combo["inputKeys"] and event.Key.lower() not in currentPressedKeys:
-            currentPressedKeys.append(event.Key.lower())
+        if event.Key.lower() in combo["inputKeys"]: # and event.Key.lower() not in currentPressedKeys:
+            currentPressedKeys.add(event.Key.lower())
 
 
         if currentPressedKeys == combo["inputKeys"]:
@@ -207,19 +211,19 @@ autoGuiToPyHook = [
 
 
 comboList = [
-                {"inputKeys": ["capital", "j"], "outputComboKeys": ["left"]},
-                {"inputKeys": ["capital", "k"], "outputComboKeys": ["right"]},
-                {"inputKeys": ["capital", "u"], "outputComboKeys": ["up"]},
-                {"inputKeys": ["capital", "m"], "outputComboKeys": ["down"]},
-                {"inputKeys": ["capital", "c"], "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\")},
-                {"inputKeys": ["capital", "s"], "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\nas\\synologydrive\\computer\\setup files\\")},
-                {"inputKeys": ["capital", "h"], "printToScreen": "hi"}
+                {"inputKeys": {"capital", "j"}, "outputComboKeys": ["left"]},
+                {"inputKeys": {"capital", "k"}, "outputComboKeys": ["right"]},
+                {"inputKeys": {"capital", "u"}, "outputComboKeys": ["up"]},
+                {"inputKeys": {"capital", "m"}, "outputComboKeys": ["down"]},
+                {"inputKeys": {"capital", "c"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\")},
+                {"inputKeys": {"capital", "s"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\nas\\synologydrive\\computer\\setup files\\")},
+                {"inputKeys": {"capital", "h"}, "printToScreen": "hi"}
             ]
 
 
 
 keyDownInfoObj = keyDownInfo([])
-currentPressedKeys = []
+currentPressedKeys = set()
 pyautogui.PAUSE = 0
 
 
