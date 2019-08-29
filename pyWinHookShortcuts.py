@@ -4,42 +4,41 @@ import pyWinhook, pythoncom, pyautogui
 # import win32gui, win32process, psutil
 
 
-def functionComboDetected(outputCombo):
+def functionComboDetected(outputCombo, **otherArg):
 
     for outKey in outputCombo:
         keyDownInfoObj.autoKeyDown.append(outKey)
-        pyautogui.keyDown(outKey.lower())
+
+        if outKey == "Lmenu":
+            pyautogui.keyDown("alt")
+        else:
+            pyautogui.keyDown(outKey.lower())
 
 
     for outKey in reversed(outputCombo):
-        pyautogui.keyUp(outKey.lower())
+        if outKey == "Lmenu":
+            pyautogui.keyUp("alt")
+        else:
+            pyautogui.keyUp(outKey.lower())
+
+    time.sleep(2)
+
+    if otherArg:
+        for char in otherArg["outputString"]:
+            pyautogui.press(char)
 
 
 
-def functionOtherComboDetected(outputKeys):
-
-
-    # windowsExplorerApp = pywinauto.Application(backend="uia").connect(path="explorer.exe")
-    # systemTrayObj = windowsExplorerApp.window(class_name="Shell_TrayWnd")
-    # systemTrayObj.child_window(title="Executor").click()
-
-    # windowsExplorerApp = pywinauto.Application(backend="uia").connect(path="explorer.exe")
-    print(1)
-
-
-    # for outKey in outputKeys:
-    #     pyautogui.press(outKey.lower())
-
-
-
-
-def functionAutoKeyPress(event):
-    # print("Key pressed down automatically: " + event.Key)
-    # print(str(currentPressedKeys))
+    print("Key pressed down automatically: " + event.Key)
+    print("Key pressed down automatically: " + event.Key)
+    print("Allowed to send automatic press to OS? " + str(True))
     return True
 
 
 def functionKeyPress(event):
+
+    print("press")
+
 
     toReturn = True
 
@@ -64,14 +63,17 @@ def functionKeyPress(event):
 
         if list(dict.fromkeys(currentPressedKeys)) == combo["inputKeys"]:
             if "outputComboKeys" in combo.keys():
-                functionComboDetected(combo["outputComboKeys"])
-            else:
-                functionOtherComboDetected(combo["outputKeys"])
+                if "outputString" in combo.keys():
+                    functionComboDetected(combo["outputComboKeys"], outputString=combo["outputString"])
+                else:
+                    functionComboDetected(combo["outputComboKeys"])
 
-
-        if combo["inputKeys"][0] in currentPressedKeys:
+        if "Capital" in currentPressedKeys:
             toReturn = False
 
+
+    print("Key pressed: " + event.Key)
+    print("Allowed to send press to OS? " + str(toReturn))
 
     return toReturn
 
@@ -79,29 +81,38 @@ def functionKeyPress(event):
 
 def functionKeyRelease(event):
 
+    print("release")
+
     toReturn = True
+
+    if event.Key == "Capital":
+        toReturn = False
 
 
     for combo in comboList:
 
-        if event.Key in combo["inputKeys"]:
+        if event.Key in combo["inputKeys"] and event.Key in currentPressedKeys:
 
             #remove that key from currentPressedKeys
-            currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
+            currentPressedKeys.remove(event.Key)
+            # currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
 
 
-    if "Capital" in currentPressedKeys:
-        toReturn = False
+
+
 
 
     if event.Key in keyDownInfoObj.autoKeyDown:
-        keyDownInfoObj.autoKeyDown[:] = [x for x in keyDownInfoObj.autoKeyDown if x != event.Key]
+        keyDownInfoObj.autoKeyDown.remove(event.Key)
+        # keyDownInfoObj.autoKeyDown[:] = [x for x in keyDownInfoObj.autoKeyDown if x != event.Key]
+    elif "Capital" in currentPressedKeys:
+        toReturn = False
 
 
 
     # print(str(currentPressedKeys))
-    # print("Key released: " + event.Key)
-    # print("Allowed to send release to OS? " + str(toReturn))
+    print("Key released: " + event.Key)
+    print("Allowed to send release to OS? " + str(toReturn))
     return toReturn
 
 
@@ -109,19 +120,41 @@ def functionKeyRelease(event):
 
 def OnKeyboardEvent(event):
 
-    if event.MessageName == "key down" and event.Key in keyDownInfoObj.autoKeyDown:
-        print("event.Key: " + event.Key)
-        print("keyDownInfoObj.autoKeyDown: " + str(keyDownInfoObj.autoKeyDown))
-        return functionAutoKeyPress(event)
-    elif event.MessageName == "key down":
-        return functionKeyPress(event)
-    elif event.MessageName == "key up":
+
+    if event.MessageName in ["key sys down", "key down"]:
+
+        if event.Key in keyDownInfoObj.autoKeyDown:
+            # print("event.Key: " + event.Key)
+            # print("keyDownInfoObj.autoKeyDown: " + str(keyDownInfoObj.autoKeyDown))
+            return functionAutoKeyPress(event)
+        else:
+            return functionKeyPress(event)
+
+    elif event.MessageName in ["key up", "key sys up"]:
         return functionKeyRelease(event)
-    else:
-        return True
 
+    # else:
+    #
+    #
+    #     print('MessageName: %s' % event.MessageName)
+    #     # print("Key pressed down: " + event.Key)	    print('Message: %s' % event.Message)
+    #     # print("Allowed to send press to OS? " + str(toReturn))	    print('Time: %s' % event.Time)
+    #     print('Window: %s' % event.Window)
+    #     print('WindowName: %s' % event.WindowName)
+    #     print('Ascii: %s' % event.Ascii, chr(event.Ascii))
+    #     print('Key: %s' % event.Key)
+    #     print('KeyID: %s' % event.KeyID)
+    #     print('ScanCode: %s' % event.ScanCode)
+    #     print('Extended: %s' % event.Extended)
+    #     print('Injected: %s' % event.Injected)
+    #     print('Alt %s' % event.Alt)
+    #     print('Transition %s' % event.Transition)
+    #     print('---')
+    #
+    #     return True
+#
 
-
+#
 
 
 
@@ -142,7 +175,7 @@ comboList = [
                 {"inputKeys": ["Capital", "K"], "outputComboKeys": ["Right"]},
                 {"inputKeys": ["Capital", "U"], "outputComboKeys": ["Up"]},
                 {"inputKeys": ["Capital", "M"], "outputComboKeys": ["Down"]},
-                {"inputKeys": ["Capital", "A"], "outputComboKeys": ["Alt", "U"]}
+                {"inputKeys": ["Capital", "A"], "outputComboKeys": ["Lmenu", "Space"], "outputString": "C:\\Users\\creed"}
             ]
 
 
@@ -155,6 +188,7 @@ hookManagerObj = pyWinhook.HookManager()
 hookManagerObj.KeyDown = OnKeyboardEvent
 hookManagerObj.KeyUp = OnKeyboardEvent
 hookManagerObj.HookKeyboard()
+print("ready")
 pythoncom.PumpMessages()
 
 
@@ -162,4 +196,19 @@ pythoncom.PumpMessages()
 
 
 
+
+
+# def functionOtherComboDetected(outputKeys):
+#
+#
+#     # windowsExplorerApp = pywinauto.Application(backend="uia").connect(path="explorer.exe")
+#     # systemTrayObj = windowsExplorerApp.window(class_name="Shell_TrayWnd")
+#     # systemTrayObj.child_window(title="Executor").click()
+#
+#     # windowsExplorerApp = pywinauto.Application(backend="uia").connect(path="explorer.exe")
+#     print(1)
+#
+#
+#     # for outKey in outputKeys:
+#     #     pyautogui.press(outKey.lower())
 
