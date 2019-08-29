@@ -15,7 +15,7 @@ def functionComboDetected(outputCombo, **otherArg):
 
         for outKey in outputCombo:
             keyDownInfoObj.autoKeyDown.append(outKey)
-j            pyautogui.keyDown(convertKey(outKey))
+            pyautogui.keyDown(convertKey(outKey))
 
 
         for outKey in reversed(outputCombo):
