@@ -13,8 +13,6 @@ def functionComboDetected(outputCombo, **otherArg):
 
     if not keyDownInfoObj.autoKeyDown:
 
-        # fillForm = False
-
         for outKey in outputCombo:
             keyDownInfoObj.autoKeyDown.append(outKey)
             pyautogui.keyDown(creedFunctions.convertKey(outKey, pyHookToAutoGui))
@@ -41,28 +39,6 @@ def functionComboDetected(outputCombo, **otherArg):
 
 
 
-
-
-
-            # for list in otherArg["outputString"]:
-            #     pass
-                # print(creedFunctions.convertKey(char))
-                # keyDownInfoObj.autoKeyDown.append(char)
-                # pyautogui.hotkey(creedFunctions.convertKey(char))
-                # pyautogui.press(char)
-
-
-        # if otherArg and otherArg["fillForm"]:
-        #
-
-        #     for char in otherArg["outputString"]:
-        #         pyautogui.press(char)
-        #
-
-
-
-
-
 def functionAutoKeyPress(event):
 
 
@@ -83,17 +59,6 @@ def functionKeyPress(event):
             pyautogui.press("right")
             toReturn = False
 
-
-    #
-    # win32guiObj = win32gui
-    #     win32guiObj.GetWindowText(win32guiObj.GetForegroundWindow())
-    #     processID = win32process.GetWindowThreadProcessId(win32guiObj.GetForegroundWindow())
-    #     # print(psutil.Process(processID[-1]))
-    #
-    #     if psutil.Process(processID[-1]).name() == "Executor.exe":
-    #         keyDownInfoObj.notAllowedToRelease = "Tab"
-    #         pyautogui.press("right")
-    #         toReturn = False
 
 
     for combo in comboList:
@@ -130,13 +95,16 @@ def functionKeyRelease(event):
 
     if event.Key.lower() not in keyDownInfoObj.autoKeyDown and event.Key.lower() in currentPressedKeys:
 
+        currentPressedKeys.remove(event.Key.lower())
+        toReturn = False
+
+
         # for combo in comboList:
 
             # if event.Key.lower() in combo["inputKeys"]:
 
                 #remove that key from currentPressedKeys
-        currentPressedKeys.remove(event.Key.lower())
-        toReturn = False
+
                 # currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
 
         # if "capital" in currentPressedKeys:
@@ -145,8 +113,6 @@ def functionKeyRelease(event):
 
     elif event.Key.lower() in keyDownInfoObj.autoKeyDown:
         keyDownInfoObj.autoKeyDown.remove(event.Key.lower())
-        # keyDownInfoObj.autoKeyDown[:] = [x for x in keyDownInfoObj.autoKeyDown if x != event.Key]
-
 
     # print(str(currentPressedKeys))
     # print("Key released: " + event.Key.lower())
@@ -203,8 +169,7 @@ def createPathList(path):
 
     pathList.insert(0, ["back"])
     pathList.insert(0, ["lcontrol", "a"])
-    pathListStr = str(pathList).replace("'", "\"")
-    # print(pathListStr)
+    # print(str(pathList).replace("'", "\""))
 
     return pathList
 
@@ -252,6 +217,7 @@ comboList = [
             ]
 
 
+
 keyDownInfoObj = keyDownInfo([])
 currentPressedKeys = []
 pyautogui.PAUSE = 0
@@ -269,7 +235,16 @@ pythoncom.PumpMessages()
 
 
 
-
+#
+# win32guiObj = win32gui
+#     win32guiObj.GetWindowText(win32guiObj.GetForegroundWindow())
+#     processID = win32process.GetWindowThreadProcessId(win32guiObj.GetForegroundWindow())
+#     # print(psutil.Process(processID[-1]))
+#
+#     if psutil.Process(processID[-1]).name() == "Executor.exe":
+#         keyDownInfoObj.notAllowedToRelease = "Tab"
+#         pyautogui.press("right")
+#         toReturn = False
 
 
 # def functionOtherComboDetected(outputKeys):
