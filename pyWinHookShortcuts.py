@@ -77,8 +77,15 @@ def functionKeyPress(event):
 
     toReturn = True
 
-    # if event.Key == "Tab":
-    #     win32guiObj = win32gui
+    if event.Key == "Tab":
+        if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
+            # print("tabbed")
+            pyautogui.press("right")
+            toReturn = False
+
+
+    #
+    # win32guiObj = win32gui
     #     win32guiObj.GetWindowText(win32guiObj.GetForegroundWindow())
     #     processID = win32process.GetWindowThreadProcessId(win32guiObj.GetForegroundWindow())
     #     # print(psutil.Process(processID[-1]))
@@ -119,6 +126,7 @@ def functionKeyPress(event):
 def functionKeyRelease(event):
 
     toReturn = True
+
 
     if event.Key.lower() not in keyDownInfoObj.autoKeyDown and event.Key.lower() in currentPressedKeys:
 
