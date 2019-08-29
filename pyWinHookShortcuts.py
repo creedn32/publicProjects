@@ -165,6 +165,44 @@ def OnKeyboardEvent(event):
 
 
 
+def createPathList(path):
+
+    pathList = []
+
+    for key in path:
+
+        keyToAppend = []
+
+        for i in autoGuiToPyHook:
+            if i[1] == key:
+                keyToAppend = i[0]
+
+        if not keyToAppend:
+            for i in pyHookToAutoGui:
+                if i[1] == key:
+                    keyToAppend.append(i[0])
+
+        if not keyToAppend:
+            for i in characterToDesc:
+                if i[1] == key:
+                    keyToAppend.append(i[0])
+
+
+        if not keyToAppend:
+            keyToAppend.append(key)
+
+        pathList.append(keyToAppend)
+
+    pathList.insert(0, ["back"])
+    pathList.insert(0, ["lcontrol", "a"])
+    pathListStr = str(pathList).replace("'", "\"")
+    # print(pathListStr)
+
+    return pathList
+
+
+
+
 class keyDownInfo():
     def __init__(self, autoKeyDown):
         self.autoKeyDown = autoKeyDown
@@ -179,43 +217,18 @@ pyHookToAutoGui = [
     ["oem_5", "\\"],
     ["lshift", "shift"],
     ["back", "backspace"],
-    ["lcontrol", "ctrl"]
+    ["lcontrol", "ctrl"],
+]
+
+
+characterToDesc = [
+    ["space", " "]
 ]
 
 
 autoGuiToPyHook = [
     [["lshift", "oem_1"], ":"]
 ]
-
-
-pathList = []
-
-for key in "c:\\users\\creed\\":
-
-    keyToAppend = []
-
-    for i in autoGuiToPyHook:
-        if i[1] == key:
-            keyToAppend = i[0]
-
-    if not keyToAppend:
-        for i in pyHookToAutoGui:
-            if i[1] == key:
-                keyToAppend.append(i[0])
-
-
-    if not keyToAppend:
-        keyToAppend.append(key)
-
-
-    pathList.append(keyToAppend)
-
-
-
-pathList.insert(0, ["back"])
-pathList.insert(0, ["lcontrol", "a"])
-pathListStr = str(pathList).replace("'", "\"")
-# print(pathListStr)
 
 
 
@@ -225,8 +238,9 @@ comboList = [
                 {"inputKeys": ["capital", "k"], "outputComboKeys": ["right"]},
                 {"inputKeys": ["capital", "u"], "outputComboKeys": ["up"]},
                 {"inputKeys": ["capital", "m"], "outputComboKeys": ["down"]},
-                {"inputKeys": ["capital", "a"], "outputComboKeys": ["lmenu", "space"], "outputString": pathList},
-                {"inputKeys": ["capital", "s"], "printToScreen": "hi"}
+                {"inputKeys": ["capital", "c"], "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\")},
+                {"inputKeys": ["capital", "s"], "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\nas\\synologydrive\\computer\\setup files\\")},
+                {"inputKeys": ["capital", "h"], "printToScreen": "hi"}
             ]
 
 
