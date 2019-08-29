@@ -26,21 +26,17 @@ def functionOnClick(x, y, button, pressed):
         return False
 
 
-def pynputPressRel(controllerObj, keyToPress):
-    controllerObj.press(keyToPress)
-    controllerObj.release(keyToPress)
-
 
 def printPythonInfo(var):
     from pprint import pprint
 
-    pprint("Printed: " + str(var))
+    pprint("Printing the variable as a string: " + str(var))
     pprint(var)
 
-    pprint("Printed help: " + str(var))
+    pprint("Printing help() of the variable: " + str(var))
     pprint(help(var))
 
-    pprint("Printed dir: " + str(var))
+    pprint("Printing dir() of the variable: " + str(var))
     pprint(dir(var))
 
 
@@ -56,6 +52,11 @@ def convertKey(key):
         return key
 
 
+
+
+# def pynputPressRel(controllerObj, keyToPress):
+#     controllerObj.press(keyToPress)
+#     controllerObj.release(keyToPress)
 
 #
 # def emptyCell(f):
