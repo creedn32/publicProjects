@@ -55,15 +55,11 @@ def convertKey(key):
 
 
 
-def convertKey(key):
-    if key == "lmenu":
-        return "alt"
-    elif key == "oem_1":
-        return ":"
-    elif key == "oem_5":
-        return "\\"
-    else:
-        return key
+def convertKey(key, dataMap):
+    for i in dataMap:
+        if i[0] == key:
+            return i[1]
+    return key
 
 
 
