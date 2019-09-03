@@ -1,0 +1,1 @@
+get-clipboard;get-clipboard |Measure-object -word
