@@ -145,13 +145,14 @@ def OnKeyboardEvent(event):
 
 
 def convertKey(key):
+
     for i in pyHookToAutoGui:
         if i[0] == key:
             return i[1]
 
     for i in pyHookToAutoGuiWithoutModifier:
         if i[0] == key:
-            print(key)
+            # print(key)
             return i[1]
 
     return key
@@ -194,7 +195,7 @@ def createPathList(path):
 
     pathList.insert(0, ["back"])
     pathList.insert(0, ["lcontrol", "a"])
-    print(str(pathList).replace("'", "\""))
+    # print(str(pathList).replace("'", "\""))
 
     return pathList
 
