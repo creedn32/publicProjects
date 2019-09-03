@@ -10,50 +10,91 @@ import pyWinhook, pythoncom, pyautogui, win32gui, time
 def functionComboDetected(outputCombo, **otherArg):
 
     # print(keyDownInfoObj.autoKeyDown)
+    # print("here")
 
-    if not keyDownInfoObj.autoKeyDown:
+    if otherArg:
 
-        for outKey in outputCombo:
-            keyDownInfoObj.autoKeyDown.append(outKey)
-            pyautogui.keyDown(convertKey(outKey))
+        executorDisplayed = False
+
+        if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
+            # print("Executor is displayed")
+            executorDisplayed = True
+        else:
+            pass
+            # print("Executor is not displayed")
 
 
-        for outKey in reversed(outputCombo):
-            pyautogui.keyUp(convertKey(outKey))
 
-        if otherArg:
-            for i in range(1, 10):
-                time.sleep(.01)
+    for outKey in outputCombo:
+        keyDownInfoObj.autoKeyDown.append(outKey)
+        pyautogui.keyDown(convertKey(outKey))
 
+
+
+    for outKey in reversed(outputCombo):
+        pyautogui.keyUp(convertKey(outKey))
+
+
+    if otherArg:
+
+        if not executorDisplayed:
+
+            for i in range(1, 20):
                 if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
 
-                    # print("in")
+                    print("Executor is now now be displayed and outputString is " + str(otherArg["outputString"]))
 
-                    for list in otherArg["outputString"]:
+                    stringToPrint = ""
+
+                    for num, list in enumerate(otherArg["outputString"]):
+
 
                         for outKey in list:
+                            stringToPrint = stringToPrint + str(outKey)
+
+                        if len(list) > 1:
+                            for outKey in list:
+                                keyDownInfoObj.autoKeyDown.append(outKey)
+                                pyautogui.keyDown(convertKey(outKey))
+
+                            for outKey in reversed(list):
+                                pyautogui.keyUp(convertKey(outKey))
+                        else:
                             keyDownInfoObj.autoKeyDown.append(outKey)
+                            pyautogui.press(convertKey(outKey))
 
-                            pyautogui.keyDown(convertKey(outKey))
 
-                        for outKey in reversed(list):
-                            pyautogui.keyUp(convertKey(outKey))
+                    # keyforThis = otherArg["outputString"][-2][0]
+                    # keyforThis = otherArg["outputString"][-2]
 
+
+                    # keyDownInfoObj.autoKeyDown.append(keyforThis)
+                    # pyautogui.press(keyforThis)
+
+                    # print(keyforThis)
+
+
+                    # print(stringToPrint)
                     break
+
+                # print(i)
+                time.sleep(.005)
+
+
 
 
 
 def functionAutoKeyPress(event):
 
 
-    # print("Key pressed down automatically: " + event.Key.lower())
-    # print("Allowed to send automatic press to OS? " + str(True))
+    # print("Key pressed down automatically: " + event.Key.lower() + " and it was sent to the OS.")
     return True
+
 
 
 def functionKeyPress(event):
 
-    # print(str(event.Key))
+    # print("Key pressed: " + event.Key.lower())
 
     toReturn = True
 
@@ -64,29 +105,42 @@ def functionKeyPress(event):
             # toReturn = False
 
 
-
-    for combo in comboList:
-
-        if event.Key.lower() in combo["inputKeys"]: # and event.Key.lower() not in currentPressedKeys:
-            currentPressedKeys.add(event.Key.lower())
+    # print("currentPressedKeys is " + str(currentPressedKeys))
 
 
-        if currentPressedKeys == combo["inputKeys"]:
-            if "outputComboKeys" in combo.keys():
-                if "outputString" in combo.keys():
-                    functionComboDetected(combo["outputComboKeys"], outputString=combo["outputString"])
-                else:
-                    functionComboDetected(combo["outputComboKeys"])
-            elif "printToScreen" in combo.keys():
-                print(combo["printToScreen"])
+    if not keyDownInfoObj.autoKeyDown:
+
+        for combo in comboList:
+
+            if event.Key.lower() in combo["inputKeys"]:  # and event.Key.lower() not in currentPressedKeys:
+                currentPressedKeys.add(event.Key.lower())
+
+
+
+        for combo in comboList:
+
+            if currentPressedKeys == combo["inputKeys"]:
+
+                # print("A combo was detected")
+
+                if "outputComboKeys" in combo.keys():
+                    if "outputString" in combo.keys():
+                        functionComboDetected(combo["outputComboKeys"], outputString=combo["outputString"])
+                    else:
+                        functionComboDetected(combo["outputComboKeys"])
+                elif "printToScreen" in combo.keys():
+                    print(combo["printToScreen"])
 
 
     if event.Key.lower() not in keyDownInfoObj.autoKeyDown and "capital" in currentPressedKeys:
-        toReturn = False
+            toReturn = False
 
 
-    # print("Key pressed: " + event.Key.lower())
-    # print("Allowed to send press to OS? " + str(toReturn))
+    # if toReturn:
+    #     print("Key pressed: " + event.Key.lower() + " and it was sent to the OS.")
+    # else:
+    #     print("Key pressed: " + event.Key.lower() + " and it was not sent to the OS.")
+
 
     return toReturn
 
@@ -119,8 +173,12 @@ def functionKeyRelease(event):
         keyDownInfoObj.autoKeyDown.remove(event.Key.lower())
 
     # print(str(currentPressedKeys))
-    # print("Key released: " + event.Key.lower())
-    # print("Allowed to send release to OS? " + str(toReturn))
+
+    # if toReturn:
+    #     print("Key released: " + event.Key.lower() + " and it was sent to the OS.")
+    # else:
+    #     print("Key released: " + event.Key.lower() + " and it was not sent to the OS.")
+
     return toReturn
 
 
@@ -224,7 +282,7 @@ characterToDesc = [
 ]
 
 
-pyHookToAutoGuiWithoutModifier = [
+pyHookComboToAutoGui = [
     ["oem_1", ":"],
     ["oem_minus", "_"]
 ]
