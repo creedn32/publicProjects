@@ -35,6 +35,8 @@ def functionComboDetected(outputCombo, **otherArg):
 
                     print("Executor is now displayed and outputString is " + str(otherArg["outputString"]))
 
+                    time.sleep(.01)
+
                     for item in otherArg["outputString"]:
 
                         for outKey in item["pyHook"]:
@@ -50,8 +52,8 @@ def functionComboDetected(outputCombo, **otherArg):
                             pyautogui.keyUp(outKey)
 
 
-                    keyDownInfoObj.autoKeyDown.append("9")
-                    pyautogui.press("9")
+                    # keyDownInfoObj.autoKeyDown.append("9")
+                    # pyautogui.press("9")
                     # keyDownInfoObj.autoKeyDown.append("back")
                     # pyautogui.press("backspace")
 
@@ -138,7 +140,7 @@ def functionKeyRelease(event):
 
 
     # print(str(currentPressedKeys))
-a
+
     if toReturn:
         print("Key released: " + event.Key.lower() + " and it was sent to the OS.")
     else:
@@ -234,8 +236,8 @@ def createPathList(path):
     # pathList.append(createNewDict("9", "pyAutoGui", False))
     # pathList.append(createNewDict("back", "pyHook", False))
 
-
-    pathList.insert(0, createNewDict("back", "pyHook", False))
+    for i in range(1, 2):
+        pathList.insert(0, createNewDict("back", "pyHook", False))
     pathList.insert(0, createNewDict(["lcontrol", "a"], "pyHook", False))
 
     print(str(pathList).replace("'", "\""))
