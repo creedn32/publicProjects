@@ -1,59 +1,80 @@
 import pyWinhook, pythoncom, pyautogui, win32gui, time
 
 
-# import sys
-# sys.path.append("..")
-# from creed_modules import creedFunctions
-
-
 
 def functionComboDetected(outputCombo, **otherArg):
 
-    # print(keyDownInfoObj.autoKeyDown)
+    if otherArg:
 
-    if not keyDownInfoObj.autoKeyDown:
+        executorDisplayed = False
 
-        for outKey in outputCombo:
-            keyDownInfoObj.autoKeyDown.append(outKey)
-            pyautogui.keyDown(convertKey(outKey))
+        if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
+            executorDisplayed = True
 
 
-        for outKey in reversed(outputCombo):
-            pyautogui.keyUp(convertKey(outKey))
+    for num, outKey in enumerate(outputCombo):
+        # print(num)
+        # print(outKey
+        keyDownInfoObj.autoKeyDown.append(outKey)
+        pyautogui.keyDown(convCharMap(outputCombo, "pyHook", "pyAutoGui")[num])
 
-        if otherArg:
-            for i in range(1, 10):
-                time.sleep(.01)
+
+    for num, outKey in enumerate(reversed(outputCombo)):
+        # print(num)
+        # print(outKey)
+        pyautogui.keyUp(convCharMap(outputCombo, "pyHook", "pyAutoGui")[num])
+
+
+    if otherArg:
+
+        if not executorDisplayed:
+
+            for i in range(1, 20):
 
                 if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
 
-                    # print("in")
+                    print("Executor is now displayed and outputString is " + str(otherArg["outputString"]))
 
-                    for list in otherArg["outputString"]:
+                    time.sleep(.01)
 
-                        for outKey in list:
+                    for item in otherArg["outputString"]:
+
+                        for outKey in item["pyHook"]:
+                            # print(outKey)
                             keyDownInfoObj.autoKeyDown.append(outKey)
 
-                            pyautogui.keyDown(convertKey(outKey))
+                        for outKey in item["pyAutoGui"]:
+                            # print(outKey)
+                            pyautogui.keyDown(outKey)
 
-                        for outKey in reversed(list):
-                            pyautogui.keyUp(convertKey(outKey))
+                        for outKey in reversed(item["pyAutoGui"]):
+                            # print(outKey)
+                            pyautogui.keyUp(outKey)
+
+
+                    # keyDownInfoObj.autoKeyDown.append("9")
+                    # pyautogui.press("9")
+                    # keyDownInfoObj.autoKeyDown.append("back")
+                    # pyautogui.press("backspace")
+
 
                     break
+
+                print(i)
+                time.sleep(.005)
+
+
 
 
 
 def functionAutoKeyPress(event):
 
-
-    # print("Key pressed down automatically: " + event.Key.lower())
-    # print("Allowed to send automatic press to OS? " + str(True))
+    print("Key pressed down automatically: " + event.Key.lower() + " and it was sent to the OS.")
     return True
 
 
-def functionKeyPress(event):
 
-    # print(str(event.Key))
+def functionKeyPress(event):
 
     toReturn = True
 
@@ -64,29 +85,39 @@ def functionKeyPress(event):
             # toReturn = False
 
 
+    if not keyDownInfoObj.autoKeyDown:
 
-    for combo in comboList:
+        for combo in comboList:
 
-        if event.Key.lower() in combo["inputKeys"]: # and event.Key.lower() not in currentPressedKeys:
-            currentPressedKeys.add(event.Key.lower())
+            if event.Key.lower() in combo["inputKeys"]:  # and event.Key.lower() not in currentPressedKeys:
+                currentPressedKeys.add(event.Key.lower())
 
 
-        if currentPressedKeys == combo["inputKeys"]:
-            if "outputComboKeys" in combo.keys():
-                if "outputString" in combo.keys():
-                    functionComboDetected(combo["outputComboKeys"], outputString=combo["outputString"])
-                else:
-                    functionComboDetected(combo["outputComboKeys"])
-            elif "printToScreen" in combo.keys():
-                print(combo["printToScreen"])
+
+        for combo in comboList:
+
+            if currentPressedKeys == combo["inputKeys"]:
+
+                # print("A combo was detected")
+
+                if "outputComboKeys" in combo.keys():
+                    if "outputString" in combo.keys():
+                        functionComboDetected(combo["outputComboKeys"], outputString=combo["outputString"])
+                    else:
+                        functionComboDetected(combo["outputComboKeys"])
+                elif "printToScreen" in combo.keys():
+                    print(combo["printToScreen"])
 
 
     if event.Key.lower() not in keyDownInfoObj.autoKeyDown and "capital" in currentPressedKeys:
-        toReturn = False
+            toReturn = False
 
 
-    # print("Key pressed: " + event.Key.lower())
-    # print("Allowed to send press to OS? " + str(toReturn))
+    if toReturn:
+        print("Key pressed: " + event.Key.lower() + " and it was sent to the OS.")
+    else:
+        print("Key pressed: " + event.Key.lower() + " and it was not sent to the OS.")
+
 
     return toReturn
 
@@ -103,24 +134,28 @@ def functionKeyRelease(event):
         toReturn = False
 
 
-        # for combo in comboList:
-
-            # if event.Key.lower() in combo["inputKeys"]:
-
-                #remove that key from currentPressedKeys
-
-                # currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
-
-        # if "capital" in currentPressedKeys:
-        #     toReturn = False
-
 
     elif event.Key.lower() in keyDownInfoObj.autoKeyDown:
         keyDownInfoObj.autoKeyDown.remove(event.Key.lower())
 
+
     # print(str(currentPressedKeys))
-    # print("Key released: " + event.Key.lower())
-    # print("Allowed to send release to OS? " + str(toReturn))
+
+    if toReturn:
+        print("Key released: " + event.Key.lower() + " and it was sent to the OS.")
+    else:
+        print("Key released: " + event.Key.lower() + " and it was not sent to the OS.")
+
+
+    # if event.Key.lower() == "capital" and not currentPressedKeys:
+    #     print("here")
+    #     keyDownInfoObj.autoKeyDown.append("back")
+        # pyautogui.keyDown("backspace")
+        # pyautogui.keyUp("backspace")
+
+
+
+
     return toReturn
 
 
@@ -143,18 +178,43 @@ def OnKeyboardEvent(event):
 
 
 
+def convCharMap(action, fromFormat, toFormat):
 
-def convertKey(key):
-    for i in pyHookToAutoGui:
-        if i[0] == key:
-            return i[1]
+    for item in characterMap:
+        if fromFormat in item and item[fromFormat] == action:
+            return item[toFormat]
 
-    for i in pyHookToAutoGuiWithoutModifier:
-        if i[0] == key:
-            print(key)
-            return i[1]
+    return action
 
-    return key
+
+def addKeyValue(dict, keyVal, val):
+
+    dict[keyVal] = val
+    return dict
+
+
+def createNewDict(action, fromFormat, yesAsEntered):
+
+    newDict = {}
+    if yesAsEntered:
+        addKeyValue(newDict, "asEntered", action)
+
+
+    convertedToAutoGui = convCharMap(action, fromFormat, "pyAutoGui")
+    convertedToHook = convCharMap(action, fromFormat, "pyHook")
+
+    if not isinstance(convertedToAutoGui, list):
+        convertedToAutoGui = [convertedToAutoGui]
+
+    if not isinstance(convertedToHook, list):
+        convertedToHook = [convertedToHook]
+
+    addKeyValue(newDict, "pyAutoGui", convertedToAutoGui)
+    addKeyValue(newDict, "pyHook", convertedToHook)
+
+    return newDict
+
+
 
 
 
@@ -163,40 +223,30 @@ def createPathList(path):
 
     pathList = []
 
-    for key in path:
-
-        keyToAppend = []
-
-        for i in autoGuiToPyHook:
-            if i[1] == key.lower():
-                keyToAppend = i[0]
-
-        if not keyToAppend:
-            for i in pyHookToAutoGui:
-                if i[1] == key.lower():
-                    keyToAppend.append(i[0])
-
-        if not keyToAppend:
-            for i in characterToDesc:
-                if i[1] == key.lower():
-                    keyToAppend.append(i[0])
+    for char in path:
+        pathList.append(createNewDict(char.lower(), "asEntered", True))
 
 
 
-        if not keyToAppend:
-            keyToAppend.append(key.lower())
-
-        pathList.append(keyToAppend)
-
-    if pathList[-1][0] != "oem_5":
-        pathList.append(["oem_5"])
+    if pathList[-1]["asEntered"] !=  "\\":
+        pathList.append(createNewDict("\\", "pyAutoGui", False))
 
 
-    pathList.insert(0, ["back"])
-    pathList.insert(0, ["lcontrol", "a"])
+
+    # pathList.append(createNewDict("9", "pyAutoGui", False))
+    # pathList.append(createNewDict("back", "pyHook", False))
+
+    for i in range(1, 2):
+        pathList.insert(0, createNewDict("back", "pyHook", False))
+    pathList.insert(0, createNewDict(["lcontrol", "a"], "pyHook", False))
+
     print(str(pathList).replace("'", "\""))
 
+
+
     return pathList
+
+
 
 
 
@@ -208,32 +258,25 @@ class keyDownInfo():
 
 
 
+#
+# pyHookToAutoGui = [
+#     ["lmenu", "alt"],
+#     ["lshift", "shift"],
+#     ["lcontrol", "ctrl"]
+# ]
+#
 
-pyHookToAutoGui = [
-    ["lmenu", "alt"],
-    ["oem_5", "\\"],
-    ["lshift", "shift"],
-    ["back", "backspace"],
-    ["lcontrol", "ctrl"],
+
+
+characterMap = [
+    {"pyHook": "space", "pyAutoGui": "space", "asEntered": " "},
+    {"pyHook": "oem_5", "pyAutoGui": "\\", "asEntered": "\\"},
+    {"pyHook": "back", "pyAutoGui": "backspace"},
+    {"pyHook": ["lcontrol", "a"], "pyAutoGui": ["ctrl", "a"]},
+    {"pyHook": ["lshift", "oem_1", "lshift"], "pyAutoGui": ":", "asEntered": ":"},
+    {"pyHook": ["lshift", "oem_minus", "lshift"], "pyAutoGui": "_", "asEntered": "_"},
+    {"pyHook": ["lmenu", "space"], "pyAutoGui": ["alt", "space"]}
 ]
-
-
-characterToDesc = [
-    ["space", " "]
-]
-
-
-pyHookToAutoGuiWithoutModifier = [
-    ["oem_1", ":"],
-    ["oem_minus", "_"]
-]
-
-
-autoGuiToPyHook = [
-    [["lshift", "oem_1"], ":"],
-    [["lshift", "oem_minus"], "_"]
-]
-
 
 
 
@@ -242,11 +285,11 @@ comboList = [
                 {"inputKeys": {"capital", "k"}, "outputComboKeys": ["right"]},
                 {"inputKeys": {"capital", "u"}, "outputComboKeys": ["up"]},
                 {"inputKeys": {"capital", "m"}, "outputComboKeys": ["down"]},
-                {"inputKeys": {"capital", "d"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"C:\Users\cnaylor\Desktop")},
-                {"inputKeys": {"capital", "a"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"Y:\Accounting")},
-                {"inputKeys": {"capital", "c"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"Y:\Accounting\12_Creed")},
-                # {"inputKeys": {"capital", "a"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"C:\users\creed")},
-                # {"inputKeys": {"capital", "s"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList("c:\\users\\creed\\nas\\synologydrive\\computer\\setup files\\")},
+                # {"inputKeys": {"capital", "d"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"C:\Users\cnaylor\Desktop")},
+                # {"inputKeys": {"capital", "a"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"Y:\Accounting")},
+                # {"inputKeys": {"capital", "c"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"Y:\Accounting\12_Creed")},
+                {"inputKeys": {"capital", "a"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"C:\users\creed")},
+                {"inputKeys": {"capital", "s"}, "outputComboKeys": ["lmenu", "space"], "outputString": createPathList(r"c:\users\creed\nas\synologydrive\computer\setup files")},
                 {"inputKeys": {"capital", "h"}, "printToScreen": "hi"}
             ]
 
@@ -263,13 +306,42 @@ hookManagerObj.KeyDown = OnKeyboardEvent
 hookManagerObj.KeyUp = OnKeyboardEvent
 hookManagerObj.HookKeyboard()
 print("ready")
+
+
+# for key in ["alt", "space"]:
+#     pyautogui.keyDown(key)
+#
+# for key in reversed["alt", "space"]:
+#     pyautogui.keyUp(key)
+
+
 pythoncom.PumpMessages()
 
 
 
 
+#
+# Key pressed: lshift and it was sent to the OS.
+# Key pressed: oem_minus and it was sent to the OS.
+# Key released: lshift and it was sent to the OS.
+# Key pressed: lshift and it was sent to the OS.
+# Key released: oem_minus and it was sent to the OS.
+# Key released: lshift and it was sent to the OS.
+#
+
+
 
 #
+# Key pressed: lshift and it was sent to the OS.
+# Key pressed: oem_1 and it was sent to the OS.
+# Key released: lshift and it was sent to the OS.
+# Key pressed: lshift and it was sent to the OS.
+# Key released: oem_1 and it was sent to the OS.
+# Key released: lshift and it was sent to the OS.
+
+
+
+
 # win32guiObj = win32gui
 #     win32guiObj.GetWindowText(win32guiObj.GetForegroundWindow())
 #     processID = win32process.GetWindowThreadProcessId(win32guiObj.GetForegroundWindow())
