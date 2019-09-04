@@ -52,7 +52,8 @@ def functionComboDetected(outputCombo, **otherArg):
                         for outKey in list:
                             stringToPrint = stringToPrint + str(outKey)
 
-                        if num < 2:
+                        if num < 2 or len(list) == 1:
+
                             for outKey in list:
                                 keyDownInfoObj.autoKeyDown.append(outKey)
                                 pyautogui.keyDown(convertKey(outKey))
@@ -60,14 +61,18 @@ def functionComboDetected(outputCombo, **otherArg):
                             for outKey in reversed(list):
                                 pyautogui.keyUp(convertKey(outKey))
 
-                        if num >= 2:
 
-                            for outKey in otherArg["outputString"][-2]:
-                                keyDownInfoObj.autoKeyDown.append(outKey)
-                                pyautogui.keyDown(convertKey(outKey))
 
-                            for outKey in reversed(otherArg["outputString"][-2]):
-                                pyautogui.keyUp(convertKey(outKey))
+                        # if num >= 2:
+                        #
+                        #     if len(list) == 1:
+                        #
+                        #         for outKey in list:
+                        #             keyDownInfoObj.autoKeyDown.append(outKey)
+                        #             pyautogui.keyDown(convertKey(outKey))
+                        #
+                        #         for outKey in reversed(list):
+                        #             pyautogui.keyUp(convertKey(outKey))
 
 
 
@@ -148,10 +153,10 @@ def functionKeyPress(event):
             toReturn = False
 
 
-    # if toReturn:
-    #     print("Key pressed: " + event.Key.lower() + " and it was sent to the OS.")
-    # else:
-    #     print("Key pressed: " + event.Key.lower() + " and it was not sent to the OS.")
+    if toReturn:
+        print("Key pressed: " + event.Key.lower() + " and it was sent to the OS.")
+    else:
+        print("Key pressed: " + event.Key.lower() + " and it was not sent to the OS.")
 
 
     return toReturn
@@ -186,10 +191,10 @@ def functionKeyRelease(event):
 
     # print(str(currentPressedKeys))
 
-    # if toReturn:
-    #     print("Key released: " + event.Key.lower() + " and it was sent to the OS.")
-    # else:
-    #     print("Key released: " + event.Key.lower() + " and it was not sent to the OS.")
+    if toReturn:
+        print("Key released: " + event.Key.lower() + " and it was sent to the OS.")
+    else:
+        print("Key released: " + event.Key.lower() + " and it was not sent to the OS.")
 
     return toReturn
 
