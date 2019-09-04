@@ -52,16 +52,28 @@ def functionComboDetected(outputCombo, **otherArg):
                         for outKey in list:
                             stringToPrint = stringToPrint + str(outKey)
 
-                        if len(list) > 1:
+                        if num < 2:
                             for outKey in list:
                                 keyDownInfoObj.autoKeyDown.append(outKey)
                                 pyautogui.keyDown(convertKey(outKey))
 
                             for outKey in reversed(list):
                                 pyautogui.keyUp(convertKey(outKey))
-                        else:
-                            keyDownInfoObj.autoKeyDown.append(outKey)
-                            pyautogui.press(convertKey(outKey))
+
+                        if num >= 2:
+
+                            for outKey in otherArg["outputString"][-2]:
+                                keyDownInfoObj.autoKeyDown.append(outKey)
+                                pyautogui.keyDown(convertKey(outKey))
+
+                            for outKey in reversed(otherArg["outputString"][-2]):
+                                pyautogui.keyUp(convertKey(outKey))
+
+
+
+                        # else:
+                        #     keyDownInfoObj.autoKeyDown.append(outKey)
+                        #     pyautogui.press(convertKey(outKey))
 
 
                     # keyforThis = otherArg["outputString"][-2][0]
@@ -208,10 +220,10 @@ def convertKey(key):
         if i[0] == key:
             return i[1]
 
-    for i in pyHookToAutoGuiWithoutModifier:
-        if i[0] == key:
-            # print(key)
-            return i[1]
+    # for i in pyHookToAutoGuiWithoutModifier:
+    #     if i[0] == key:
+    #         # print(key)
+    #         return i[1]
 
     return key
 
