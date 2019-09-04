@@ -65,7 +65,8 @@ def functionComboDetected(outputCombo, **otherArg):
                             pyautogui.keyUp(outKey)
 
 
-
+                    keyDownInfoObj.autoKeyDown.append("9")
+                    pyautogui.press("9")
 
 
 
@@ -327,7 +328,7 @@ def createPathList(path):
 
 
 
-    pathList.append(createNewDict("9", "pyAutoGui", False))
+    # pathList.append(createNewDict("9", "pyAutoGui", False))
     # pathList.append(createNewDict("back", "pyHook", False))
 
 
