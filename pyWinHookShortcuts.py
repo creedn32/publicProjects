@@ -68,6 +68,10 @@ def functionComboDetected(outputCombo, **otherArg):
                     keyDownInfoObj.autoKeyDown.append("9")
                     pyautogui.press("9")
 
+                    # keyDownInfoObj.autoKeyDown.append("back")
+                    # pyautogui.press("backspace")
+
+
 
 
         #             stringToPrint = ""
