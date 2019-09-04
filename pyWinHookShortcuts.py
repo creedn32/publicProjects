@@ -4,29 +4,19 @@ import pyWinhook, pythoncom, pyautogui, win32gui, time
 
 def functionComboDetected(outputCombo, **otherArg):
 
-    # print(keyDownInfoObj.autoKeyDown)
-    # print("here")
-
     if otherArg:
 
         executorDisplayed = False
 
         if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
-            # print("Executor is displayed")
             executorDisplayed = True
-        else:
-            pass
-            # print("Executor is not displayed")
 
-    # print(outputCombo)
 
     for num, outKey in enumerate(outputCombo):
         # print(num)
-        # print(outKey)
+        # print(outKey
         keyDownInfoObj.autoKeyDown.append(outKey)
-        # print(convCharMap(outKey, "pyHook", "pyAutoGui"))
         pyautogui.keyDown(convCharMap(outputCombo, "pyHook", "pyAutoGui")[num])
-
 
 
     for num, outKey in enumerate(reversed(outputCombo)):
@@ -45,12 +35,7 @@ def functionComboDetected(outputCombo, **otherArg):
 
                     print("Executor is now displayed and outputString is " + str(otherArg["outputString"]))
 
-
-                        # for outKey in item["pyHook"]:
-                        #     stringToPrint = stringToPrint + str(outKey)
-
                     for item in otherArg["outputString"]:
-                        # print(item)
 
                         for outKey in item["pyHook"]:
                             # print(outKey)
@@ -67,77 +52,13 @@ def functionComboDetected(outputCombo, **otherArg):
 
                     keyDownInfoObj.autoKeyDown.append("9")
                     pyautogui.press("9")
-
                     # keyDownInfoObj.autoKeyDown.append("back")
                     # pyautogui.press("backspace")
 
 
-
-
-        #             stringToPrint = ""
-        #
-        #             for num, item in enumerate(otherArg["outputString"]):
-        #
-        #
-        #                 for outKey in item["pyHook"]:
-        #                     stringToPrint = stringToPrint + str(outKey)
-        #
-        #
-        #                 for outKey in item["pyHook"]:
-        #                     keyDownInfoObj.autoKeyDown.append(outKey)
-        #
-        #                 for outKey in item["pyAutoGui"]:
-        #                     pyautogui.keyDown(outKey)
-        #
-        #                 for outKey in reversed(item["pyAutoGui"]):
-        #                     pyautogui.keyUp(outKey)
-        #
-        #
-        #                 # if num != 3:
-        #                 #
-        #                 #     for outKey in list:
-        #                 #
-        #                 #
-        #                 #
-        #                 #     for outKey in reversed(list):
-        #                 #         pyautogui.keyUp(otherArg["outputString"]["forPyAutoGui"][pyHookIndexNum])
-        #                 #
-        #                 #
-        #
-        #                 # if num >= 2:
-        #                 #
-        #                 #     if len(list) == 1:
-        #                 #
-        #                 #         for outKey in list:
-        #                 #             keyDownInfoObj.autoKeyDown.append(outKey)
-        #                 #             pyautogui.keyDown(convertKey(outKey))
-        #                 #
-        #                 #         for outKey in reversed(list):
-        #                 #             pyautogui.keyUp(convertKey(outKey))
-        #
-        #
-        #
-        #                 # else:
-        #                 #     keyDownInfoObj.autoKeyDown.append(outKey)
-        #                 #     pyautogui.press(convertKey(outKey))
-        #
-        #
-        #             # keyforThis = otherArg["outputString"][-2][0]
-        #             # keyforThis = otherArg["outputString"][-2]
-        #
-        #
-        #             # keyDownInfoObj.autoKeyDown.append(keyforThis)
-        #             # pyautogui.press(keyforThis)
-        #
-        #             # print(keyforThis)
-        #
-        #
-        #             # print(stringToPrint)
-        #
-        #
                     break
-        #
-        #         # print(i)
+
+                print(i)
                 time.sleep(.005)
 
 
@@ -146,15 +67,12 @@ def functionComboDetected(outputCombo, **otherArg):
 
 def functionAutoKeyPress(event):
 
-
-    # print("Key pressed down automatically: " + event.Key.lower() + " and it was sent to the OS.")
+    print("Key pressed down automatically: " + event.Key.lower() + " and it was sent to the OS.")
     return True
 
 
 
 def functionKeyPress(event):
-
-    # print("Key pressed: " + event.Key.lower())
 
     toReturn = True
 
@@ -163,7 +81,6 @@ def functionKeyPress(event):
             print("tabbed")
             # pyautogui.press("right")
             # toReturn = False
-
 
 
     if not keyDownInfoObj.autoKeyDown:
@@ -194,10 +111,10 @@ def functionKeyPress(event):
             toReturn = False
 
 
-    # if toReturn:
-    #     print("Key pressed: " + event.Key.lower() + " and it was sent to the OS.")
-    # else:
-    #     print("Key pressed: " + event.Key.lower() + " and it was not sent to the OS.")
+    if toReturn:
+        print("Key pressed: " + event.Key.lower() + " and it was sent to the OS.")
+    else:
+        print("Key pressed: " + event.Key.lower() + " and it was not sent to the OS.")
 
 
     return toReturn
@@ -215,27 +132,27 @@ def functionKeyRelease(event):
         toReturn = False
 
 
-        # for  combo in comboList:
-
-            # if event.Key.lower() in combo["inputKeys"]:
-
-                #remove that key from currentPressedKeys
-
-                # currentPressedKeys[:] = [x for x in currentPressedKeys if x != event.Key]
-
-        # if "capital" in currentPressedKeys:
-        #     toReturn = False
-
 
     elif event.Key.lower() in keyDownInfoObj.autoKeyDown:
         keyDownInfoObj.autoKeyDown.remove(event.Key.lower())
 
-    # print(str(currentPressedKeys))
 
-    # if toReturn:
-    #     print("Key released: " + event.Key.lower() + " and it was sent to the OS.")
-    # else:
-    #     print("Key released: " + event.Key.lower() + " and it was not sent to the OS.")
+    # print(str(currentPressedKeys))
+a
+    if toReturn:
+        print("Key released: " + event.Key.lower() + " and it was sent to the OS.")
+    else:
+        print("Key released: " + event.Key.lower() + " and it was not sent to the OS.")
+
+
+    # if event.Key.lower() == "capital" and not currentPressedKeys:
+    #     print("here")
+    #     keyDownInfoObj.autoKeyDown.append("back")
+        # pyautogui.keyDown("backspace")
+        # pyautogui.keyUp("backspace")
+
+
+
 
     return toReturn
 
@@ -243,9 +160,6 @@ def functionKeyRelease(event):
 
 
 def OnKeyboardEvent(event):
-
-    # print("The key: " + event.Key + " was " + event.MessageName)
-
 
 
     if event.MessageName in ["key sys down", "key down"]:
@@ -299,21 +213,6 @@ def createNewDict(action, fromFormat, yesAsEntered):
     return newDict
 
 
-
-
-#
-# def convertKey(key):
-#
-#     for i in pyHookToAutoGui:
-#         if i[0] == key:
-#             return i[1]
-#j
-#     # for i in pyHookToAutoGuiWithoutModifier:
-#     #     if i[0] == key:
-#     #         # print(key)
-#     #         return i[1]
-#
-#     return key
 
 
 
@@ -376,8 +275,6 @@ characterMap = [
     {"pyHook": ["lshift", "oem_minus", "lshift"], "pyAutoGui": "_", "asEntered": "_"},
     {"pyHook": ["lmenu", "space"], "pyAutoGui": ["alt", "space"]}
 ]
-
-
 
 
 
