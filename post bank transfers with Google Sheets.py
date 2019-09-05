@@ -8,7 +8,7 @@ startTime = time.time()
 spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
 
 
-from pprint import pprint
+# from pprint import pprint
 import datetime, pynput.mouse, pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 import pyautogui
 pyautogui.PAUSE = 0
@@ -53,7 +53,7 @@ for sheet in googleSheetsObj.get(spreadsheetId=spreadsheetIDStr).execute()["shee
 
 googleSheetValues = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range=sheetName).execute()["values"]
 
-pprint(googleSheetsDictionary)
+
 
 requestDictionary = {}
 requestDictionary["requests"] = []
@@ -72,7 +72,7 @@ requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["bac
 requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
 
 
-pprint("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
 with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
