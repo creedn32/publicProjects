@@ -2,25 +2,19 @@ print("Comment: Importing modules and setting up variables...")
 import time
 startTime = time.time()
 
-
-
-
-import sys
-sys.path.append("..")
-from creed_modules import creedFunctions
-
-
-# from pprint import pprint
-import pyautogui, datetime, pynput.mouse
-
-
-import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
-
-
 #ID of public Google Sheet
 # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
 #ID of private Google Sheet
 spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
+
+
+from pprint import pprint
+import datetime, pynput.mouse, pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
+import pyautogui
+pyautogui.PAUSE = 0
+import sys
+sys.path.append("..")
+from creed_modules import creedFunctions
 
 
 changeCellColor = False
@@ -29,7 +23,6 @@ credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\goo
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
-pyautogui.PAUSE = 0
 
 
 
@@ -38,7 +31,6 @@ if os.path.exists(tokenPath):
         credentialsObj = pickle.load(tokenObj)
 
 # If there are no (valid) credentials available, let the user log in.
-
 if not credentialsObj or not credentialsObj.valid:
     if credentialsObj and credentialsObj.expired and credentialsObj.refresh_token:
         credentialsObj.refresh(google.auth.transport.requests.Request())
@@ -61,7 +53,7 @@ for sheet in googleSheetsObj.get(spreadsheetId=spreadsheetIDStr).execute()["shee
 
 googleSheetValues = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range=sheetName).execute()["values"]
 
-
+pprint(googleSheetsDictionary)
 
 requestDictionary = {}
 requestDictionary["requests"] = []
@@ -80,7 +72,7 @@ requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["bac
 requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
 
 
-print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+pprint("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
 with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
