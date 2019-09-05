@@ -18,9 +18,9 @@ import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, go
 
 
 #ID of public Google Sheet
-spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
+# spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
 #ID of private Google Sheet
-# spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
+spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
 
 
 changeCellColor = False
@@ -83,7 +83,7 @@ requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(ba
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
-with pynput.mouse.Listener(on_click=creed_toolpack.functionOnClick) as listenerObj:
+with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
     print("Click on 'Clear' to begin posting...")
     listenerObj.join()
 
@@ -117,7 +117,7 @@ for sheet in googleSheetsData["sheets"]:
 
                     print("Row " + str(rowCount) + " will be populated into the Great Plains entry window.")
 
-                    creed_toolpack.repetitiveKeyPress(2, "tab")
+                    creedFunctions.repetitiveKeyPress(2, "tab")
 
                     for col in range(1, 6):
 
@@ -162,11 +162,11 @@ for sheet in googleSheetsData["sheets"]:
                                 pyautogui.press(letter)
 
 
-                        creed_toolpack.repetitiveKeyPress(numberTabs, "tab")
+                        creedFunctions.repetitiveKeyPress(numberTabs, "tab")
 
 
 
-                    with pynput.mouse.Listener(on_click=creed_toolpack.functionOnClick) as listenerObj:
+                    with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
                         print("Click on 'Post' or 'Clear' to continue with this entry...")
                         listenerObj.join()
 
