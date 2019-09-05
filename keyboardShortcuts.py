@@ -1,4 +1,4 @@
-import pyWinhook, pythoncom, pyautogui, win32gui, time, pywinauto, psutil, win32con
+import pyWinhook, pythoncom, pyautogui, win32gui, time, pywinauto, psutil
 
 
 import sys
@@ -9,83 +9,94 @@ from creed_modules import creedFunctions
 
 def functionComboDetected(outputCombo):
 
+    convertedOutputCombo = convCharMap(outputCombo, "pyHook", "pyAutoGui")
+    print(convertedOutputCombo)
+
+    # print(outputCombo)
+    # for outKey in outputCombo:
+    #     print(outKey)
+
     for num, outKey in enumerate(outputCombo):
         # print(num)
-        # print(outKey
-        keyDownInfoObj.autoKeyDown.append(outKey)
-        pyautogui.keyDown(convCharMap(outputCombo, "pyHook", "pyAutoGui")[num])
+        print("outKey is " + outKey)
+        # print(convCharMap(outputCombo, "pyHook", "pyAutoGui"))
+        appInfoObj.autoKeyDown.append(outKey)
+        pyautogui.keyDown(convertedOutputCombo[num])
 
 
     for num, outKey in enumerate(reversed(outputCombo)):
         # print(num)
         # print(outKey)
-        pyautogui.keyUp(convCharMap(outputCombo, "pyHook", "pyAutoGui")[num])
+        pyautogui.keyUp(convertedOutputCombo[num])
 
 
-def functionAdvComboDetected(outputCombo):
-
+def functionAdvComboDetected(outputString):
 
     if not win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
 
-        win32gui.SetForegroundWindow(executorHwndWin32gui)
-        win32gui.ShowWindow(executorHwndWin32gui, 9)
+        executorCombo = ["lmenu", "space"]
+
+        convertedExecutorCombo = convCharMap(executorCombo, "pyHook", "pyAutoGui")
+
+        for num, outKey in enumerate(executorCombo):
+            appInfoObj.autoKeyDown.append(outKey)
+            pyautogui.keyDown(convertedExecutorCombo[num])
+
+        for num, outKey in enumerate(reversed(executorCombo)):
+            pyautogui.keyUp(convertedExecutorCombo[num])
+
+
+        for i in range(1, 20):
+
+            if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
+
+                # print("Executor is now displayed and outputString is " + str(outputString))
+                time.sleep(.01)
+
+                for item in outputString:
+
+                    for outKey in item["pyHook"]:
+                        # print(outKey)
+                        appInfoObj.autoKeyDown.append(outKey)
+
+                    for outKey in item["pyAutoGui"]:
+                        # print(outKey)
+                        pyautogui.keyDown(outKey)
+
+                    for outKey in reversed(item["pyAutoGui"]):
+                        # print(outKey)
+                        pyautogui.keyUp(outKey)
+
+
+                break
+
+            # print(i)
+            time.sleep(.005)
+
+
+    else:
+
         tmainformObj.wait('ready')
         teditObj = tmainformObj[u'3']
         currentText = teditObj.texts()
-        # teditObj.set_focus()
-
-    else:
-        print("here")
-
-        # win32gui.ShowWindow(executorHwndWin32gui, win32con.SW_MINIMIZE)
+        print(currentText[0])
 
 
+        executorCombo = ["lmenu", "space"]
 
+        for num, outKey in enumerate(executorCombo):
+            appInfoObj.autoKeyDown.append(outKey)
+            pyautogui.keyDown(convCharMap(executorCombo, "pyHook", "pyAutoGui")[num])
 
-
-        #
-        #
-        # for i in range(1, 20):
-        #
-        #     if win32gui.GetWindowText(win32gui.GetForegroundWindow()) == "Executor":
-        #
-        #         print("Executor is now displayed and outputString is " + str(otherArg["outputString"]))
-        #
-        #         time.sleep(.01)
-        #
-        #         for item in otherArg["outputString"]:
-        #
-        #             for outKey in item["pyHook"]:
-        #                 # print(outKey)
-        #                 keyDownInfoObj.autoKeyDown.append(outKey)
-        #
-        #             for outKey in item["pyAutoGui"]:
-        #                 # print(outKey)
-        #                 pyautogui.keyDown(outKey)
-        #
-        #             for outKey in reversed(item["pyAutoGui"]):
-        #                 # print(outKey)
-        #                 pyautogui.keyUp(outKey)
-        #
-        #
-        #         # keyDownInfoObj.autoKeyDown.append("9")
-        #         # pyautogui.press("9")
-        #         # keyDownInfoObj.autoKeyDown.append("back")
-        #         # pyautogui.press("backspace")
-        #
-        #
-        #         break
-        #
-        #     print(i)
-        #     time.sleep(.005)
-
-
+        for num, outKey in enumerate(reversed(executorCombo)):
+            pyautogui.keyUp(convCharMap(executorCombo, "pyHook", "pyAutoGui")[num])
 
 
 
 def functionAutoKeyPress(event):
 
-    # print("Key pressed down automatically: " + event.Key.lower() + " and it was sent to the OS.")
+    if appInfoObj.printKeyActions:
+        print("Key pressed down automatically: " + event.Key.lower() + " and it was sent to the OS.")
     return True
 
 
@@ -101,7 +112,7 @@ def functionKeyPress(event):
             # toReturn = False
 
 
-    if not keyDownInfoObj.autoKeyDown:
+    if not appInfoObj.autoKeyDown:
 
         for combo in comboList:
 
@@ -124,14 +135,15 @@ def functionKeyPress(event):
                     print(combo["printToScreen"])
 
 
-    if event.Key.lower() not in keyDownInfoObj.autoKeyDown and "capital" in currentPressedKeys:
-            toReturn = False
+    if event.Key.lower() not in appInfoObj.autoKeyDown and "capital" in currentPressedKeys: # and event.Key.lower() != "lshift":
+        toReturn = False
 
 
-    # if toReturn:
-    #     print("Key pressed: " + event.Key.lower() + " and it was sent to the OS.")
-    # else:
-    #     print("Key pressed: " + event.Key.lower() + " and it was not sent to the OS.")
+    if appInfoObj.printKeyActions:
+        if toReturn:
+            print("Key pressed: " + event.Key.lower() + " and it was sent to the OS.")
+        else:
+            print("Key pressed: " + event.Key.lower() + " and it was not sent to the OS.")
 
 
     return toReturn
@@ -143,22 +155,23 @@ def functionKeyRelease(event):
     toReturn = True
 
 
-    if event.Key.lower() not in keyDownInfoObj.autoKeyDown and event.Key.lower() in currentPressedKeys:
+    if event.Key.lower() not in appInfoObj.autoKeyDown and event.Key.lower() in currentPressedKeys:
 
         currentPressedKeys.remove(event.Key.lower())
         toReturn = False
 
 
-    elif event.Key.lower() in keyDownInfoObj.autoKeyDown:
-        keyDownInfoObj.autoKeyDown.remove(event.Key.lower())
+    elif event.Key.lower() in appInfoObj.autoKeyDown:
+        appInfoObj.autoKeyDown.remove(event.Key.lower())
 
 
     # print(str(currentPressedKeys))
 
-    # if toReturn:
-    #     print("Key released: " + event.Key.lower() + " and it was sent to the OS.")
-    # else:
-    #     print("Key released: " + event.Key.lower() + " and it was not sent to the OS.")
+    if appInfoObj.printKeyActions:
+        if toReturn:
+            print("Key released: " + event.Key.lower() + " and it was sent to the OS.")
+        else:
+            print("Key released: " + event.Key.lower() + " and it was not sent to the OS.")
 
 
     return toReturn
@@ -171,9 +184,9 @@ def OnKeyboardEvent(event):
 
     if event.MessageName in ["key sys down", "key down"]:
 
-        if event.Key.lower() in keyDownInfoObj.autoKeyDown:
+        if event.Key.lower() in appInfoObj.autoKeyDown:
             # print("event.Key: " + event.Key)
-            # print("keyDownInfoObj.autoKeyDown: " + str(keyDownInfoObj.autoKeyDown))
+            # print("appInfoObj.autoKeyDown: " + str(appInfoObj.autoKeyDown))
             return functionAutoKeyPress(event)
         else:
             return functionKeyPress(event)
@@ -185,11 +198,39 @@ def OnKeyboardEvent(event):
 
 def convCharMap(action, fromFormat, toFormat):
 
+    toReturn = None
+
     for item in characterMap:
         if fromFormat in item and item[fromFormat] == action:
-            return item[toFormat]
 
-    return action
+            if not isinstance(item[toFormat], list):
+                toReturn = [item[toFormat]]
+            else:
+                toReturn = item[toFormat]
+
+
+
+    if not toReturn and isinstance(action, list):
+        toReturn = []
+
+        for char in action:
+            convertedChar = char
+
+            for item in characterMap:
+
+                if fromFormat in item and item[fromFormat] == char:
+                    convertedChar = item[toFormat]
+
+            toReturn.append(convertedChar)
+
+
+
+    if not toReturn:
+        toReturn = [action]
+
+
+    return toReturn
+
 
 
 def addKeyValue(dict, keyVal, val):
@@ -202,23 +243,16 @@ def createNewDict(action, fromFormat, yesAsEntered):
 
     newDict = {}
     if yesAsEntered:
-        addKeyValue(newDict, "asEntered", action)
+        addKeyValue(newDict, "asEntered", [action])
 
 
     convertedToAutoGui = convCharMap(action, fromFormat, "pyAutoGui")
     convertedToHook = convCharMap(action, fromFormat, "pyHook")
 
-    if not isinstance(convertedToAutoGui, list):
-        convertedToAutoGui = [convertedToAutoGui]
-
-    if not isinstance(convertedToHook, list):
-        convertedToHook = [convertedToHook]
-
     addKeyValue(newDict, "pyAutoGui", convertedToAutoGui)
     addKeyValue(newDict, "pyHook", convertedToHook)
 
     return newDict
-
 
 
 
@@ -237,12 +271,9 @@ def createPathList(path):
         pathList.append(createNewDict("\\", "pyAutoGui", False))
 
 
-    # pathList.append(createNewDict("9", "pyAutoGui", False))
-    # pathList.append(createNewDict("back", "pyHook", False))
 
-    for i in range(1, 2):
-        pathList.insert(0, createNewDict("back", "pyHook", False))
-    pathList.insert(0, createNewDict(["lcontrol", "a"], "pyHook", False))
+    # pathList.insert(0, createNewDict("back", "pyHook", False))
+    # pathList.insert(0, createNewDict(["lcontrol", "a"], "pyHook", False))
 
     # print(str(pathList).replace("'", "\""))
 
@@ -253,20 +284,7 @@ def createPathList(path):
 
 
 
-class keyDownInfo():
-    def __init__(self, autoKeyDown):
-        self.autoKeyDown = autoKeyDown
 
-
-
-
-#
-# pyHookToAutoGui = [
-#     ["lmenu", "alt"],
-#     ["lshift", "shift"],
-#     ["lcontrol", "ctrl"]
-# ]
-#
 
 
 
@@ -277,7 +295,8 @@ characterMap = [
     {"pyHook": ["lcontrol", "a"], "pyAutoGui": ["ctrl", "a"]},
     {"pyHook": ["lshift", "oem_1", "lshift"], "pyAutoGui": ":", "asEntered": ":"},
     {"pyHook": ["lshift", "oem_minus", "lshift"], "pyAutoGui": "_", "asEntered": "_"},
-    {"pyHook": ["lmenu", "space"], "pyAutoGui": ["alt", "space"]}
+    {"pyHook": ["lmenu", "space"], "pyAutoGui": ["alt", "space"]},
+    {"pyHook": "lshift", "pyAutoGui": "shift"}
 ]
 
 
@@ -287,17 +306,24 @@ comboList = [
                 {"inputKeys": {"capital", "k"}, "outputComboKeys": ["right"]},
                 {"inputKeys": {"capital", "u"}, "outputComboKeys": ["up"]},
                 {"inputKeys": {"capital", "m"}, "outputComboKeys": ["down"]},
+                {"inputKeys": {"capital", "n"}, "outputComboKeys": ["lshift", "down"]},
                 {"inputKeys": {"capital", "d"}, "outputString": createPathList(r"C:\Users\cnaylor\Desktop")},
                 {"inputKeys": {"capital", "a"}, "outputString": createPathList(r"Y:\Accounting")},
                 {"inputKeys": {"capital", "c"}, "outputString": createPathList(r"Y:\Accounting\12_Creed")},
                 # {"inputKeys": {"capital", "a"}, "outputString": ["lmenu", "space"], "outputString": createPathList(r"C:\users\creed")},
                 # {"inputKeys": {"capital", "s"}, "outputString": ["lmenu", "space"], "outputString": createPathList(r"c:\users\creed\nas\synologydrive\computer\setup files")},
-                {"inputKeys": {"capital", "h"}, "printToScreen": "hi"}
             ]
 
 
 
-keyDownInfoObj = keyDownInfo([])
+class appInfo():
+    def __init__(self, autoKeyDown, printKeyActions):
+        self.autoKeyDown = autoKeyDown
+        self.printKeyActions = printKeyActions
+
+
+
+appInfoObj = appInfo([], True)
 currentPressedKeys = set()
 pyautogui.PAUSE = 0
 
@@ -312,9 +338,10 @@ if executorRunning:
 else:
     executorApp = pywinauto.Application().start(cmd_line=u'"C:\\Users\\cnaylor\\Desktop\\Portable Applications\\Other\\Executor64bit\\Executor64bit\\Executor.exe"')
 
-executorHwndWin32gui = win32gui.FindWindow(None, "Executor")
+
 tmainformObj = executorApp.Executor
 tcmdformObj = executorApp.TCmdForm
+
 
 
 
@@ -323,6 +350,56 @@ hookManagerObj.KeyDown = OnKeyboardEvent
 hookManagerObj.KeyUp = OnKeyboardEvent
 hookManagerObj.HookKeyboard()
 print("ready")
+pythoncom.PumpMessages()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
+# pyHookToAutoGui = [
+#     ["lmenu", "alt"],
+#     ["lshift", "shift"],
+#     ["lcontrol", "ctrl"]
+# ]
+#
+
+
+
+
+
+# win32gui.ShowWindow(executorHwnd, win32con.SW_MINIMIZE)
+
+# executorHwnd = win32gui.FindWindow(None, "Executor")
+# win32gui.SetForegroundWindow(executorHwnd)
+
+#     win32gui.ShowWindow(executorHwnd, 9)
+#     tmainformObj.wait('ready')
+#     teditObj = tmainformObj[u'3']
+#     currentText = teditObj.texts()
+#     # teditObj.set_focus()
+#
+
+
+
+
+
+
+
+
 
 
 # for key in ["alt", "space"]:
@@ -332,7 +409,7 @@ print("ready")
 #     pyautogui.keyUp(key)
 
 
-pythoncom.PumpMessages()
+
 
 
 
@@ -365,7 +442,7 @@ pythoncom.PumpMessages()
 #     # print(psutil.Process(processID[-1]))
 #
 #     if psutil.Process(processID[-1]).name() == "Executor.exe":
-#         keyDownInfoObj.notAllowedToRelease = "Tab"
+#         appInfoObj.notAllowedToRelease = "Tab"
 #         pyautogui.press("right")
 #         toReturn = False
 
