@@ -10,17 +10,25 @@ from creed_modules import creedFunctions
 def functionComboDetected(outputCombo):
 
     convertedOutputCombo = convCharMap(outputCombo, "pyHook", "pyAutoGui")
-    print(convertedOutputCombo)
+    # print(convertedOutputCombo)
 
     # print(outputCombo)
     # for outKey in outputCombo:
     #     print(outKey)
 
+
+
     for num, outKey in enumerate(outputCombo):
         # print(num)
-        print("outKey is " + outKey)
+        # print("outKey is " + outKey)
         # print(convCharMap(outputCombo, "pyHook", "pyAutoGui"))
+
+        if convertedOutputCombo[num] == "shift" and num < len(convertedOutputCombo):
+            appInfoObj.afterShift = convertedOutputCombo[num + 1:][0]
+
+
         appInfoObj.autoKeyDown.append(outKey)
+        # print("outKey is " + outKey)
         pyautogui.keyDown(convertedOutputCombo[num])
 
 
@@ -154,15 +162,31 @@ def functionKeyRelease(event):
 
     toReturn = True
 
+    # if event.Key.lower() == "lshift":
+    #     print(convCharMap(event.Key.lower(), "pyHook", "pyAutoGui"))
 
-    if event.Key.lower() not in appInfoObj.autoKeyDown and event.Key.lower() in currentPressedKeys:
-
+    if event.Key.lower() == "lshift" and appInfoObj.afterShift:
+        # print(1)
+        toReturn = False
+    elif event.Key.lower() in appInfoObj.autoKeyDown and not appInfoObj.afterShift:
+        # print(2)
+        appInfoObj.autoKeyDown.remove(event.Key.lower())
+    elif event.Key.lower() not in appInfoObj.autoKeyDown and event.Key.lower() in currentPressedKeys:
+        # print(3)
         currentPressedKeys.remove(event.Key.lower())
         toReturn = False
-
-
-    elif event.Key.lower() in appInfoObj.autoKeyDown:
+    elif event.Key.lower() in appInfoObj.autoKeyDown and event.Key.lower() == appInfoObj.afterShift:
+        # print(4)
+        # print(event.Key.lower())
+        appInfoObj.afterShift = None
         appInfoObj.autoKeyDown.remove(event.Key.lower())
+        pyautogui.keyUp("shift")
+        pyautogui.keyUp("shift")
+
+        # appInfoObj.autoKeyDown.remove("lshift")
+        # print("autoKeydown " + str(appInfoObj.autoKeyDown))
+        # print("afterShift " + str(appInfoObj.afterShift))
+
 
 
     # print(str(currentPressedKeys))
@@ -180,7 +204,7 @@ def functionKeyRelease(event):
 
 
 def OnKeyboardEvent(event):
-
+    # print("afterShift is " + str(appInfoObj.afterShift))
 
     if event.MessageName in ["key sys down", "key down"]:
 
@@ -306,7 +330,7 @@ comboList = [
                 {"inputKeys": {"capital", "k"}, "outputComboKeys": ["right"]},
                 {"inputKeys": {"capital", "u"}, "outputComboKeys": ["up"]},
                 {"inputKeys": {"capital", "m"}, "outputComboKeys": ["down"]},
-                {"inputKeys": {"capital", "n"}, "outputComboKeys": ["lshift", "down"]},
+                {"inputKeys": {"lshift", "capital", "m"}, "outputComboKeys": ["lshift", "down"]},
                 {"inputKeys": {"capital", "d"}, "outputString": createPathList(r"C:\Users\cnaylor\Desktop")},
                 {"inputKeys": {"capital", "a"}, "outputString": createPathList(r"Y:\Accounting")},
                 {"inputKeys": {"capital", "c"}, "outputString": createPathList(r"Y:\Accounting\12_Creed")},
@@ -317,13 +341,14 @@ comboList = [
 
 
 class appInfo():
-    def __init__(self, autoKeyDown, printKeyActions):
+    def __init__(self, autoKeyDown, printKeyActions, afterShift):
         self.autoKeyDown = autoKeyDown
         self.printKeyActions = printKeyActions
+        self.afterShift = afterShift
 
 
 
-appInfoObj = appInfo([], True)
+appInfoObj = appInfo([], True, None)
 currentPressedKeys = set()
 pyautogui.PAUSE = 0
 
