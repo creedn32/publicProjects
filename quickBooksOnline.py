@@ -17,16 +17,13 @@ def getLastCell(currentData, currentSheet):
         if sheet["properties"]["title"] == currentSheet:
 
             totalRows = len(sheet["data"][0]["rowData"])
-            totalColumns = 0
+            totalColumnsByRow = []
 
             for row in sheet["data"][0]["rowData"]:
-                if len(row.get("values", [])) > totalColumns:
-                    totalColumns = len(row.get("values", []))
+                totalColumnsByRow.append(len(row.get("values", [])))
 
-                # print("Row is " + str(rowCount) + " and length is " + str(totalColumns))
-                # rowCount = rowCount + 1
 
-    return creedFunctions.columnToLetter(totalColumns) + str(totalRows)
+    return creedFunctions.columnToLetter(max(totalColumnsByRow)) + str(totalRows)
 
 
 
@@ -173,6 +170,7 @@ for rowCount in range(1, len(currentSheetValues)):
 # # pprint(currentSheetValues)
 #
 # print(valuesToWrite)
+
 
 
 bodyToWrite = {
