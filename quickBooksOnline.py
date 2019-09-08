@@ -27,6 +27,12 @@ def getLastCell(currentData, currentSheet):
 
 
 
+def filterFunc(element):
+    pass
+#     if
+
+
+
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleSheetsTemplate\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleSheetsTemplate\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -61,6 +67,8 @@ currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
+
+
 currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
 currentSheetName = "Original"
 currentBegRange = "A1"
@@ -74,15 +82,18 @@ firstRowToAppend = []
 for cell in currentSheetValues[0]:
     firstRowToAppend.append(cell)
 
-firstRowToAppend.append("Transaction Number")
+firstRowToAppend.insert(0, "Transaction Number")
 
 valuesToWrite = []
 valuesToWrite.append(firstRowToAppend)
+
 
 transactionCount = 2
 for rowCount in range(1, len(currentSheetValues)):
     if currentSheetValues[rowCount]:
         rowToAppend = []
+
+        rowToAppend.append(transactionCount)
 
         if currentSheetValues[rowCount][0] != "":
             currentDate = currentSheetValues[rowCount][0]
@@ -97,7 +108,6 @@ for rowCount in range(1, len(currentSheetValues)):
         for cell in range(0, blankCellsToAdd):
             rowToAppend.append("")
 
-        rowToAppend.append(transactionCount)
         valuesToWrite.append(rowToAppend)
 
     else:
@@ -112,8 +122,6 @@ bodyToWrite = {
 }
 
 googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="RAW", body=bodyToWrite).execute()
-
-
 
 
 
@@ -135,10 +143,30 @@ valuesToWrite = []
 valuesToWrite.append(firstRowToAppend)
 
 
+accountList = []
 
 for rowCount in range(1, len(currentSheetValues)):
-    rowToAppend = [rowCount]
+    accountList.append(currentSheetValues[rowCount][2])
+
+
+accountList = list(dict.fromkeys(accountList))
+
+
+
+for row in currentSheetValues:
+    currentTransaction = row[0]
+    print(currentTransaction)
+
+
+
+for acc in accountList:
+    rowToAppend = []
+    rowToAppend.append(acc)
     valuesToWrite.append(rowToAppend)
+
+
+# print(valuesToWrite)
+
 
 
 #
