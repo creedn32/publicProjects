@@ -56,7 +56,6 @@ if not credentialsObj or not credentialsObj.valid:
 
 
 googleSheetsObj = googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
-
 currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 
 # currentSpreadsheetSheets = {}
@@ -103,7 +102,9 @@ for rowCount in range(1, len(currentSheetValues)):
 
         rowToAppend.append(transactionCount)
         valuesToWrite.append(rowToAppend)
+
     else:
+
         transactionCount = transactionCount + 1
 
 # print(valuesToWrite)
@@ -142,6 +143,7 @@ for rowCount in range(1, len(currentSheetValues)):
     rowToAppend = [rowCount]
     valuesToWrite.append(rowToAppend)
 
+
 #
 # #
 # #     if currentSheetValues[rowCount]:
@@ -178,5 +180,8 @@ bodyToWrite = {
 }
 
 googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="RAW", body=bodyToWrite).execute()
+
+
+
 
 
