@@ -5,6 +5,8 @@ startTime = time.time()
 import sys
 sys.path.append("..")
 from creed_modules import creedFunctions
+import numpy
+# import lumpy
 
 from pprint import pprint
 import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
@@ -28,8 +30,12 @@ def getLastCell(currentData, currentSheet):
 
 
 def filterFunc(element):
-    pass
-#     if
+
+    if element == 2:
+        return True
+    else:
+        return False
+
 
 
 
@@ -88,31 +94,31 @@ valuesToWrite = []
 valuesToWrite.append(firstRowToAppend)
 
 
-transactionCount = 2
-for rowCount in range(1, len(currentSheetValues)):
-    if currentSheetValues[rowCount]:
+transactionNum = 1
+
+for row in currentSheetValues[1:]:
+    
+    if row:
         rowToAppend = []
+        rowToAppend.append(transactionNum)
 
-        rowToAppend.append(transactionCount)
-
-        if currentSheetValues[rowCount][0] != "":
-            currentDate = currentSheetValues[rowCount][0]
+        if row[0] != "":
+            currentDate = row[0]
 
         rowToAppend.append(currentDate)
 
-        for colCount in range(1, len(currentSheetValues[rowCount])):
-            rowToAppend.append(currentSheetValues[rowCount][colCount])
+        for col in row[1:]:
+            rowToAppend.append(col)
 
-        blankCellsToAdd = len(firstRowToAppend) - len(rowToAppend) - 1
-
-        for cell in range(0, blankCellsToAdd):
-            rowToAppend.append("")
+        # blankCellsToAdd = len(firstRowToAppend) - len(rowToAppend) - 1
+        # rowToAppend = rowToAppend + blankCellsToAdd * [""]
 
         valuesToWrite.append(rowToAppend)
 
     else:
 
-        transactionCount = transactionCount + 1
+        transactionNum = transactionNum + 1
+
 
 # print(valuesToWrite)
 
@@ -148,14 +154,19 @@ accountList = []
 for rowCount in range(1, len(currentSheetValues)):
     accountList.append(currentSheetValues[rowCount][2])
 
-
 accountList = list(dict.fromkeys(accountList))
 
 
+transactionList = []
 
-for row in currentSheetValues:
-    currentTransaction = row[0]
-    print(currentTransaction)
+for row in currentSheetValues[1:]:
+    transactionList.append(row[0])
+
+transactionList = list(dict.fromkeys(transactionList))
+
+for trans in transactionList:
+    print(trans)
+
 
 
 
@@ -187,10 +198,10 @@ for acc in accountList:
 # #         for cell in range(0, blankCellsToAdd):
 # #             rowToAppend.append("")
 # #
-# #         rowToAppend.append(transactionCount)
+# #         rowToAppend.append(transactionNum)
 # #         valuesToWrite.append(rowToAppend)
 # #     else:
-# #         transactionCount = transactionCount + 1
+# #         transactionNum = transactionNum + 1
 # #
 # # print(valuesToWrite)
 #
