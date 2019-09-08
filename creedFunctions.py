@@ -55,6 +55,50 @@ def convertKey(key):
 
 
 
+def columnToLetter(columnNumber):
+    letter = ""
+
+    while columnNumber > 0:
+        columnNumber, remainder = divmod(columnNumber - 1, 26)
+        letter = chr(65 + remainder) + letter
+
+    return letter
+
+
+
+
+
+
+    #
+    # while column > 0:
+    #     temp = (column - 1) % 26
+    #     print(temp + 65)
+    #     letter = ''.join(map(chr, temp + 65))
+    #     # letter = String.fromCharCode(temp + 65) + letter
+    #     column = (column - temp - 1) / 26
+    #
+    # # return letter
+    # return column
+
+
+
+# function letterToColumn(letter)
+# {
+#   var column = 0, length = letter.length;
+#   for (var i = 0; i < length; i++)
+#   {
+#     column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
+#   }
+#   return column;
+# }
+
+
+
+
+
+
+
+
 
 # def pynputPressRel(controllerObj, keyToPress):
 #     controllerObj.press(keyToPress)
