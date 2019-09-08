@@ -1,28 +1,3 @@
-function columnToLetter(column)
-{
-  var temp, letter = '';
-  while (column > 0)
-  {
-    temp = (column - 1) % 26;
-    letter = String.fromCharCode(temp + 65) + letter;
-    column = (column - temp - 1) / 26;
-  }
-  return letter;
-}
-
-function letterToColumn(letter)
-{
-  var column = 0, length = letter.length;
-  for (var i = 0; i < length; i++)
-  {
-    column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
-  }
-  return column;
-}
-
-
-
-
 print("Comment: Importing modules and setting up variables...")
 import time
 startTime = time.time()
@@ -33,6 +8,26 @@ from creed_modules import creedFunctions
 
 from pprint import pprint
 import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
+
+
+def getLastCell(currentData, currentSheet):
+
+    for sheet in currentData["sheets"]:
+
+        if sheet["properties"]["title"] == currentSheet:
+
+            totalRows = len(sheet["data"][0]["rowData"])
+            totalColumns = 0
+
+            for row in sheet["data"][0]["rowData"]:
+                if len(row.get("values", [])) > totalColumns:
+                    totalColumns = len(row.get("values", []))
+
+                # print("Row is " + str(rowCount) + " and length is " + str(totalColumns))
+                # rowCount = rowCount + 1
+
+    return creedFunctions.columnToLetter(totalColumns) + str(totalRows)
+
 
 
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleSheetsTemplate\\googleCredentials.json"))
@@ -64,16 +59,19 @@ googleSheetsObj = googleapiclient.discovery.build("sheets", "v4", credentials=cr
 
 currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 
-currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
-currentSpreadsheetSheets = {}
-for sheet in googleSheetsObj.get(spreadsheetId=currentSpreadsheetID).execute()["sheets"]:
-    currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
+# currentSpreadsheetSheets = {}
+# for sheet in googleSheetsObj.get(spreadsheetId=currentSpreadsheetID).execute()["sheets"]:
+#     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
-
+currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
 currentSheetName = "Original"
-currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName).execute()["values"]
+currentBegRange = "A1"
+currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
+
+
+currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
 sheetToWrite = "v2"
 firstRowToAppend = []
 
@@ -120,22 +118,30 @@ googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetT
 
 
 
-currentSheetName = "v2"
-# currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!A1").execute()
-# print(currentSheetValues)
 
-# sheetToWrite = "v3"
-# firstRowToAppend = ["Account"]
-#
-# for cell in currentSheetValues[0]:
-#     firstRowToAppend.append(cell)
-#
-# valuesToWrite = []
-# valuesToWrite.append(firstRowToAppend)
-#
-# for rowCount in range(1, len(currentSheetValues)):
-#     rowToAppend = [rowCount]
-#     valuesToWrite.append(rowToAppend)
+currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
+currentSheetName = "v2"
+currentBegRange = "A1"
+currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
+
+
+currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
+sheetToWrite = "v3"
+firstRowToAppend = ["Account"]
+
+
+for cell in currentSheetValues[0]:
+    firstRowToAppend.append(cell)
+
+valuesToWrite = []
+valuesToWrite.append(firstRowToAppend)
+
+
+
+for rowCount in range(1, len(currentSheetValues)):
+    rowToAppend = [rowCount]
+    valuesToWrite.append(rowToAppend)
+
 #
 # #
 # #     if currentSheetValues[rowCount]:
@@ -165,10 +171,12 @@ currentSheetName = "v2"
 # # pprint(currentSheetValues)
 #
 # print(valuesToWrite)
-# bodyToWrite = {
-#     "values": valuesToWrite
-# }
 
-# googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="RAW", body=bodyToWrite).execute()
+
+bodyToWrite = {
+    "values": valuesToWrite
+}
+
+googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="RAW", body=bodyToWrite).execute()
 
 
