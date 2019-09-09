@@ -10,8 +10,8 @@ from pprint import pprint
 import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 
 
-credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleSheetsTemplate\\googleCredentials.json"))
-tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleSheetsTemplate\\googleToken.pickle"))
+credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json"))
+tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleSheetsCredentials\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
 
@@ -45,7 +45,6 @@ for sheet in googleSheetsObj.get(spreadsheetId=currentSpreadsheetID).execute()["
     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
-
 
 currentSheetName = "Original"
 currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName).execute()["values"]

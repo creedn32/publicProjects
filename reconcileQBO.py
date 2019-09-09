@@ -5,7 +5,6 @@ startTime = time.time()
 import sys
 sys.path.append("..")
 from creed_modules import creedFunctions
-import numpy
 # import lumpy
 
 from pprint import pprint
@@ -37,10 +36,19 @@ def filterFunc(element):
         return False
 
 
+def convertNumber(num):
+    # try:
+        num = creedFunctions.convertEmptyStrToZero(num)
+        num = creedFunctions.removeCommaFromStr(num)
+        num = float(num)
+        return num
+    # except BaseException as e:
+    #     print("Error on " + num + " " + str(e))
 
 
-credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleSheetsTemplate\\googleCredentials.json"))
-tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleSheetsTemplate\\googleToken.pickle"))
+
+credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json"))
+tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
 
@@ -72,6 +80,8 @@ currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 #     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+startTime = time.time()
+print("Comment: Creating v2 sheet...")
 
 
 
@@ -107,8 +117,17 @@ for row in currentSheetValues[1:]:
 
         rowToAppend.append(currentDate)
 
-        for col in row[1:]:
+
+        if row[1] != "":
+            currentClr = row[1]
+
+        rowToAppend.append(currentClr)
+
+
+        for index, col in enumerate(row[2:]):
             rowToAppend.append(col)
+
+
 
         # blankCellsToAdd = len(firstRowToAppend) - len(rowToAppend) - 1
         # rowToAppend = rowToAppend + blankCellsToAdd * [""]
@@ -120,16 +139,17 @@ for row in currentSheetValues[1:]:
         transactionNum = transactionNum + 1
 
 
-# print(valuesToWrite)
-
 
 bodyToWrite = {
     "values": valuesToWrite
 }
 
-googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="RAW", body=bodyToWrite).execute()
+googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
 
 
+print("Comment: Creating v2 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+startTime = time.time()
+print("Comment: Creating v3 sheet...")
 
 currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
 currentSheetName = "v2"
@@ -138,6 +158,11 @@ currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
 
 
 currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
+currentAccountIndex = 3
+currentTransIndex = 0
+currentAmountIndex = 5
+currentDebitIndex = 6
+currentCreditIndex = 7
 sheetToWrite = "v3"
 firstRowToAppend = ["Account", "Amount+-"]
 
@@ -152,9 +177,10 @@ valuesToWrite.append(firstRowToAppend)
 accountList = []
 
 for row in currentSheetValues[1:]:
-    accountList.append(row[2])
+    accountList.append(row[currentAccountIndex])
 
 accountList = list(dict.fromkeys(accountList))
+
 
 
 for currentAccount in accountList:
@@ -162,8 +188,8 @@ for currentAccount in accountList:
     transactionList = []
 
     for row in currentSheetValues[1:]:
-        if row[2] == currentAccount:
-            transactionList.append(row[0])
+        if row[currentAccountIndex] == currentAccount:
+            transactionList.append(row[currentTransIndex])
 
     transactionList = list(dict.fromkeys(transactionList))
 
@@ -172,10 +198,24 @@ for currentAccount in accountList:
         # print(transactionList)
 
         for row in currentSheetValues[1:]:
-            if row[0] == currentTrans and row[2] != currentAccount:
-                rowToAppend = [currentAccount, float(creedFunctions.convertOutOfRangeToZero(row, 5)) - float(creedFunctions.convertOutOfRangeToZero(row, 6))]
-                for col in row:
-                    rowToAppend.append(col)
+            if row[currentTransIndex] == currentTrans and row[currentAccountIndex] != currentAccount:
+
+                convertedNumbers = {
+                    currentAmountIndex: convertNumber(row[currentAmountIndex]),
+                    currentDebitIndex: convertNumber(row[currentDebitIndex]),
+                    currentCreditIndex: convertNumber(creedFunctions.convertOutOfRangeToZero(row, currentCreditIndex))
+                }
+
+
+                rowToAppend = [currentAccount, -convertedNumbers[currentDebitIndex] + convertedNumbers[currentCreditIndex]]
+
+                for index, col in enumerate(row):
+                    if index in convertedNumbers.keys():
+                        rowToAppend.append(convertedNumbers[index])
+                    else:
+                        rowToAppend.append(col)
+
+                # print(rowToAppend)
                 valuesToWrite.append(rowToAppend)
 
 
@@ -184,9 +224,9 @@ bodyToWrite = {
     "values": valuesToWrite
 }
 
-googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="RAW", body=bodyToWrite).execute()
+googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
 
 
-
+print("Comment: Creating v3 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
