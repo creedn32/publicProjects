@@ -151,30 +151,44 @@ valuesToWrite.append(firstRowToAppend)
 
 accountList = []
 
-for rowCount in range(1, len(currentSheetValues)):
-    accountList.append(currentSheetValues[rowCount][2])
+for row in currentSheetValues[1:]:
+    accountList.append(row[2])
 
 accountList = list(dict.fromkeys(accountList))
 
 
-transactionList = []
+currentAccount = accountList[0]
+valuesToWrite.append([currentAccount])
+
 
 for row in currentSheetValues[1:]:
-    transactionList.append(row[0])
-
-transactionList = list(dict.fromkeys(transactionList))
-
-for trans in transactionList:
-    print(trans)
+    if row[2] == currentAccount:
+        print(row[0])
 
 
 
-
-for acc in accountList:
-    rowToAppend = []
-    rowToAppend.append(acc)
-    valuesToWrite.append(rowToAppend)
-
+#
+#
+# transactionList = []
+#
+# for row in currentSheetValues[1:]:
+#     transactionList.append(row[0])
+#
+# transactionList = list(dict.fromkeys(transactionList))
+#
+# for trans in transactionList:
+#     print(trans)
+#
+#
+#
+#
+# for acc in accountList:
+#     rowToAppend = []
+#     rowToAppend.append(acc)
+#     valuesToWrite.append(rowToAppend)
+#
+#
+#
 
 # print(valuesToWrite)
 
