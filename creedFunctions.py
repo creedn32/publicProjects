@@ -23,8 +23,14 @@ def convertOutOfRangeToZero(array, index):
     if len(array) <= index:
         return 0
     else:
-        return convertEmptyStrToZero(array[index])
+        return array[index]
 
+
+def removeCommaFromStr(s):
+
+    if isinstance(s, str):
+        return s.replace(",", "")
+    return s
 
 
 def repetitiveKeyPress(numberOfTabs, keyToPress):
