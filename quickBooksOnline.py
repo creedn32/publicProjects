@@ -139,7 +139,7 @@ currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
 
 currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
 sheetToWrite = "v3"
-firstRowToAppend = ["Account"]
+firstRowToAppend = ["Account", "Amount+-"]
 
 
 for cell in currentSheetValues[0]:
@@ -157,72 +157,26 @@ for row in currentSheetValues[1:]:
 accountList = list(dict.fromkeys(accountList))
 
 
-currentAccount = accountList[0]
-valuesToWrite.append([currentAccount])
+for currentAccount in accountList:
 
+    transactionList = []
 
-for row in currentSheetValues[1:]:
-    if row[2] == currentAccount:
-        print(row[0])
+    for row in currentSheetValues[1:]:
+        if row[2] == currentAccount:
+            transactionList.append(row[0])
 
+    transactionList = list(dict.fromkeys(transactionList))
 
+    for currentTrans in transactionList:
+        # currentTrans = transactionList[0]
+        # print(transactionList)
 
-#
-#
-# transactionList = []
-#
-# for row in currentSheetValues[1:]:
-#     transactionList.append(row[0])
-#
-# transactionList = list(dict.fromkeys(transactionList))
-#
-# for trans in transactionList:
-#     print(trans)
-#
-#
-#
-#
-# for acc in accountList:
-#     rowToAppend = []
-#     rowToAppend.append(acc)
-#     valuesToWrite.append(rowToAppend)
-#
-#
-#
-
-# print(valuesToWrite)
-
-
-
-#
-# #
-# #     if currentSheetValues[rowCount]:
-# #         rowToAppend = []
-# #
-# #         if currentSheetValues[rowCount][0] != "":
-# #             currentDate = currentSheetValues[rowCount][0]
-# #
-# #         rowToAppend.append(currentDate)
-# #
-# #         for colCount in range(1, len(currentSheetValues[rowCount])):
-# #             rowToAppend.append(currentSheetValues[rowCount][colCount])
-# #
-# #         blankCellsToAdd = len(firstRowToAppend) - len(rowToAppend) - 1
-# #
-# #         for cell in range(0, blankCellsToAdd):
-# #             rowToAppend.append("")
-# #
-# #         rowToAppend.append(transactionNum)
-# #         valuesToWrite.append(rowToAppend)
-# #     else:
-# #         transactionNum = transactionNum + 1
-# #
-# # print(valuesToWrite)
-#
-#
-# # pprint(currentSheetValues)
-#
-# print(valuesToWrite)
+        for row in currentSheetValues[1:]:
+            if row[0] == currentTrans and row[2] != currentAccount:
+                rowToAppend = [currentAccount, float(creedFunctions.convertOutOfRangeToZero(row, 5)) - float(creedFunctions.convertOutOfRangeToZero(row, 6))]
+                for col in row:
+                    rowToAppend.append(col)
+                valuesToWrite.append(rowToAppend)
 
 
 
