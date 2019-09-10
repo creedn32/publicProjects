@@ -5,7 +5,7 @@ print("Cmt: Importing modules...")
 import sys
 sys.path.append('..')
 
-import time, win32com.client, os, creed_modules.creed_toolpack
+import time, win32com.client, os, creed_modules.creedFunctions
 
 
 startTime = time.time()
@@ -64,7 +64,7 @@ excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Row
 bankTableSheetRow = rowAfterHeader
 
 while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
-    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = creed_modules.creed_toolpack.singleSpaceCell(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - creed_modules.creed_toolpack.singleSpaceCell(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
+    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = creed_modules.creedFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - creed_modules.creedFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
     bankTableSheetRow = bankTableSheetRow + 1
 
 
