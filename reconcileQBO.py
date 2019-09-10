@@ -170,7 +170,7 @@ currentAmountIndex = 5
 currentDebitIndex = 6
 currentCreditIndex = 7
 sheetToWrite = "v3"
-firstRowToAppend = ["Account", "Amount+-"]
+firstRowToAppend = ["Main Account", "Amount+-"]
 
 
 for cell in currentSheetValues[0]:
