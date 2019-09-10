@@ -3,7 +3,7 @@ import time
 startTime = time.time()
 
 
-copyToV2 = False
+copyToV2 = True
 originalLastCell = "K28368"
 v2LastCell = "K18961"
 accountList = []
@@ -12,6 +12,7 @@ accountList = []
 
 import sys
 sys.path.append("..")
+# sys.path.append("..\..")
 from creed_modules import creedFunctions
 
 import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
