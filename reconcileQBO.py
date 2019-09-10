@@ -3,19 +3,21 @@ import time
 startTime = time.time()
 
 
+copyToV2 = False
+originalLastCell = "K28368"
+v2LastCell = "K18961"
+accountList = []
+# accountList.append("BAF 2 - 5006 (transfers to Bluebird)")
+
+
 import sys
 sys.path.append("..")
 from creed_modules import creedFunctions
-
 
 import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 # from pprint import pprint
 # import lumpy
 
-
-
-copyToV2 = False
-accountList = ["BAF 2 - 5006 (transfers to Bluebird)"]
 
 def getLastCell(currentData, currentSheet):
 
@@ -31,15 +33,6 @@ def getLastCell(currentData, currentSheet):
 
 
     return creedFunctions.columnToLetter(max(totalColumnsByRow)) + str(totalRows)
-
-
-
-def filterFunc(element):
-
-    if element == 2:
-        return True
-    else:
-        return False
 
 
 def convertNumber(num):
@@ -93,11 +86,14 @@ if copyToV2:
     print("Comment: Creating v2 sheet...")
 
 
-
-    currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
     currentSheetName = "Original"
     currentBegRange = "A1"
-    currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
+
+    if not originalLastCell:
+        currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
+        currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
+    else:
+        currentEndRange = originalLastCell
 
 
     currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
@@ -157,10 +153,14 @@ if copyToV2:
 startTime = time.time()
 print("Comment: Creating v3 sheet...")
 
-currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
 currentSheetName = "v2"
 currentBegRange = "A1"
-currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
+
+if not v2LastCell:
+    currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
+    currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
+else:
+    currentEndRange = v2LastCell
 
 
 currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
@@ -181,7 +181,6 @@ valuesToWrite.append(firstRowToAppend)
 
 
 if not accountList:
-    accountList = []
 
     for row in currentSheetValues[1:]:
         accountList.append(row[currentAccountIndex])
@@ -192,15 +191,15 @@ if not accountList:
 
 for currentAccount in accountList:
 
+    # print(accountList)
+
     transactionList = []
 
     for row in currentSheetValues[1:]:
-        print(row)
         if row[currentAccountIndex] == currentAccount:
             transactionList.append(row[currentTransIndex])
 
     transactionList = list(dict.fromkeys(transactionList))
-    print(transactionList)
 
 
     for currentTrans in transactionList:
@@ -223,12 +222,11 @@ for currentAccount in accountList:
                     else:
                         rowToAppend.append(col)
 
-                # print(rowToAppend)
                 valuesToWrite.append(rowToAppend)
 
-                fileForPrintObj = open(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\reconcileQBO\\fileForPrint")), 'w+')
-                fileForPrintObj.write(str(rowToAppend))
-                fileForPrintObj.close()
+                # fileForPrintObj = open(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\reconcileQBO\\fileForPrint")), 'w+')
+                # fileForPrintObj.write(str(rowToAppend))
+                # fileForPrintObj.close()
 
 
 bodyToWrite = {
