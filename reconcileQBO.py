@@ -2,14 +2,20 @@ print("Comment: Importing modules and setting up variables...")
 import time
 startTime = time.time()
 
+
 import sys
 sys.path.append("..")
 from creed_modules import creedFunctions
+
+
+import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
+# from pprint import pprint
 # import lumpy
 
-from pprint import pprint
-import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 
+
+copyToV2 = False
+accountList = ["BAF 2 - 5006 (transfers to Bluebird)"]
 
 def getLastCell(currentData, currentSheet):
 
@@ -57,9 +63,8 @@ if os.path.exists(tokenPath):
     with open(tokenPath, "rb") as tokenObj:
         credentialsObj = pickle.load(tokenObj)
 
+
 # If there are no (valid) credentials available, let the user log in.
-
-
 if not credentialsObj or not credentialsObj.valid:
     if credentialsObj and credentialsObj.expired and credentialsObj.refresh_token:
         credentialsObj.refresh(google.auth.transport.requests.Request())
@@ -80,74 +85,75 @@ currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 #     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
-startTime = time.time()
-print("Comment: Creating v2 sheet...")
+
+
+if copyToV2:
+
+    startTime = time.time()
+    print("Comment: Creating v2 sheet...")
 
 
 
-currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
-currentSheetName = "Original"
-currentBegRange = "A1"
-currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
+    currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
+    currentSheetName = "Original"
+    currentBegRange = "A1"
+    currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
 
 
-currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
-sheetToWrite = "v2"
-firstRowToAppend = []
+    currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
+    sheetToWrite = "v2"
+    firstRowToAppend = []
 
-for cell in currentSheetValues[0]:
-    firstRowToAppend.append(cell)
+    for cell in currentSheetValues[0]:
+        firstRowToAppend.append(cell)
 
-firstRowToAppend.insert(0, "Transaction Number")
+    firstRowToAppend.insert(0, "Transaction Number")
 
-valuesToWrite = []
-valuesToWrite.append(firstRowToAppend)
-
-
-transactionNum = 1
-
-for row in currentSheetValues[1:]:
-    
-    if row:
-        rowToAppend = []
-        rowToAppend.append(transactionNum)
-
-        if row[0] != "":
-            currentDate = row[0]
-
-        rowToAppend.append(currentDate)
+    valuesToWrite = []
+    valuesToWrite.append(firstRowToAppend)
 
 
-        if row[1] != "":
-            currentClr = row[1]
+    transactionNum = 1
 
-        rowToAppend.append(currentClr)
+    for row in currentSheetValues[1:]:
+
+        if row:
+            rowToAppend = []
+            rowToAppend.append(transactionNum)
+
+            if row[0] != "":
+                currentDate = row[0]
+
+            rowToAppend.append(currentDate)
 
 
-        for index, col in enumerate(row[2:]):
-            rowToAppend.append(col)
+            if row[1] != "":
+                currentClr = row[1]
+
+            rowToAppend.append(currentClr)
 
 
+            for index, col in enumerate(row[2:]):
+                rowToAppend.append(col)
 
-        # blankCellsToAdd = len(firstRowToAppend) - len(rowToAppend) - 1
-        # rowToAppend = rowToAppend + blankCellsToAdd * [""]
+            valuesToWrite.append(rowToAppend)
 
-        valuesToWrite.append(rowToAppend)
+        else:
 
-    else:
-
-        transactionNum = transactionNum + 1
+            transactionNum = transactionNum + 1
 
 
 
-bodyToWrite = {
-    "values": valuesToWrite
-}
+    bodyToWrite = {
+        "values": valuesToWrite
+    }
 
-googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
+    googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
 
 
-print("Comment: Creating v2 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+    print("Comment: Creating v2 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+
+
 startTime = time.time()
 print("Comment: Creating v3 sheet...")
 
@@ -174,12 +180,13 @@ valuesToWrite = []
 valuesToWrite.append(firstRowToAppend)
 
 
-accountList = []
+if not accountList:
+    accountList = []
 
-for row in currentSheetValues[1:]:
-    accountList.append(row[currentAccountIndex])
+    for row in currentSheetValues[1:]:
+        accountList.append(row[currentAccountIndex])
 
-accountList = list(dict.fromkeys(accountList))
+    accountList = list(dict.fromkeys(accountList))
 
 
 
@@ -188,14 +195,15 @@ for currentAccount in accountList:
     transactionList = []
 
     for row in currentSheetValues[1:]:
+        print(row)
         if row[currentAccountIndex] == currentAccount:
             transactionList.append(row[currentTransIndex])
 
     transactionList = list(dict.fromkeys(transactionList))
+    print(transactionList)
+
 
     for currentTrans in transactionList:
-        # currentTrans = transactionList[0]
-        # print(transactionList)
 
         for row in currentSheetValues[1:]:
             if row[currentTransIndex] == currentTrans and row[currentAccountIndex] != currentAccount:
@@ -218,6 +226,9 @@ for currentAccount in accountList:
                 # print(rowToAppend)
                 valuesToWrite.append(rowToAppend)
 
+                fileForPrintObj = open(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\reconcileQBO\\fileForPrint")), 'w+')
+                fileForPrintObj.write(str(rowToAppend))
+                fileForPrintObj.close()
 
 
 bodyToWrite = {
