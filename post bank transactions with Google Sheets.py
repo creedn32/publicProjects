@@ -2,26 +2,26 @@ print("Comment: Importing modules and setting up variables...")
 import time
 startTime = time.time()
 
+#ID of public Google Sheet
+# spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
+#ID of private Google Sheet
+spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
+sheetName = "Bank Transactions - Recurring"
+
+
+
 import sys
 sys.path.append("..")
 from creed_modules import creedFunctions
 
 from pprint import pprint
 import pyautogui, datetime, pynput.mouse, win32api, win32con
-
 import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 
 
-#ID of public Google Sheet
-# spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
-#ID of private Google Sheet
-spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
-
 
 # If modifying these scopes, delete the file token.pickle.
-
 changeCellColor = False
-sheetName = "Bank Transactions"
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
