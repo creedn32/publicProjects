@@ -7,11 +7,13 @@ def convertNothingToEmptyStr(s):
         return ""
 
 
+
 def convertSingleSpaceToZero(s):
     if s == " ":
         return 0
     else:
         return s
+
 
 def convertEmptyStrToZero(s):
     if s == "":
@@ -19,11 +21,14 @@ def convertEmptyStrToZero(s):
     else:
         return s
 
+
+
 def convertOutOfRangeToZero(array, index):
     if len(array) <= index:
         return 0
     else:
         return array[index]
+
 
 
 def removeCommaFromStr(s):
