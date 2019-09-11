@@ -10,12 +10,13 @@ accountList = []
 # accountList.append("BAF 2 - 5006 (transfers to Bluebird)")
 
 
-import sys
+import sys, os.path
 sys.path.append("..")
-sys.path.append("..\..")
+# sys.path.append("..\..")
+# os.chdir("..")
 from creed_modules import creedFunctions
 
-import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
+import pickle, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 # from pprint import pprint
 # import lumpy
 
@@ -47,13 +48,6 @@ def convertNumber(num):
 
 
 
-
-# print(os.path.abspath(os.path.join(os.curdir)))
-os.chdir("..")
-# print(os.path.abspath(os.path.join(os.curdir)))
-
-
-print(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json")))
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -116,6 +110,7 @@ if copyToV2:
     valuesToWrite.append(firstRowToAppend)
 
     lastColForFillDown = 6
+    currentData = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
     transactionNum = 1
 
     for row in currentSheetValues[1:]:
@@ -124,11 +119,11 @@ if copyToV2:
             rowToAppend = []
             rowToAppend.append(transactionNum)
 
-            currentData = {}
-
             for colNum in range(0, lastColForFillDown):
                 if row[colNum] != "":
                    currentData[colNum] = row[colNum]
+
+            # print(currentData)
 
             for key in currentData:
                 rowToAppend.append(currentData[key])
@@ -140,8 +135,8 @@ if copyToV2:
             valuesToWrite.append(rowToAppend)
 
         else:
-
             transactionNum = transactionNum + 1
+            currentData = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
 
 
 
@@ -211,6 +206,8 @@ for currentAccount in accountList:
 
         for row in currentSheetValues[1:]:
             if row[currentTransIndex] == currentTrans and row[currentAccountIndex] != currentAccount:
+
+                # print(row)
 
                 convertedNumbers = {
                     currentAmountIndex: convertNumber(row[currentAmountIndex]),
