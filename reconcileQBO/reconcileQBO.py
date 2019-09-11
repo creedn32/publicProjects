@@ -4,8 +4,8 @@ startTime = time.time()
 
 
 copyToV2 = True
-originalLastCell = "K28881"
-v2LastCell = "L19303"
+originalLastCell = "K28958"
+v2LastCell = "L19371"
 accountList = []
 # accountList.append("BAF 2 - 5006 (transfers to Bluebird)")
 
