@@ -124,19 +124,13 @@ if copyToV2:
             rowToAppend = []
             rowToAppend.append(transactionNum)
 
-            if row[0] != "":
-                currentDate = row[0]
-
-            rowToAppend.append(currentDate)
-
-
-            if row[1] != "":
-                currentClr = row[1]
-
-            rowToAppend.append(currentClr)
+            for colNum in range(0, 6):
+                if row[colNum] != "":
+                   currentData = row[colNum]
+                rowToAppend.append(currentData)
 
 
-            for index, col in enumerate(row[2:]):
+            for index, col in enumerate(row[6:]):
                 rowToAppend.append(col)
 
             valuesToWrite.append(rowToAppend)
