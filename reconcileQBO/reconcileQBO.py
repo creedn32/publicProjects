@@ -4,15 +4,15 @@ startTime = time.time()
 
 
 copyToV2 = True
-originalLastCell = "K28368"
-v2LastCell = "K18961"
+originalLastCell = "K28881"
+v2LastCell = "L19303"
 accountList = []
 # accountList.append("BAF 2 - 5006 (transfers to Bluebird)")
 
 
 import sys
 sys.path.append("..")
-# sys.path.append("..\..")
+sys.path.append("..\..")
 from creed_modules import creedFunctions
 
 import pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
@@ -47,12 +47,17 @@ def convertNumber(num):
 
 
 
+
+# print(os.path.abspath(os.path.join(os.curdir)))
+os.chdir("..")
+# print(os.path.abspath(os.path.join(os.curdir)))
+
+
+print(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json")))
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
-
-
 if os.path.exists(tokenPath):
     with open(tokenPath, "rb") as tokenObj:
         credentialsObj = pickle.load(tokenObj)
@@ -72,6 +77,7 @@ if not credentialsObj or not credentialsObj.valid:
 
 
 googleSheetsObj = googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
+tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 
 # currentSpreadsheetSheets = {}
