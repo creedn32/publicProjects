@@ -3,9 +3,11 @@ import time
 startTime = time.time()
 
 
-copyToV2 = True
+copyToV2 = False
+copyToV3 = True
+
 originalLastCell = "K29023"
-v2LastCell = "L19431"
+v2LastCell = "L19415"
 accountList = []
 # accountList.append("BAF 2 - 5006 (transfers to Bluebird)")
 
@@ -150,94 +152,96 @@ if copyToV2:
     print("Comment: Creating v2 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
-startTime = time.time()
-print("Comment: Creating v3 sheet...")
+if copyToV3:
 
-currentSheetName = "v2"
-currentBegRange = "A1"
+    startTime = time.time()
+    print("Comment: Creating v3 sheet...")
 
-if not v2LastCell:
-    currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
-    currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
-else:
-    currentEndRange = v2LastCell
+    currentSheetName = "v2"
+    currentBegRange = "A1"
 
-
-currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
-currentTransIndex = 0
-currentAccountIndex = 8
-currentAmountIndex = currentAccountIndex + 1
-currentDebitIndex = currentAccountIndex + 2
-currentCreditIndex = currentAccountIndex + 3
-sheetToWrite = "v3"
-firstRowToAppend = ["Main Account", "Amount+-"]
+    if not v2LastCell:
+        currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
+        currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
+    else:
+        currentEndRange = v2LastCell
 
 
-for cell in currentSheetValues[0]:
-    firstRowToAppend.append(cell)
-
-valuesToWrite = []
-valuesToWrite.append(firstRowToAppend)
-
-
-if not accountList:
-
-    for row in currentSheetValues[1:]:
-        accountList.append(row[currentAccountIndex])
-
-    accountList = list(dict.fromkeys(accountList))
+    currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
+    currentTransIndex = 0
+    currentAccountIndex = 8
+    currentAmountIndex = currentAccountIndex + 1
+    currentDebitIndex = currentAccountIndex + 2
+    currentCreditIndex = currentAccountIndex + 3
+    sheetToWrite = "v3"
+    firstRowToAppend = ["Main Account", "Amount+-"]
 
 
+    for cell in currentSheetValues[0]:
+        firstRowToAppend.append(cell)
 
-for currentAccount in accountList:
-
-    # print(accountList)
-
-    transactionList = []
-
-    for row in currentSheetValues[1:]:
-        if row[currentAccountIndex] == currentAccount:
-            transactionList.append(row[currentTransIndex])
-
-    transactionList = list(dict.fromkeys(transactionList))
+    valuesToWrite = []
+    valuesToWrite.append(firstRowToAppend)
 
 
-    for currentTrans in transactionList:
+    if not accountList:
 
         for row in currentSheetValues[1:]:
-            if row[currentTransIndex] == currentTrans and row[currentAccountIndex] != currentAccount:
+            accountList.append(row[currentAccountIndex])
 
-                # print(row)
-
-                convertedNumbers = {
-                    currentAmountIndex: convertNumber(row[currentAmountIndex]),
-                    currentDebitIndex: convertNumber(row[currentDebitIndex]),
-                    currentCreditIndex: convertNumber(creedFunctions.convertOutOfRangeToZero(row, currentCreditIndex))
-                }
+        accountList = list(dict.fromkeys(accountList))
 
 
-                rowToAppend = [currentAccount, -convertedNumbers[currentDebitIndex] + convertedNumbers[currentCreditIndex]]
 
-                for index, col in enumerate(row):
-                    if index in convertedNumbers.keys():
-                        rowToAppend.append(convertedNumbers[index])
-                    else:
-                        rowToAppend.append(col)
+    for currentAccount in accountList:
 
-                valuesToWrite.append(rowToAppend)
+        # print(accountList)
 
-                # fileForPrintObj = open(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\reconcileQBO\\fileForPrint")), 'w+')
-                # fileForPrintObj.write(str(rowToAppend))
-                # fileForPrintObj.close()
+        transactionList = []
 
+        for row in currentSheetValues[1:]:
+            if row[currentAccountIndex] == currentAccount:
+                transactionList.append(row[currentTransIndex])
 
-bodyToWrite = {
-    "values": valuesToWrite
-}
-
-googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
+        transactionList = list(dict.fromkeys(transactionList))
 
 
-print("Comment: Creating v3 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+        for currentTrans in transactionList:
+
+            for row in currentSheetValues[1:]:
+                if row[currentTransIndex] == currentTrans and row[currentAccountIndex] != currentAccount:
+
+                    # print(row)
+
+                    convertedNumbers = {
+                        currentAmountIndex: convertNumber(row[currentAmountIndex]),
+                        currentDebitIndex: convertNumber(row[currentDebitIndex]),
+                        currentCreditIndex: convertNumber(creedFunctions.convertOutOfRangeToZero(row, currentCreditIndex))
+                    }
+
+
+                    rowToAppend = [currentAccount, -convertedNumbers[currentDebitIndex] + convertedNumbers[currentCreditIndex]]
+
+                    for index, col in enumerate(row):
+                        if index in convertedNumbers.keys():
+                            rowToAppend.append(convertedNumbers[index])
+                        else:
+                            rowToAppend.append(col)
+
+                    valuesToWrite.append(rowToAppend)
+
+                    # fileForPrintObj = open(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\reconcileQBO\\fileForPrint")), 'w+')
+                    # fileForPrintObj.write(str(rowToAppend))
+                    # fileForPrintObj.close()
+
+
+    bodyToWrite = {
+        "values": valuesToWrite
+    }
+
+    googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
+
+
+    print("Comment: Creating v3 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
