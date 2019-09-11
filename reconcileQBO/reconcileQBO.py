@@ -115,7 +115,7 @@ if copyToV2:
     valuesToWrite = []
     valuesToWrite.append(firstRowToAppend)
 
-
+    lastColForFillDown = 6
     transactionNum = 1
 
     for row in currentSheetValues[1:]:
@@ -124,13 +124,17 @@ if copyToV2:
             rowToAppend = []
             rowToAppend.append(transactionNum)
 
-            for colNum in range(0, 6):
+            currentData = {}
+
+            for colNum in range(0, lastColForFillDown):
                 if row[colNum] != "":
-                   currentData = row[colNum]
-                rowToAppend.append(currentData)
+                   currentData[colNum] = row[colNum]
+
+            for key in currentData:
+                rowToAppend.append(currentData[key])
 
 
-            for index, col in enumerate(row[6:]):
+            for index, col in enumerate(row[lastColForFillDown:]):
                 rowToAppend.append(col)
 
             valuesToWrite.append(rowToAppend)
@@ -165,11 +169,11 @@ else:
 
 
 currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
-currentAccountIndex = 3
 currentTransIndex = 0
-currentAmountIndex = 5
-currentDebitIndex = 6
-currentCreditIndex = 7
+currentAccountIndex = 7
+currentAmountIndex = currentAccountIndex + 2
+currentDebitIndex = currentAccountIndex + 3
+currentCreditIndex = currentAccountIndex + 4
 sheetToWrite = "v3"
 firstRowToAppend = ["Main Account", "Amount+-"]
 
