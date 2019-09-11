@@ -6,7 +6,8 @@ startTime = time.time()
 # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
 #ID of private Google Sheet
 spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
-sheetName = "Bank Transactions - Recurring"
+sheetName = "Bank Transactions"
+# sheetName = "Bank Transactions - Recurring"
 
 
 
@@ -87,7 +88,6 @@ requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(ba
 
 if win32api.GetKeyState(win32con.VK_NUMLOCK) == 1:
     pyautogui.press("numlock")
-    numLockChanged = True
 
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
@@ -222,7 +222,7 @@ for sheet in googleSheetsData["sheets"]:
 
 
 
-if numLockChanged:
+if win32api.GetKeyState(win32con.VK_NUMLOCK) == 0:
     pyautogui.press("numlock")
 
 
