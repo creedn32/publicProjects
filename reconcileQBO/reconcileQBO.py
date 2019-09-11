@@ -4,8 +4,8 @@ startTime = time.time()
 
 
 copyToV2 = True
-originalLastCell = "K28958"
-v2LastCell = "L19371"
+originalLastCell = "K29023"
+v2LastCell = "L19431"
 accountList = []
 # accountList.append("BAF 2 - 5006 (transfers to Bluebird)")
 
@@ -165,10 +165,10 @@ else:
 
 currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
 currentTransIndex = 0
-currentAccountIndex = 7
-currentAmountIndex = currentAccountIndex + 2
-currentDebitIndex = currentAccountIndex + 3
-currentCreditIndex = currentAccountIndex + 4
+currentAccountIndex = 8
+currentAmountIndex = currentAccountIndex + 1
+currentDebitIndex = currentAccountIndex + 2
+currentCreditIndex = currentAccountIndex + 3
 sheetToWrite = "v3"
 firstRowToAppend = ["Main Account", "Amount+-"]
 
