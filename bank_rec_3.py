@@ -49,6 +49,7 @@ gpTrxNumCol = 13
 
 print("Cmt: Open and connect to file...Done.")
 
+#copy column names to Comparison
 
 excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(1, 1), excelBankTableSearchSheet.Cells(1, bankColumns)).Copy(excelCompSheet.Cells(1, 1))
 excelGPTableSheet.Range(excelGPTableSheet.Cells(1, 1), excelGPTableSheet.Cells(1, gpColumns)).Copy(excelCompSheet.Cells(1, bankColumns + 1))
@@ -59,7 +60,7 @@ gpRow = rowAfterHeader
 while excelGPTableSheet.Cells(gpRow, 1).Value:
     #lapStartTime = time.time()
 
-    #put in GP data
+    #copy GP row to Comparison
     
     excelGPTableSheet.Range(excelGPTableSheet.Cells(gpRow, 1), excelGPTableSheet.Cells(gpRow, gpColumns)).Copy(excelCompSheet.Cells(gpRow, bankColumns + 1))
 
@@ -106,13 +107,10 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
             
     if len(rowsToCheck) == 1:
 
-        if searchText == 283.02:
-            print("Value on row to check is " + str(excelBankTableSearchSheet.Cells(rowsToCheck[0], bankTableSearchCol).Value))
-             
         if excelGPTableSheet.Cells(gpRow, gpTrxTypeCol).Value != "Check" or (excelGPTableSheet.Cells(gpRow, gpTrxTypeCol).Value == "Check" and (len(excelGPTableSheet.Cells(gpRow, gpTrxNumCol).Value) not in (5, 6, 7) or excelGPTableSheet.Cells(gpRow, 13).Value[:3] == "ACH")):
 
-            if searchText == 283.02:
-                print("Value on row to check is " + str(excelBankTableSearchSheet.Cells(rowsToCheck[0], bankTableSearchCol).Value))
+            # if searchText == 283.02:
+            #     print("Value on row to check is " + str(excelBankTableSearchSheet.Cells(rowsToCheck[0], bankTableSearchCol).Value))
 
             excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(rowsToCheck[0], 1), excelBankTableSearchSheet.Cells(rowsToCheck[0], bankColumns)).Copy(excelCompSheet.Cells(gpRow, 1))
             excelBankTableSearchSheet.Cells(rowsToCheck[0], 1).EntireRow.Delete()
@@ -120,6 +118,9 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
         if excelGPTableSheet.Cells(gpRow, gpTrxTypeCol).Value == "Check" and len(excelGPTableSheet.Cells(gpRow, gpTrxNumCol).Value) in (5, 6, 7):
             for rowToCheck in rowsToCheck:
                if excelBankTableSearchSheet.Cells(rowToCheck, bankTrxTypeCol).Value == "Check(s) Paid":
+
+                    #review this logic
+
                     if int(excelGPTableSheet.Cells(gpRow, gpTrxNumCol).Value[-5:]) == excelBankTableSearchSheet.Cells(rowToCheck, bankTrxNumCol).Value:
                         excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(rowToCheck, 1), excelBankTableSearchSheet.Cells(rowToCheck, bankColumns)).Copy(excelCompSheet.Cells(gpRow, 1))
                         excelBankTableSearchSheet.Cells(rowToCheck, 1).EntireRow.Delete()
