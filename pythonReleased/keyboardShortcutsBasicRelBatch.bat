@@ -1,0 +1,1 @@
+"C:\Users\cnaylor\Desktop\Portable Applications\Python\Python Virtual Environments\VEnv 3740\Scripts\pythonw.exe" "C:\Users\cnaylor\Desktop\Portable Procedures\repos\keyboardShortcuts\pythonReleased\keyboardShortcutsBasicRel.py"

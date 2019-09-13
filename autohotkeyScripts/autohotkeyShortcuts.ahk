@@ -80,19 +80,3 @@ return
 ;    return
 
 
-
-;    LCtrl & m::
-;        SendInput {Down}
-;    return
-
-;    LCtrl & u::
-;        SendInput {Up}
-;    return
-
-;    LCtrl & j::
-;        SendInput {Left}
-;    return
-
-;    LCtrl & k::
-;        SendInput {Right}
-;    return
