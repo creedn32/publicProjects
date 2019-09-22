@@ -3,20 +3,21 @@ import time
 startTime = time.time()
 
 
-copyToV2 = False
+copyToV2 = True
 copyToV3 = True
 
-originalLastCell = "K29023"
-v2LastCell = "L19415"
+originalLastCell = "K29278"
+v2LastCell = "L19585"
 accountList = []
 # accountList.append("BAF 2 - 5006 (transfers to Bluebird)")
 
 
 import sys, os.path
-sys.path.append("..")
-# sys.path.append("..\..")
-# os.chdir("..")
+sys.path.append("..\..")
 from creed_modules import creedFunctions
+
+os.chdir("..")
+print(os.path.abspath(os.curdir))
 
 import pickle, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 # from pprint import pprint
