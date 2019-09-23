@@ -5,10 +5,12 @@ startTime = time.time()
 
 copyToV2 = True
 copyToV3 = True
-
-originalLastCell = "K29278"
-v2LastCell = "L19585"
+originalLastCell = "K12"
+# originalLastCell = "K29278"
+v2LastCell = "L9"
+# v2LastCell = "L19585"
 accountList = []
+additionalSheetName = "Test"
 # accountList.append("BAF 2 - 5006 (transfers to Bluebird)")
 
 
@@ -16,41 +18,15 @@ import sys, os.path
 sys.path.append("..\..")
 from creed_modules import creedFunctions
 
-os.chdir("..")
-print(os.path.abspath(os.curdir))
+# print(os.path.abspath(os.curdir))
 
 import pickle, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 # from pprint import pprint
 # import lumpy
 
 
-def getLastCell(currentData, currentSheet):
 
-    for sheet in currentData["sheets"]:
-
-        if sheet["properties"]["title"] == currentSheet:
-
-            totalRows = len(sheet["data"][0]["rowData"])
-            totalColumnsByRow = []
-
-            for row in sheet["data"][0]["rowData"]:
-                totalColumnsByRow.append(len(row.get("values", [])))
-
-
-    return creedFunctions.columnToLetter(max(totalColumnsByRow)) + str(totalRows)
-
-
-def convertNumber(num):
-    # try:
-        num = creedFunctions.convertEmptyStrToZero(num)
-        num = creedFunctions.removeCommaFromStr(num)
-        num = float(num)
-        return num
-    # except BaseException as e:
-    #     print("Error on " + num + " " + str(e))
-
-
-
+os.chdir("..")
 credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json"))
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -81,6 +57,34 @@ currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 # for sheet in googleSheetsObj.get(spreadsheetId=currentSpreadsheetID).execute()["sheets"]:
 #     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
 
+
+
+def getLastCell(currentData, currentSheet):
+
+    for sheet in currentData["sheets"]:
+
+        if sheet["properties"]["title"] == currentSheet:
+
+            totalRows = len(sheet["data"][0]["rowData"])
+            totalColumnsByRow = []
+
+            for row in sheet["data"][0]["rowData"]:
+                totalColumnsByRow.append(len(row.get("values", [])))
+
+
+    return creedFunctions.columnToLetter(max(totalColumnsByRow)) + str(totalRows)
+
+
+def convertNumber(num):
+    # try:
+        num = creedFunctions.convertEmptyStrToZero(num)
+        num = creedFunctions.removeCommaFromStr(num)
+        num = float(num)
+        return num
+    # except BaseException as e:
+    #     print("Error on " + num + " " + str(e))
+
+
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
@@ -90,7 +94,8 @@ if copyToV2:
     print("Comment: Creating v2 sheet...")
 
 
-    currentSheetName = "Original"
+    currentSheetName = "Original" + additionalSheetName
+    sheetToWrite = "v2" + additionalSheetName
     currentBegRange = "A1"
 
     if not originalLastCell:
@@ -101,7 +106,6 @@ if copyToV2:
 
 
     currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
-    sheetToWrite = "v2"
     firstRowToAppend = []
 
     for cell in currentSheetValues[0]:
@@ -158,7 +162,8 @@ if copyToV3:
     startTime = time.time()
     print("Comment: Creating v3 sheet...")
 
-    currentSheetName = "v2"
+    currentSheetName = "v2" + additionalSheetName
+    sheetToWrite = "v3" + additionalSheetName
     currentBegRange = "A1"
 
     if not v2LastCell:
@@ -174,7 +179,6 @@ if copyToV3:
     currentAmountIndex = currentAccountIndex + 1
     currentDebitIndex = currentAccountIndex + 2
     currentCreditIndex = currentAccountIndex + 3
-    sheetToWrite = "v3"
     firstRowToAppend = ["Main Account", "Amount+-"]
 
 
