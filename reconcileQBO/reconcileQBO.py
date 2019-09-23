@@ -105,7 +105,8 @@ if copyToV2:
         currentEndRange = originalLastCell
 
 
-    currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
+    currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()
+    currentSheetValues = currentSheetObj.get("values", [])
     firstRowToAppend = []
 
     for cell in currentSheetValues[0]:
@@ -173,7 +174,8 @@ if copyToV3:
         currentEndRange = v2LastCell
 
 
-    currentSheetValues = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()["values"]
+    currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()
+    currentSheetValues = currentSheetObj.get("values", [])
     currentTransIndex = 0
     currentAccountIndex = 8
     currentAmountIndex = currentAccountIndex + 1
