@@ -6,8 +6,8 @@ startTime = time.time()
 # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
 #ID of private Google Sheet
 spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
-# sheetName = "Bank Transactions"
-sheetName = "Bank Transactions - Recurring"
+sheetName = "Bank Transactions"
+# sheetName = "Bank Transactions - Recurring"
 
 
 
