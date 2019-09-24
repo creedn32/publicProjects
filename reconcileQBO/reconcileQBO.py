@@ -9,9 +9,8 @@ originalLastCell = "K12"
 # originalLastCell = "K29278"
 v2LastCell = "L9"
 # v2LastCell = "L19585"
-accountList = []
 additionalSheetName = "Test"
-# accountList.append("BAF 2 - 5006 (transfers to Bluebird)")
+
 
 
 import sys, os.path
@@ -31,6 +30,8 @@ credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\goo
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
+
+
 if os.path.exists(tokenPath):
     with open(tokenPath, "rb") as tokenObj:
         credentialsObj = pickle.load(tokenObj)
@@ -52,6 +53,7 @@ if not credentialsObj or not credentialsObj.valid:
 googleSheetsObj = googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
 tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
+indexFirstRowOfData = 1
 
 # currentSpreadsheetSheets = {}
 # for sheet in googleSheetsObj.get(spreadsheetId=currentSpreadsheetID).execute()["sheets"]:
@@ -109,7 +111,7 @@ if copyToV2:
     currentSheetValues = currentSheetObj.get("values", [])
     firstRowToAppend = []
 
-    for cell in currentSheetValues[0]:
+    for cell in currentSheetValues[indexFirstRowOfData - 1]:
         firstRowToAppend.append(cell)
 
     firstRowToAppend.insert(0, "Transaction Number")
@@ -121,7 +123,7 @@ if copyToV2:
     currentData = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
     transactionNum = 1
 
-    for row in currentSheetValues[1:]:
+    for row in currentSheetValues[indexFirstRowOfData:]:
 
         if row:
             rowToAppend = []
@@ -182,9 +184,9 @@ if copyToV3:
     currentDebitIndex = currentAccountIndex + 2
     currentCreditIndex = currentAccountIndex + 3
     firstRowToAppend = ["Main Account", "Amount+-"]
+    accountList = []
 
-
-    for cell in currentSheetValues[0]:
+    for cell in currentSheetValues[indexFirstRowOfData - 1]:
         firstRowToAppend.append(cell)
 
     valuesToWrite = []
@@ -193,7 +195,7 @@ if copyToV3:
 
     if not accountList:
 
-        for row in currentSheetValues[1:]:
+        for row in currentSheetValues[indexFirstRowOfData:]:
             accountList.append(row[currentAccountIndex])
 
         accountList = list(dict.fromkeys(accountList))
@@ -206,7 +208,7 @@ if copyToV3:
 
         transactionList = []
 
-        for row in currentSheetValues[1:]:
+        for row in currentSheetValues[indexFirstRowOfData:]:
             if row[currentAccountIndex] == currentAccount:
                 transactionList.append(row[currentTransIndex])
 
@@ -215,7 +217,7 @@ if copyToV3:
 
         for currentTrans in transactionList:
 
-            for row in currentSheetValues[1:]:
+            for row in currentSheetValues[indexFirstRowOfData:]:
                 if row[currentTransIndex] == currentTrans and row[currentAccountIndex] != currentAccount:
 
                     # print(row)
