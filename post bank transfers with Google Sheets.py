@@ -80,8 +80,6 @@ with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerO
     listenerObj.join()
 
 
-
-
 for sheet in googleSheetsData["sheets"]:
 
     if sheet["properties"]["title"] == sheetName:
