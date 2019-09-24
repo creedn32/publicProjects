@@ -11,28 +11,23 @@ v2LastCell = "L9"
 # v2LastCell = "L19585"
 additionalSheetName = "Test"
 
-
-
-import sys, os.path
-sys.path.append("..\..")
+import sys, pathlib
+sys.path.append(str(pathlib.Path.cwd().parents[1]))
+# for p in sys.path:
+#     print(p)
 from creed_modules import creedFunctions
-
-# print(os.path.abspath(os.curdir))
 
 import pickle, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
 from pprint import pprint
 # import lumpy
 
 
-
-os.chdir("..")
-credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json"))
-tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
+credentialsPath = str(pathlib.Path.cwd().parents[1]) + "\\private_data\\googleCredentials\\googleCredentials.json"
+tokenPath = str(pathlib.Path.cwd().parents[1]) + "\\private_data\\googleCredentials\\googleToken.pickle"
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
 
-
-if os.path.exists(tokenPath):
+if pathlib.Path.exists(pathlib.Path(tokenPath)):
     with open(tokenPath, "rb") as tokenObj:
         credentialsObj = pickle.load(tokenObj)
 
@@ -51,7 +46,6 @@ if not credentialsObj or not credentialsObj.valid:
 
 
 googleSheetsObj = googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
-tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
 currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 indexFirstRowOfData = 1
 
