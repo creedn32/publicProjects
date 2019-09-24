@@ -20,7 +20,7 @@ from creed_modules import creedFunctions
 # print(os.path.abspath(os.curdir))
 
 import pickle, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
-# from pprint import pprint
+from pprint import pprint
 # import lumpy
 
 
@@ -110,6 +110,9 @@ if copyToV2:
     currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()
     currentSheetValues = currentSheetObj.get("values", [])
     firstRowToAppend = []
+
+
+    pprint(currentSheetValues)
 
     for cell in currentSheetValues[indexFirstRowOfData - 1]:
         firstRowToAppend.append(cell)
