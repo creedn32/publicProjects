@@ -2,7 +2,7 @@
 
 print("Cmt: Importing modules...")
 
-import time, win32com.client, os, sys
+import time, win32com.client, pathlib
 
 startTime = time.time()
 print("Cmt: Importing modules...Done.")
@@ -12,7 +12,7 @@ print("Cmt: Open and connect to file...")
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = True
 excelApp.DisplayAlerts = False
-filePath = os.path.abspath(os.curdir)
+filePath = str(pathlib.Path.cwd().parents[0]) + "\\private_data\\bank_rec_secondary"
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 

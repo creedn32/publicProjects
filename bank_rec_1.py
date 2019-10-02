@@ -9,7 +9,7 @@ import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[0]))
 from creed_modules import creedFunctions
 
-import win32com.client, os
+import win32com.client
 
 
 print("Cmt: Importing modules...Done.")
@@ -68,7 +68,7 @@ excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Row
 bankTableSheetRow = rowAfterHeader
 
 while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
-    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = creed_modules.creedFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - creed_modules.creedFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
+    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = creedFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - creedFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
     bankTableSheetRow = bankTableSheetRow + 1
 
 
