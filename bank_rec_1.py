@@ -1,9 +1,10 @@
 print("Cmt: Importing modules...")
 
-import sys
-sys.path.append("..")
+import sys, pathlib
+sys.path.append(str(pathlib.Path.cwd().parents[0]))
+from creed_modules import creedFunctions
 
-import time, win32com.client, os, creed_modules.creedFunctions
+import time, win32com.client
 
 startTime = time.time()
 print("Cmt: Importing modules...Done.")
@@ -12,9 +13,10 @@ print("Cmt: Open and connect to file...")
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = False
 excelApp.DisplayAlerts = False
-filePath = os.path.abspath(os.curdir)
+filePath = str(pathlib.Path.cwd().parents[0]) + "\\private_data\\bank_rec_primary"
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
+
 
 excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
@@ -69,9 +71,9 @@ while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
        excelBankTableSheet.Rows(bankTableSheetRow).EntireRow.Delete()
        bankTableSheetRow = bankTableSheetRow - 1
     else:
-        excelBankTableSheet.Cells(bankTableSheetRow, bankDateCol).Value = creed_modules.creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-8] + "/" + creed_modules.creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-6][-2:] + "/" + creed_modules.creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-2][-4:]
+        excelBankTableSheet.Cells(bankTableSheetRow, bankDateCol).Value = creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-8] + "/" + creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-6][-2:] + "/" + creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-2][-4:]
 
-        myStr = creed_modules.creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
+        myStr = creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
         myStr = " ".join(myStr.split())[0:200]
         excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value = myStr
 
