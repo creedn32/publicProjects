@@ -1,17 +1,6 @@
 print("Comment: Importing modules and setting up variables...")
-import time
+import sys, pathlib, time
 startTime = time.time()
-
-
-copyToV2 = True
-copyToV3 = True
-originalLastCell = "K12"
-# originalLastCell = "K29278"
-v2LastCell = "L9"
-# v2LastCell = "L19585"
-additionalSheetName = "Test"
-
-import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 # for p in sys.path:
 #     print(p)
@@ -22,10 +11,40 @@ from pprint import pprint
 # import lumpy
 
 
+
+def getLastCell(currentData, currentSheet):
+
+    for sheet in currentData["sheets"]:
+
+        if sheet["properties"]["title"] == currentSheet:
+
+            totalRows = len(sheet["data"][0]["rowData"])
+            totalColumnsByRow = []
+
+            for row in sheet["data"][0]["rowData"]:
+                totalColumnsByRow.append(len(row.get("values", [])))
+
+    return creedFunctions.columnToLetter(max(totalColumnsByRow)) + str(totalRows)
+
+
+
+
+def convertNumber(num):
+    # try:
+        num = creedFunctions.convertEmptyStrToZero(num)
+        num = creedFunctions.removeCommaFromStr(num)
+        num = float(num)
+        return num
+    # except BaseException as e:
+    #     print("Error on " + num + " " + str(e))
+
+
+
 credentialsPath = str(pathlib.Path.cwd().parents[1]) + "\\private_data\\googleCredentials\\googleCredentials.json"
 tokenPath = str(pathlib.Path.cwd().parents[1]) + "\\private_data\\googleCredentials\\googleToken.pickle"
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
+
 
 if pathlib.Path.exists(pathlib.Path(tokenPath)):
     with open(tokenPath, "rb") as tokenObj:
@@ -55,30 +74,13 @@ indexFirstRowOfData = 1
 
 
 
-def getLastCell(currentData, currentSheet):
-
-    for sheet in currentData["sheets"]:
-
-        if sheet["properties"]["title"] == currentSheet:
-
-            totalRows = len(sheet["data"][0]["rowData"])
-            totalColumnsByRow = []
-
-            for row in sheet["data"][0]["rowData"]:
-                totalColumnsByRow.append(len(row.get("values", [])))
-
-
-    return creedFunctions.columnToLetter(max(totalColumnsByRow)) + str(totalRows)
-
-
-def convertNumber(num):
-    # try:
-        num = creedFunctions.convertEmptyStrToZero(num)
-        num = creedFunctions.removeCommaFromStr(num)
-        num = float(num)
-        return num
-    # except BaseException as e:
-    #     print("Error on " + num + " " + str(e))
+copyToV2 = True
+copyToV3 = True
+originalLastCell = "K12"
+# originalLastCell = "K29278"
+v2LastCell = "L9"
+# v2LastCell = "L19585"
+sheetNameAddition = "Test"
 
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
@@ -89,9 +91,8 @@ if copyToV2:
     startTime = time.time()
     print("Comment: Creating v2 sheet...")
 
-
-    currentSheetName = "Original" + additionalSheetName
-    sheetToWrite = "v2" + additionalSheetName
+    currentSheetName = "Original" + sheetNameAddition
+    sheetToWrite = "v2" + sheetNameAddition
     currentBegRange = "A1"
 
     if not originalLastCell:
@@ -104,7 +105,6 @@ if copyToV2:
     currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()
     currentSheetValues = currentSheetObj.get("values", [])
     firstRowToAppend = []
-
 
     pprint(currentSheetValues)
 
@@ -162,8 +162,8 @@ if copyToV3:
     startTime = time.time()
     print("Comment: Creating v3 sheet...")
 
-    currentSheetName = "v2" + additionalSheetName
-    sheetToWrite = "v3" + additionalSheetName
+    currentSheetName = "v2" + sheetNameAddition
+    sheetToWrite = "v3" + sheetNameAddition
     currentBegRange = "A1"
 
     if not v2LastCell:
