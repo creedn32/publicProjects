@@ -1,8 +1,6 @@
 print("Comment: Importing modules and setting up variables...")
-
 import sys, pathlib, time
-startTime = time.time()
-# print(pathlib.Path.cwd().parents[0])
+mDataObj = {"startTime": time.time()}
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 sys.path.append(str(pathlib.Path.cwd().parents[0]))
 
@@ -11,10 +9,8 @@ from creedLibrary import creedFunctions
 import googleSheetsAuthenticate
 from pprint import pprint
 # import lumpy
-pprint(sys.path)
+# pprint(sys.path)
 
-# for p in sys.path:
-#     print(p)
 
 
 def getLastCell(currentData, currentSheet):
@@ -33,7 +29,6 @@ def getLastCell(currentData, currentSheet):
 
 
 
-
 def convertNumber(num):
     # try:
         num = creedFunctions.convertEmptyStrToZero(num)
@@ -44,26 +39,45 @@ def convertNumber(num):
         print("Error on " + num + " " + str(e))
 
 
-def prepareSheet(sht):
 
-    startTime = time.time()
-    print("Comment: Creating " + sht + " sheet...")
+def beginOps(currentSheet, nextSheet, firstRow):
+
+    print("Comment: Creating " + nextSheet + " sheet...")
+    mDataObj["startTime"] = time.time()
+    currentSheetName = sheetInfo[currentSheet]["name"]
+    mDataObj["nextSheetName"] = sheetInfo[nextSheet]["name"]
+
+    if not sheetInfo[currentSheet]["lastCell"]:
+        currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
+        mDataObj["currentEndRange"] = getLastCell(currentSpreadsheetData, currentSheetName)
+    else:
+        mDataObj["currentEndRange"] = sheetInfo[currentSheet]["lastCell"]
+        
+
+    mDataObj["currentSheetObj"] = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + sheetInfo["allSheetsBegRange"] + ":" + mDataObj["currentEndRange"]).execute()
+    mDataObj["currentSheetValues"] = mDataObj["currentSheetObj"].get("values", [])
+
+    firstRowToAppend = firstRow
+
+    for cell in mDataObj["currentSheetValues"][indexFirstRowOfData - 1]:
+        firstRowToAppend.append(cell)
+
+    mDataObj["valuesToWrite"] = []
+    mDataObj["valuesToWrite"].append(firstRowToAppend)
 
 
 
 
-settingsObj = {
-    "firstSheet": "firstSheetTest",
-    "secondSheet": "secondSheetTest",
-    "thirdSheet": "thirdSheetTest",
-    "firstSheetLastCell": "K12",
-    "secondSheetLastCell": "L9"
-}
+def endOps(nextSt):
 
-# settingsObj = {
-#     originalLastCell: "K29278",
-#     v2LastCell: "L19585",
-# }
+    bodyToWrite = {
+        "values": mDataObj["valuesToWrite"]
+    }
+
+    googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheetsBegRange"], valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
+    print("Comment: Creating " + nextSt + " sheet...Done. " + str(round(time.time() - mDataObj["startTime"], 3)) + " seconds")
+
+
 
 
 
@@ -75,6 +89,27 @@ copyToThirdSheet = True
 
 
 
+
+sheetInfo = {
+    "allSheetsBegRange": "A1",
+    "first":
+        {"name": "firstSheetTest",
+         "lastCell": "K12"},
+    "second":
+        {"name": "secondSheetTest",
+         "lastCell": "L9"},
+    "third":
+        {"name": "thirdSheetTest"}
+}
+
+# sheetInfo = {
+#     originalLastCell: "K29278",
+#     v2LastCell: "L19585",
+# }
+
+
+
+
 # currentSpreadsheetSheets = {}
 # # for sheet in googleSheetsObj.get(spreadsheetId=currentSpreadsheetID).execute()["sheets"]:
 # #     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
@@ -83,43 +118,18 @@ copyToThirdSheet = True
 
 
 
-print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - mDataObj["startTime"], 3)) + " seconds")
 
 
 if copyToSecondSheet:
 
-    prepareSheet("second")
-
-    currentSheetName = settingsObj["firstSheet"]
-    sheetToWrite = settingsObj["secondSheet"]
-    currentBegRange = "A1"
-
-    if not settingsObj["firstSheetLastCell"]:
-        currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
-        currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
-    else:
-        currentEndRange = settingsObj["firstSheetLastCell"]
-
-
-    currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()
-    currentSheetValues = currentSheetObj.get("values", [])
-    firstRowToAppend = []
-
-    pprint(currentSheetValues)
-
-    for cell in currentSheetValues[indexFirstRowOfData - 1]:
-        firstRowToAppend.append(cell)
-
-    firstRowToAppend.insert(0, "Transaction Number")
-
-    valuesToWrite = []
-    valuesToWrite.append(firstRowToAppend)
+    beginOps("first", "second", ["Transaction Number"])
 
     lastColForFillDown = 6
     currentData = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
     transactionNum = 1
 
-    for row in currentSheetValues[indexFirstRowOfData:]:
+    for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
 
         if row:
             rowToAppend = []
@@ -138,60 +148,31 @@ if copyToSecondSheet:
             for index, col in enumerate(row[lastColForFillDown:]):
                 rowToAppend.append(col)
 
-            valuesToWrite.append(rowToAppend)
+            mDataObj["valuesToWrite"].append(rowToAppend)
 
         else:
             transactionNum = transactionNum + 1
             currentData = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
 
-
-
-    bodyToWrite = {
-        "values": valuesToWrite
-    }
-
-    googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
-
-
-    print("Comment: Creating v2 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+    endOps("second")
 
 
 if copyToThirdSheet:
 
-    startTime = time.time()
-    print("Comment: Creating v3 sheet...")
-
-    currentSheetName = settingsObj["secondSheet"]
-    sheetToWrite = settingsObj["thirdSheet"]
-    currentBegRange = "A1"
-
-    if not settingsObj["secondSheetLastCell"]:
-        currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
-        currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
-    else:
-        currentEndRange = settingsObj["secondSheetLastCell"]
+    beginOps("second", "third", ["Main Account", "Amount+-"])
 
 
-    currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()
-    currentSheetValues = currentSheetObj.get("values", [])
     currentTransIndex = 0
     currentAccountIndex = 8
     currentAmountIndex = currentAccountIndex + 1
     currentDebitIndex = currentAccountIndex + 2
     currentCreditIndex = currentAccountIndex + 3
-    firstRowToAppend = ["Main Account", "Amount+-"]
     accountList = []
-
-    for cell in currentSheetValues[indexFirstRowOfData - 1]:
-        firstRowToAppend.append(cell)
-
-    valuesToWrite = []
-    valuesToWrite.append(firstRowToAppend)
 
 
     if not accountList:
 
-        for row in currentSheetValues[indexFirstRowOfData:]:
+        for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
             accountList.append(row[currentAccountIndex])
 
         accountList = list(dict.fromkeys(accountList))
@@ -204,7 +185,7 @@ if copyToThirdSheet:
 
         transactionList = []
 
-        for row in currentSheetValues[indexFirstRowOfData:]:
+        for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
             if row[currentAccountIndex] == currentAccount:
                 transactionList.append(row[currentTransIndex])
 
@@ -213,7 +194,7 @@ if copyToThirdSheet:
 
         for currentTrans in transactionList:
 
-            for row in currentSheetValues[indexFirstRowOfData:]:
+            for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
                 if row[currentTransIndex] == currentTrans and row[currentAccountIndex] != currentAccount:
 
                     # print(row)
@@ -233,19 +214,11 @@ if copyToThirdSheet:
                         else:
                             rowToAppend.append(col)
 
-                    valuesToWrite.append(rowToAppend)
+                    mDataObj["valuesToWrite"].append(rowToAppend)
 
                     # fileForPrintObj = open(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\reconcileQBO\\fileForPrint")), 'w+')
                     # fileForPrintObj.write(str(rowToAppend))
                     # fileForPrintObj.close()
 
-
-    bodyToWrite = {
-        "values": valuesToWrite
-    }
-
-    googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetToWrite + "!A1", valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
-
-
-    print("Comment: Creating v3 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+    endOps("third")
 
