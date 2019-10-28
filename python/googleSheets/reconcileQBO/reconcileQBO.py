@@ -1,12 +1,13 @@
-print("Comment: Importing modules and setting up variables...")
-import sys, pathlib, time
-mDataObj = {"startTime": time.time()}
+import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 sys.path.append(str(pathlib.Path.cwd().parents[0]))
-
-
 from creedLibrary import creedFunctions
+
+startTime = creedFunctions.startCode()
 import googleSheetsAuthenticate
+
+
+import time
 from pprint import pprint
 # import lumpy
 # pprint(sys.path)
@@ -44,34 +45,32 @@ def beginOps(currentSheet, nextSheet, firstRow):
 
     print("Comment: Creating " + nextSheet + " sheet...")
     mDataObj["startTime"] = time.time()
-    currentSheetName = sheetInfo[currentSheet]["name"]
-    mDataObj["nextSheetName"] = sheetInfo[nextSheet]["name"]
+
 
     if not sheetInfo[currentSheet]["lastCell"]:
         currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
-        mDataObj["currentEndRange"] = getLastCell(currentSpreadsheetData, currentSheetName)
+        currentEndRange = getLastCell(currentSpreadsheetData, sheetInfo[currentSheet]["name"])
     else:
-        mDataObj["currentEndRange"] = sheetInfo[currentSheet]["lastCell"]
+        currentEndRange = sheetInfo[currentSheet]["lastCell"]
         
 
-    mDataObj["currentSheetObj"] = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + sheetInfo["allSheetsBegRange"] + ":" + mDataObj["currentEndRange"]).execute()
-    mDataObj["currentSheetValues"] = mDataObj["currentSheetObj"].get("values", [])
+    currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=sheetInfo[currentSheet]["name"] + "!" + sheetInfo["allSheetsBegRange"] + ":" + currentEndRange).execute()
+    mDataObj["currentSheetValues"] = currentSheetObj.get("values", [])
 
     firstRowToAppend = firstRow
 
     for cell in mDataObj["currentSheetValues"][indexFirstRowOfData - 1]:
         firstRowToAppend.append(cell)
 
-    mDataObj["valuesToWrite"] = []
-    mDataObj["valuesToWrite"].append(firstRowToAppend)
+    return [firstRowToAppend]
 
 
 
 
-def endOps(nextSt):
+def endOps(nextSt, vToWrite):
 
     bodyToWrite = {
-        "values": mDataObj["valuesToWrite"]
+        "values": vToWrite
     }
 
     googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheetsBegRange"], valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
@@ -84,10 +83,6 @@ def endOps(nextSt):
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
 currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 indexFirstRowOfData = 1
-copyToSecondSheet = True
-copyToThirdSheet = True
-
-
 
 
 sheetInfo = {
@@ -97,9 +92,11 @@ sheetInfo = {
          "lastCell": "K12"},
     "second":
         {"name": "secondSheetTest",
-         "lastCell": "L9"},
+         "lastCell": "L9",
+         "create?": True},
     "third":
-        {"name": "thirdSheetTest"}
+        {"name": "thirdSheetTest",
+         "create?": True}
 }
 
 # sheetInfo = {
@@ -108,6 +105,7 @@ sheetInfo = {
 # }
 
 
+mDataObj = {}
 
 
 # currentSpreadsheetSheets = {}
@@ -118,12 +116,12 @@ sheetInfo = {
 
 
 
-print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - mDataObj["startTime"], 3)) + " seconds")
+print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
-if copyToSecondSheet:
+if sheetInfo["second"]["create?"]:
 
-    beginOps("first", "second", ["Transaction Number"])
+    valToWrite = beginOps("first", "second", ["Transaction Number"])
 
     lastColForFillDown = 6
     currentData = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
@@ -132,8 +130,7 @@ if copyToSecondSheet:
     for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
 
         if row:
-            rowToAppend = []
-            rowToAppend.append(transactionNum)
+            rowToAppend = [transactionNum]
 
             for colNum in range(0, lastColForFillDown):
                 if row[colNum] != "":
@@ -148,19 +145,19 @@ if copyToSecondSheet:
             for index, col in enumerate(row[lastColForFillDown:]):
                 rowToAppend.append(col)
 
-            mDataObj["valuesToWrite"].append(rowToAppend)
+            valToWrite.append(rowToAppend)
 
         else:
             transactionNum = transactionNum + 1
             currentData = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
 
-    endOps("second")
+    endOps("second", valToWrite)
 
 
-if copyToThirdSheet:
 
-    beginOps("second", "third", ["Main Account", "Amount+-"])
+if sheetInfo["third"]["create?"]:
 
+    valToWrite = beginOps("second", "third", ["Main Account", "Amount+-"])
 
     currentTransIndex = 0
     currentAccountIndex = 8
@@ -169,14 +166,10 @@ if copyToThirdSheet:
     currentCreditIndex = currentAccountIndex + 3
     accountList = []
 
+    for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
+        accountList.append(row[currentAccountIndex])
 
-    if not accountList:
-
-        for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
-            accountList.append(row[currentAccountIndex])
-
-        accountList = list(dict.fromkeys(accountList))
-
+    accountList = list(dict.fromkeys(accountList))
 
 
     for currentAccount in accountList:
@@ -214,11 +207,11 @@ if copyToThirdSheet:
                         else:
                             rowToAppend.append(col)
 
-                    mDataObj["valuesToWrite"].append(rowToAppend)
+                    valToWrite.append(rowToAppend)
 
                     # fileForPrintObj = open(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\reconcileQBO\\fileForPrint")), 'w+')
                     # fileForPrintObj.write(str(rowToAppend))
                     # fileForPrintObj.close()
 
-    endOps("third")
+    endOps("third", valToWrite)
 

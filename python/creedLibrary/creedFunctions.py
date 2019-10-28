@@ -91,7 +91,11 @@ def columnToLetter(columnNumber):
 
 
 
+def startCode():
 
+    import time
+    print("Comment: Importing modules and setting up variables...")
+    return time.time()
 
 
     #
