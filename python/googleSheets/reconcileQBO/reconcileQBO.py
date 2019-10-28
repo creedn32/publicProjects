@@ -17,7 +17,6 @@ pprint(sys.path)
 #     print(p)
 
 
-
 def getLastCell(currentData, currentSheet):
 
     for sheet in currentData["sheets"]:
@@ -45,11 +44,36 @@ def convertNumber(num):
         print("Error on " + num + " " + str(e))
 
 
+def prepareSheet(sht):
+
+    startTime = time.time()
+    print("Comment: Creating " + sht + " sheet...")
+
+
+
+
+settingsObj = {
+    "firstSheet": "firstSheetTest",
+    "secondSheet": "secondSheetTest",
+    "thirdSheet": "thirdSheetTest",
+    "firstSheetLastCell": "K12",
+    "secondSheetLastCell": "L9"
+}
+
+# settingsObj = {
+#     originalLastCell: "K29278",
+#     v2LastCell: "L19585",
+# }
+
+
+
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
-
-
 currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
 indexFirstRowOfData = 1
+copyToSecondSheet = True
+copyToThirdSheet = True
+
+
 
 # currentSpreadsheetSheets = {}
 # # for sheet in googleSheetsObj.get(spreadsheetId=currentSpreadsheetID).execute()["sheets"]:
@@ -57,32 +81,24 @@ indexFirstRowOfData = 1
 #
 #
 
-copyToV2 = True
-copyToV3 = True
-originalLastCell = "K12"
-# originalLastCell = "K29278"
-v2LastCell = "L9"
-# v2LastCell = "L19585"
-sheetNameAddition = "Test"
 
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
-if copyToV2:
+if copyToSecondSheet:
 
-    startTime = time.time()
-    print("Comment: Creating v2 sheet...")
+    prepareSheet("second")
 
-    currentSheetName = "Original" + sheetNameAddition
-    sheetToWrite = "v2" + sheetNameAddition
+    currentSheetName = settingsObj["firstSheet"]
+    sheetToWrite = settingsObj["secondSheet"]
     currentBegRange = "A1"
 
-    if not originalLastCell:
+    if not settingsObj["firstSheetLastCell"]:
         currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
         currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
     else:
-        currentEndRange = originalLastCell
+        currentEndRange = settingsObj["firstSheetLastCell"]
 
 
     currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()
@@ -140,20 +156,20 @@ if copyToV2:
     print("Comment: Creating v2 sheet...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
-if copyToV3:
+if copyToThirdSheet:
 
     startTime = time.time()
     print("Comment: Creating v3 sheet...")
 
-    currentSheetName = "v2" + sheetNameAddition
-    sheetToWrite = "v3" + sheetNameAddition
+    currentSheetName = settingsObj["secondSheet"]
+    sheetToWrite = settingsObj["thirdSheet"]
     currentBegRange = "A1"
 
-    if not v2LastCell:
+    if not settingsObj["secondSheetLastCell"]:
         currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
         currentEndRange = getLastCell(currentSpreadsheetData, currentSheetName)
     else:
-        currentEndRange = v2LastCell
+        currentEndRange = settingsObj["secondSheetLastCell"]
 
 
     currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=currentSheetName + "!" + currentBegRange + ":" + currentEndRange).execute()
