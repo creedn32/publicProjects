@@ -44,25 +44,27 @@ def convertNumber(num):
 def beginOps(currentSheet, nextSheet, firstRow):
 
     print("Comment: Creating " + nextSheet + " sheet...")
-    mDataObj["startTime"] = time.time()
+    indexFirstRowOfData = 1
+    sheetInfo["startTime"] = time.time()
 
 
     if not sheetInfo[currentSheet]["lastCell"]:
-        currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=currentSpreadsheetID, includeGridData=True).execute()
+        currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=sheetInfo["currentSpreadsheetID"], includeGridData=True).execute()
         currentEndRange = getLastCell(currentSpreadsheetData, sheetInfo[currentSheet]["name"])
     else:
         currentEndRange = sheetInfo[currentSheet]["lastCell"]
         
 
-    currentSheetObj = googleSheetsObj.values().get(spreadsheetId=currentSpreadsheetID, range=sheetInfo[currentSheet]["name"] + "!" + sheetInfo["allSheetsBegRange"] + ":" + currentEndRange).execute()
-    mDataObj["currentSheetValues"] = currentSheetObj.get("values", [])
+    sheetInfo[currentSheet]["obj"] = googleSheetsObj.values().get(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=sheetInfo[currentSheet]["name"] + "!" + sheetInfo["allSheetsBegRange"] + ":" + currentEndRange).execute()
+    sheetInfo[currentSheet]["values"] = sheetInfo[currentSheet]["obj"].get("values", [])
+    sheetInfo[currentSheet]["shortValues"] = sheetInfo[currentSheet]["values"][indexFirstRowOfData:]
 
-    firstRowToAppend = firstRow
+    firstRowToWrite = firstRow
 
-    for cell in mDataObj["currentSheetValues"][indexFirstRowOfData - 1]:
-        firstRowToAppend.append(cell)
+    for cell in sheetInfo[currentSheet]["values"][indexFirstRowOfData - 1]:
+        firstRowToWrite.append(cell)
 
-    return [firstRowToAppend]
+    return [firstRowToWrite]
 
 
 
@@ -73,26 +75,25 @@ def endOps(nextSt, vToWrite):
         "values": vToWrite
     }
 
-    googleSheetsObj.values().update(spreadsheetId=currentSpreadsheetID, range=sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheetsBegRange"], valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
-    print("Comment: Creating " + nextSt + " sheet...Done. " + str(round(time.time() - mDataObj["startTime"], 3)) + " seconds")
+    googleSheetsObj.values().update(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheetsBegRange"], valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
+    print("Comment: Creating " + nextSt + " sheet...Done. " + str(round(time.time() - sheetInfo["startTime"], 3)) + " seconds")
 
 
 
 
 
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
-currentSpreadsheetID = "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4"
-indexFirstRowOfData = 1
-
 
 sheetInfo = {
+    startTime: None,
+    "currentSpreadsheetID": "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4",
     "allSheetsBegRange": "A1",
     "first":
         {"name": "firstSheetTest",
-         "lastCell": "K12"},
+         "lastCell": "K17"},
     "second":
         {"name": "secondSheetTest",
-         "lastCell": "L9",
+         "lastCell": "L13",
          "create?": True},
     "third":
         {"name": "thirdSheetTest",
@@ -105,11 +106,11 @@ sheetInfo = {
 # }
 
 
-mDataObj = {}
+
 
 
 # currentSpreadsheetSheets = {}
-# # for sheet in googleSheetsObj.get(spreadsheetId=currentSpreadsheetID).execute()["sheets"]:
+# # for sheet in googleSheetsObj.get(spreadsheetId=sheetInfo["currentSpreadsheetID"]).execute()["sheets"]:
 # #     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
 #
 #
@@ -119,37 +120,40 @@ mDataObj = {}
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
+
+
 if sheetInfo["second"]["create?"]:
 
-    valToWrite = beginOps("first", "second", ["Transaction Number"])
-
+    currentSheet = "first"
+    valToWrite = beginOps(currentSheet, "second", ["Transaction Number"])
     lastColForFillDown = 6
-    currentData = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
+    dataToFillDown = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
     transactionNum = 1
 
-    for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
+    # pprint(sheetInfo[currentSheet]["shortValues"])
 
-        if row:
-            rowToAppend = [transactionNum]
+    for rowFromCurrentSheet in sheetInfo[currentSheet]["shortValues"]:
 
-            for colNum in range(0, lastColForFillDown):
-                if row[colNum] != "":
-                   currentData[colNum] = row[colNum]
+        if rowFromCurrentSheet:
 
-            # print(currentData)
+            for key in dataToFillDown:
+                if rowFromCurrentSheet[key] != "":
+                   dataToFillDown[key] = rowFromCurrentSheet[key]
 
-            for key in currentData:
-                rowToAppend.append(currentData[key])
+            rowToWrite = [transactionNum]
 
 
-            for index, col in enumerate(row[lastColForFillDown:]):
-                rowToAppend.append(col)
+            for index in range(len(rowFromCurrentSheet)):
+                if index in dataToFillDown.keys():
+                    rowToWrite.append(dataToFillDown[index])
+                else:
+                    rowToWrite.append(rowFromCurrentSheet[index])
 
-            valToWrite.append(rowToAppend)
+            valToWrite.append(rowToWrite)
 
         else:
             transactionNum = transactionNum + 1
-            currentData = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
+            dataToFillDown = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
 
     endOps("second", valToWrite)
 
@@ -157,7 +161,8 @@ if sheetInfo["second"]["create?"]:
 
 if sheetInfo["third"]["create?"]:
 
-    valToWrite = beginOps("second", "third", ["Main Account", "Amount+-"])
+    currentSheet = "second"
+    valToWrite = beginOps(currentSheet, "third", ["Main Account", "Amount+-"])
 
     currentTransIndex = 0
     currentAccountIndex = 8
@@ -166,10 +171,11 @@ if sheetInfo["third"]["create?"]:
     currentCreditIndex = currentAccountIndex + 3
     accountList = []
 
-    for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
-        accountList.append(row[currentAccountIndex])
+    for row in sheetInfo[currentSheet]["shortValues"]:
+        if row[currentAccountIndex] not in accountList:
+            accountList.append(row[currentAccountIndex])
 
-    accountList = list(dict.fromkeys(accountList))
+    # accountList = list(dict.fromkeys(accountList))
 
 
     for currentAccount in accountList:
@@ -178,40 +184,28 @@ if sheetInfo["third"]["create?"]:
 
         transactionList = []
 
-        for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
-            if row[currentAccountIndex] == currentAccount:
+        for row in sheetInfo[currentSheet]["shortValues"]:
+            if row[currentAccountIndex] == currentAccount and row[currentTransIndex] not in transactionList:
                 transactionList.append(row[currentTransIndex])
 
-        transactionList = list(dict.fromkeys(transactionList))
+        # transactionList = list(dict.fromkeys(transactionList))
 
 
         for currentTrans in transactionList:
 
-            for row in mDataObj["currentSheetValues"][indexFirstRowOfData:]:
+            for row in sheetInfo[currentSheet]["shortValues"]:
                 if row[currentTransIndex] == currentTrans and row[currentAccountIndex] != currentAccount:
 
-                    # print(row)
+                    row[currentAmountIndex] = convertNumber(row[currentAmountIndex])
+                    row[currentDebitIndex] = convertNumber(row[currentDebitIndex])
 
-                    convertedNumbers = {
-                        currentAmountIndex: convertNumber(row[currentAmountIndex]),
-                        currentDebitIndex: convertNumber(row[currentDebitIndex]),
-                        currentCreditIndex: convertNumber(creedFunctions.convertOutOfRangeToZero(row, currentCreditIndex))
-                    }
+                    if len(row) > currentCreditIndex:
+                        row[currentCreditIndex] = convertNumber(row[currentCreditIndex])
+                    else:
+                        row.append(0)
 
+                    valToWrite.append([currentAccount, -row[currentDebitIndex] + row[currentCreditIndex]] + row)
 
-                    rowToAppend = [currentAccount, -convertedNumbers[currentDebitIndex] + convertedNumbers[currentCreditIndex]]
-
-                    for index, col in enumerate(row):
-                        if index in convertedNumbers.keys():
-                            rowToAppend.append(convertedNumbers[index])
-                        else:
-                            rowToAppend.append(col)
-
-                    valToWrite.append(rowToAppend)
-
-                    # fileForPrintObj = open(os.path.abspath(os.path.join(os.curdir, "..\\private_data\\reconcileQBO\\fileForPrint")), 'w+')
-                    # fileForPrintObj.write(str(rowToAppend))
-                    # fileForPrintObj.close()
 
     endOps("third", valToWrite)
 
