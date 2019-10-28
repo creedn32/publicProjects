@@ -1,10 +1,13 @@
 
+
+
 def authFunc():
 
-    import pickle, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
+    import pickle, pathlib, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
+    # print(pathlib.Path.cwd().parents[3])
 
-    credentialsPath = str(pathlib.Path.cwd().parents[1]) + "\\private_data\\googleCredentials\\googleCredentials.json"
-    tokenPath = str(pathlib.Path.cwd().parents[1]) + "\\private_data\\googleCredentials\\googleToken.pickle"
+    credentialsPath = str(pathlib.Path.cwd().parents[3]) + "\\privatedata\\googleCredentials\\googleCredentials.json"
+    tokenPath = str(pathlib.Path.cwd().parents[3]) + "\\privatedata\\googleCredentials\\googleToken.pickle"
     googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
     credentialsObj = None
 
