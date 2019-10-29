@@ -106,9 +106,9 @@ sheetInfo = {
          "create?": True,
          "transIndex": 0,
          "accountIndex": 2,
-         "amountIndex": 2 + 1,
-         "debitIndex": 2 + 2,
-         "creditIndex": 2 + 3},
+         "amountIndex": 5,
+         "debitIndex": 3,
+         "creditIndex": 4},
     "third":
         {"name": "thirdSheetTest",
          "create?": True}
@@ -180,6 +180,7 @@ if sheetInfo["third"]["create?"]:
 
     for currentAccount in accountList:
 
+        # print(currentAccount)
         transactionList = []
 
         for row in sheetInfo[currentSheet]["shortValues"]:
@@ -199,6 +200,11 @@ if sheetInfo["third"]["create?"]:
                         row[sheetInfo["second"]["amountIndex"]] = convertNumber(row[sheetInfo["second"]["amountIndex"]])
                         row[sheetInfo["second"]["debitIndex"]] = convertNumber(row[sheetInfo["second"]["debitIndex"]])
                         row[sheetInfo["second"]["creditIndex"]] = convertNumber(row[sheetInfo["second"]["creditIndex"]])
+
+                        # print(row)
+                        # print(-row[sheetInfo["second"]["debitIndex"]])
+                        # print(row[sheetInfo["second"]["creditIndex"]])
+
 
                         valToWrite.append([currentAccount, -row[sheetInfo["second"]["debitIndex"]] + row[sheetInfo["second"]["creditIndex"]]] + row)
 
