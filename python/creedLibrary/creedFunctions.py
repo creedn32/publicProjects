@@ -52,17 +52,56 @@ def functionOnClick(x, y, button, pressed):
 
 
 
-def printPythonInfo(var):
+def printPythonInfo(var, length):
     from pprint import pprint
 
-    pprint("Printing the variable as a string: " + str(var))
+    pprint("1. Printing string of the variable: " + str(var)[0:length])
     pprint(var)
 
-    pprint("Printing help() of the variable: " + str(var))
+    pprint("2. Printing help() of the variable: " + str(var)[0:length])
     pprint(help(var))
 
-    pprint("Printing dir() of the variable: " + str(var))
+    pprint("3. Printing dir() of the variable: " + str(var)[0:length])
     pprint(dir(var))
+
+
+
+    pprint("4. Printing vars() of the variable: " + str(var)[0:length])
+    try:
+        pprint(vars(var))
+    except:
+        pprint("An exception occurred printing vars() of the variable")
+
+
+
+
+    pprint("5. Printing and loopting through the variable: " + str(var)[0:length])
+    try:
+        for attr in dir(var):
+            pprint("obj.%s = %r" % (attr, getattr(var, attr)))
+    except:
+        pprint("An exception occurred printing and loopting through the variable")
+
+
+
+    pprint("6. Printing the .__dict__ of the variable: " + str(var)[0:length])
+    try:
+        pprint(var.__dict__)
+    except:
+        pprint("An exception occurred printing the .__dict__ of the variable")
+
+
+
+    pprint("7. Printing the repr() of the variable: " + str(var)[0:length])
+    try:
+        pprint(repr(var))
+    except:
+        pprint("An exception occurred printing the repr() of the variable")
+
+
+
+
+
 
 
 
