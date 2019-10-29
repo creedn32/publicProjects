@@ -88,7 +88,8 @@ def endOps(nextSt, vToWrite):
         "values": vToWrite
     }
 
-    sheetInfo["googleSheetsObj"].values().update(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheetsBegRange"], valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
+    rangeToWrite = sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheetsBegRange"]
+    sheetInfo["googleSheetsObj"].values().update(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=rangeToWrite, valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
     print("Comment: Creating " + nextSt + " sheet...Done. " + str(round(time.time() - sheetInfo["startTime"], 3)) + " seconds")
 
 
@@ -181,19 +182,14 @@ if sheetInfo["third"]["create?"]:
         if row[sheetInfo["second"]["accountIndex"]] not in accountList:
             accountList.append(row[sheetInfo["second"]["accountIndex"]])
 
-    # accountList = list(dict.fromkeys(accountList))
-
 
     for currentAccount in accountList:
 
-        # print(currentAccount)
         transactionList = []
 
         for row in sheetInfo[currentSheet]["shortValues"]:
             if row[sheetInfo["second"]["accountIndex"]] == currentAccount and row[sheetInfo["second"]["transIndex"]] not in transactionList:
                 transactionList.append(row[sheetInfo["second"]["transIndex"]])
-
-        # transactionList = list(dict.fromkeys(transactionList))
 
         for currentTrans in transactionList:
 
@@ -206,11 +202,6 @@ if sheetInfo["third"]["create?"]:
                         row[sheetInfo["second"]["amountIndex"]] = convertNumber(row[sheetInfo["second"]["amountIndex"]])
                         row[sheetInfo["second"]["debitIndex"]] = convertNumber(row[sheetInfo["second"]["debitIndex"]])
                         row[sheetInfo["second"]["creditIndex"]] = convertNumber(row[sheetInfo["second"]["creditIndex"]])
-
-                        # print(row)
-                        # print(-row[sheetInfo["second"]["debitIndex"]])
-                        # print(row[sheetInfo["second"]["creditIndex"]])
-
 
                         valToWrite.append([currentAccount, -row[sheetInfo["second"]["debitIndex"]] + row[sheetInfo["second"]["creditIndex"]]] + row)
 
