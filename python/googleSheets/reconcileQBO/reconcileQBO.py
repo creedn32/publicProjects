@@ -47,17 +47,21 @@ def beginOps(currentSheet, nextSheet, firstRow):
     indexFirstRowOfData = 1
     sheetInfo["startTime"] = time.time()
 
+    # if not sheetInfo[currentSheet]["lastCell"]:
+    #     currentSpreadsheetData = sheetInfo["googleSheetsObj"].get(spreadsheetId=sheetInfo["currentSpreadsheetID"], includeGridData=True).execute()
+    #     currentEndRange = getLastCell(currentSpreadsheetData, sheetInfo[currentSheet]["name"])
+    # else:
+    #     currentEndRange = sheetInfo[currentSheet]["lastCell"]
 
-    if not sheetInfo[currentSheet]["lastCell"]:
-        currentSpreadsheetData = googleSheetsObj.get(spreadsheetId=sheetInfo["currentSpreadsheetID"], includeGridData=True).execute()
-        currentEndRange = getLastCell(currentSpreadsheetData, sheetInfo[currentSheet]["name"])
-    else:
-        currentEndRange = sheetInfo[currentSheet]["lastCell"]
-        
 
-    sheetInfo[currentSheet]["obj"] = googleSheetsObj.values().get(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=sheetInfo[currentSheet]["name"] + "!" + sheetInfo["allSheetsBegRange"] + ":" + currentEndRange).execute()
+    rangeToClear = sheetInfo[nextSheet]["name"] + "!" + sheetInfo["allSheetsBegRange"] + ":" + sheetInfo[nextSheet]["lastCell"]
+    sheetInfo["googleSheetsObj"].values().clear(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=rangeToClear, body={}).execute()
+
+    rangeToDownload = sheetInfo[currentSheet]["name"] + "!" + sheetInfo["allSheetsBegRange"] + ":" + sheetInfo[currentSheet]["lastCell"]
+    sheetInfo[currentSheet]["obj"] = sheetInfo["googleSheetsObj"].values().get(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=rangeToDownload).execute()
     sheetInfo[currentSheet]["values"] = sheetInfo[currentSheet]["obj"].get("values", [])
     sheetInfo[currentSheet]["shortValues"] = sheetInfo[currentSheet]["values"][indexFirstRowOfData:]
+
 
     for row in sheetInfo[currentSheet]["shortValues"]:
 
@@ -84,17 +88,16 @@ def endOps(nextSt, vToWrite):
         "values": vToWrite
     }
 
-    googleSheetsObj.values().update(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheetsBegRange"], valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
+    sheetInfo["googleSheetsObj"].values().update(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheetsBegRange"], valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
     print("Comment: Creating " + nextSt + " sheet...Done. " + str(round(time.time() - sheetInfo["startTime"], 3)) + " seconds")
 
 
 
 
 
-googleSheetsObj = googleSheetsAuthenticate.authFunc()
-
 sheetInfo = {
     startTime: None,
+    "googleSheetsObj": googleSheetsAuthenticate.authFunc(),
     "currentSpreadsheetID": "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4",
     "allSheetsBegRange": "A1",
     "first":
@@ -111,7 +114,8 @@ sheetInfo = {
          "creditIndex": 4},
     "third":
         {"name": "thirdSheetTest",
-         "create?": True}
+         "create?": True,
+         "lastCell": "N21"}
 }
 
 # sheetInfo = {
@@ -122,7 +126,7 @@ sheetInfo = {
 
 
 # currentSpreadsheetSheets = {}
-# # for sheet in googleSheetsObj.get(spreadsheetId=sheetInfo["currentSpreadsheetID"]).execute()["sheets"]:
+# # for sheet in sheetInfo["googleSheetsObj"].get(spreadsheetId=sheetInfo["currentSpreadsheetID"]).execute()["sheets"]:
 # #     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
 
 
@@ -134,9 +138,11 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 if sheetInfo["second"]["create?"]:
 
     currentSheet = "first"
-    valToWrite = beginOps(currentSheet, "second", ["Transaction Number"])
+    nextSheet = "second"
+    valToWrite = beginOps(currentSheet, nextSheet, ["Transaction Number"])
     dataToFillDown = {0: "", 6: "", 7: "", 8: "", 9: "", 10: ""}
     transactionNum = 1
+
 
     for rowFromCurrentSheet in sheetInfo[currentSheet]["shortValues"]:
 
