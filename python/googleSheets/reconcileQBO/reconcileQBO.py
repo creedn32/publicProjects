@@ -190,21 +190,26 @@ if sheetInfo["third"]["create?"]:
 
         # transactionList = list(dict.fromkeys(transactionList))
 
+        # print(currentAccount)
+        # print(transactionList)
+
 
         for currentTrans in transactionList:
 
             for row in sheetInfo[currentSheet]["shortValues"]:
-                if row[currentTransIndex] == currentTrans and row[currentAccountIndex] != currentAccount:
+                if row[currentTransIndex] == currentTrans:
 
-                    row[currentAmountIndex] = convertNumber(row[currentAmountIndex])
-                    row[currentDebitIndex] = convertNumber(row[currentDebitIndex])
+                    if row[currentAccountIndex] != currentAccount:
 
-                    if len(row) > currentCreditIndex:
-                        row[currentCreditIndex] = convertNumber(row[currentCreditIndex])
-                    else:
-                        row.append(0)
+                        row[currentAmountIndex] = convertNumber(row[currentAmountIndex])
+                        row[currentDebitIndex] = convertNumber(row[currentDebitIndex])
 
-                    valToWrite.append([currentAccount, -row[currentDebitIndex] + row[currentCreditIndex]] + row)
+                        if len(row) > currentCreditIndex:
+                            row[currentCreditIndex] = convertNumber(row[currentCreditIndex])
+                        else:
+                            row.append(0)
+
+                        valToWrite.append([currentAccount, -row[currentDebitIndex] + row[currentCreditIndex]] + row)
 
 
     endOps("third", valToWrite)
