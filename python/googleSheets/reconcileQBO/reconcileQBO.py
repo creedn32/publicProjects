@@ -9,8 +9,11 @@ import googleSheetsAuthenticate
 
 import time
 from pprint import pprint
-# import lumpy
-# pprint(sys.path)
+# import Lumpy
+# lumpy = Lumpy.Lumpy()
+# lumpy.make_reference()
+# lumpy.object_diagram()
+
 
 
 
@@ -207,4 +210,3 @@ if sheetInfo["third"]["create?"]:
 
 
     endOps("third", valToWrite)
-
