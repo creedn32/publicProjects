@@ -15,24 +15,6 @@ from pprint import pprint
 # lumpy.object_diagram()
 
 
-
-
-def getLastCell(currentData, currentSheet):
-
-    for sheet in currentData["sheets"]:
-
-        if sheet["properties"]["title"] == currentSheet:
-
-            totalRows = len(sheet["data"][0]["rowData"])
-            totalColumnsByRow = []
-
-            for row in sheet["data"][0]["rowData"]:
-                totalColumnsByRow.append(len(row.get("values", [])))
-
-    return creedFunctions.columnToLetter(max(totalColumnsByRow)) + str(totalRows)
-
-
-
 def convertNumber(num):
     # try:
         num = creedFunctions.convertEmptyStrToZero(num)
@@ -46,38 +28,42 @@ def convertNumber(num):
 
 def beginOps(currentSheet, nextSheet, firstRow):
 
-    print("Comment: Creating " + nextSheet + " sheet...")
-    indexFirstRowOfData = 1
     sheetInfo["startTime"] = time.time()
-
-    # if not sheetInfo[currentSheet]["lastCell"]:
-    #     currentSpreadsheetData = sheetInfo["googleSheetsObj"].get(spreadsheetId=sheetInfo["currentSpreadsheetID"], includeGridData=True).execute()
-    #     currentEndRange = getLastCell(currentSpreadsheetData, sheetInfo[currentSheet]["name"])
-    # else:
-    #     currentEndRange = sheetInfo[currentSheet]["lastCell"]
+    print("Comment: Creating " + nextSheet + " sheet...")
 
 
-    rangeToClear = sheetInfo[nextSheet]["name"] + "!" + sheetInfo["allSheetsBegRange"] + ":" + sheetInfo[nextSheet]["lastCell"]
+    for sheetToSearch in [currentSheet, nextSheet]:
+        for sheetWithGridInfo in sheetInfo["sheetsGridInfoObj"]["sheets"]:
+            if sheetWithGridInfo["properties"]["title"] == sheetInfo[sheetToSearch]["name"]:
+                sheetInfo[sheetToSearch]["lastCell"] = creedFunctions.columnToLetter(sheetWithGridInfo["properties"]["gridProperties"]["columnCount"]) + str(sheetWithGridInfo["properties"]["gridProperties"]["rowCount"])
+                sheetInfo[sheetToSearch]["numberOfColumns"] = sheetWithGridInfo["properties"]["gridProperties"]["columnCount"]
+
+    rangeToClear = sheetInfo[nextSheet]["name"] + "!" + sheetInfo["allSheets"]["begRange"] + ":" + sheetInfo[nextSheet]["lastCell"]
     sheetInfo["googleSheetsObj"].values().clear(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=rangeToClear, body={}).execute()
 
-    rangeToDownload = sheetInfo[currentSheet]["name"] + "!" + sheetInfo["allSheetsBegRange"] + ":" + sheetInfo[currentSheet]["lastCell"]
+
+    rangeToDownload = sheetInfo[currentSheet]["name"] + "!" + sheetInfo["allSheets"]["begRange"] + ":" + sheetInfo[currentSheet]["lastCell"]
     sheetInfo[currentSheet]["obj"] = sheetInfo["googleSheetsObj"].values().get(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=rangeToDownload).execute()
     sheetInfo[currentSheet]["values"] = sheetInfo[currentSheet]["obj"].get("values", [])
-    sheetInfo[currentSheet]["shortValues"] = sheetInfo[currentSheet]["values"][indexFirstRowOfData:]
+    sheetInfo[currentSheet]["shortValues"] = sheetInfo[currentSheet]["values"][sheetInfo["allSheets"]["indexOfFirstRowOfData"]:]
 
 
-    for row in sheetInfo[currentSheet]["shortValues"]:
 
-        if len(row) < 11 and len(row) > 1:
+    if currentSheet == "first":
 
-            columnsToAdd = 11 - len(row)
+        for row in sheetInfo[currentSheet]["shortValues"]:
 
-            for i in range(columnsToAdd):
-                row.append("")
+            if len(row) < sheetInfo[currentSheet]["numberOfColumns"] and len(row) > 1:
+
+                columnsToAdd = sheetInfo[currentSheet]["numberOfColumns"] - len(row)
+
+                for i in range(columnsToAdd):
+                    row.append("")
+
 
     firstRowToWrite = firstRow
 
-    for cell in sheetInfo[currentSheet]["values"][indexFirstRowOfData - 1]:
+    for cell in sheetInfo[currentSheet]["values"][sheetInfo["allSheets"]["indexOfFirstRowOfData"] - 1]:
         firstRowToWrite.append(cell)
 
     return [firstRowToWrite]
@@ -91,7 +77,7 @@ def endOps(nextSt, vToWrite):
         "values": vToWrite
     }
 
-    rangeToWrite = sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheetsBegRange"]
+    rangeToWrite = sheetInfo[nextSt]["name"] + "!" + sheetInfo["allSheets"]["begRange"]
     sheetInfo["googleSheetsObj"].values().update(spreadsheetId=sheetInfo["currentSpreadsheetID"], range=rangeToWrite, valueInputOption="USER_ENTERED", body=bodyToWrite).execute()
     print("Comment: Creating " + nextSt + " sheet...Done. " + str(round(time.time() - sheetInfo["startTime"], 3)) + " seconds")
 
@@ -103,13 +89,12 @@ sheetInfo = {
     startTime: None,
     "googleSheetsObj": googleSheetsAuthenticate.authFunc(),
     "currentSpreadsheetID": "1T-DVnBRKYAsA1N_jqdKDMErav-PrrPBdLGS4wiLGCd4",
-    "allSheetsBegRange": "A1",
+    "allSheets": {"begRange": "A1",
+                  "indexOfFirstRowOfData": 1},
     "first":
-        {"name": "firstSheetTest",
-         "lastCell": "K17"},
+        {"name": "firstSheetTest"},
     "second":
         {"name": "secondSheetTest",
-         "lastCell": "L13",
          "create?": True,
          "transIndex": 0,
          "accountIndex": 2,
@@ -118,35 +103,22 @@ sheetInfo = {
          "creditIndex": 4},
     "third":
         {"name": "thirdSheetTest",
-         "create?": True,
-         "lastCell": "N21"}
+         "create?": True}
 }
 
-# sheetInfo = {
-#     originalLastCell: "K29278",
-#     v2LastCell: "L19585",
-# }
 
-
-
-# currentSpreadsheetSheets = {}
-# # for sheet in sheetInfo["googleSheetsObj"].get(spreadsheetId=sheetInfo["currentSpreadsheetID"]).execute()["sheets"]:
-# #     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
-
-
-
+sheetInfo["sheetsGridInfoObj"] = sheetInfo["googleSheetsObj"].get(spreadsheetId=sheetInfo["currentSpreadsheetID"], fields="sheets(properties(title,gridProperties))").execute() #, fields="sheets(properties(title))").execute() #, fields='sheets(data/rowData/values/userEnteredValue,properties(title))').execute()  #,  #, fields='sheets(data/rowData/values/userEnteredValue,properties(index,sheetId,title))')
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
+currentSheet = "first"
+nextSheet = "second"
 
-if sheetInfo["second"]["create?"]:
+if sheetInfo[nextSheet]["create?"]:
 
-    currentSheet = "first"
-    nextSheet = "second"
     valToWrite = beginOps(currentSheet, nextSheet, ["Transaction Number"])
     dataToFillDown = {0: "", 6: "", 7: "", 8: "", 9: "", 10: ""}
     transactionNum = 1
-
 
     for rowFromCurrentSheet in sheetInfo[currentSheet]["shortValues"]:
 
@@ -170,20 +142,22 @@ if sheetInfo["second"]["create?"]:
             transactionNum = transactionNum + 1
             dataToFillDown = {0: "", 6: "", 7: "", 8: "", 9: "", 10: ""}
 
-    endOps("second", valToWrite)
+    endOps(nextSheet, valToWrite)
 
 
 
-if sheetInfo["third"]["create?"]:
+currentSheet = "second"
+nextSheet = "third"
 
-    currentSheet = "second"
-    valToWrite = beginOps(currentSheet, "third", ["Main Account", "Amount+-"])
+if sheetInfo[nextSheet]["create?"]:
+
+    valToWrite = beginOps(currentSheet, nextSheet, ["Main Account", "Amount+-"])
 
     accountList = []
 
     for row in sheetInfo[currentSheet]["shortValues"]:
-        if row[sheetInfo["second"]["accountIndex"]] not in accountList:
-            accountList.append(row[sheetInfo["second"]["accountIndex"]])
+        if row[sheetInfo[currentSheet]["accountIndex"]] not in accountList:
+            accountList.append(row[sheetInfo[currentSheet]["accountIndex"]])
 
 
     for currentAccount in accountList:
@@ -191,22 +165,22 @@ if sheetInfo["third"]["create?"]:
         transactionList = []
 
         for row in sheetInfo[currentSheet]["shortValues"]:
-            if row[sheetInfo["second"]["accountIndex"]] == currentAccount and row[sheetInfo["second"]["transIndex"]] not in transactionList:
-                transactionList.append(row[sheetInfo["second"]["transIndex"]])
+            if row[sheetInfo[currentSheet]["accountIndex"]] == currentAccount and row[sheetInfo[currentSheet]["transIndex"]] not in transactionList:
+                transactionList.append(row[sheetInfo[currentSheet]["transIndex"]])
 
         for currentTrans in transactionList:
 
             for row in sheetInfo[currentSheet]["shortValues"]:
 
-                if row[sheetInfo["second"]["transIndex"]] == currentTrans:
+                if row[sheetInfo[currentSheet]["transIndex"]] == currentTrans:
 
-                    if row[sheetInfo["second"]["accountIndex"]] != currentAccount:
+                    if row[sheetInfo[currentSheet]["accountIndex"]] != currentAccount:
 
-                        row[sheetInfo["second"]["amountIndex"]] = convertNumber(row[sheetInfo["second"]["amountIndex"]])
-                        row[sheetInfo["second"]["debitIndex"]] = convertNumber(row[sheetInfo["second"]["debitIndex"]])
-                        row[sheetInfo["second"]["creditIndex"]] = convertNumber(row[sheetInfo["second"]["creditIndex"]])
+                        row[sheetInfo[currentSheet]["amountIndex"]] = convertNumber(row[sheetInfo[currentSheet]["amountIndex"]])
+                        row[sheetInfo[currentSheet]["debitIndex"]] = convertNumber(row[sheetInfo[currentSheet]["debitIndex"]])
+                        row[sheetInfo[currentSheet]["creditIndex"]] = convertNumber(row[sheetInfo[currentSheet]["creditIndex"]])
 
-                        valToWrite.append([currentAccount, -row[sheetInfo["second"]["debitIndex"]] + row[sheetInfo["second"]["creditIndex"]]] + row)
+                        valToWrite.append([currentAccount, -row[sheetInfo[currentSheet]["debitIndex"]] + row[sheetInfo[currentSheet]["creditIndex"]]] + row)
 
 
-    endOps("third", valToWrite)
+    endOps(nextSheet, valToWrite)
