@@ -59,6 +59,15 @@ def beginOps(currentSheet, nextSheet, firstRow):
     sheetInfo[currentSheet]["values"] = sheetInfo[currentSheet]["obj"].get("values", [])
     sheetInfo[currentSheet]["shortValues"] = sheetInfo[currentSheet]["values"][indexFirstRowOfData:]
 
+    for row in sheetInfo[currentSheet]["shortValues"]:
+
+        if len(row) < 11 and len(row) > 1:
+
+            columnsToAdd = 11 - len(row)
+
+            for i in range(columnsToAdd):
+                row.append("")
+
     firstRowToWrite = firstRow
 
     for cell in sheetInfo[currentSheet]["values"][indexFirstRowOfData - 1]:
@@ -94,7 +103,12 @@ sheetInfo = {
     "second":
         {"name": "secondSheetTest",
          "lastCell": "L13",
-         "create?": True},
+         "create?": True,
+         "transIndex": 0,
+         "accountIndex": 2,
+         "amountIndex": 2 + 1,
+         "debitIndex": 2 + 2,
+         "creditIndex": 2 + 3},
     "third":
         {"name": "thirdSheetTest",
          "create?": True}
@@ -107,13 +121,9 @@ sheetInfo = {
 
 
 
-
-
 # currentSpreadsheetSheets = {}
 # # for sheet in googleSheetsObj.get(spreadsheetId=sheetInfo["currentSpreadsheetID"]).execute()["sheets"]:
 # #     currentSpreadsheetSheets[sheet["properties"]["title"]] = sheet
-#
-#
 
 
 
@@ -121,16 +131,12 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 
 
-
 if sheetInfo["second"]["create?"]:
 
     currentSheet = "first"
     valToWrite = beginOps(currentSheet, "second", ["Transaction Number"])
-    lastColForFillDown = 6
-    dataToFillDown = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
+    dataToFillDown = {0: "", 6: "", 7: "", 8: "", 9: "", 10: ""}
     transactionNum = 1
-
-    # pprint(sheetInfo[currentSheet]["shortValues"])
 
     for rowFromCurrentSheet in sheetInfo[currentSheet]["shortValues"]:
 
@@ -142,7 +148,6 @@ if sheetInfo["second"]["create?"]:
 
             rowToWrite = [transactionNum]
 
-
             for index in range(len(rowFromCurrentSheet)):
                 if index in dataToFillDown.keys():
                     rowToWrite.append(dataToFillDown[index])
@@ -153,7 +158,7 @@ if sheetInfo["second"]["create?"]:
 
         else:
             transactionNum = transactionNum + 1
-            dataToFillDown = {0: "", 1: "", 2: "", 3: "", 4: "", 5: ""}
+            dataToFillDown = {0: "", 6: "", 7: "", 8: "", 9: "", 10: ""}
 
     endOps("second", valToWrite)
 
@@ -164,52 +169,38 @@ if sheetInfo["third"]["create?"]:
     currentSheet = "second"
     valToWrite = beginOps(currentSheet, "third", ["Main Account", "Amount+-"])
 
-    currentTransIndex = 0
-    currentAccountIndex = 8
-    currentAmountIndex = currentAccountIndex + 1
-    currentDebitIndex = currentAccountIndex + 2
-    currentCreditIndex = currentAccountIndex + 3
     accountList = []
 
     for row in sheetInfo[currentSheet]["shortValues"]:
-        if row[currentAccountIndex] not in accountList:
-            accountList.append(row[currentAccountIndex])
+        if row[sheetInfo["second"]["accountIndex"]] not in accountList:
+            accountList.append(row[sheetInfo["second"]["accountIndex"]])
 
     # accountList = list(dict.fromkeys(accountList))
 
 
     for currentAccount in accountList:
 
-        # print(accountList)
-
         transactionList = []
 
         for row in sheetInfo[currentSheet]["shortValues"]:
-            if row[currentAccountIndex] == currentAccount and row[currentTransIndex] not in transactionList:
-                transactionList.append(row[currentTransIndex])
+            if row[sheetInfo["second"]["accountIndex"]] == currentAccount and row[sheetInfo["second"]["transIndex"]] not in transactionList:
+                transactionList.append(row[sheetInfo["second"]["transIndex"]])
 
         # transactionList = list(dict.fromkeys(transactionList))
-
-        # print(currentAccount)
-        # print(transactionList)
-
 
         for currentTrans in transactionList:
 
             for row in sheetInfo[currentSheet]["shortValues"]:
-                if row[currentTransIndex] == currentTrans:
 
-                    if row[currentAccountIndex] != currentAccount:
+                if row[sheetInfo["second"]["transIndex"]] == currentTrans:
 
-                        row[currentAmountIndex] = convertNumber(row[currentAmountIndex])
-                        row[currentDebitIndex] = convertNumber(row[currentDebitIndex])
+                    if row[sheetInfo["second"]["accountIndex"]] != currentAccount:
 
-                        if len(row) > currentCreditIndex:
-                            row[currentCreditIndex] = convertNumber(row[currentCreditIndex])
-                        else:
-                            row.append(0)
+                        row[sheetInfo["second"]["amountIndex"]] = convertNumber(row[sheetInfo["second"]["amountIndex"]])
+                        row[sheetInfo["second"]["debitIndex"]] = convertNumber(row[sheetInfo["second"]["debitIndex"]])
+                        row[sheetInfo["second"]["creditIndex"]] = convertNumber(row[sheetInfo["second"]["creditIndex"]])
 
-                        valToWrite.append([currentAccount, -row[currentDebitIndex] + row[currentCreditIndex]] + row)
+                        valToWrite.append([currentAccount, -row[sheetInfo["second"]["debitIndex"]] + row[sheetInfo["second"]["creditIndex"]]] + row)
 
 
     endOps("third", valToWrite)
