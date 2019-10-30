@@ -97,14 +97,17 @@ sheetInfo = {
         {"name": "secondSheetTest",
          "create?": True,
          "transIndex": 0,
-         "accountIndex": 2,
-         "amountIndex": 5,
-         "debitIndex": 3,
-         "creditIndex": 4},
+         "accountIndex": 2},
     "third":
         {"name": "thirdSheetTest",
          "create?": True}
 }
+
+
+sheetInfo["second"]["amountIndex"] = sheetInfo["second"]["accountIndex"] + 3
+sheetInfo["second"]["debitIndex"] = sheetInfo["second"]["accountIndex"] + 1
+sheetInfo["second"]["creditIndex"] = sheetInfo["second"]["accountIndex"] + 2
+
 
 
 sheetInfo["sheetsGridInfoObj"] = sheetInfo["googleSheetsObj"].get(spreadsheetId=sheetInfo["currentSpreadsheetID"], fields="sheets(properties(title,gridProperties))").execute() #, fields="sheets(properties(title))").execute() #, fields='sheets(data/rowData/values/userEnteredValue,properties(title))').execute()  #,  #, fields='sheets(data/rowData/values/userEnteredValue,properties(index,sheetId,title))')
