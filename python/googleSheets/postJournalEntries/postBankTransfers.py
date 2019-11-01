@@ -38,8 +38,8 @@ def isWhite(row):
 
 
 # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
-# spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"  #ID of private Google Sheet
-spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
+spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"  #ID of private Google Sheet
+# spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
 sheetName = "Bank Transfers"
 changeCellColor = False
 pyautogui.PAUSE = 0
@@ -114,7 +114,7 @@ for row in currentSheetData[1:]:
 
                 if col == 0:
 
-                    string = row["values"][col]["formattedValue"]
+                    # string = row["values"][col]["formattedValue"]
                     dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
                     # print(datetime.ParseExact(string, "yyMMdd", CultureInfo.InvariantCulture))
                     string = dateObj.strftime("%m%d%Y")

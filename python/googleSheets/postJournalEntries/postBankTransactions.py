@@ -96,7 +96,8 @@ for row in currentSheetData[1:]:
 
     if isWhite(row["values"]) and hasUserEnteredValue(row["values"]):
 
-        if row["values"][0]["userEnteredValue"]["stringValue"] != "Enter/Edit" and activateKeyboard:
+
+        if row["values"][0]["formattedValue"] != "Enter/Edit" and activateKeyboard:
 
             print("Row " + str("") + " will be populated into the Great Plains entry window.")
 
@@ -109,7 +110,7 @@ for row in currentSheetData[1:]:
                 numberTabs = 1
 
                 try:
-                    string = str(row["values"][col]["userEnteredValue"][list(row["values"][col]["userEnteredValue"])[0]])
+                    string = str(row["values"][col]["formattedValue"])
                 except:
                     string = ""
 
@@ -136,7 +137,7 @@ for row in currentSheetData[1:]:
 
                 elif col == 2:
 
-                    string = row["values"][col]["formattedValue"]
+                    # string = row["values"][col]["formattedValue"]
                     dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
                     # print(datetime.ParseExact(string, "yyMMdd", CultureInfo.InvariantCulture))
                     string = dateObj.strftime("%m%d%Y")
@@ -152,7 +153,7 @@ for row in currentSheetData[1:]:
                 elif col == 7:
                     string = string.replace("-", "")
 
-                    if row["values"][0]["userEnteredValue"]["stringValue"] != "Enter Transaction" or (row["values"][0]["userEnteredValue"]["stringValue"] == "Enter Transaction" and row["values"][1]["userEnteredValue"]["stringValue"] not in ["Check", "Decrease Adjustment"]):
+                    if string != "Enter Transaction" or (string == "Enter Transaction" and string not in ["Check", "Decrease Adjustment"]):
                         numberTabs = 2
 
 
