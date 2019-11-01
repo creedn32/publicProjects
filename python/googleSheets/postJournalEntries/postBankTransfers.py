@@ -5,35 +5,12 @@ from creedLibrary import creedFunctions
 
 
 startTime = creedFunctions.startCode()
-import googleSheetsAuthenticate
+import googleSheetsAuthenticate, googleSheetsFunctions
 
 
 import time
 import pyautogui, datetime, pynput.mouse, win32api, win32con
 from pprint import pprint
-
-
-def hasUserEnteredValue(row):
-
-    for item in row:
-        if "userEnteredValue" in item:
-            return True
-
-    return False
-
-
-
-def isWhite(row):
-
-    try:
-        if row[0]["userEnteredFormat"]["backgroundColor"]["red"] + row[0]["userEnteredFormat"]["backgroundColor"]["green"] + row[0]["userEnteredFormat"]["backgroundColor"]["blue"] == 3:
-            return True
-    except KeyError:
-        return True
-
-    return False
-
-
 
 
 
@@ -92,7 +69,7 @@ if activateKeyboard:
 for row in currentSheetData[1:]:
 
 
-    if isWhite(row["values"]) and hasUserEnteredValue(row["values"]):
+    if googleSheetsFunctions.isWhite(row["values"][0]) and googleSheetsFunctions.hasFormattedValue(row["values"][0]):
 
         if activateKeyboard:
 
