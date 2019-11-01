@@ -5,7 +5,7 @@ from creedLibrary import creedFunctions
 
 
 startTime = creedFunctions.startCode()
-import googleSheetsAuthenticate
+import googleSheetsAuthenticate, googleSheetsFunctions
 
 
 import time
@@ -13,33 +13,9 @@ import pyautogui, datetime, pynput.mouse, win32api, win32con
 from pprint import pprint
 
 
-def hasUserEnteredValue(row):
-
-    for item in row:
-        if "userEnteredValue" in item:
-            return True
-
-    return False
-
-
-
-def isWhite(row):
-
-    try:
-        if row[0]["userEnteredFormat"]["backgroundColor"]["red"] + row[0]["userEnteredFormat"]["backgroundColor"]["green"] + row[0]["userEnteredFormat"]["backgroundColor"]["blue"] == 3:
-            return True
-    except KeyError:
-        return True
-
-    return False
-
-
-
-
-
 # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
-# spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"  #ID of private Google Sheet
-spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
+spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"  #ID of private Google Sheet
+# spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
 sheetName = "Bank Transactions"
 # sheetName = "Bank Transactions - Recurring"
 changeCellColor = False
@@ -94,11 +70,12 @@ if activateKeyboard:
 for row in currentSheetData[1:]:
 
 
-    if isWhite(row["values"]) and hasUserEnteredValue(row["values"]):
+    if googleSheetsFunctions.isWhite(row["values"][0]) and googleSheetsFunctions.hasFormattedValue(row["values"][0]):
 
 
         if row["values"][0]["formattedValue"] != "Enter/Edit" and activateKeyboard:
 
+            # pprint(row)
             print("Row " + str("") + " will be populated into the Great Plains entry window.")
 
             if win32api.GetKeyState(win32con.VK_NUMLOCK) == 1:
@@ -153,14 +130,14 @@ for row in currentSheetData[1:]:
                 elif col == 7:
                     string = string.replace("-", "")
 
-                    if string != "Enter Transaction" or (string == "Enter Transaction" and string not in ["Check", "Decrease Adjustment"]):
+                    if row["values"][0]["formattedValue"] != "Enter Transaction" or (row["values"][0]["formattedValue"] == "Enter Transaction" and row["values"][1]["formattedValue"] not in ["Check", "Decrease Adjustment"]):
                         numberTabs = 2
 
 
                 if col in [6, 8]:
 
                     # if len(string.split(".")) == 1:
-                    string = string + "00"
+                    # string = string + "00"
                     string = string.lstrip("$").replace(".", "").replace(",", "")
 
 
