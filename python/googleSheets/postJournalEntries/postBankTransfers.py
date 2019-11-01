@@ -1,57 +1,63 @@
-print("Comment: Importing modules and setting up variables...")
+import sys, pathlib
+sys.path.append(str(pathlib.Path.cwd().parents[1]))
+sys.path.append(str(pathlib.Path.cwd().parents[0]))
+from creedLibrary import creedFunctions
+
+
+startTime = creedFunctions.startCode()
+import googleSheetsAuthenticate
+
+
 import time
-startTime = time.time()
-
-#ID of public Google Sheet
-# spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"
-#ID of private Google Sheet
-spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"
+import pyautogui, datetime, pynput.mouse, win32api, win32con
+from pprint import pprint
 
 
-# from pprint import pprint
-import datetime, pynput.mouse, pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
-import pyautogui
-pyautogui.PAUSE = 0
-import sys
-sys.path.append("..")
-from creed_modules import creedFunctions
+def hasUserEnteredValue(row):
+
+    for item in row:
+        if "userEnteredValue" in item:
+            return True
+
+    return False
 
 
-changeCellColor = False
+
+def isWhite(row):
+
+    try:
+        if row[0]["userEnteredFormat"]["backgroundColor"]["red"] + row[0]["userEnteredFormat"]["backgroundColor"]["green"] + row[0]["userEnteredFormat"]["backgroundColor"]["blue"] == 3:
+            return True
+    except KeyError:
+        return True
+
+    return False
+
+
+
+
+
+# spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
+# spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"  #ID of private Google Sheet
+spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
 sheetName = "Bank Transfers"
-credentialsPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleCredentials.json"))
-tokenPath = os.path.abspath(os.path.join(os.curdir, "..\\private_data\\googleCredentials\\googleToken.pickle"))
-googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
-credentialsObj = None
+changeCellColor = False
+pyautogui.PAUSE = 0
+activateKeyboard = True
 
 
 
-if os.path.exists(tokenPath):
-    with open(tokenPath, "rb") as tokenObj:
-        credentialsObj = pickle.load(tokenObj)
-
-# If there are no (valid) credentials available, let the user log in.
-if not credentialsObj or not credentialsObj.valid:
-    if credentialsObj and credentialsObj.expired and credentialsObj.refresh_token:
-        credentialsObj.refresh(google.auth.transport.requests.Request())
-    else:
-        flowObj = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(credentialsPath, googleScopes)
-        credentialsObj = flowObj.run_local_server(port=0)
-    # Save the credentials for the next run
-    with open(tokenPath, "wb") as tokenObj:
-        pickle.dump(credentialsObj, tokenObj)
-
-
-
-googleSheetsObj = googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
+googleSheetsObj = googleSheetsAuthenticate.authFunc()
 googleSheetsData = googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
-googleSheetsDictionary = {}
+
+# with open("output.txt", "wt") as out:
+#     pprint(googleSheetsData, stream=out)
 
 
-for sheet in googleSheetsObj.get(spreadsheetId=spreadsheetIDStr).execute()["sheets"]:
-    googleSheetsDictionary[sheet["properties"]["title"]] = sheet
-
-googleSheetValues = googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range=sheetName).execute()["values"]
+for dict in googleSheetsData["sheets"]:
+    if dict["properties"]["title"] == sheetName:
+        currentSheetIDStr = dict["properties"]["sheetId"]
+        currentSheetData = dict["data"][0]["rowData"]
 
 
 
@@ -60,7 +66,7 @@ requestDictionary["requests"] = []
 requestDictionary["requests"].append({})
 requestDictionary["requests"][0]["repeatCell"] = {}
 requestDictionary["requests"][0]["repeatCell"]["range"] = {}
-requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = googleSheetsDictionary[sheetName]["properties"]["sheetId"]
+requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = currentSheetIDStr
 requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
 requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 0
 requestDictionary["requests"][0]["repeatCell"]["cell"] = {}
@@ -72,99 +78,79 @@ requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["bac
 requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
 
 
+
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
+if activateKeyboard:
 
-with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
-    print("Click on 'Clear' to begin posting...")
-    listenerObj.join()
+    with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
+        print("Click on 'Clear' to begin posting...")
+        listenerObj.join()
 
 
-for sheet in googleSheetsData["sheets"]:
 
-    if sheet["properties"]["title"] == sheetName:
+for row in currentSheetData[1:]:
 
-        rowCount = 1
 
-        for row in sheet["data"][0]["rowData"]:
+    if isWhite(row["values"]) and hasUserEnteredValue(row["values"]):
 
-            # print(rowCount)
+        if activateKeyboard:
 
-            if rowCount in range(2, len(googleSheetValues) + 1):
+            # pprint(row)
 
-                # print("row: " + str(rowCount))
+            print("Row " + str("") + " will be populated into the Great Plains entry window.")
+
+            creedFunctions.repetitiveKeyPress(2, "tab")
+
+            for col in range(0, 5):
+
+
+                numberTabs = 1
 
                 try:
-                    cellColorTotal = row["values"][0]["userEnteredFormat"]["backgroundColor"]["red"] + row["values"][0]["userEnteredFormat"]["backgroundColor"]["green"] + row["values"][0]["userEnteredFormat"]["backgroundColor"]["blue"]
-                except KeyError:
-                    cellColorTotal = 3
+                    string = str(row["values"][col]["formattedValue"])
+                except:
+                    string = ""
 
+                if col == 0:
 
-                if cellColorTotal == 3:
-
-                    # print("First cell in this row is white")
-                    # time.sleep(1)
-
-                    print("Row " + str(rowCount) + " will be populated into the Great Plains entry window.")
-
-                    creedFunctions.repetitiveKeyPress(2, "tab")
-
-                    for col in range(1, 6):
-
-                        numberTabs = 1
-                        string = googleSheetValues[rowCount - 1][col - 1]
-
-
-                        if col == 1:
-                            dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
-                            # print(dateObj.strftime('%m').lstrip('0'))
-                            # print(dateObj.strftime('%m'))
-                            # print(dateObj.strftime('%d').lstrip('0'))
-                            # print(dateObj.strftime('%d'))
-                            # print(dateObj.strftime('%Y'))
-
-                            string = dateObj.strftime("%m%d%Y")
-
-                        elif col == 3:
-                            numberTabs = 2
-
-                        elif col == 4:
-
-                            if len(string.split(".")) == 1:
-                                string = string + "00"
-
-                            string = string.lstrip("$").replace(".", "").replace(",", "")
-
-
-                        for letter in string:
-
-                            if ord(letter) in (
-                                    list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
-                                    range(40, 44)) + list(range(33, 39))):
-
-                                pyautogui.PAUSE = .0000000000001
-                                pyautogui.keyDown("shift")
-                                pyautogui.press(letter)
-                                pyautogui.keyUp("shift")
-                                pyautogui.PAUSE = 0
-
-                            else:
-                                pyautogui.press(letter)
-
-
-                        creedFunctions.repetitiveKeyPress(numberTabs, "tab")
+                    string = row["values"][col]["formattedValue"]
+                    dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
+                    # print(datetime.ParseExact(string, "yyMMdd", CultureInfo.InvariantCulture))
+                    string = dateObj.strftime("%m%d%Y")
 
 
 
-                    with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
-                        print("Click on 'Post' or 'Clear' to continue with this entry...")
-                        listenerObj.join()
+                elif col == 2:
+                    numberTabs = 2
 
-                    requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = rowCount - 1
-                    requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = rowCount
+                elif col == 3:
 
-                    if changeCellColor:
-                        googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestDictionary).execute()
+                    # if len(string.split(".")) == 1:
+                    #     string = string + "00"
+
+                    string = string.lstrip("$").replace(".", "").replace(",", "")
+
+                for letter in string:
+
+                    if ord(letter) in (
+                            list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
+                        range(40, 44)) + list(range(33, 39))):
+
+                        pyautogui.PAUSE = .0000000000001
+                        pyautogui.keyDown("shift")
+                        pyautogui.press(letter)
+                        pyautogui.keyUp("shift")
+                        pyautogui.PAUSE = 0
+
+                    else:
+                        pyautogui.press(letter)
+
+                creedFunctions.repetitiveKeyPress(numberTabs, "tab")
 
 
-            rowCount = rowCount + 1
+            with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
+                print("Click on 'Post' or 'Clear' to continue with this entry...")
+                listenerObj.join()
+
+
