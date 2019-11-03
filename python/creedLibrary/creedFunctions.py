@@ -1,4 +1,4 @@
-
+import time
 
 def convertNothingToEmptyStr(s):
     if s:
@@ -132,7 +132,7 @@ def columnToLetter(columnNumber):
 
 def startCode():
 
-    import time
+    # import time
     print("Comment: Importing modules and setting up variables...")
     return time.time()
 
