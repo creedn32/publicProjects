@@ -1,15 +1,19 @@
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 sys.path.append(str(pathlib.Path.cwd().parents[0]))
+print(str(pathlib.Path.cwd().parents[1]), str(pathlib.Path.cwd().parents[0]))
 from creedLibrary import creedFunctions
 
 
 startTime = creedFunctions.startCode()
-import googleSheetsAuthenticate, googleSheetsFunctions
+from general import *
+print(dir(general))
+# import googleSheetsAuthenticate, googleSheetsFunctions
 
+sys.exit()
 
 import time
-import pyautogui, datetime, pynput.mouse, win32api, win32con
+import datetime, pynput.mouse, win32api, win32con, pyautogui
 from pprint import pprint
 
 
@@ -25,12 +29,13 @@ activateKeyboard = True
 
 
 
-googleSheetsObj = googleSheetsAuthenticate.authFunc()
+googleSheetsObj = general.googleSheetsAuthenticate.authFunc()
 googleSheetsData = googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
 
 # with open("output.txt", "wt") as out:
 #     pprint(googleSheetsData, stream=out)
 
+# sys.exit()
 
 for dict in googleSheetsData["sheets"]:
     if dict["properties"]["title"] == sheetName:
