@@ -6,8 +6,9 @@ from creedLibrary import creedFunctions
 
 
 startTime = creedFunctions.startCode()
-from general import *
-print(dir(general))
+import general
+print(dir(creedFunctions))
+print(creedFunctions.time.time())
 # import googleSheetsAuthenticate, googleSheetsFunctions
 
 sys.exit()
