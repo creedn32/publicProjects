@@ -19,3 +19,7 @@ def isWhite(cell):
         return True
 
     return False
+
+
+def getDataWithGrid(spreadsheetIDStr, googleSheetsObj):
+    return googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()

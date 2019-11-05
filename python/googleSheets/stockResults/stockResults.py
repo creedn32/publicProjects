@@ -1,12 +1,13 @@
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[0]/"myGoogleSheetsPythonLibrary"))
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
-import startGoogleSheets
+import setupGoogleSheets
+
+googleSheetsDataWithGrid = setupGoogleSheets.googleSheetsFunctions.getDataWithGrid("1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc", setupGoogleSheets.googleSheetsObj)
+print("Comment: Importing modules and setting up variables...Done. " + str(round(setupGoogleSheets.myPythonFunctions.time.time() - setupGoogleSheets.startTime, 3)) + " seconds")
 
 
 
-
-print("Comment: Importing modules and setting up variables...Done. " + str(round(startGoogleSheets.myPythonFunctions.time.time() - startGoogleSheets.startTime, 3)) + " seconds")
 
 
 
