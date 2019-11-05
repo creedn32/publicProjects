@@ -5,30 +5,15 @@ from myPythonLibrary import myPythonFunctions
 
 startTime = myPythonFunctions.startCode()
 
-
-
-
-
-
-
-
-
-
-# for i in pathlib.Path.cwd().parents[0].iterdir():
-#     print(i)
-# print(pathlib.Path.cwd().parents)
-
+from myGoogleSheetsPythonLibrary import *
+googleSheetsObj = googleSheetsAuthenticate.authFunc()
 
 
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(myPythonFunctions.time.time() - startTime, 3)) + " seconds")
 
-import myGoogleSheetsPythonLibrary
 
-googleSheetsObj = googleSheetsAuthenticate.authFunc()
 
-# import googleSheetsAuthenticate
-#  = googleSheetsAuthenticate.authFunc()
 
 
 
