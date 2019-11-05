@@ -132,7 +132,9 @@ def columnToLetter(columnNumber):
 
 def startCode():
 
+    global time
     import time
+
     print("Comment: Importing modules and setting up variables...")
     return time.time()
 
