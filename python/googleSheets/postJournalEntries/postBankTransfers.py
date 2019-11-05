@@ -1,17 +1,28 @@
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 sys.path.append(str(pathlib.Path.cwd().parents[0]))
-from creedLibrary import creedFunctions
+from myPythonLibrary import myPythonFunctions
 
 
-startTime = creedFunctions.startCode()
-import googleSheetsAuthenticate, googleSheetsFunctions
+startTime = myPythonFunctions.startCode()
 
-
-import time
-import pyautogui, datetime, pynput.mouse, win32api, win32con
+import time, importlib
+import datetime, pynput.mouse, win32api, win32con, pyautogui
 from pprint import pprint
 
+
+class moduleNameClass:
+    pass
+
+moduleName = "myGoogleSheetsPythonLibrary"
+moduleNameObj = moduleNameClass()
+
+for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
+    if filePath.stem not in ["__init__", "__pycache__"]:
+        importedModuleObj = importlib.import_module(moduleName + "." + filePath.stem)
+        setattr(moduleNameObj, filePath.stem, importedModuleObj)
+
+myGoogleSheetsPythonLibrary = moduleNameObj
 
 
 # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
@@ -24,7 +35,7 @@ activateKeyboard = True
 
 
 
-googleSheetsObj = googleSheetsAuthenticate.authFunc()
+googleSheetsObj = myGoogleSheetsPythonLibrary.googleSheetsAuthenticate.authFunc()
 googleSheetsData = googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
 
 # with open("output.txt", "wt") as out:
@@ -60,7 +71,7 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 if activateKeyboard:
 
-    with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
+    with pynput.mouse.Listener(on_click=myPythonFunctions.functionOnClick) as listenerObj:
         print("Click on 'Clear' to begin posting...")
         listenerObj.join()
 
@@ -69,7 +80,7 @@ if activateKeyboard:
 for row in currentSheetData[1:]:
 
 
-    if googleSheetsFunctions.isWhite(row["values"][0]) and googleSheetsFunctions.hasFormattedValue(row["values"][0]):
+    if myGoogleSheetsPythonLibrary.googleSheetsFunctions.isWhite(row["values"][0]) and myGoogleSheetsPythonLibrary.googleSheetsFunctions.hasFormattedValue(row["values"][0]):
 
         if activateKeyboard:
 
@@ -77,7 +88,7 @@ for row in currentSheetData[1:]:
 
             print("Row " + str("") + " will be populated into the Great Plains entry window.")
 
-            creedFunctions.repetitiveKeyPress(2, "tab")
+            myPythonFunctions.repetitiveKeyPress(2, "tab")
 
             for col in range(0, 5):
 
@@ -123,10 +134,10 @@ for row in currentSheetData[1:]:
                     else:
                         pyautogui.press(letter)
 
-                creedFunctions.repetitiveKeyPress(numberTabs, "tab")
+                myPythonFunctions.repetitiveKeyPress(numberTabs, "tab")
 
 
-            with pynput.mouse.Listener(on_click=creedFunctions.functionOnClick) as listenerObj:
+            with pynput.mouse.Listener(on_click=myPythonFunctions.functionOnClick) as listenerObj:
                 print("Click on 'Post' or 'Clear' to continue with this entry...")
                 listenerObj.join()
 
