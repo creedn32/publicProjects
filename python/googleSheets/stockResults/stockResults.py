@@ -1,14 +1,42 @@
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 sys.path.append(str(pathlib.Path.cwd().parents[0]))
-from creedLibrary import creedFunctions
+from myPythonLibrary import myPythonFunctions
 
-startTime = creedFunctions.startCode()
-import googleSheetsAuthenticate
+startTime = myPythonFunctions.startCode()
 
 
-import time
-from pprint import pprint
+
+
+
+
+
+
+
+
+# for i in pathlib.Path.cwd().parents[0].iterdir():
+#     print(i)
+# print(pathlib.Path.cwd().parents)
+
+
+
+
+print("Comment: Importing modules and setting up variables...Done. " + str(round(myPythonFunctions.time.time() - startTime, 3)) + " seconds")
+
+import myGoogleSheetsPythonLibrary
+
+googleSheetsObj = googleSheetsAuthenticate.authFunc()
+
+# import googleSheetsAuthenticate
+#  = googleSheetsAuthenticate.authFunc()
+
+
+
+
+
+#
+
+# from pprint import pprint
 
 
 # def convertNumber(num):
@@ -79,25 +107,25 @@ from pprint import pprint
 
 
 
-
-
-sheetInfo = {
-    startTime: None,
-    "googleSheetsObj": googleSheetsAuthenticate.authFunc(),
-    "currentSpreadsheetID": "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc",
-    "allSheets": {"begRange": "A1",
-                  "indexOfFirstRowOfData": 1},
-    # "first":
-    #     {"name": "firstSheetTest"},
-    # "second":
-    #     {"name": "secondSheetTest",
-    #      "create?": True,
-    #      "transIndex": 0,
-    #      "accountIndex": 2},
-    # "third":
-    #     {"name": "thirdSheetTest",
-    #      "create?": True}
-}
+#
+#
+# sheetInfo = {
+#     startTime: None,
+#     "googleSheetsObj": googleSheetsAuthenticate.authFunc(),
+#     "currentSpreadsheetID": "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc",
+#     "allSheets": {"begRange": "A1",
+#                   "indexOfFirstRowOfData": 1},
+#     # "first":
+#     #     {"name": "firstSheetTest"},
+#     # "second":
+#     #     {"name": "secondSheetTest",
+#     #      "create?": True,
+#     #      "transIndex": 0,
+#     #      "accountIndex": 2},
+#     # "third":
+#     #     {"name": "thirdSheetTest",
+#     #      "create?": True}
+# }
 
 
 # sheetInfo["second"]["amountIndex"] = sheetInfo["second"]["accountIndex"] + 3
@@ -105,10 +133,12 @@ sheetInfo = {
 # sheetInfo["second"]["creditIndex"] = sheetInfo["second"]["accountIndex"] + 2
 #
 #
-sheetInfo["sheetsGridInfoObj"] = sheetInfo["googleSheetsObj"].get(spreadsheetId=sheetInfo["currentSpreadsheetID"], fields="sheets(properties(title,gridProperties))").execute()
+# sheetInfo["sheetsGridInfoObj"] = sheetInfo["googleSheetsObj"].get(spreadsheetId=sheetInfo["currentSpreadsheetID"], fields="sheets(properties(title,gridProperties))").execute()
 
-print(sheetInfo["sheetsGridInfoObj"])
-print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+# print(sheetInfo["sheetsGridInfoObj"])
+
+
+
 
 
 # currentSheet = "first"
@@ -184,3 +214,19 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 #
 #
 #     endOps(nextSheet, valToWrite)
+
+
+
+
+
+
+
+
+# def myfunc():
+#     global time
+#     import time
+#     # print(time.time())
+#
+#
+# myfunc()
+# print(time.time())
