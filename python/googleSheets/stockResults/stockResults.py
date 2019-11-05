@@ -3,11 +3,31 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 sys.path.append(str(pathlib.Path.cwd().parents[0]))
 from myPythonLibrary import myPythonFunctions
 
+
 startTime = myPythonFunctions.startCode()
 
-from myGoogleSheetsPythonLibrary import *
-googleSheetsObj = googleSheetsAuthenticate.authFunc()
 
+from pprint import pprint
+import importlib
+
+
+
+
+class moduleNameClass:
+    pass
+
+moduleName = "myGoogleSheetsPythonLibrary"
+myGoogleSheetsPythonLibrary = moduleNameClass()
+
+
+
+for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
+    if filePath.stem not in ["__init__", "__pycache__"]:
+        moduleObj = importlib.import_module(moduleName + "." + filePath.stem)
+        setattr(myGoogleSheetsPythonLibrary, filePath.stem, moduleObj)
+
+
+googleSheetsObj = myGoogleSheetsPythonLibrary.googleSheetsAuthenticate.authFunc()
 
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(myPythonFunctions.time.time() - startTime, 3)) + " seconds")
@@ -21,7 +41,7 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 #
 
-# from pprint import pprint
+
 
 
 # def convertNumber(num):
