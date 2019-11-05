@@ -13,18 +13,7 @@ import importlib
 
 
 
-class moduleNameClass:
-    pass
 
-moduleName = "myGoogleSheetsPythonLibrary"
-moduleNameObj = moduleNameClass()
-
-for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
-    if filePath.stem not in ["__init__", "__pycache__"]:
-        importedModuleObj = importlib.import_module(moduleName + "." + filePath.stem)
-        setattr(moduleNameObj, filePath.stem, importedModuleObj)
-
-myGoogleSheetsPythonLibrary = moduleNameObj
 
 googleSheetsObj = myGoogleSheetsPythonLibrary.googleSheetsAuthenticate.authFunc()
 
