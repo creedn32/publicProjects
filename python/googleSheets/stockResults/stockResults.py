@@ -1,33 +1,12 @@
 import sys, pathlib
+sys.path.append(str(pathlib.Path.cwd().parents[0]/"myGoogleSheetsPythonLibrary"))
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
-sys.path.append(str(pathlib.Path.cwd().parents[0]))
-from myPythonLibrary import myPythonFunctions
-
-
-startTime = myPythonFunctions.startCode()
-
-
-from pprint import pprint
-import importlib
+import startGoogleSheets
 
 
 
 
-
-
-googleSheetsObj = myGoogleSheetsPythonLibrary.googleSheetsAuthenticate.authFunc()
-
-
-print("Comment: Importing modules and setting up variables...Done. " + str(round(myPythonFunctions.time.time() - startTime, 3)) + " seconds")
-
-
-
-
-
-
-
-
-#
+print("Comment: Importing modules and setting up variables...Done. " + str(round(startGoogleSheets.myPythonFunctions.time.time() - startGoogleSheets.startTime, 3)) + " seconds")
 
 
 
