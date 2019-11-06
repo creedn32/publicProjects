@@ -10,57 +10,28 @@ googleSheetsAuthenticate = importlib.import_module("myGoogleSheetsPythonLibrary.
 from pprint import pprint as pp
 
 
-
-
 # spreadsheetID = "1yZfwzel6R3HTUtH5HIv7LEjAaoJDPESG6jCEz-b7jBw" #simple spreadsheet
 spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
 
 
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
 googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj)
+# googleSheetsFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"))
 
-# with open(pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"), "wt") as out:
-#     pprint(googleSheetsDataWithGrid, stream=out)
-
-
-
-def getCellValue(dataObj, sheetPos, rowPos, colPos):
-    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
-    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
-    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
-    currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
-    currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
-    currentCellData = myPythonFunctions.getFromList(currentRowData, colPos)
-    return currentCellData.get("formattedValue", "")
-
-
-def countRows(dataObj, sheetPos):
-    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
-    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
-    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
-    return len(myPythonFunctions.getFromDict(dataOnSheet, "rowData"))
-
-
-def countColumns(dataObj, sheetPos):
-    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
-    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
-    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
-    currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
-    currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, 0), "values")
-    return len(currentRowData)
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(myPythonFunctions.time.time() - startTime, 3)) + " seconds")
 
 
-numberOfRows = countRows(googleSheetsDataWithGrid, 0)
-numberOfColumns = countColumns(googleSheetsDataWithGrid, 0)
+
+numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
+numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
 listOfSheetData = {"values": []}
 
 for indexOfRow in range(0, numberOfRows):
     currentRowData = []
 
     for indexOfColumn in range(0, numberOfColumns):
-        currentRowData.append(getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
+        currentRowData.append(googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
 
     listOfSheetData["values"].append(currentRowData)
 
