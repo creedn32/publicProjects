@@ -31,7 +31,7 @@ def getCellValue(dataObj, sheetPos, rowPos, colPos):
     currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
     currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
     currentCellData = myPythonFunctions.getFromList(currentRowData, colPos)
-    return myPythonFunctions.getFromDict(currentCellData, "formattedValue")
+    return currentCellData.get("formattedValue", "")
 
 
 def countRows(dataObj, sheetPos):
@@ -41,14 +41,31 @@ def countRows(dataObj, sheetPos):
     return len(myPythonFunctions.getFromDict(dataOnSheet, "rowData"))
 
 
+def countColumns(dataObj, sheetPos):
+    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
+    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
+    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
+    currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
+    currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, 0), "values")
+    return len(currentRowData)
+
 print("Comment: Importing modules and setting up variables...Done. " + str(round(myPythonFunctions.time.time() - startTime, 3)) + " seconds")
 
 
 numberOfRows = countRows(googleSheetsDataWithGrid, 0)
+numberOfColumns = countColumns(googleSheetsDataWithGrid, 0)
+listOfSheetData = {"values": []}
 
-for i in range(0, numberOfRows):
-    pp(getCellValue(googleSheetsDataWithGrid, 0, i, 2) + " " + getCellValue(googleSheetsDataWithGrid, 0, i, 6))
+for indexOfRow in range(0, numberOfRows):
+    currentRowData = []
 
+    for indexOfColumn in range(0, numberOfColumns):
+        currentRowData.append(getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
+
+    listOfSheetData["values"].append(currentRowData)
+
+
+googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range="Transactions2!A1", valueInputOption="USER_ENTERED", body=listOfSheetData).execute()
 
 
 
