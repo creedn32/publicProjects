@@ -25,7 +25,7 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
-listOfSheetData = {"values": []}
+listOfSheetData = []
 
 for indexOfRow in range(0, numberOfRows):
     currentRowData = []
@@ -33,10 +33,31 @@ for indexOfRow in range(0, numberOfRows):
     for indexOfColumn in range(0, numberOfColumns):
         currentRowData.append(googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
 
-    listOfSheetData["values"].append(currentRowData)
+    listOfSheetData.append(currentRowData)
 
 
-googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range="Transactions2!A1", valueInputOption="USER_ENTERED", body=listOfSheetData).execute()
+for indexOfRow in range(0, numberOfRows):
+    listOfSheetData[indexOfRow][1] = listOfSheetData[indexOfRow][1].replace(" - " + listOfSheetData[indexOfRow][5], " ")
+
+for indexOfRow in range(0, numberOfRows):
+    listOfSheetData[indexOfRow][1] = listOfSheetData[indexOfRow][1].replace(" - " + listOfSheetData[indexOfRow][6], " ")
+
+for indexOfRow in range(0, numberOfRows):
+    listOfSheetData[indexOfRow][1] = listOfSheetData[indexOfRow][1].replace(listOfSheetData[indexOfRow][4] + " - ", "")
+
+for indexOfRow in range(0, numberOfRows):
+    listOfSheetData[indexOfRow][1] = listOfSheetData[indexOfRow][1].rstrip()
+
+for indexOfRow in range(0, numberOfRows):
+    if indexOfRow == 0:
+        listOfSheetData[indexOfRow].append("Account Type")
+    else:
+        listOfSheetData[indexOfRow].append("")
+
+
+
+valuesToWrite = {"values": listOfSheetData}
+googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range="Formatted Transactions!A1", valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
 
 
 

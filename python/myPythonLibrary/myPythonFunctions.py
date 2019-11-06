@@ -1,5 +1,4 @@
 
-
 def convertNothingToEmptyStr(s):
     if s:
         return str(s)
