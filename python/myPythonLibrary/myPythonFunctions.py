@@ -139,6 +139,16 @@ def startCode():
     return time.time()
 
 
+
+def getFromDict(dictObj, key):
+    return dictObj[key]
+
+def getFromList(listObj, position):
+    return listObj[position]
+
+
+
+
     #
     # while column > 0:
     #     temp = (column - 1) % 26
