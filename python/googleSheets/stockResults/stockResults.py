@@ -15,18 +15,33 @@ spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
 
 
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
-googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj)
-# googleSheetsFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"))
+googleSheetsDataWithGridWithPivot = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj)
 
 
-print("Comment: Importing modules and setting up variables...Done. " + str(round(myPythonFunctions.time.time() - startTime, 3)) + " seconds")
+googleSheetsDataWithGrid = {"sheets": []}
+sheetsData = myPythonFunctions.getFromDict(googleSheetsDataWithGridWithPivot, "sheets")
+
+for sheetPos in range(0, 3):
+    googleSheetsDataWithGrid["sheets"].append(myPythonFunctions.getFromList(sheetsData, sheetPos))
 
 
+# pp(googleSheetsDataWithGrid["sheets"][2])
+# pp(myPythonFunctions.getFromList(sheetsData, 2))
+
+
+finishSetupTime = myPythonFunctions.time.time()
+print("Comment: Importing modules and setting up variables...Done. " + str(round(finishSetupTime - startTime, 3)) + " seconds")
+
+myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"))
+print("Comment: Writing data to file...Done. " + str(round(myPythonFunctions.time.time() - finishSetupTime, 3)) + " seconds")
+sys.exit()
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
 accountColumn = 1
 listOfSheetData = []
+
+
 
 for indexOfRow in range(0, numberOfRows):
     currentRowData = []
@@ -35,6 +50,7 @@ for indexOfRow in range(0, numberOfRows):
         currentRowData.append(googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
 
     listOfSheetData.append(currentRowData)
+
 
 
 # for indexOfRow in range(0, numberOfRows):
@@ -63,7 +79,7 @@ for indexOfRow in range(1, numberOfRowsChartOfAccounts):
 
     mapDict = {}
 
-    for indexOfColumn in range(1, numberOfColumnsChartOfAccounts + 1):
+    for indexOfColumn in range(1, numberOfColumnsChartOfAccounts):
         mapDict[googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, 0, indexOfColumn)] = googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, indexOfRow, indexOfColumn)
 
 
@@ -74,15 +90,20 @@ for indexOfRow in range(1, numberOfRowsChartOfAccounts):
 
     chartOfAccountsDict[googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, indexOfRow, 0)] = mapDict
 
+
+
+
 for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
 
     columnHeading = googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, 0, columnToMap)
+
 
     for indexOfRow in range(0, numberOfRows):
         if indexOfRow == 0:
             listOfSheetData[indexOfRow].insert(accountColumn + 1, columnHeading)
         else:
-            listOfSheetData[indexOfRow].insert(accountColumn + 1, chartOfAccountsDict[listOfSheetData[indexOfRow][accountColumn]][columnHeading])
+            listOfSheetData[indexOfRow].insert(accountColumn + 1, listOfSheetData[indexOfRow][accountColumn])
+    #         listOfSheetData[indexOfRow].insert(accountColumn + 1, chartOfAccountsDict[listOfSheetData[indexOfRow][accountColumn]][columnHeading])
 
 
 
