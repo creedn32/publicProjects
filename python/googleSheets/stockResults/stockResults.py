@@ -25,6 +25,7 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
+accountColumn = 1
 listOfSheetData = []
 
 for indexOfRow in range(0, numberOfRows):
@@ -36,23 +37,52 @@ for indexOfRow in range(0, numberOfRows):
     listOfSheetData.append(currentRowData)
 
 
-for indexOfRow in range(0, numberOfRows):
-    listOfSheetData[indexOfRow][1] = listOfSheetData[indexOfRow][1].replace(" - " + listOfSheetData[indexOfRow][5], " ")
+# for indexOfRow in range(0, numberOfRows):
+#     if listOfSheetData[indexOfRow][1] == "Cash":
+#         listOfSheetData[indexOfRow][1] = "Cash (General)"
+
 
 for indexOfRow in range(0, numberOfRows):
-    listOfSheetData[indexOfRow][1] = listOfSheetData[indexOfRow][1].replace(" - " + listOfSheetData[indexOfRow][6], " ")
+    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(" - " + listOfSheetData[indexOfRow][5], " ")
 
 for indexOfRow in range(0, numberOfRows):
-    listOfSheetData[indexOfRow][1] = listOfSheetData[indexOfRow][1].replace(listOfSheetData[indexOfRow][4] + " - ", "")
+    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(" - " + listOfSheetData[indexOfRow][6], " ")
 
 for indexOfRow in range(0, numberOfRows):
-    listOfSheetData[indexOfRow][1] = listOfSheetData[indexOfRow][1].rstrip()
+    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(listOfSheetData[indexOfRow][4] + " - ", "")
 
 for indexOfRow in range(0, numberOfRows):
-    if indexOfRow == 0:
-        listOfSheetData[indexOfRow].append("Account Type")
-    else:
-        listOfSheetData[indexOfRow].append("")
+    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].rstrip()
+
+
+numberOfRowsChartOfAccounts = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 2)
+numberOfColumnsChartOfAccounts = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 2)
+chartOfAccountsDict = {}
+
+for indexOfRow in range(1, numberOfRowsChartOfAccounts):
+
+    mapDict = {}
+
+    for indexOfColumn in range(1, numberOfColumnsChartOfAccounts + 1):
+        mapDict[googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, 0, indexOfColumn)] = googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, indexOfRow, indexOfColumn)
+
+
+
+    # mapDict = {
+    #             googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, 0, 1): googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, indexOfRow, 1),
+    #             googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, 0, 2): googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, indexOfRow, 2)}
+
+    chartOfAccountsDict[googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, indexOfRow, 0)] = mapDict
+
+for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
+
+    columnHeading = googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, 0, columnToMap)
+
+    for indexOfRow in range(0, numberOfRows):
+        if indexOfRow == 0:
+            listOfSheetData[indexOfRow].insert(accountColumn + 1, columnHeading)
+        else:
+            listOfSheetData[indexOfRow].insert(accountColumn + 1, chartOfAccountsDict[listOfSheetData[indexOfRow][accountColumn]][columnHeading])
 
 
 

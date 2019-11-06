@@ -1,4 +1,6 @@
 from myPythonLibrary import myPythonFunctions
+from pprint import pprint as pp
+# import pathlib
 
 
 
@@ -52,6 +54,11 @@ def getCellValue(dataObj, sheetPos, rowPos, colPos):
 
 def countRows(dataObj, sheetPos):
     sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
+
+    # saveFile(sheetsData, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"sheetsData.json"))
+    # for i in sheetsData:
+    #     pp(str(i)[:50])
+
     currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
     dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
     return len(myPythonFunctions.getFromDict(dataOnSheet, "rowData"))
