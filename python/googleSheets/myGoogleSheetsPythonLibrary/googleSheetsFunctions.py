@@ -39,7 +39,11 @@ def getCellValue(dataObj, sheetPos, rowPos, colPos):
     dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
     currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
     currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
-    currentCellData = myPythonFunctions.getFromList(currentRowData, colPos)
+    try:
+        currentCellData = myPythonFunctions.getFromList(currentRowData, colPos)
+    except IndexError:
+        currentCellData = {}
+
     return currentCellData.get("formattedValue", "")
 
 
