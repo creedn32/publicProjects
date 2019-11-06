@@ -142,9 +142,20 @@ def startCode():
 def getFromDict(dictObj, key):
     return dictObj[key]
 
+
+
 def getFromList(listObj, position):
     return listObj[position]
 
+
+
+
+def saveFile(dataObj, path):
+
+    from pprint import pprint as pp
+
+    with open(path, "w") as out:
+        pp(dataObj, stream=out)
 
 
 

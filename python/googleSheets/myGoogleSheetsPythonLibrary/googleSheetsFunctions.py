@@ -80,9 +80,3 @@ def countColumns(dataObj, sheetPos):
 
 
 
-def saveFile(dataObj, path):
-
-    from pprint import pprint as pp
-
-    with open(path, "wt") as out:
-        pp(dataObj, stream=out)
