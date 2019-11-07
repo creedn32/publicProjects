@@ -116,7 +116,7 @@ for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
 
 
 valuesToWrite = {"values": listOfSheetData}
-googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range="Formatted Transactions!A1", valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
+googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range="Scrubbed Transactions!A1", valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
 
 
 
