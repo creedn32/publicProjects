@@ -12,7 +12,7 @@ print("Cmt: Open and connect to file...")
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = True
 excelApp.DisplayAlerts = False
-filePath = str(pathlib.Path.cwd().parents[0]) + "\\private_data\\bank_rec_secondary"
+filePath = str(pathlib.Path.cwd().parents[3]) + "\\privateData\\bankRecSecondary"
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 

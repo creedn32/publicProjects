@@ -9,31 +9,36 @@ startTime = myPythonFunctions.startCode()
 
 import time, importlib
 import datetime, pynput.mouse, win32api, win32con, pyautogui
-from pprint import pprint
+from pprint import pprint as pp
 
 
-class moduleNameClass:
-    pass
+#
+# class moduleNameClass:
+#     pass
+#
+# moduleName = "myGoogleSheetsPythonLibrary"
+# moduleNameObj = moduleNameClass()
+#
+#
+#
+#
+# for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
+#     if filePath.stem not in ["__init__", "__pycache__"]:
+#         importedModuleObj = importlib.import_module(moduleName + "." + filePath.stem)
+#         setattr(moduleNameObj, filePath.stem, importedModuleObj)
+# myGoogleSheetsPythonLibrary = moduleNameObj
 
-moduleName = "myGoogleSheetsPythonLibrary"
-moduleNameObj = moduleNameClass()
 
-for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
-    if filePath.stem not in ["__init__", "__pycache__"]:
-        importedModuleObj = importlib.import_module(moduleName + "." + filePath.stem)
-        setattr(moduleNameObj, filePath.stem, importedModuleObj)
-
-myGoogleSheetsPythonLibrary = moduleNameObj
-
-
+import myGoogleSheetsPythonLibrary.googleSheetsAuthenticate
+import myGoogleSheetsPythonLibrary.googleSheetsFunctions
 
 
 
 # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
 spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"  #ID of private Google Sheet
 # spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
-sheetName = "Bank Transactions"
-# sheetName = "Bank Transactions - Recurring"
+# sheetName = "Bank Transactions"
+sheetName = "Bank Transactions - Recurring"
 changeCellColor = False
 numLockChanged = False
 pyautogui.PAUSE = 0

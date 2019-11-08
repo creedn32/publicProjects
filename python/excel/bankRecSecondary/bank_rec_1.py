@@ -4,10 +4,10 @@ print("Cmt: Importing modules...")
 import time
 startTime = time.time()
 
-
+from pprint import pprint as pp
 import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[0]))
-from creed_modules import creedFunctions
+sys.path.append(str(pathlib.Path.cwd().parents[1]))
+from myPythonLibrary import myPythonFunctions
 
 import win32com.client
 
@@ -19,9 +19,10 @@ excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = False
 excelApp.DisplayAlerts = False
 
-filePath = str(pathlib.Path.cwd().parents[0]) + "\\private_data\\bank_rec_secondary"
+filePath = str(pathlib.Path.cwd().parents[3]) + "\\privateData\\bankRecSecondary"
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
+
 
 excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
@@ -68,7 +69,7 @@ excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Row
 bankTableSheetRow = rowAfterHeader
 
 while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
-    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = creedFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - creedFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
+    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = myPythonFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - myPythonFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
     bankTableSheetRow = bankTableSheetRow + 1
 
 

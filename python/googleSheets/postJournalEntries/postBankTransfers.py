@@ -11,18 +11,27 @@ import datetime, pynput.mouse, win32api, win32con, pyautogui
 from pprint import pprint
 
 
-class moduleNameClass:
-    pass
 
-moduleName = "myGoogleSheetsPythonLibrary"
-moduleNameObj = moduleNameClass()
 
-for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
-    if filePath.stem not in ["__init__", "__pycache__"]:
-        importedModuleObj = importlib.import_module(moduleName + "." + filePath.stem)
-        setattr(moduleNameObj, filePath.stem, importedModuleObj)
+#
+# class moduleNameClass:
+#     pass
+#
+# moduleName = "myGoogleSheetsPythonLibrary"
+# moduleNameObj = moduleNameClass()
+#
+# for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
+#     if filePath.stem not in ["__init__", "__pycache__"]:
+#         importedModuleObj = importlib.import_module(moduleName + "." + filePath.stem)
+#         setattr(moduleNameObj, filePath.stem, importedModuleObj)
+#
+# myGoogleSheetsPythonLibrary = moduleNameObj
 
-myGoogleSheetsPythonLibrary = moduleNameObj
+
+import myGoogleSheetsPythonLibrary.googleSheetsAuthenticate
+import myGoogleSheetsPythonLibrary.googleSheetsFunctions
+
+
 
 
 # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
