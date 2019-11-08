@@ -9,6 +9,10 @@ accountColumn = 1
 listOfSheetData = []
 destRange = "Scrubbed Transactions"
 rangesToDownload = ["Transactions", "Scrubbed Transactions", "Chart of Accounts"]
+saveJSONFile = False
+# spreadsheetID = "1yZfwzel6R3HTUtH5HIv7LEjAaoJDPESG6jCEz-b7jBw" #simple spreadsheet
+spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
+
 
 import importlib
 googleSheetsFunctions = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsFunctions")
@@ -16,28 +20,14 @@ googleSheetsAuthenticate = importlib.import_module("myGoogleSheetsPythonLibrary.
 from pprint import pprint as pp
 
 
-# spreadsheetID = "1yZfwzel6R3HTUtH5HIv7LEjAaoJDPESG6jCEz-b7jBw" #simple spreadsheet
-spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
-
-
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
 googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj, optionalArgumentRanges=rangesToDownload)
-
-# googleSheetsDataWithGrid = {"sheets": []}
-# sheetsData = myPythonFunctions.getFromDict(googleSheetsDataWithGridWithPivot, "sheets")
-#
-# for sheetPos in range(0, 3):
-#     googleSheetsDataWithGrid["sheets"].append(myPythonFunctions.getFromList(sheetsData, sheetPos))
-
-
-# pp(googleSheetsDataWithGrid["sheets"][2])
-# pp(myPythonFunctions.getFromList(sheetsData, 2))
 
 
 finishSetupTime = myPythonFunctions.time.time()
 print("Comment: Importing modules and setting up variables...Done. " + str(round(finishSetupTime - startTime, 3)) + " seconds")
 
-# myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"), finishSetupTime)
+if saveJSONFile: myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"), finishSetupTime)
 
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
@@ -49,7 +39,10 @@ for indexOfRow in range(0, numberOfRows):
     currentRowData = []
 
     for indexOfColumn in range(0, numberOfColumns):
-        currentRowData.append(googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
+        if indexOfColumn == 2:
+            currentRowData.append(googleSheetsFunctions.getCellValueNumber(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
+        else:
+            currentRowData.append(googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
 
     listOfSheetData.append(currentRowData)
 
@@ -80,7 +73,7 @@ for indexOfRow in range(1, numberOfRows):
 
 
 for indexOfRow in range(1, numberOfRows):
-    listOfSheetData[indexOfRow][2] = listOfSheetData[indexOfRow][2] #float(listOfSheetData[indexOfRow][2]) * multiplyFactor
+    listOfSheetData[indexOfRow][2] = listOfSheetData[indexOfRow][2] * multiplyFactor
 
 
 
@@ -119,3 +112,15 @@ for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
 
 valuesToWrite = {"values": listOfSheetData}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
+
+
+
+# googleSheetsDataWithGrid = {"sheets": []}
+# sheetsData = myPythonFunctions.getFromDict(googleSheetsDataWithGridWithPivot, "sheets")
+#
+# for sheetPos in range(0, 3):
+#     googleSheetsDataWithGrid["sheets"].append(myPythonFunctions.getFromList(sheetsData, sheetPos))
+
+
+# pp(googleSheetsDataWithGrid["sheets"][2])
+# pp(myPythonFunctions.getFromList(sheetsData, 2))

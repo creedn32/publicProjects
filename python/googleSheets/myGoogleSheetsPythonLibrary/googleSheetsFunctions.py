@@ -42,11 +42,10 @@ def getCellValue(dataObj, sheetPos, rowPos, colPos):
     currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
     currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
     try:
-        currentCellData = myPythonFunctions.getFromList(currentRowData, colPos)
-    except IndexError:
-        currentCellData = {}
+        return myPythonFunctions.getFromList(currentRowData, colPos)["formattedValue"]
+    except:
+        return ""
 
-    return currentCellData.get("formattedValue", "")
 
 
 
@@ -59,12 +58,9 @@ def getCellValueNumber(dataObj, sheetPos, rowPos, colPos):
     currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
     currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
     try:
-        currentCellData = myPythonFunctions.getFromList(currentRowData, colPos)
-    except IndexError:
-        currentCellData = {}
-
-    return currentCellData.get("formattedValue", "")
-
+        return myPythonFunctions.getFromList(currentRowData, colPos)["effectiveValue"]["numberValue"]
+    except:
+        return getCellValue(dataObj, sheetPos, rowPos, colPos)
 
 
 
