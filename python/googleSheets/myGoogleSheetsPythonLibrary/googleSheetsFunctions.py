@@ -28,8 +28,8 @@ def isWhite(cell):
 
 
 
-def getDataWithGrid(spreadsheetIDStr, googleSheetsObj, optionalArgumentRanges=[]):
-    return googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True, ranges=optionalArgumentRanges).execute()
+def getDataWithGrid(spreadsheetIDStr, googleSheetsObj, rangesArgument):
+    return googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True, ranges=rangesArgument).execute()
 
 
 
