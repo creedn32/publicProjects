@@ -28,14 +28,31 @@ def isWhite(cell):
 
 
 
-def getDataWithGrid(spreadsheetIDStr, googleSheetsObj):
-    return googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
+def getDataWithGrid(spreadsheetIDStr, googleSheetsObj, optionalArgumentRanges=[]):
+    return googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True, ranges=optionalArgumentRanges).execute()
 
 
 
 
 
 def getCellValue(dataObj, sheetPos, rowPos, colPos):
+    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
+    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
+    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
+    currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
+    currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
+    try:
+        currentCellData = myPythonFunctions.getFromList(currentRowData, colPos)
+    except IndexError:
+        currentCellData = {}
+
+    return currentCellData.get("formattedValue", "")
+
+
+
+
+
+def getCellValueNumber(dataObj, sheetPos, rowPos, colPos):
     sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
     currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
     dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)

@@ -7,7 +7,8 @@ startTime = myPythonFunctions.startCode()
 multiplyFactor = 1
 accountColumn = 1
 listOfSheetData = []
-destRange = "Scrubbed Transactions!A1"
+destRange = "Scrubbed Transactions"
+rangesToDownload = ["Transactions", "Scrubbed Transactions", "Chart of Accounts"]
 
 import importlib
 googleSheetsFunctions = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsFunctions")
@@ -20,14 +21,13 @@ spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
 
 
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
-googleSheetsDataWithGridWithPivot = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj)
+googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj, optionalArgumentRanges=rangesToDownload)
 
-
-googleSheetsDataWithGrid = {"sheets": []}
-sheetsData = myPythonFunctions.getFromDict(googleSheetsDataWithGridWithPivot, "sheets")
-
-for sheetPos in range(0, 3):
-    googleSheetsDataWithGrid["sheets"].append(myPythonFunctions.getFromList(sheetsData, sheetPos))
+# googleSheetsDataWithGrid = {"sheets": []}
+# sheetsData = myPythonFunctions.getFromDict(googleSheetsDataWithGridWithPivot, "sheets")
+#
+# for sheetPos in range(0, 3):
+#     googleSheetsDataWithGrid["sheets"].append(myPythonFunctions.getFromList(sheetsData, sheetPos))
 
 
 # pp(googleSheetsDataWithGrid["sheets"][2])
@@ -80,7 +80,7 @@ for indexOfRow in range(1, numberOfRows):
 
 
 for indexOfRow in range(1, numberOfRows):
-    listOfSheetData[indexOfRow][2] = float(listOfSheetData[indexOfRow][2]) * multiplyFactor
+    listOfSheetData[indexOfRow][2] = listOfSheetData[indexOfRow][2] #float(listOfSheetData[indexOfRow][2]) * multiplyFactor
 
 
 
