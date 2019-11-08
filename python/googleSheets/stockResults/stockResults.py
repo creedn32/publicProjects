@@ -21,7 +21,7 @@ from pprint import pprint as pp
 
 
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
-googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj, optionalArgumentRanges=rangesToDownload)
+googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj, rangesToDownload)
 
 
 finishSetupTime = myPythonFunctions.time.time()
@@ -29,6 +29,7 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 if saveJSONFile: myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"), finishSetupTime)
 
+sys.exit()
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
@@ -112,6 +113,11 @@ for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
 
 valuesToWrite = {"values": listOfSheetData}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
+
+
+
+
+
 
 
 
