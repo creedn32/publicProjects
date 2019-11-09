@@ -20,6 +20,23 @@ googleSheetsAuthenticate = importlib.import_module("myGoogleSheetsPythonLibrary.
 from pprint import pprint as pp
 
 
+def createValuesData:
+    for indexOfRow in range(0, numberOfRows):
+        currentRowData = []
+
+        for indexOfColumn in range(0, numberOfColumns):
+            if indexOfColumn == 2:
+                currentRowData.append(
+                    googleSheetsFunctions.getCellValueNumber(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
+            else:
+                currentRowData.append(
+                    googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
+
+        listOfSheetData.append(currentRowData)
+
+
+
+
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
 googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj, rangesToDownload)
 
@@ -34,18 +51,7 @@ numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
 
 
-
-for indexOfRow in range(0, numberOfRows):
-    currentRowData = []
-
-    for indexOfColumn in range(0, numberOfColumns):
-        if indexOfColumn == 2:
-            currentRowData.append(googleSheetsFunctions.getCellValueNumber(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
-        else:
-            currentRowData.append(googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
-
-    listOfSheetData.append(currentRowData)
-
+createValuesData()
 
 
 # for indexOfRow in range(0, numberOfRows):
