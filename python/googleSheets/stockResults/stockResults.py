@@ -29,7 +29,6 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 if saveJSONFile: myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"), finishSetupTime)
 
-sys.exit()
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
@@ -70,7 +69,8 @@ brokerageMap = {"Mt": "Motif",
                 "Rh": "Robinhood"}
 
 for indexOfRow in range(1, numberOfRows):
-    listOfSheetData[indexOfRow][5] = brokerageMap[listOfSheetData[indexOfRow][5]]
+    if listOfSheetData[indexOfRow][5] in brokerageMap:
+        listOfSheetData[indexOfRow][5] = brokerageMap[listOfSheetData[indexOfRow][5]]
 
 
 for indexOfRow in range(1, numberOfRows):
