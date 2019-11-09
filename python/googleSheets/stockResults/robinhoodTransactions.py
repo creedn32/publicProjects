@@ -10,8 +10,7 @@ startTime = myPythonFunctions.startCode()
 # destRange = "Scrubbed Transactions"
 rangesToDownload = ["Robinhood - Raw Data"]
 # saveJSONFile = False
-# spreadsheetID = "1yZfwzel6R3HTUtH5HIv7LEjAaoJDPESG6jCEz-b7jBw" #simple spreadsheet
-spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
+spreadsheetID = "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI"
 
 
 import importlib, re
@@ -81,8 +80,30 @@ transactionsList.append(transactionList)
 #     listOfSheetData.append([transaction])
 
 
+
+
+for row in transactionsList:
+    if row[0][:14] == "Dividend from ":
+        toInsert = "Dividend"
+    elif row[0][:14] == "Withdrawal to ":
+        toInsert = "Cash to owners"
+    elif row[0][:13] == "Deposit from ":
+        toInsert = "Cash from owners"
+    elif row[0][-11:] == " Market Buy":
+        toInsert = "Stock Purchase"
+        row[2] = -row[2]
+    elif row[0] == "Interest Payment":
+        toInsert = "Interest Received"
+    elif row[0] == "AKS from Robinhood":
+        toInsert = "Stock Gift Received"
+    else:
+        toInsert = ""
+
+    row.insert(3, toInsert)
+
+
 transactionsList.sort(key=lambda x: int(x[1]))
-transactionsList.insert(0, ["Description", "Date", "Amount", "Details"])
+transactionsList.insert(0, ["Description", "Date", "Amount", "Type", "Details"])
 
 valuesToWrite = {"values": transactionsList}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
