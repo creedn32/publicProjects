@@ -53,7 +53,7 @@ for indexOfRow in range(0, numberOfRows):
 
 subCount = 1
 transactionList = []
-transactionsList = [["Description", "Date", "Amount", "Details"]]
+transactionsList = []
 # fieldsObj = {1: "Description", 2: "Date", 3: "Amount", 4: "Details"}
 
 
@@ -80,6 +80,9 @@ transactionsList.append(transactionList)
 # for transaction in transactionsList:
 #     listOfSheetData.append([transaction])
 
+
+transactionsList.sort(key=lambda x: int(x[1]))
+transactionsList.insert(0, ["Description", "Date", "Amount", "Details"])
 
 valuesToWrite = {"values": transactionsList}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
