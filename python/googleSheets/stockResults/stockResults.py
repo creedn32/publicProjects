@@ -6,7 +6,7 @@ startTime = myPythonFunctions.startCode()
 
 multiplyFactor = 1
 accountColumn = 1
-listOfSheetData = []
+# listOfSheetData = []
 destRange = "Scrubbed Transactions"
 rangesToDownload = ["Transactions", "Scrubbed Transactions", "Chart of Accounts"]
 saveJSONFile = False
@@ -18,23 +18,6 @@ import importlib
 googleSheetsFunctions = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsFunctions")
 googleSheetsAuthenticate = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsAuthenticate")
 from pprint import pprint as pp
-
-
-def createValuesData:
-    for indexOfRow in range(0, numberOfRows):
-        currentRowData = []
-
-        for indexOfColumn in range(0, numberOfColumns):
-            if indexOfColumn == 2:
-                currentRowData.append(
-                    googleSheetsFunctions.getCellValueNumber(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
-            else:
-                currentRowData.append(
-                    googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn))
-
-        listOfSheetData.append(currentRowData)
-
-
 
 
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
@@ -51,7 +34,12 @@ numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
 
 
-createValuesData()
+listOfSheetData = googleSheetsFunctions.createValuesData(numberOfRows, numberOfColumns, googleSheetsDataWithGrid)
+
+for indexOfRow in range(1, numberOfRows):
+    listOfSheetData[indexOfRow][2] = googleSheetsFunctions.getCellValueNumber(googleSheetsDataWithGrid, 0, indexOfRow, 2)
+
+
 
 
 # for indexOfRow in range(0, numberOfRows):
@@ -120,7 +108,7 @@ for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
 valuesToWrite = {"values": listOfSheetData}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
 
-
+pp(valuesToWrite)
 
 
 

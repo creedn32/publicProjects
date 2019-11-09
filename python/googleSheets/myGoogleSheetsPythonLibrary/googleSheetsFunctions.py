@@ -65,6 +65,23 @@ def getCellValueNumber(dataObj, sheetPos, rowPos, colPos):
 
 
 
+
+def getCellValueEffective(dataObj, sheetPos, rowPos, colPos):
+    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
+    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
+    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
+    currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
+    currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
+    try:
+        return myPythonFunctions.getFromList(currentRowData, colPos)["effectiveValue"]
+    except:
+        return getCellValue(dataObj, sheetPos, rowPos, colPos)
+
+
+
+
+
+
 def countRows(dataObj, sheetPos):
     sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
 
@@ -93,3 +110,16 @@ def countColumns(dataObj, sheetPos):
 
 
 
+def createValuesData(numRows, numCols, dataObj):
+
+    listObj = []
+
+    for indexOfRow in range(0, numRows):
+        currentRowData = []
+
+        for indexOfColumn in range(0, numCols):
+            currentRowData.append(getCellValue(dataObj, 0, indexOfRow, indexOfColumn))
+
+        listObj.append(currentRowData)
+
+    return listObj
