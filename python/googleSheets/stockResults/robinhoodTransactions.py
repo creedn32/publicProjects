@@ -78,27 +78,6 @@ for indexOfRow in range(0, numberOfRows):
 transactionsList.append(indivTransactionList)
 
 
-
-for row in transactionsList:
-    if row[0][:14] == "Dividend from ":
-        toInsert = "Dividend"
-    elif row[0][:14] == "Withdrawal to ":
-        toInsert = "Cash to owners"
-    elif row[0][:13] == "Deposit from ":
-        toInsert = "Cash from owners"
-    elif row[0][-11:] == " Market Buy":
-        toInsert = "Stock Purchase"
-        row[2] = -row[2]
-    elif row[0] == "Interest Payment":
-        toInsert = "Interest Received"
-    elif row[0] == "AKS from Robinhood":
-        toInsert = "Stock Gift Received"
-    else:
-        toInsert = ""
-
-    row.insert(3, toInsert)
-
-
 transactionsList.sort(key=lambda x: int(x[1]))
 
 newTransactionsList = []
@@ -109,7 +88,7 @@ for transaction in transactionsList:
 
 
 transactionsList = newTransactionsList
-transactionsList.insert(0, ["Description", "Date", "Amount", "Type", "Details"])
+transactionsList.insert(0, ["Description", "Date", "Amount", "Details"])
 
 valuesToWrite = {"values": transactionsList}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
@@ -121,10 +100,50 @@ googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, va
 
 listOfSheetData = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 destRange = "Robinhood - Transactions"
+mapLeftObj = {"Dividend from ": {"transactionType": "Receive Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue"},
+       "Withdrawal to ": {"transactionType": "Cash To Owners"},
+       "Deposit from ": {"transactionType": "Cash From Owners"},
+       "Interest Payment": {"transactionType": "Receive Interest"},
+       "AKS from Robinhood": {"transactionType": "Receive Stock Gift"}}
+
+mapRightObj = {" Market Buy": {"transactionType": "Purchase Stock"}}
+
 
 for transaction in transactionsList[1:]:
-    listOfSheetData.append([transaction[1], "Cash", transaction[2], "Receive Dividend", "Stock Name", "Robinhood", "Lot", ""])
-    listOfSheetData.append([transaction[1], "Dividend Revenue", -transaction[2], "Receive Dividend", "Stock Name", "Robinhood", "Lot", ""])
+
+    locatedObj = {}
+
+    for mapping in mapLeftObj:
+        if transaction[0][:len(mapping)] == mapping:
+            locatedObj = mapLeftObj[mapping]
+
+    if not locatedObj:
+        for mapping in mapRightObj:
+            if transaction[0][-len(mapping):] == mapping:
+                locatedObj = mapRightObj[mapping]
+
+
+    # if transaction[0][0:14] == "Dividend from ":
+    #     toInsert = "Receive Dividend"
+    # elif transaction[0][0:14] == "Withdrawal to ":
+    #     toInsert = "Cash To Owners"
+    # elif transaction[0][0:13] == "Deposit from ":
+    #     toInsert = "Cash From Owners"
+    # elif transaction[0][0:16] == "Interest Payment":
+    #     toInsert = "Receive Interest"
+    # elif transaction[0][0:18] == "AKS from Robinhood":
+    #     toInsert = "Receive Stock Gift"
+    # else:
+    #     toInsert = ""
+
+    # if transaction[0][-11:] == " Market Buy":
+    #     toInsert = "Purchase Stock"
+    #     transaction[2] = -transaction[2]
+
+
+    listOfSheetData.append([transaction[1], "Cash", transaction[2], locatedObj["transactionType"], "Stock Name", "Robinhood", "Lot", ""])
+    listOfSheetData.append([transaction[1], "Dividend Revenue", -transaction[2], locatedObj["transactionType"], "Stock Name", "Robinhood", "Lot", ""])
+
 
 valuesToWrite = {"values": listOfSheetData}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
