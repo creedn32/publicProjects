@@ -103,10 +103,20 @@ for row in transactionsList:
 
 
 transactionsList.sort(key=lambda x: int(x[1]))
-transactionsList.insert(0, ["Description", "Date", "Amount", "Type", "Details"])
+transactionsListRecent = []
 
-valuesToWrite = {"values": transactionsList}
+for transaction in transactionsList:
+    if transaction[1] > 43404:
+        transactionsListRecent.append(transaction)
+
+# pp(transactionsListRecent)
+transactionsListRecent.insert(0, ["Description", "Date", "Amount", "Type", "Details"])
+
+valuesToWrite = {"values": transactionsListRecent}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
+
+
+
 
 # pp(valuesToWrite)
 
