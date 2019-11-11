@@ -66,12 +66,23 @@ for indexOfRow in range(0, numberOfRows):
     val = listObj[indexOfRow][0]["value"]
     matchObj = re.search("[0-9]+ share", str(val))
 
+
     if subCount > 3 and not matchObj:
         subCount = 1
+
+        if len(indivTransactionList) == 3:
+            indivTransactionList.append("")
+            indivTransactionList.append("")
+
         transactionsList.append(indivTransactionList)
         indivTransactionList = []
 
     indivTransactionList.append(val)
+
+    if subCount > 3 and matchObj:
+        indivTransactionList.append(int(matchObj.group(0).split(" share")[0]))
+
+
     subCount = subCount + 1
 
 
@@ -88,7 +99,7 @@ for transaction in transactionsList:
 
 
 transactionsList = newTransactionsList
-transactionsList.insert(0, ["Description", "Date", "Amount", "Details"])
+transactionsList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
 
 valuesToWrite = {"values": transactionsList}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
@@ -100,13 +111,13 @@ googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, va
 
 listOfSheetData = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 destRange = "Robinhood - Transactions"
-mapLeftObj = {"Dividend from ": {"transactionType": "Receive Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue"},
-       "Withdrawal to ": {"transactionType": "Cash To Owners"},
-       "Deposit from ": {"transactionType": "Cash From Owners"},
-       "Interest Payment": {"transactionType": "Receive Interest"},
-       "AKS from Robinhood": {"transactionType": "Receive Stock Gift"}}
+mapLeftObj = {"Dividend from ": {"transactionType": "Receive Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue", "stockName": "Stock Name"},
+       "Withdrawal to ": {"transactionType": "Cash To Owners", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks"},
+       "Deposit from ": {"transactionType": "Cash From Owners", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks"},
+       "Interest Payment": {"transactionType": "Receive Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "All Stocks"},
+       "AKS from Robinhood": {"transactionType": "Receive Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS"}}
 
-mapRightObj = {" Market Buy": {"transactionType": "Purchase Stock"}}
+mapRightObj = {" Market Buy": {"transactionType": "Purchase Stock", "debitAccount": "Investment Asset", "creditAccount": "Cash", "stockName": "Stock Name"}}
 
 
 for transaction in transactionsList[1:]:
@@ -122,27 +133,10 @@ for transaction in transactionsList[1:]:
             if transaction[0][-len(mapping):] == mapping:
                 locatedObj = mapRightObj[mapping]
 
+    # pp(transaction)
 
-    # if transaction[0][0:14] == "Dividend from ":
-    #     toInsert = "Receive Dividend"
-    # elif transaction[0][0:14] == "Withdrawal to ":
-    #     toInsert = "Cash To Owners"
-    # elif transaction[0][0:13] == "Deposit from ":
-    #     toInsert = "Cash From Owners"
-    # elif transaction[0][0:16] == "Interest Payment":
-    #     toInsert = "Receive Interest"
-    # elif transaction[0][0:18] == "AKS from Robinhood":
-    #     toInsert = "Receive Stock Gift"
-    # else:
-    #     toInsert = ""
-
-    # if transaction[0][-11:] == " Market Buy":
-    #     toInsert = "Purchase Stock"
-    #     transaction[2] = -transaction[2]
-
-
-    listOfSheetData.append([transaction[1], "Cash", transaction[2], locatedObj["transactionType"], "Stock Name", "Robinhood", "Lot", ""])
-    listOfSheetData.append([transaction[1], "Dividend Revenue", -transaction[2], locatedObj["transactionType"], "Stock Name", "Robinhood", "Lot", ""])
+    listOfSheetData.append([transaction[1], locatedObj["debitAccount"], transaction[2], locatedObj["transactionType"], locatedObj["stockName"], "Robinhood", "Lot", transaction[4]])
+    listOfSheetData.append([transaction[1], locatedObj["creditAccount"], -transaction[2], locatedObj["transactionType"], locatedObj["stockName"], "Robinhood", "Lot", ""])
 
 
 valuesToWrite = {"values": listOfSheetData}
