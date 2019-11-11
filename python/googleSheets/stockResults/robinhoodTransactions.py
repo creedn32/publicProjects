@@ -31,8 +31,10 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
-destRange = "Robinhood - Data"
 
+
+
+#get raw data from Google Sheets
 
 listObj = []
 
@@ -50,9 +52,13 @@ for indexOfRow in range(0, numberOfRows):
 
 
 
+
+#put data into table
+
 subCount = 1
-transactionList = []
+indivTransactionList = []
 transactionsList = []
+destRange = "Robinhood - Data"
 # fieldsObj = {1: "Description", 2: "Date", 3: "Amount", 4: "Details"}
 
 
@@ -62,23 +68,14 @@ for indexOfRow in range(0, numberOfRows):
 
     if subCount > 3 and not matchObj:
         subCount = 1
-        transactionsList.append(transactionList)
-        transactionList = []
+        transactionsList.append(indivTransactionList)
+        indivTransactionList = []
 
-    transactionList.append(val)
+    indivTransactionList.append(val)
     subCount = subCount + 1
 
 
-transactionsList.append(transactionList)
-
-
-# pp(transactionsList)
-
-# listOfSheetData = []
-#
-# for transaction in transactionsList:
-#     listOfSheetData.append([transaction])
-
+transactionsList.append(indivTransactionList)
 
 
 
@@ -103,34 +100,31 @@ for row in transactionsList:
 
 
 transactionsList.sort(key=lambda x: int(x[1]))
+
+newTransactionsList = []
+
+for transaction in transactionsList:
+    if transaction[1] > 43404:
+        newTransactionsList.append(transaction)
+
+
+transactionsList = newTransactionsList
 transactionsList.insert(0, ["Description", "Date", "Amount", "Type", "Details"])
 
 valuesToWrite = {"values": transactionsList}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
 
-# pp(valuesToWrite)
 
 
 
+#iterate over table
 
+listOfSheetData = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
+destRange = "Robinhood - Transactions"
 
+for transaction in transactionsList[1:]:
+    listOfSheetData.append([transaction[1], "Cash", transaction[2], "Receive Dividend", "Stock Name", "Robinhood", "Lot", ""])
+    listOfSheetData.append([transaction[1], "Dividend Revenue", -transaction[2], "Receive Dividend", "Stock Name", "Robinhood", "Lot", ""])
 
-
-# for indexOfRow in range(0, numberOfRows):
-    # keys = list(listObj[indexOfRow][0].keys())
-    # pp(listObj[indexOfRow][0][keys[0]])
-    # pp(listObj[indexOfRow][0][keys])
-    # pp(listObj[indexOfRow][0])
-    # pp(listObj[indexOfRow])
-
-
-
-
-# matchObj = re.search(" shares", str(val))
-
-
-# if matchObj:
-#     pp(matchObj.group(0))
-# else:
-#     pp("no match")
-
+valuesToWrite = {"values": listOfSheetData}
+googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
