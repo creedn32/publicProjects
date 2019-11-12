@@ -65,47 +65,54 @@ destRange = "Robinhood - Data"
 
 for indexOfRow in range(0, numberOfRows):
 
-    val = listObj[indexOfRow][0]["value"]
-    matchObj = re.search("[0-9]+ share", str(val))
+    nextValueHasNoShares = True
+    currentValue = listObj[indexOfRow][0]["value"]
 
+    if indexOfRow + 2 <= numberOfRows:
+        if len(str(listObj[indexOfRow + 1][0]["value"]).split(" share")) > 1:
+            nextValueHasNoShares = False
 
-    if subCount > 3 and not matchObj:
-        subCount = 1
+    indivTransactionList.append(currentValue)
+
+    # pp("indexofRow: " + str(indexOfRow))
+    # pp("subcount:" + str(subCount))
+    # pp(nextValueHasNoShares)
+
+    if subCount == 3 and nextValueHasNoShares or subCount == 4:
+        subCount = 0
 
         if len(indivTransactionList) == 3:
-            indivTransactionList.append("")
-            indivTransactionList.append("")
+            indivTransactionList.extend(["", ""])
+        elif len(indivTransactionList) == 4:
+            indivTransactionList.append(int(str(currentValue).split(" share")[0]))
 
         transactionsList.append(indivTransactionList)
         indivTransactionList = []
 
-    indivTransactionList.append(val)
-
-    if subCount > 3 and matchObj:
-        indivTransactionList.append(int(matchObj.group(0).split(" share")[0]))
-
-
     subCount = subCount + 1
 
 
-
-transactionsList.append(indivTransactionList)
-# pp(transactionsList)
-
 transactionsList.sort(key=lambda x: int(x[1]))
+filterList = False
 
 
-filterList = True
 
-if filterList:
 
-    newTransactionsList = []
+newTransactionsList = []
 
-    for transaction in transactionsList:
-        if transaction[1] > 43404:
+for transaction in transactionsList:
+
+    if transaction[2] != "Failed":
+
+        if filterList:
+            if transaction[1] > 43404:
+                newTransactionsList.append(transaction)
+        else:
             newTransactionsList.append(transaction)
 
-    transactionsList = newTransactionsList
+transactionsList = newTransactionsList
+
+
 
 transactionsList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
 
@@ -154,10 +161,11 @@ for transaction in transactionsList[1:]:
     if locatedObj["transactionType"] == "Purchase Stock":
         dateObj = date.fromordinal(date(1900, 1, 1).toordinal() + transaction[1] - 2)
         # dateObj = datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + transaction[1] - 2)
-        pp(dateObj)
-        lot = "" # dateObj.Year
+        # pp()
+        lot = str(dateObj.year) + str(dateObj.month).zfill(2) + str(dateObj.day).zfill(2) # dateObj.Year
     else:
         lot = "Lot"
+
 
     # pp(transaction)
     listOfSheetData.append([transaction[1], locatedObj["debitAccount"], transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, transaction[4]])
@@ -166,3 +174,65 @@ for transaction in transactionsList[1:]:
 
 valuesToWrite = {"values": listOfSheetData}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # currentValueList = str(listObj[indexOfRow][0]["value"]).split(" share")
+    #
+    # if :
+    #     nextValueList = str(listObj[indexOfRow + 1][0]["value"]).split(" share")
+    #
+    # # pp(str(currentValueList) + " " + str(nextValueList))
+    #
+    # indivTransactionList.append(currentValue)
+    #
+    # if (len(nextValueList) != 2 and subCount == 3) or (len(currentValueList) == 2 and subCount == 4):
+    #     subCount = 1
+    #     # transactionsList.append(indivTransactionList)
+    # #     pp(indivTransactionList)
+    #     pp(indivTransactionList)
+    #     indivTransactionList = []
+
+
+
+
+
+
+#
+#
+#     if subCount > 3 and not matchObj:
+#         subCount = 1
+#
+#         if len(indivTransactionList) == 3:
+#             indivTransactionList.append("")
+#             indivTransactionList.append("")
+#
+#         transactionsList.append(indivTransactionList)
+#         indivTransactionList = []
+#
+#     indivTransactionList.append(currentValue)
+#
+#     if subCount > 3 and matchObj:
+#         indivTransactionList.append(int(matchObj.group(0).split(" share")[0]))
+#
+#
+#     subCount = subCount + 1
+#
+#
+#
+# transactionsList.append(indivTransactionList)
+# # pp(transactionsList)
+#
