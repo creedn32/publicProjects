@@ -6,6 +6,7 @@
 print("Cmt: Importing modules...")
 
 import time, win32com.client, pathlib
+from pprint import pprint as pp
 
 startTime = time.time()
 print("Cmt: Importing modules...Done.")
@@ -88,6 +89,13 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
                 
 
             if excelGPTableSheet.Cells(gpRow, gpTrxTypeCol).Value == "Check" and excelBankTableSearchSheet.Cells(foundRange.Row, bankTrxTypeCol).Value == "Check(s) Paid":
+
+                # trxSplit = str(excelGPTableSheet.Cells(gpRow, gpTrxNumCol).Value).split(".0")
+                #
+                # if len(trxSplit) > 1:
+                #     trxNum = trxSplit[0]
+                # else:
+                #     trxNum = str(excelGPTableSheet.Cells(gpRow, gpTrxNumCol).Value)
 
                 if int(excelGPTableSheet.Cells(gpRow, gpTrxNumCol).Value[-5:]) == excelBankTableSearchSheet.Cells(foundRange.Row, bankTrxNumCol).Value and len(excelGPTableSheet.Cells(gpRow, gpTrxNumCol).Value) in (5, 6, 7):
 
