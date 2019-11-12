@@ -111,32 +111,43 @@ googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, va
 
 listOfSheetData = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 destRange = "Robinhood - Transactions"
-mapLeftObj = {"Dividend from ": {"transactionType": "Receive Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue", "stockName": "Stock Name"},
+mapLeftObj = {"Dividend from ": {"transactionType": "Receive Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue", "stockNamePosition": 1},
        "Withdrawal to ": {"transactionType": "Cash To Owners", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks"},
        "Deposit from ": {"transactionType": "Cash From Owners", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks"},
        "Interest Payment": {"transactionType": "Receive Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "All Stocks"},
        "AKS from Robinhood": {"transactionType": "Receive Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS"}}
 
-mapRightObj = {" Market Buy": {"transactionType": "Purchase Stock", "debitAccount": "Investment Asset", "creditAccount": "Cash", "stockName": "Stock Name"}}
+mapRightObj = {" Market Buy": {"transactionType": "Purchase Stock", "debitAccount": "Investment Asset", "creditAccount": "Cash", "stockNamePosition": 0}}
 
 
 for transaction in transactionsList[1:]:
 
     locatedObj = {}
+    searchString = ""
 
     for mapping in mapLeftObj:
         if transaction[0][:len(mapping)] == mapping:
             locatedObj = mapLeftObj[mapping]
+            searchString = mapping
 
     if not locatedObj:
         for mapping in mapRightObj:
             if transaction[0][-len(mapping):] == mapping:
                 locatedObj = mapRightObj[mapping]
+                searchString = mapping
 
     # pp(transaction)
 
-    listOfSheetData.append([transaction[1], locatedObj["debitAccount"], transaction[2], locatedObj["transactionType"], locatedObj["stockName"], "Robinhood", "Lot", transaction[4]])
-    listOfSheetData.append([transaction[1], locatedObj["creditAccount"], -transaction[2], locatedObj["transactionType"], locatedObj["stockName"], "Robinhood", "Lot", ""])
+    if "stockName" in locatedObj:
+        stockName = locatedObj["stockName"]
+    else:
+        stockName = transaction[0].split(searchString)[locatedObj["stockNamePosition"]]
+
+    pp(stockName)
+
+
+    listOfSheetData.append([transaction[1], locatedObj["debitAccount"], transaction[2], locatedObj["transactionType"], stockName, "Robinhood", "Lot", transaction[4]])
+    listOfSheetData.append([transaction[1], locatedObj["creditAccount"], -transaction[2], locatedObj["transactionType"], stockName, "Robinhood", "Lot", ""])
 
 
 valuesToWrite = {"values": listOfSheetData}
