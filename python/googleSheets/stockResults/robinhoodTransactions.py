@@ -64,6 +64,7 @@ destRange = "Robinhood - Data"
 
 
 for indexOfRow in range(0, numberOfRows):
+
     val = listObj[indexOfRow][0]["value"]
     matchObj = re.search("[0-9]+ share", str(val))
 
@@ -87,19 +88,25 @@ for indexOfRow in range(0, numberOfRows):
     subCount = subCount + 1
 
 
-transactionsList.append(indivTransactionList)
 
+transactionsList.append(indivTransactionList)
+# pp(transactionsList)
 
 transactionsList.sort(key=lambda x: int(x[1]))
 
-newTransactionsList = []
 
-for transaction in transactionsList:
-    if transaction[1] > 43404:
-        newTransactionsList.append(transaction)
+filterList = True
 
+if filterList:
 
-transactionsList = newTransactionsList
+    newTransactionsList = []
+
+    for transaction in transactionsList:
+        if transaction[1] > 43404:
+            newTransactionsList.append(transaction)
+
+    transactionsList = newTransactionsList
+
 transactionsList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
 
 valuesToWrite = {"values": transactionsList}
@@ -147,12 +154,12 @@ for transaction in transactionsList[1:]:
     if locatedObj["transactionType"] == "Purchase Stock":
         dateObj = date.fromordinal(date(1900, 1, 1).toordinal() + transaction[1] - 2)
         # dateObj = datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + transaction[1] - 2)
-        pp(dateObj.Year)
+        pp(dateObj)
         lot = "" # dateObj.Year
     else:
         lot = "Lot"
 
-
+    # pp(transaction)
     listOfSheetData.append([transaction[1], locatedObj["debitAccount"], transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, transaction[4]])
     listOfSheetData.append([transaction[1], locatedObj["creditAccount"], -transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, ""])
 
