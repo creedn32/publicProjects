@@ -17,7 +17,7 @@ import importlib, re
 googleSheetsFunctions = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsFunctions")
 googleSheetsAuthenticate = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsAuthenticate")
 from pprint import pprint as pp
-from datetime import datetime
+from datetime import date
 
 
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
@@ -145,12 +145,13 @@ for transaction in transactionsList[1:]:
         stockName = transaction[0].split(searchString)[locatedObj["stockNamePosition"]]
 
     if locatedObj["transactionType"] == "Purchase Stock":
-        # dateObj = datetime.fromordinal(datetime(1900, 1, 1).toordinal() + transaction[1] - 2)
+        dateObj = date.fromordinal(date(1900, 1, 1).toordinal() + transaction[1] - 2)
+        # dateObj = datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + transaction[1] - 2)
+        pp(dateObj.Year)
         lot = "" # dateObj.Year
     else:
         lot = "Lot"
 
-    pp(lot)
 
     listOfSheetData.append([transaction[1], locatedObj["debitAccount"], transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, transaction[4]])
     listOfSheetData.append([transaction[1], locatedObj["creditAccount"], -transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, ""])
