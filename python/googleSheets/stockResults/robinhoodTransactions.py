@@ -145,8 +145,8 @@ for transaction in transactionsList[1:]:
         stockName = transaction[0].split(searchString)[locatedObj["stockNamePosition"]]
 
     if locatedObj["transactionType"] == "Purchase Stock":
-        dateObj = datetime.fromordinal(datetime(1900, 1, 1).toordinal() + transaction[1] - 2)
-        lot = dateObj.Year
+        # dateObj = datetime.fromordinal(datetime(1900, 1, 1).toordinal() + transaction[1] - 2)
+        lot = "" # dateObj.Year
     else:
         lot = "Lot"
 
