@@ -1,8 +1,12 @@
 print("Cmt: Importing modules...")
 
 import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[0]))
-from creed_modules import creedFunctions
+from pprint import pprint as pp
+
+# pp(sys.path)
+# pp(str(pathlib.Path.cwd().parents[0]))
+sys.path.append(str(pathlib.Path.cwd().parents[1]))
+from myPythonLibrary import myPythonFunctions
 
 import time, win32com.client
 
@@ -13,7 +17,7 @@ print("Cmt: Open and connect to file...")
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = False
 excelApp.DisplayAlerts = False
-filePath = str(pathlib.Path.cwd().parents[0]) + "\\private_data\\bank_rec_primary"
+filePath = str(pathlib.Path.cwd().parents[3]) + "\\privateData\\bankRecPrimary"
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 
@@ -71,9 +75,9 @@ while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
        excelBankTableSheet.Rows(bankTableSheetRow).EntireRow.Delete()
        bankTableSheetRow = bankTableSheetRow - 1
     else:
-        excelBankTableSheet.Cells(bankTableSheetRow, bankDateCol).Value = creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-8] + "/" + creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-6][-2:] + "/" + creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-2][-4:]
+        excelBankTableSheet.Cells(bankTableSheetRow, bankDateCol).Value = myPythonFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-8] + "/" + myPythonFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-6][-2:] + "/" + myPythonFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-2][-4:]
 
-        myStr = creedFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
+        myStr = myPythonFunctions.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
         myStr = " ".join(myStr.split())[0:200]
         excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value = myStr
 

@@ -17,6 +17,7 @@ import importlib, re
 googleSheetsFunctions = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsFunctions")
 googleSheetsAuthenticate = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsAuthenticate")
 from pprint import pprint as pp
+from datetime import datetime
 
 
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
@@ -31,8 +32,10 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
-destRange = "Robinhood - Data"
 
+
+
+#get raw data from Google Sheets
 
 listObj = []
 
@@ -50,9 +53,13 @@ for indexOfRow in range(0, numberOfRows):
 
 
 
+
+#put data into table
+
 subCount = 1
-transactionList = []
+indivTransactionList = []
 transactionsList = []
+destRange = "Robinhood - Data"
 # fieldsObj = {1: "Description", 2: "Date", 3: "Amount", 4: "Details"}
 
 
@@ -60,87 +67,94 @@ for indexOfRow in range(0, numberOfRows):
     val = listObj[indexOfRow][0]["value"]
     matchObj = re.search("[0-9]+ share", str(val))
 
+
     if subCount > 3 and not matchObj:
         subCount = 1
-        transactionsList.append(transactionList)
-        transactionList = []
 
-    transactionList.append(val)
+        if len(indivTransactionList) == 3:
+            indivTransactionList.append("")
+            indivTransactionList.append("")
+
+        transactionsList.append(indivTransactionList)
+        indivTransactionList = []
+
+    indivTransactionList.append(val)
+
+    if subCount > 3 and matchObj:
+        indivTransactionList.append(int(matchObj.group(0).split(" share")[0]))
+
+
     subCount = subCount + 1
 
 
-transactionsList.append(transactionList)
-
-
-# pp(transactionsList)
-
-# listOfSheetData = []
-#
-# for transaction in transactionsList:
-#     listOfSheetData.append([transaction])
-
-
-
-
-for row in transactionsList:
-    if row[0][:14] == "Dividend from ":
-        toInsert = "Dividend"
-    elif row[0][:14] == "Withdrawal to ":
-        toInsert = "Cash to owners"
-    elif row[0][:13] == "Deposit from ":
-        toInsert = "Cash from owners"
-    elif row[0][-11:] == " Market Buy":
-        toInsert = "Stock Purchase"
-        row[2] = -row[2]
-    elif row[0] == "Interest Payment":
-        toInsert = "Interest Received"
-    elif row[0] == "AKS from Robinhood":
-        toInsert = "Stock Gift Received"
-    else:
-        toInsert = ""
-
-    row.insert(3, toInsert)
+transactionsList.append(indivTransactionList)
 
 
 transactionsList.sort(key=lambda x: int(x[1]))
-transactionsListRecent = []
+
+newTransactionsList = []
 
 for transaction in transactionsList:
     if transaction[1] > 43404:
-        transactionsListRecent.append(transaction)
+        newTransactionsList.append(transaction)
 
-# pp(transactionsListRecent)
-transactionsListRecent.insert(0, ["Description", "Date", "Amount", "Type", "Details"])
 
-valuesToWrite = {"values": transactionsListRecent}
+transactionsList = newTransactionsList
+transactionsList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
+
+valuesToWrite = {"values": transactionsList}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
 
 
 
 
-# pp(valuesToWrite)
+#iterate over table
+
+listOfSheetData = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
+destRange = "Robinhood - Transactions"
+mapLeftObj = {"Dividend from ": {"transactionType": "Receive Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue", "stockNamePosition": 1},
+       "Withdrawal to ": {"transactionType": "Cash To Owners", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks"},
+       "Deposit from ": {"transactionType": "Cash From Owners", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks"},
+       "Interest Payment": {"transactionType": "Receive Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "All Stocks"},
+       "AKS from Robinhood": {"transactionType": "Receive Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS"}}
+
+mapRightObj = {" Market Buy": {"transactionType": "Purchase Stock", "debitAccount": "Investment Asset", "creditAccount": "Cash", "stockNamePosition": 0}}
 
 
+for transaction in transactionsList[1:]:
+
+    locatedObj = {}
+    searchString = ""
+
+    for mapping in mapLeftObj:
+        if transaction[0][:len(mapping)] == mapping:
+            locatedObj = mapLeftObj[mapping]
+            searchString = mapping
+
+    if not locatedObj:
+        for mapping in mapRightObj:
+            if transaction[0][-len(mapping):] == mapping:
+                locatedObj = mapRightObj[mapping]
+                searchString = mapping
+
+    # pp(transaction)
+
+    if "stockName" in locatedObj:
+        stockName = locatedObj["stockName"]
+    else:
+        stockName = transaction[0].split(searchString)[locatedObj["stockNamePosition"]]
+
+    if locatedObj["transactionType"] == "Purchase Stock":
+        dateObj = datetime.fromordinal(datetime(1900, 1, 1).toordinal() + transaction[1] - 2)
+        lot = dateObj.Year
+    else:
+        lot = "Lot"
+
+    pp(lot)
+
+    listOfSheetData.append([transaction[1], locatedObj["debitAccount"], transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, transaction[4]])
+    listOfSheetData.append([transaction[1], locatedObj["creditAccount"], -transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, ""])
 
 
-
-
-
-# for indexOfRow in range(0, numberOfRows):
-    # keys = list(listObj[indexOfRow][0].keys())
-    # pp(listObj[indexOfRow][0][keys[0]])
-    # pp(listObj[indexOfRow][0][keys])
-    # pp(listObj[indexOfRow][0])
-    # pp(listObj[indexOfRow])
-
-
-
-
-# matchObj = re.search(" shares", str(val))
-
-
-# if matchObj:
-#     pp(matchObj.group(0))
-# else:
-#     pp("no match")
-
+valuesToWrite = {"values": listOfSheetData}
+googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
