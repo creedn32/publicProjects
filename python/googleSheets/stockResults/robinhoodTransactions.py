@@ -25,6 +25,7 @@ def filterListOfLists(list, filterDict):
     listToReturn = []
 
     for item in list:
+
         for key, value in filterDict.items():
             if item[key] == value:
                 listToReturn.append(item)
