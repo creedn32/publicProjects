@@ -1,3 +1,5 @@
+from pprint import pprint as pp
+
 
 def convertNothingToEmptyStr(s):
     if s:
@@ -163,20 +165,24 @@ def saveFile(dataObj, path, startTime):
 
 
 
-def filterListOfLists(list, filterDict):
+def filterListOfLists(list, filterObj):
 
     listToReturn = []
 
-    for item in list:
+    for item in list[775:779]:
 
-        filterCount = 0
+        for dictionary in filterObj:
 
-        for key, value in filterDict.items():
-            if item[key] == value:
-                filterCount = filterCount + 1
+            filterCount = 0
 
-        if filterCount == len(filterDict):
-            listToReturn.append(item)
+            for key, value in dictionary.items():
+                if item[key] == value:
+                    filterCount = filterCount + 1
+
+            if filterCount == len(dictionary):
+                listToReturn.append(item)
+
+    # pp(listToReturn)
 
     return listToReturn
 
