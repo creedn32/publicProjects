@@ -20,19 +20,6 @@ from pprint import pprint as pp
 from datetime import date
 
 
-def filterListOfLists(list, filterDict):
-
-    listToReturn = []
-
-    for item in list:
-
-        for key, value in filterDict.items():
-            if item[key] == value:
-                listToReturn.append(item)
-
-    return listToReturn
-
-
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
 googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj, rangesToDownload)
 
@@ -186,19 +173,15 @@ for transaction in transactionsList[1:]:
 
 
 
-filterFor = {3: "Purchase Stock", 4: "Wi-LAN"}
+filterFor = {1: "Investment Asset", 3: "Purchase Stock", 4: "Wi-LAN"}
 
-pp(filterListOfLists(listOfSheetData, filterFor))
+
+pp(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
 
 
 
 valuesToWrite = {"values": listOfSheetData}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
-
-
-
-
-
 
 
 
