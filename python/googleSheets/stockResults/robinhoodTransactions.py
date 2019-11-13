@@ -166,7 +166,7 @@ for transaction in transactionsList[1:]:
     elif "stockName" in locatedObj and locatedObj["stockName"] == "All Stocks":
         lot = "All Lots"
     else:
-        lot = "Lot1"
+        lot = "Lot To Be Determined"
 
     listOfSheetData.append([transaction[1], locatedObj["debitAccount"], transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, transaction[4]])
     listOfSheetData.append([transaction[1], locatedObj["creditAccount"], -transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, ""])
@@ -175,12 +175,12 @@ for transaction in transactionsList[1:]:
 
 for transaction in listOfSheetData:
 
-    if transaction[6] == "Lot1":
+    if transaction[6] == "Lot To Be Determined":
         filterFor = {1: "Investment Asset", 3: "Purchase Stock", 4: transaction[4]}
 
-        # if len(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)) != 1:
-        transaction[6] = len(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
-
+        if len(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)) == 1:
+            transaction[6] = myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)[0][0]
+            # pp(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
 
 
 valuesToWrite = {"values": listOfSheetData}
