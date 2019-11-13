@@ -103,7 +103,7 @@ newTransactionsList = []
 for transaction in transactionsList:
 
     # transaction[2] = abs(transaction[2])
-    pp(transaction[2])
+    # pp(transaction[2])
 
     if transaction[2] != "Failed":
 
@@ -160,12 +160,14 @@ for transaction in transactionsList[1:]:
 
     if "stockName" in locatedObj:
         stockName = locatedObj["stockName"]
+    elif transaction[0].split(searchString)[locatedObj["stockNamePosition"]] in ["Xperi", "Tessera Technologies, Inc. - Common Stock"]:
+        stockName = "Xperi, formerly Tessera"
     else:
         stockName = transaction[0].split(searchString)[locatedObj["stockNamePosition"]]
 
     if "lotInfo" in locatedObj:
         lot = locatedObj["lotInfo"]
-    elif locatedObj["transactionType"] == "Purchase Stock":
+    elif locatedObj["transactionType"] in ["Purchase Stock", "Receive Stock Gift", "New Stock From Merger"]:
         lot = myPythonFunctions.convertSerialDate(transaction[1])
     else:
         lot = "Lot To Be Determined"
