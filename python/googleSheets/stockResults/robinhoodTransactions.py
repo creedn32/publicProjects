@@ -8,7 +8,7 @@ startTime = myPythonFunctions.startCode()
 # accountColumn = 1
 # listOfSheetData = []
 # destRange = "Scrubbed Transactions"
-rangesToDownload = ["Robinhood - Raw Data"]
+rangesToDownload = ["Robinhood - Raw Data", "Robinhood - Transactions To Add"]
 # saveJSONFile = False
 spreadsheetID = "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI"
 
@@ -32,7 +32,8 @@ print("Comment: Importing modules and setting up variables...Done. " + str(round
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
-
+numberOfRowsExtra = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 1)
+numberOfColumnsExtra = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 1)
 
 
 #get raw data from Google Sheets and put into listObj
@@ -45,10 +46,31 @@ for indexOfRow in range(0, numberOfRows):
     for indexOfColumn in range(0, numberOfColumns):
         dict = googleSheetsFunctions.getCellValueEffective(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn)
         dictKey = list(dict.keys())[0]
-        currentRowData.append({"value": dict[dictKey], "type": dictKey, })
+        currentRowData.append({"value": dict[dictKey], "type": dictKey})
 
     listObj.append(currentRowData)
 
+
+
+
+# get extra transactions from Google Sheets and put into listObjExtra
+
+
+listObjExtra = []
+
+for indexOfRow in range(0, numberOfRowsExtra):
+    currentRowData = []
+
+    for indexOfColumn in range(0, numberOfColumnsExtra):
+        dictionary = googleSheetsFunctions.getCellValueEffective(googleSheetsDataWithGrid, 1, indexOfRow, indexOfColumn)
+
+        if not isinstance(dictionary, str):
+            dictKey = list(dictionary.keys())[0]
+            currentRowData.append(dictionary[dictKey])    #{"value": dictionary[dictKey], "type": dictKey})
+        else:
+            currentRowData.append("")    #{"value": "", "type": ""})
+
+    listObjExtra.append(currentRowData)
 
 
 
@@ -165,6 +187,7 @@ for transaction in transactionsList[1:]:
     else:
         stockName = transaction[0].split(searchString)[locatedObj["stockNamePosition"]]
 
+
     if "lotInfo" in locatedObj:
         lot = locatedObj["lotInfo"]
     elif locatedObj["transactionType"] in ["Purchase Stock", "Receive Stock Gift", "New Stock From Merger"]:
@@ -177,19 +200,18 @@ for transaction in transactionsList[1:]:
 
 
 
+listOfSheetData.extend(listObjExtra[1:len(listObjExtra)])
+
+
 for transaction in listOfSheetData:
 
     if transaction[6] == "Lot To Be Determined":
-        filterFor = {1: "Investment Asset", 3: "Purchase Stock", 4: transaction[4]}
 
-        # if transaction[4] == "Electro Scientific Industries":
-        #     pp(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
-
-        # pp(transaction[4])
+        filterFor = [{1: "Investment Asset", 3: "Purchase Stock", 4: transaction[4]}, {1: "Investment Asset", 3: "New Stock From Merger", 4: transaction[4]}]
 
         if len(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)) == 1:
             transaction[6] = myPythonFunctions.convertSerialDate(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)[0][0])
-            # pp(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
+
 
 
 valuesToWrite = {"values": listOfSheetData}
