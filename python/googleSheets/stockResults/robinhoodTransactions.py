@@ -182,6 +182,11 @@ for transaction in listOfSheetData:
     if transaction[6] == "Lot To Be Determined":
         filterFor = {1: "Investment Asset", 3: "Purchase Stock", 4: transaction[4]}
 
+        # if transaction[4] == "Electro Scientific Industries":
+        #     pp(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
+
+        # pp(transaction[4])
+
         if len(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)) == 1:
             transaction[6] = myPythonFunctions.convertSerialDate(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)[0][0])
             # pp(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
