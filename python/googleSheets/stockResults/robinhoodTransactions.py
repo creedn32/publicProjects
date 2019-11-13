@@ -163,20 +163,23 @@ for transaction in transactionsList[1:]:
         # dateObj = datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + transaction[1] - 2)
         # pp()
         lot = str(dateObj.year) + str(dateObj.month).zfill(2) + str(dateObj.day).zfill(2) # dateObj.Year
+    elif "stockName" in locatedObj and locatedObj["stockName"] == "All Stocks":
+        lot = "All Lots"
     else:
-        lot = "Lot"
+        lot = "Lot1"
 
-
-    # pp(transaction)
     listOfSheetData.append([transaction[1], locatedObj["debitAccount"], transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, transaction[4]])
     listOfSheetData.append([transaction[1], locatedObj["creditAccount"], -transaction[2], locatedObj["transactionType"], stockName, "Robinhood", lot, ""])
 
 
 
-filterFor = {1: "Investment Asset", 3: "Purchase Stock", 4: "Wi-LAN"}
+for transaction in listOfSheetData:
 
+    if transaction[6] == "Lot1":
+        filterFor = {1: "Investment Asset", 3: "Purchase Stock", 4: transaction[4]}
 
-pp(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
+        # if len(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)) != 1:
+        transaction[6] = len(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
 
 
 
