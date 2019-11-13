@@ -35,7 +35,7 @@ numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0
 
 
 
-#get raw data from Google Sheets
+#get raw data from Google Sheets and put into listObj
 
 listObj = []
 
@@ -102,7 +102,12 @@ newTransactionsList = []
 
 for transaction in transactionsList:
 
+    # transaction[2] = abs(transaction[2])
+    pp(transaction[2])
+
     if transaction[2] != "Failed":
+
+        transaction[2] = abs(transaction[2])
 
         if filterList:
             if transaction[1] > 43404:
@@ -110,9 +115,9 @@ for transaction in transactionsList:
         else:
             newTransactionsList.append(transaction)
 
+
+
 transactionsList = newTransactionsList
-
-
 
 transactionsList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
 
@@ -122,14 +127,14 @@ googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, va
 
 
 
-#iterate over table
+#create double entry accounting table
 
 listOfSheetData = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 destRange = "Robinhood - Transactions"
 mapLeftObj = {"Dividend from ": {"transactionType": "Receive Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue", "stockNamePosition": 1},
-       "Withdrawal to ": {"transactionType": "Cash To Owners", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks"},
-       "Deposit from ": {"transactionType": "Cash From Owners", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks"},
-       "Interest Payment": {"transactionType": "Receive Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "All Stocks"},
+       "Withdrawal to ": {"transactionType": "Cash To Owners", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks", "lotInfo": "All Lots"},
+       "Deposit from ": {"transactionType": "Cash From Owners", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks", "lotInfo": "All Lots"},
+       "Interest Payment": {"transactionType": "Receive Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "Cssh", "lotInfo": "Cash"},
        "AKS from Robinhood": {"transactionType": "Receive Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS"}}
 
 mapRightObj = {" Market Buy": {"transactionType": "Purchase Stock", "debitAccount": "Investment Asset", "creditAccount": "Cash", "stockNamePosition": 0}}
@@ -158,13 +163,10 @@ for transaction in transactionsList[1:]:
     else:
         stockName = transaction[0].split(searchString)[locatedObj["stockNamePosition"]]
 
-    if locatedObj["transactionType"] == "Purchase Stock":
-        dateObj = date.fromordinal(date(1900, 1, 1).toordinal() + transaction[1] - 2)
-        # dateObj = datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + transaction[1] - 2)
-        # pp()
-        lot = str(dateObj.year) + str(dateObj.month).zfill(2) + str(dateObj.day).zfill(2) # dateObj.Year
-    elif "stockName" in locatedObj and locatedObj["stockName"] == "All Stocks":
-        lot = "All Lots"
+    if "lotInfo" in locatedObj:
+        lot = locatedObj["lotInfo"]
+    elif locatedObj["transactionType"] == "Purchase Stock":
+        lot = myPythonFunctions.convertSerialDate(transaction[1])
     else:
         lot = "Lot To Be Determined"
 
@@ -179,7 +181,7 @@ for transaction in listOfSheetData:
         filterFor = {1: "Investment Asset", 3: "Purchase Stock", 4: transaction[4]}
 
         if len(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)) == 1:
-            transaction[6] = myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)[0][0]
+            transaction[6] = myPythonFunctions.convertSerialDate(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)[0][0])
             # pp(myPythonFunctions.filterListOfLists(listOfSheetData, filterFor))
 
 
