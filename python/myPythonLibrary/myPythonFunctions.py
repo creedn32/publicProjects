@@ -169,7 +169,7 @@ def filterListOfLists(list, filterObj):
 
     listToReturn = []
 
-    for item in list[775:779]:
+    for item in list:
 
         for dictionary in filterObj:
 
