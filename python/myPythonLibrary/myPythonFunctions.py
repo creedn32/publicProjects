@@ -161,6 +161,33 @@ def saveFile(dataObj, path, startTime):
     print("Comment: Writing data to file...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
+
+
+def filterListOfLists(list, filterDict):
+
+    listToReturn = []
+
+    for item in list:
+
+        filterCount = 0
+
+        for key, value in filterDict.items():
+            if item[key] == value:
+                filterCount = filterCount + 1
+
+        if filterCount == len(filterDict):
+            listToReturn.append(item)
+
+    return listToReturn
+
+
+
+
+
+
+
+
+
     #
     # while column > 0:
     #     temp = (column - 1) % 26
