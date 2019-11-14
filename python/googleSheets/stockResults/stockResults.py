@@ -4,6 +4,8 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPythonLibrary import myPythonFunctions
 startTime = myPythonFunctions.startCode()
 
+import robinhoodTransactions
+
 multiplyFactor = 1
 accountColumn = 1
 # listOfSheetData = []
@@ -32,19 +34,20 @@ if saveJSONFile:
     print("Comment: Writing data to file...Done. " + str(round(myPythonFunctions.time.time() - finishSetupTime, 3)) + " seconds")
 
 
-numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
-numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
 
 
 
 
 
+listOfSheetData = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0), googleSheetsDataWithGrid, 0)
+listOfSheetDataRobinhood = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 3), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 3), googleSheetsDataWithGrid, 3)
+listOfSheetData.extend(listOfSheetDataRobinhood[1:len(listOfSheetDataRobinhood)])
 
-listOfSheetData = googleSheetsFunctions.extractValues(numberOfRows, numberOfColumns, googleSheetsDataWithGrid, 0)
+numberOfRows = len(listOfSheetData)
+numberOfColumns = len(listOfSheetData[0])
 
-
-for indexOfRow in range(1, numberOfRows):
-    listOfSheetData[indexOfRow][2] = googleSheetsFunctions.getCellValueNumber(googleSheetsDataWithGrid, 0, indexOfRow, 2)
+# for indexOfRow in range(1, numberOfRows):
+#     listOfSheetData[indexOfRow][2] = googleSheetsFunctions.getCellValueNumber(googleSheetsDataWithGrid, 0, indexOfRow, 2)
 
 
 
@@ -58,7 +61,7 @@ for indexOfRow in range(1, numberOfRows):
     listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(" - " + listOfSheetData[indexOfRow][5], " ")
 
 for indexOfRow in range(1, numberOfRows):
-    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(" - " + listOfSheetData[indexOfRow][6], " ")
+    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(" - " + str(listOfSheetData[indexOfRow][6]), " ")
 
 for indexOfRow in range(1, numberOfRows):
     listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(listOfSheetData[indexOfRow][4] + " - ", "")
