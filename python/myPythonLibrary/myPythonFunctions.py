@@ -152,15 +152,12 @@ def getFromList(listObj, position):
 
 
 
-def saveFile(dataObj, path, startTime):
+def saveFile(dataObj, path):
 
     from pprint import pprint as pp
-    import time
 
     with open(path, "w") as out:
         pp(dataObj, stream=out)
-
-    print("Comment: Writing data to file...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
 
