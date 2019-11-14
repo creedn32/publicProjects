@@ -4,13 +4,13 @@ from pprint import pprint as pp
 
 
 
-def hasFormattedValue(cell):
-
-    for item in cell:
-        if "formattedValue" in item:
-            return True
-
-    return False
+# def hasFormattedValue(cell):
+#
+#     for item in cell:
+#         if "formattedValue" in item:
+#             return True
+#
+#     return False
 
 
 
@@ -81,6 +81,72 @@ def getCellValueEffective(dataObj, sheetPos, rowPos, colPos):
 
 
 
+def createValuesData(numRows, numCols, dataObj):
+
+    listObj = []
+
+    for indexOfRow in range(0, numRows):
+        currentRowData = []
+
+        for indexOfColumn in range(0, numCols):
+            currentRowData.append(getCellValue(dataObj, 0, indexOfRow, indexOfColumn))
+
+        listObj.append(currentRowData)
+
+    return listObj
+
+
+
+
+
+def extractValuesAndTypes(numRows, numCols, dataObj, sheetPos):
+
+    listToReturn = []
+
+    for indexOfRow in range(0, numRows):
+        currentRowData = []
+
+        for indexOfColumn in range(0, numCols):
+            dictionary = getCellValueEffective(dataObj, sheetPos, indexOfRow, indexOfColumn)
+
+            if not isinstance(dictionary, str):
+                dictKey = list(dictionary.keys())[0]
+                currentRowData.append({"value": dictionary[dictKey], "type": dictKey})
+            else:
+                currentRowData.append({"value": "", "type": ""})
+
+        listToReturn.append(currentRowData)
+
+
+    return listToReturn
+
+
+
+
+def extractValues(numRows, numCols, dataObj, sheetPos):
+
+    listToReturn = []
+
+    for indexOfRow in range(0, numRows):
+        currentRowData = []
+
+        for indexOfColumn in range(0, numCols):
+            dictionary = getCellValueEffective(dataObj, sheetPos, indexOfRow, indexOfColumn)
+
+            if not isinstance(dictionary, str):
+                dictKey = list(dictionary.keys())[0]
+                currentRowData.append(dictionary[dictKey])  # {"value": dictionary[dictKey], "type": dictKey})
+            else:
+                currentRowData.append("")  # {"value": "", "type": ""})
+
+        listToReturn.append(currentRowData)
+
+
+    return listToReturn
+
+
+
+
 
 def countRows(dataObj, sheetPos):
     sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
@@ -97,7 +163,6 @@ def countRows(dataObj, sheetPos):
 
 
 
-
 def countColumns(dataObj, sheetPos):
     sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
     currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
@@ -106,20 +171,3 @@ def countColumns(dataObj, sheetPos):
     currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, 0), "values")
     return len(currentRowData)
 
-
-
-
-
-def createValuesData(numRows, numCols, dataObj):
-
-    listObj = []
-
-    for indexOfRow in range(0, numRows):
-        currentRowData = []
-
-        for indexOfColumn in range(0, numCols):
-            currentRowData.append(getCellValue(dataObj, 0, indexOfRow, indexOfColumn))
-
-        listObj.append(currentRowData)
-
-    return listObj

@@ -8,7 +8,7 @@ multiplyFactor = 1
 accountColumn = 1
 # listOfSheetData = []
 destRange = "Transactions - Scrubbed"
-rangesToDownload = ["Transactions", "Transactions - Scrubbed", "Chart of Accounts"]
+rangesToDownload = ["Transactions", "Transactions - Scrubbed", "Chart of Accounts", "Transactions - Robinhood"]
 saveJSONFile = False
 # spreadsheetID = "1yZfwzel6R3HTUtH5HIv7LEjAaoJDPESG6jCEz-b7jBw" #simple spreadsheet
 spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
@@ -27,14 +27,21 @@ googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, 
 finishSetupTime = myPythonFunctions.time.time()
 print("Comment: Importing modules and setting up variables...Done. " + str(round(finishSetupTime - startTime, 3)) + " seconds")
 
-if saveJSONFile: myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"), finishSetupTime)
+if saveJSONFile:
+    myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"))
+    print("Comment: Writing data to file...Done. " + str(round(myPythonFunctions.time.time() - finishSetupTime, 3)) + " seconds")
 
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
 numberOfColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0)
 
 
-listOfSheetData = googleSheetsFunctions.createValuesData(numberOfRows, numberOfColumns, googleSheetsDataWithGrid)
+
+
+
+
+listOfSheetData = googleSheetsFunctions.extractValues(numberOfRows, numberOfColumns, googleSheetsDataWithGrid, 0)
+
 
 for indexOfRow in range(1, numberOfRows):
     listOfSheetData[indexOfRow][2] = googleSheetsFunctions.getCellValueNumber(googleSheetsDataWithGrid, 0, indexOfRow, 2)
@@ -87,7 +94,8 @@ for indexOfRow in range(1, numberOfRowsChartOfAccounts):
     chartOfAccountsDict[googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, indexOfRow, 0)] = mapDict
 
 
-
+# pp(chartOfAccountsDict)
+# pp(listOfSheetData)
 
 for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
 
@@ -96,10 +104,12 @@ for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
     for indexOfRow in range(0, numberOfRows):
 
         accountName = listOfSheetData[indexOfRow][accountColumn]
+        # pp(accountName)
 
         if indexOfRow == 0:
             listOfSheetData[indexOfRow].insert(accountColumn + 1, columnHeading)
         else:
+            # pp(chartOfAccountsDict[accountName][columnHeading])
             listOfSheetData[indexOfRow].insert(accountColumn + 1, chartOfAccountsDict[accountName][columnHeading])
 
 

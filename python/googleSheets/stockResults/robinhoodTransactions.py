@@ -4,12 +4,9 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPythonLibrary import myPythonFunctions
 startTime = myPythonFunctions.startCode()
 
-# multiplyFactor = 1
-# accountColumn = 1
-# listOfSheetData = []
-# destRange = "Scrubbed Transactions"
+
 rangesToDownload = ["Raw Data - Robinhood", "Transactions To Add - Robinhood"]
-# saveJSONFile = False
+saveJSONFile = False
 spreadsheetID = "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI"
 
 
@@ -27,7 +24,10 @@ googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, 
 finishSetupTime = myPythonFunctions.time.time()
 print("Comment: Importing modules and setting up variables...Done. " + str(round(finishSetupTime - startTime, 3)) + " seconds")
 
-# if saveJSONFile: myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"), finishSetupTime)
+if saveJSONFile:
+    myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"), finishSetupTime)
+    print("Comment: Writing data to file...Done. " + str(round(myPythonFunctions.time.time() - finishSetupTime, 3)) + " seconds")
+
 
 
 numberOfRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0)
@@ -38,17 +38,21 @@ numberOfColumnsExtra = googleSheetsFunctions.countColumns(googleSheetsDataWithGr
 
 #get raw data from Google Sheets and put into listObj
 
-listObj = []
+listObj = googleSheetsFunctions.extractValuesAndTypes(numberOfRows, numberOfColumns, googleSheetsDataWithGrid, 0)
+# pp(listObj)
 
-for indexOfRow in range(0, numberOfRows):
-    currentRowData = []
 
-    for indexOfColumn in range(0, numberOfColumns):
-        dict = googleSheetsFunctions.getCellValueEffective(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn)
-        dictKey = list(dict.keys())[0]
-        currentRowData.append({"value": dict[dictKey], "type": dictKey})
 
-    listObj.append(currentRowData)
+
+# for indexOfRow in range(0, numberOfRows):
+#     currentRowData = []
+#
+#     for indexOfColumn in range(0, numberOfColumns):
+#         dict = googleSheetsFunctions.getCellValueEffective(googleSheetsDataWithGrid, 0, indexOfRow, indexOfColumn)
+#         dictKey = list(dict.keys())[0]
+#         currentRowData.append({"value": dict[dictKey], "type": dictKey})
+#
+#     listObj.append(currentRowData)
 
 
 
@@ -56,21 +60,22 @@ for indexOfRow in range(0, numberOfRows):
 # get extra transactions from Google Sheets and put into listObjExtra
 
 
-listObjExtra = []
+listObjExtra = googleSheetsFunctions.extractValues(numberOfRowsExtra, numberOfColumnsExtra, googleSheetsDataWithGrid, 1)
 
-for indexOfRow in range(0, numberOfRowsExtra):
-    currentRowData = []
 
-    for indexOfColumn in range(0, numberOfColumnsExtra):
-        dictionary = googleSheetsFunctions.getCellValueEffective(googleSheetsDataWithGrid, 1, indexOfRow, indexOfColumn)
-
-        if not isinstance(dictionary, str):
-            dictKey = list(dictionary.keys())[0]
-            currentRowData.append(dictionary[dictKey])    #{"value": dictionary[dictKey], "type": dictKey})
-        else:
-            currentRowData.append("")    #{"value": "", "type": ""})
-
-    listObjExtra.append(currentRowData)
+# for indexOfRow in range(0, numberOfRowsExtra):
+#     currentRowData = []
+#
+#     for indexOfColumn in range(0, numberOfColumnsExtra):
+#         dictionary = googleSheetsFunctions.getCellValueEffective(googleSheetsDataWithGrid, 1, indexOfRow, indexOfColumn)
+#
+#         if not isinstance(dictionary, str):
+#             dictKey = list(dictionary.keys())[0]
+#             currentRowData.append(dictionary[dictKey])    #{"value": dictionary[dictKey], "type": dictKey})
+#         else:
+#             currentRowData.append("")    #{"value": "", "type": ""})
+#
+#     listObjExtra.append(currentRowData)
 
 
 
