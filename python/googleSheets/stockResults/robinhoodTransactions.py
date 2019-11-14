@@ -8,7 +8,7 @@ startTime = myPythonFunctions.startCode()
 # accountColumn = 1
 # listOfSheetData = []
 # destRange = "Scrubbed Transactions"
-rangesToDownload = ["Robinhood - Raw Data", "Robinhood - Transactions To Add"]
+rangesToDownload = ["Raw Data - Robinhood", "Transactions To Add - Robinhood"]
 # saveJSONFile = False
 spreadsheetID = "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI"
 
@@ -81,7 +81,7 @@ for indexOfRow in range(0, numberOfRowsExtra):
 subCount = 1
 indivTransactionList = []
 transactionsList = []
-destRange = "Robinhood - Data"
+destRange = "Data - Robinhood"
 # fieldsObj = {1: "Description", 2: "Date", 3: "Amount", 4: "Details"}
 
 
@@ -152,7 +152,8 @@ googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, va
 #create double entry accounting table
 
 listOfSheetData = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
-destRange = "Robinhood - Transactions"
+destRange = "Transactions - Robinhood"
+spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
 mapLeftObj = {"Dividend from ": {"transactionType": "Receive Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue", "stockNamePosition": 1},
        "Withdrawal to ": {"transactionType": "Cash To Owners", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks", "lotInfo": "All Lots"},
        "Deposit from ": {"transactionType": "Cash From Owners", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks", "lotInfo": "All Lots"},
