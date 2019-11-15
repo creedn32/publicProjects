@@ -195,6 +195,34 @@ def sumListOfLists(list, index):
     return runningSum
 
 
+def sumFormulasListOfLists(list, index):
+
+    runningFormula = "="
+
+    for item in list:
+
+        if isinstance(item[index], str):
+            runningFormula = runningFormula + "+" + item[index].strip("=")
+        else:
+            runningFormula = runningFormula + "+" + str(item[index])
+
+
+
+    return runningFormula
+
+
+
+def convertTwoColumnListToDict(listObj, startingRow):
+
+    dictToReturn = {}
+
+    for item in listObj[1:]:
+        dictToReturn[item[0]] = item[1]
+
+    return dictToReturn
+
+
+
 
 def convertSerialDate(serialDate):
 
