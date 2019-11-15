@@ -34,6 +34,7 @@ rangesToDownload = list(sheetInfoObj[0]["download"].keys())
 saveJSONFile = False
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
 googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(sheetInfoObj[0]["id"], googleSheetsObj, rangesToDownload)
+sleepTime = 1
 
 
 finishSetupTime = myPythonFunctions.time.time()
@@ -132,6 +133,7 @@ transactionsList = newTransactionsList
 transactionsList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
 
 valuesToPopulate = {"values": transactionsList}
+myPythonFunctions.time.sleep(sleepTime)
 googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[0]["id"], range="Data - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
 
 
@@ -202,27 +204,16 @@ for transaction in listOfSheetData:
 
 
 valuesToPopulate = {"values": listOfSheetData}
+myPythonFunctions.time.sleep(sleepTime)
 googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[1]["id"], range="Transactions - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
 
 
 unsoldStockSheet = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 dateForUnsold = 43784
 tranType = "Hypothetical Sale"
+googleSheetsTempData = None
 
-for stockToFilter in sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"]:
-
-    ticker = sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"][stockToFilter]
-    filteredTransactions = myPythonFunctions.filterListOfLists(listOfSheetData, [{1: "Investment Asset", 4: stockToFilter, 5: "Robinhood"}])
-
-    # pp(filteredTransactions)
-
-    for item in filteredTransactions:
-
-        unsoldLotList = []
-        unsoldLotList.append([dateForUnsold, "Cash", "=GOOGLEFINANCE(\"" + ticker + "\")*INDIRECT(\"H\"&ROW())", tranType, stockToFilter, "Robinhood", item[6], item[7]])
-        unsoldLotList.append([dateForUnsold, "Investment Asset", -item[2], tranType, stockToFilter, "Robinhood", item[6], item[7]])
-
-        createRequest = {
+createRequest = {
                           "requests": [
                             {
                               "addSheet": {
@@ -239,27 +230,68 @@ for stockToFilter in sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"]:
                         }
 
 
-        googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=createRequest).execute()
+# googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=createRequest).execute()
 
+
+
+for stockToFilter in sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"]:
+
+    ticker = sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"][stockToFilter]
+    filteredTransactions = myPythonFunctions.filterListOfLists(listOfSheetData, [{1: "Investment Asset", 4: stockToFilter, 5: "Robinhood"}])
+
+    # pp(filteredTransactions)
+
+    for item in filteredTransactions:
+
+        if googleSheetsTempData:
+
+            deleteRowsCols = {
+                "requests": [
+                    {
+                        "deleteDimension": {
+                            "range": {
+                                "sheetId": googleSheetsTempData["sheets"][0]["properties"]["sheetId"],
+                                "dimension": "ROWS",
+                                "startIndex": 1,
+                                "endIndex": 1000
+                            }
+                        }
+                    },
+                    {
+                        "deleteDimension": {
+                            "range": {
+                                "sheetId": googleSheetsTempData["sheets"][0]["properties"]["sheetId"],
+                                "dimension": "COLUMNS",
+                                "startIndex": 1,
+                                "endIndex": 1000
+                            }
+                        }
+                    },
+                ],
+            }
+
+
+            myPythonFunctions.time.sleep(sleepTime)
+            googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=deleteRowsCols).execute()
+
+
+        myPythonFunctions.time.sleep(sleepTime)
+        googleSheetsObj.values().clear(spreadsheetId=sheetInfoObj[0]["id"], range="tempSheet", body={}).execute()
+
+
+        unsoldLotList = []
+        unsoldLotList.append(
+            [dateForUnsold, "Cash", "=GOOGLEFINANCE(\"" + ticker + "\")*INDIRECT(\"H\"&ROW())", tranType, stockToFilter,
+             "Robinhood", item[6], item[7]])
+        unsoldLotList.append(
+            [dateForUnsold, "Investment Asset", -item[2], tranType, stockToFilter, "Robinhood", item[6], item[7]])
+
+
+        myPythonFunctions.time.sleep(sleepTime)
         googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[0]["id"], range="tempSheet", valueInputOption="USER_ENTERED", body={"values": unsoldLotList}).execute()
+        
+        
         googleSheetsTempData = googleSheetsFunctions.getDataWithGrid(sheetInfoObj[0]["id"], googleSheetsObj, ["tempSheet"])
-
-
-        deleteRequest = {
-            "requests": [
-                {
-                    "deleteSheet": {
-                        "sheetId": googleSheetsTempData["sheets"][0]["properties"]["sheetId"]
-                    }
-                }
-            ]
-        }
-
-        # pp(deleteRequest)
-
-
-        googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=deleteRequest).execute()
-
 
 
         listObj = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsTempData, 0), googleSheetsFunctions.countColumns(googleSheetsTempData, 0), googleSheetsTempData, 0)
@@ -274,11 +306,25 @@ for stockToFilter in sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"]:
         unsoldStockSheet.extend(unsoldLotList)
 
 
+myPythonFunctions.time.sleep(sleepTime)
 valuesToPopulate = {"values": unsoldStockSheet}
 googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[0]["id"], range="Transactions - Unsold Stock - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
 
 
 
+
+deleteRequest = {
+    "requests": [
+        {
+            "deleteSheet": {
+                "sheetId": googleSheetsTempData["sheets"][0]["properties"]["sheetId"]
+            }
+        }
+    ]
+}
+
+myPythonFunctions.time.sleep(sleepTime)
+googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=deleteRequest).execute()
 
 
 
