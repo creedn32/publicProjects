@@ -224,6 +224,9 @@ valuesToWrite = {"values": listOfSheetData}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
 
 
+filterFor = [{1: "Investment Asset", 6: "AKS", 7: "Robinhood"}]
+listForSum = myPythonFunctions.filterListOfLists(listOfSheetData, filterFor)
+pp(myPythonFunctions.sumListOfLists(listForSum, 9))
 
 
 
