@@ -185,6 +185,14 @@ def filterListOfLists(list, filterObj):
 
 
 
+def sumListOfLists(list, index):
+
+    runningSum = 0
+
+    for item in list:
+        runningSum = runningSum + float(item[index] or 0)
+
+    return runningSum
 
 
 
