@@ -34,7 +34,7 @@ rangesToDownload = list(sheetInfoObj[0]["download"].keys())
 saveJSONFile = False
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
 googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(sheetInfoObj[0]["id"], googleSheetsObj, rangesToDownload)
-sleepTime = 1
+sleepTime = .8
 
 
 finishSetupTime = myPythonFunctions.time.time()
@@ -202,10 +202,6 @@ for transaction in listOfSheetData:
 
 
 
-valuesToPopulate = {"values": listOfSheetData}
-googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[1]["id"], range="Transactions - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
-
-
 unsoldStockSheet = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 dateForUnsold = 43784
 tranType = "Hypothetical Sale"
@@ -323,6 +319,16 @@ deleteRequest = {
 
 myPythonFunctions.time.sleep(sleepTime)
 googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=deleteRequest).execute()
+
+
+
+listOfSheetData.extend(unsoldStockSheet[1:])
+valuesToPopulate = {"values": listOfSheetData}
+googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[1]["id"], range="Transactions - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
+
+
+
+
 
 
 
