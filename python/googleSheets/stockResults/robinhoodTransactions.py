@@ -133,7 +133,6 @@ transactionsList = newTransactionsList
 transactionsList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
 
 valuesToPopulate = {"values": transactionsList}
-myPythonFunctions.time.sleep(sleepTime)
 googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[0]["id"], range="Data - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
 
 
@@ -204,7 +203,6 @@ for transaction in listOfSheetData:
 
 
 valuesToPopulate = {"values": listOfSheetData}
-myPythonFunctions.time.sleep(sleepTime)
 googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[1]["id"], range="Transactions - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
 
 
@@ -230,7 +228,7 @@ createRequest = {
                         }
 
 
-# googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=createRequest).execute()
+googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=createRequest).execute()
 
 
 
