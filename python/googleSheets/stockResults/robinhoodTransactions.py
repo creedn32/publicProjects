@@ -34,7 +34,7 @@ rangesToDownload = list(sheetInfoObj[0]["download"].keys())
 saveJSONFile = False
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
 googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(sheetInfoObj[0]["id"], googleSheetsObj, rangesToDownload)
-sleepTime = .8
+sleepTime = .7
 
 
 finishSetupTime = myPythonFunctions.time.time()
