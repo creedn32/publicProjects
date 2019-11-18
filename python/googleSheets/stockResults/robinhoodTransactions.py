@@ -145,9 +145,9 @@ mapLeftObj = {"Dividend from ": {"transactionType": "Receive Dividend", "debitAc
        "Withdrawal to ": {"transactionType": "Cash To Owners", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks", "lotInfo": "All Lots"},
        "Deposit from ": {"transactionType": "Cash From Owners", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks", "lotInfo": "All Lots"},
        "Interest Payment": {"transactionType": "Receive Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "Cssh", "lotInfo": "Cash"},
-       "AKS from Robinhood": {"transactionType": "Receive Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS"}}
+       "AKS from Robinhood": {"transactionType": "Purchase - Receive Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS"}}
 
-mapRightObj = {" Market Buy": {"transactionType": "Purchase Stock", "debitAccount": "Investment Asset", "creditAccount": "Cash", "stockNamePosition": 0}}
+mapRightObj = {" Market Buy": {"transactionType": "Purchase", "debitAccount": "Investment Asset", "creditAccount": "Cash", "stockNamePosition": 0}}
 
 
 for transaction in transactionsList[1:]:
@@ -178,7 +178,7 @@ for transaction in transactionsList[1:]:
 
     if "lotInfo" in locatedObj:
         lot = locatedObj["lotInfo"]
-    elif locatedObj["transactionType"] in ["Purchase Stock", "Receive Stock Gift", "New Stock From Merger"]:
+    elif locatedObj["transactionType"] in ["Purchase Stock", "Purchase - Receive Stock Gift", "Purchase - Stock From Merger"]:
         lot = myPythonFunctions.convertSerialDate(transaction[1])
     else:
         lot = "Lot To Be Determined"
@@ -195,7 +195,7 @@ for transaction in listOfSheetData:
 
     if transaction[6] == "Lot To Be Determined":
 
-        filterForLots = [{1: "Investment Asset", 3: "Purchase Stock", 4: transaction[4]}, {1: "Investment Asset", 3: "New Stock From Merger", 4: transaction[4]}]
+        filterForLots = [{1: "Investment Asset", 3: "Purchase", 4: transaction[4]}, {1: "Investment Asset", 3: "Purchase - Stock From Merger", 4: transaction[4]}]
 
         if len(myPythonFunctions.filterListOfLists(listOfSheetData, filterForLots)) == 1:
             transaction[6] = myPythonFunctions.convertSerialDate(myPythonFunctions.filterListOfLists(listOfSheetData, filterForLots)[0][0])
@@ -204,7 +204,7 @@ for transaction in listOfSheetData:
 
 unsoldStockSheet = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 dateForUnsold = 43784
-tranType = "Hypothetical Sale"
+tranType = "Sale - Hypothetical"
 googleSheetsTempData = None
 
 createRequest = {
@@ -292,9 +292,9 @@ for stockToFilter in sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"]:
         netSum = myPythonFunctions.sumListOfLists(listObj, 2)
 
         if netSum < 0:
-            account = "Loss On Hypothetical Sale"
+            account = "Loss On Sale - Hypothetical"
         else:
-            account = "Gain On Hypothetical Sale"
+            account = "Gain On Sale - Hypothetical"
 
         unsoldLotList.append([dateForUnsold, account, -netSum, tranType, stockToFilter, "Robinhood", item[6], item[7]])
         unsoldStockSheet.extend(unsoldLotList)
