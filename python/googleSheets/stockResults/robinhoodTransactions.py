@@ -296,6 +296,8 @@ for stockToFilter in sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"]:
         else:
             account = "Gain On Sale - Hypothetical"
 
+
+        pp(listObj)
         unsoldLotList[0][2] = 2
         unsoldLotList.append([dateForUnsold, account, -netSum, tranType, stockToFilter, "Robinhood", item[6], item[7]])
         unsoldStockSheet.extend(unsoldLotList)
