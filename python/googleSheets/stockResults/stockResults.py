@@ -4,7 +4,7 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPythonLibrary import myPythonFunctions
 startTime = myPythonFunctions.startCode()
 
-import robinhoodTransactions
+# import robinhoodTransactions
 
 multiplyFactor = 1
 accountColumn = 1
