@@ -132,8 +132,8 @@ transactionsList = newTransactionsList
 
 transactionsList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
 
-valuesToPopulate = {"values": transactionsList}
-googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[0]["id"], range="Data - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
+# valuesToPopulate = {"values": transactionsList}
+# googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[0]["id"], range="Data - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
 
 
 
@@ -296,6 +296,7 @@ for stockToFilter in sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"]:
         else:
             account = "Gain On Sale - Hypothetical"
 
+        unsoldLotList[0][2] = 2
         unsoldLotList.append([dateForUnsold, account, -netSum, tranType, stockToFilter, "Robinhood", item[6], item[7]])
         unsoldStockSheet.extend(unsoldLotList)
 
