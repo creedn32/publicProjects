@@ -36,9 +36,6 @@ if saveJSONFile:
 
 
 
-
-
-
 listOfSheetData = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0), googleSheetsDataWithGrid, 0)
 listOfSheetDataRobinhood = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 3), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 3), googleSheetsDataWithGrid, 3)
 listOfSheetData.extend(listOfSheetDataRobinhood[1:len(listOfSheetDataRobinhood)])
@@ -46,39 +43,26 @@ listOfSheetData.extend(listOfSheetDataRobinhood[1:len(listOfSheetDataRobinhood)]
 numberOfRows = len(listOfSheetData)
 numberOfColumns = len(listOfSheetData[0])
 
-# for indexOfRow in range(1, numberOfRows):
-#     listOfSheetData[indexOfRow][2] = googleSheetsFunctions.getCellValueNumber(googleSheetsDataWithGrid, 0, indexOfRow, 2)
+brokerageMap = {"Mt": "Motif",
+                "Rh": "Robinhood"}
 
-
-
-
-# for indexOfRow in range(0, numberOfRows):
-#     if listOfSheetData[indexOfRow][1] == "Cash":
-#         listOfSheetData[indexOfRow][1] = "Cash (General)"
 
 
 for indexOfRow in range(1, numberOfRows):
     listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(" - " + listOfSheetData[indexOfRow][5], " ")
-
-for indexOfRow in range(1, numberOfRows):
-    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(" - " + str(listOfSheetData[indexOfRow][6]), " ")
-
-for indexOfRow in range(1, numberOfRows):
-    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(listOfSheetData[indexOfRow][4] + " - ", "")
-
-for indexOfRow in range(1, numberOfRows):
+    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(
+        " - " + str(listOfSheetData[indexOfRow][6]), " ")
+    listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].replace(
+        listOfSheetData[indexOfRow][4] + " - ", "")
     listOfSheetData[indexOfRow][accountColumn] = listOfSheetData[indexOfRow][accountColumn].rstrip()
 
-brokerageMap = {"Mt": "Motif",
-                "Rh": "Robinhood"}
-
-for indexOfRow in range(1, numberOfRows):
     if listOfSheetData[indexOfRow][5] in brokerageMap:
         listOfSheetData[indexOfRow][5] = brokerageMap[listOfSheetData[indexOfRow][5]]
 
-
-for indexOfRow in range(1, numberOfRows):
     listOfSheetData[indexOfRow][2] = listOfSheetData[indexOfRow][2] * multiplyFactor
+
+    if listOfSheetData[indexOfRow][7] == "":
+        listOfSheetData[indexOfRow][7] = 0
 
 
 
@@ -97,8 +81,6 @@ for indexOfRow in range(1, numberOfRowsChartOfAccounts):
     chartOfAccountsDict[googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, 2, indexOfRow, 0)] = mapDict
 
 
-# pp(chartOfAccountsDict)
-# pp(listOfSheetData)
 
 for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
 
@@ -117,7 +99,6 @@ for columnToMap in range(numberOfColumnsChartOfAccounts - 1, 0, -1):
 
 
 
-
 valuesToWrite = {"values": listOfSheetData}
 googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
 
@@ -132,17 +113,44 @@ tblName = "tblTransactionsScrubbed"
 sqlList = []
 
 sqlList.append("drop table if exists " + tblName + ";")
-sqlList.append("create table " + tblName + " (tranDate date, account varchar(30), accountType varchar(30), accountCategory varchar(1), amount float, tranType varchar(30), stockName varchar(30), broker varchar(30), lot varchar(30), shares float);")
+sqlList.append("create table " + tblName + " (tranDate date, account varchar(255), accountType varchar(255), accountCategory varchar(255), amount float, tranType varchar(255), stockName varchar(255), broker varchar(255), lot varchar(255), shares float);")
 
 sqlCommand = "insert into " + tblName + " values "
-sqlCommand = sqlCommand + "(" + "\"" + myPythonFunctions.convertSerialDateToMySQLDate(41964) + "\"" + ", \"Capital Contributions\", \"Equity\", \"5 Other Equity\", 20, \"Owner's - Receive Cash\", \"All Stocks\", \"Motif\", \"All Lots\", 0)"
-# sqlCommand = sqlCommand + ", "
-# sqlCommand = sqlCommand + "(\"1980-10-28\", \"Bill\", \"Gates\", \"M\", 20)"
+
+rangeOfRowsUpperLimit = numberOfRows
+
+for indexOfRow in range(1, rangeOfRowsUpperLimit):
+
+    sqlCommand = sqlCommand + "(" \
+
+    rangeOfColumnsUpperLimit = len(listOfSheetData[0])
+    
+    for indexOfColumn in range(0, rangeOfColumnsUpperLimit):
+
+        sqlCommand = sqlCommand + "\""
+
+        if indexOfColumn == 0:
+            sqlCommand = sqlCommand + myPythonFunctions.convertSerialDateToMySQLDate(listOfSheetData[indexOfRow][indexOfColumn])
+        else:
+            sqlCommand = sqlCommand + str(listOfSheetData[indexOfRow][indexOfColumn])
+
+        sqlCommand = sqlCommand + "\""
+
+        if indexOfColumn != rangeOfColumnsUpperLimit - 1:
+            sqlCommand = sqlCommand + ", "
+
+    sqlCommand = sqlCommand + ")"
+
+    if indexOfRow != rangeOfRowsUpperLimit - 1:
+        sqlCommand = sqlCommand + ", "
+
+
 sqlCommand = sqlCommand + ";"
 
+# pp(sqlCommand)
 
 sqlList.append(sqlCommand)
-sqlList.append("select * from " + tblName + ";")
+sqlList.append("select * from " + tblName + " where stockName = 'Viacom';")
 
 myPythonFunctions.executeSQLStatements(sqlList, sqlCrsr)
 
@@ -151,6 +159,7 @@ pp(ans)
 
 sqlConnection.commit()
 sqlConnection.close()
+
 
 
 # pp(listOfSheetData[0:3])
