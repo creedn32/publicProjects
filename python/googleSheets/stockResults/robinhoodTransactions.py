@@ -179,7 +179,7 @@ for transaction in transactionsList[1:]:
     if "lotInfo" in locatedObj:
         lot = locatedObj["lotInfo"]
     elif locatedObj["transactionType"] in ["Purchase", "Purchase - Stock Gift", "Purchase - Stock From Merger"]:
-        lot = myPythonFunctions.convertSerialDate(transaction[1])
+        lot = myPythonFunctions.convertSerialDateToDateWithoutDashes(transaction[1])
     else:
         lot = "Lot To Be Determined"
 
@@ -198,7 +198,7 @@ for transaction in listOfSheetData:
         filterForLots = [{1: "Investment Asset", 3: "Purchase", 4: transaction[4]}, {1: "Investment Asset", 3: "Purchase - Stock From Merger", 4: transaction[4]}]
 
         if len(myPythonFunctions.filterListOfLists(listOfSheetData, filterForLots)) == 1:
-            transaction[6] = myPythonFunctions.convertSerialDate(myPythonFunctions.filterListOfLists(listOfSheetData, filterForLots)[0][0])
+            transaction[6] = myPythonFunctions.convertSerialDateToDateWithoutDashes(myPythonFunctions.filterListOfLists(listOfSheetData, filterForLots)[0][0])
 
 
 

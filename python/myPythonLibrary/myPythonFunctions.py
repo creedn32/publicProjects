@@ -224,7 +224,7 @@ def convertTwoColumnListToDict(listObj, startingRow):
 
 
 
-def convertSerialDate(serialDate):
+def convertSerialDateToDateWithoutDashes(serialDate):
 
     from datetime import date
 
@@ -232,6 +232,26 @@ def convertSerialDate(serialDate):
     dateStr = str(dateObj.year) + str(dateObj.month).zfill(2) + str(dateObj.day).zfill(2)
 
     return dateStr
+
+
+
+def convertSerialDateToMySQLDate(serialDate):
+
+    from datetime import date
+
+    dateObj = date.fromordinal(date(1900, 1, 1).toordinal() + serialDate - 2)
+    dateStr = str(dateObj.year) + "-" + str(dateObj.month).zfill(2) + "-" + str(dateObj.day).zfill(2)
+
+    return dateStr
+
+
+
+
+def executeSQLStatements(sqlList, sqlCursor):
+
+    for cmd in sqlList:
+        sqlCursor.execute(cmd)
+
 
 
 
