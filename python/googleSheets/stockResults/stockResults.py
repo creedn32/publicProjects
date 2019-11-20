@@ -150,6 +150,7 @@ sqlCommand = sqlCommand + ";"
 # pp(sqlCommand)
 
 sqlList.append(sqlCommand)
+
 sqlList.append("select * from " + tblName + " where stockName = 'Viacom';")
 
 myPythonFunctions.executeSQLStatements(sqlList, sqlCrsr)
