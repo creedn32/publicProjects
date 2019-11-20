@@ -150,10 +150,11 @@ sqlCommand = sqlCommand + ";"
 # pp(sqlCommand)
 
 sqlList.append(sqlCommand)
-
-sqlList.append("select * from " + tblName + " where stockName = 'Viacom';")
-
 myPythonFunctions.executeSQLStatements(sqlList, sqlCrsr)
+
+
+sqlCrsr.execute("select distinct broker, stockName, lot from " + tblName + ";")
+
 
 ans = sqlCrsr.fetchall()
 pp(ans)
