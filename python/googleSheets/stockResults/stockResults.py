@@ -16,7 +16,7 @@ saveJSONFile = False
 spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
 
 
-import importlib
+import importlib, sqlite3, os
 googleSheetsFunctions = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsFunctions")
 googleSheetsAuthenticate = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsAuthenticate")
 from pprint import pprint as pp
@@ -123,14 +123,42 @@ googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=destRange, va
 
 
 
+databaseName = "stockResults.db"
+dbPath = pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/databaseName)
+
+sqlConnection = sqlite3.connect(dbPath)
+sqlCrsr = sqlConnection.cursor()
+tblName = "tblTransactionsScrubbed"
+sqlList = []
+
+sqlList.append("drop table if exists " + tblName + ";")
+sqlList.append("create table " + tblName + " (tranDate date, account varchar(30), accountType varchar(30), accountCategory varchar(1), amount float, tranType varchar(30), stockName varchar(30), broker varchar(30), lot varchar(30), shares float);")
+
+sqlCommand = "insert into " + tblName + " values "
+sqlCommand = sqlCommand + "(" + "\"" + myPythonFunctions.convertSerialDateToMySQLDate(41964) + "\"" + ", \"Capital Contributions\", \"Equity\", \"5 Other Equity\", 20, \"Owner's - Receive Cash\", \"All Stocks\", \"Motif\", \"All Lots\", 0)"
+# sqlCommand = sqlCommand + ", "
+# sqlCommand = sqlCommand + "(\"1980-10-28\", \"Bill\", \"Gates\", \"M\", 20)"
+sqlCommand = sqlCommand + ";"
 
 
-# googleSheetsDataWithGrid = {"sheets": []}
-# sheetsData = myPythonFunctions.getFromDict(googleSheetsDataWithGridWithPivot, "sheets")
-#
-# for sheetPos in range(0, 3):
-#     googleSheetsDataWithGrid["sheets"].append(myPythonFunctions.getFromList(sheetsData, sheetPos))
+sqlList.append(sqlCommand)
+sqlList.append("select * from " + tblName + ";")
+
+myPythonFunctions.executeSQLStatements(sqlList, sqlCrsr)
+
+ans = sqlCrsr.fetchall()
+pp(ans)
+
+sqlConnection.commit()
+sqlConnection.close()
 
 
-# pp(googleSheetsDataWithGrid["sheets"][2])
-# pp(myPythonFunctions.getFromList(sheetsData, 2))
+# pp(listOfSheetData[0:3])
+
+
+# if os.path.exists(dbPath):
+#   os.remove(dbPath)
+# else:
+#   print("The file does not exist")
+
+
