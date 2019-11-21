@@ -40,17 +40,14 @@ columnsObj["shares"] = "float"
 sqlObj = myPythonFunctions.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblName, columnsObj)
 myPythonFunctions.populateTable(tranScrubRowTotal, tranScrubColTotal, tblName, tranScrubDataList, sqlObj["sqlCursor"], [0])
 
-sqlCommand = "select distinct broker, stockName, lot, sum(amount) from " + tblName + " where stockName not in ('All Stocks', 'Cash') and broker not in ('Robinhood - Related', 'Motif - Related');"
+sqlCommand = "select distinct broker, stockName, lot from " + tblName + " where stockName not in ('All Stocks', 'Cash') and broker not in ('Robinhood - Related', 'Motif - Related');"
 
 sqlObj["sqlCursor"].execute(sqlCommand)
 queryResult = sqlObj["sqlCursor"].fetchall()
 myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
 
 
-googleSheetsFunctions.reduceSheet(1, 1, "SQL Query Result", googleSheetsObj, spreadsheetID)
-googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range="SQL Query Result", valueInputOption="USER_ENTERED", body={"values": queryResult}).execute()
-
-
+googleSheetsFunctions.populateSheet(1, 1, "SQL Query Result", googleSheetsObj, spreadsheetID, queryResult)
 
 
 

@@ -1,7 +1,5 @@
 from myPythonLibrary import myPythonFunctions
 from pprint import pprint as pp
-# import pathlib
-
 
 
 # def hasFormattedValue(cell):
@@ -49,23 +47,6 @@ def getCellValue(dataObj, sheetPos, rowPos, colPos):
 
 
 
-
-#
-# def getCellValueNumber(dataObj, sheetPos, rowPos, colPos):
-#     sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
-#     currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
-#     dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
-#     currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
-#     currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
-#     try:
-#         return myPythonFunctions.getFromList(currentRowData, colPos)["effectiveValue"]["numberValue"]
-#     except:
-#         return getCellValue(dataObj, sheetPos, rowPos, colPos)
-
-
-
-
-
 def getCellValueEffective(dataObj, sheetPos, rowPos, colPos):
     sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
     currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
@@ -76,29 +57,6 @@ def getCellValueEffective(dataObj, sheetPos, rowPos, colPos):
         return myPythonFunctions.getFromList(currentRowData, colPos)["effectiveValue"]
     except:
         return getCellValue(dataObj, sheetPos, rowPos, colPos)
-
-
-
-
-#
-# def createValuesData(numRows, numCols, dataObj):
-#
-#     listObj = []
-#
-#     for indexOfRow in range(0, numRows):
-#         currentRowData = []
-#
-#         for indexOfColumn in range(0, numCols):
-#             currentRowData.append(getCellValue(dataObj, 0, indexOfRow, indexOfColumn))
-#
-#         listObj.append(currentRowData)
-#
-#     return listObj
-
-
-
-
-
 
 
 
@@ -218,3 +176,36 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
         googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
 
     googleSheetsObj.values().clear(spreadsheetId=spreadsheetID, range=sheetName, body={}).execute()
+
+
+
+
+def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
+
+    from collections import OrderedDict
+
+    rowTotal = countRows(googleSheetsDataWithGrid, sheetIndex)
+    colTotal = countColumns(googleSheetsDataWithGrid, sheetIndex)
+
+    mappingDict = {}
+
+    for indexOfRow in range(0, rowTotal):
+
+        colDict = OrderedDict()
+
+        for indexOfColumn in range(1, colTotal):
+
+            colTitle = getCellValue(googleSheetsDataWithGrid, sheetIndex, 0, indexOfColumn)
+
+            colDict[colTitle] = getCellValue(googleSheetsDataWithGrid, sheetIndex, indexOfRow, indexOfColumn)
+
+
+        mappingDict[getCellValue(googleSheetsDataWithGrid, sheetIndex, indexOfRow, 0)] = colDict
+
+    return mappingDict
+
+
+def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList):
+
+    reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID)
+    googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
