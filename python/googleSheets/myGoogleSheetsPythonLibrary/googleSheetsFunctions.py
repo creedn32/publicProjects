@@ -201,7 +201,6 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
 
             colDict[colTitle] = getCellValue(googleSheetsDataWithGrid, sheetIndex, indexOfRow, indexOfColumn)
 
-
         mappingDict[getCellValue(googleSheetsDataWithGrid, sheetIndex, indexOfRow, 0)] = colDict
 
     return mappingDict

@@ -8,7 +8,7 @@ startTime = myPythonFunctions.startCode()
 import googleSheetsFunctions, googleSheetsAuthenticate
 from pprint import pprint as pp
 
-sheetsToDownload = ["Transactions", "Transactions - Scrubbed", "Chart of Accounts", "Transactions - Robinhood", "Ticker Map"]
+sheetsToDownload = ["Transactions", "Transactions - Robinhood", "Chart of Accounts", "Ticker Map"]
 saveJSONFile = False
 # spreadsheetID = "1yZfwzel6R3HTUtH5HIv7LEjAaoJDPESG6jCEz-b7jBw" #simple spreadsheet
 spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
@@ -29,14 +29,18 @@ if saveJSONFile:
 
 
 tranDataList = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions")), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions")), googleSheetsDataWithGrid, sheetsToDownload.index("Transactions"))
-# tranRobinhoodDataList = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood")), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood")), googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood"))
-# tranDataList.extend(tranRobinhoodDataList[1:len(tranRobinhoodDataList)])
+tranRobinhoodDataList = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood")), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood")), googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood"))
+tranDataList.extend(tranRobinhoodDataList[1:len(tranRobinhoodDataList)])
 
 tranRowTotal = len(tranDataList)
 tranColTotal = len(tranDataList[0])
 
 brokerageMap = {"Mt": "Motif",
                 "Rh": "Robinhood"}
+
+
+tickerDict = googleSheetsFunctions.createDictMapFromSheet(googleSheetsDataWithGrid, sheetsToDownload.index("Ticker Map"))
+chartOfAccountsDict = googleSheetsFunctions.createDictMapFromSheet(googleSheetsDataWithGrid, sheetsToDownload.index("Chart of Accounts"))
 
 
 #Scrub Transactions sheet
@@ -53,15 +57,20 @@ for indexOfRow in range(1, tranRowTotal):
     if tranDataList[indexOfRow][5] in brokerageMap:
         tranDataList[indexOfRow][5] = brokerageMap[tranDataList[indexOfRow][5]]
 
+    ticker = tranDataList[indexOfRow][4]
+
+    if ticker in tickerDict:
+
+        for key in tickerDict[ticker]:
+            tranDataList[indexOfRow][4] = tickerDict[ticker][key]
+
+
+
     tranDataList[indexOfRow][2] = tranDataList[indexOfRow][2] * multiplyFactor
 
     if tranDataList[indexOfRow][7] == "":
         tranDataList[indexOfRow][7] = 0
 
-
-#create map
-
-chartOfAccountsDict = googleSheetsFunctions.createDictMapFromSheet(googleSheetsDataWithGrid, sheetsToDownload.index("Chart of Accounts"))
 
 
 #use map
@@ -74,54 +83,6 @@ for indexOfRow in range(0, tranRowTotal):
         tranDataList[indexOfRow].insert(tranDataListAccountIndex + 1, list(chartOfAccountsDict[accountName].values())[i])
 
 
-# pp(tranDataList)
 
 googleSheetsFunctions.populateSheet(2, 10, "Transactions - Scrubbed", googleSheetsObj, spreadsheetID, tranDataList, False)
 
-# valuesToWrite = {"values": tranDataList}
-# googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()
-
-
-
-
-
-
-
-
-
-
-
-# for columnToMap in range(googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Chart of Accounts")) - 1, 0, -1):
-
-    # columnHeading = googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, sheetsToDownload.index("Chart of Accounts"), 0, columnToMap)
-
-
-# pp(chartOfAccountsDict[accountName])
-
-
-# if indexOfRow == 0:
-#     tranDataList[indexOfRow].insert(tranDataListAccountIndex + 1, columnHeading)
-# else:
-#     pp(chartOfAccountsDict[accountName][columnHeading])
-# tranDataList[indexOfRow].insert(tranDataListAccountIndex + 1, chartOfAccountsDict[accountName][columnHeading])
-
-
-# chartAccRowTotal = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Chart of Accounts"))
-# chartAccColTotal = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Chart of Accounts"))
-# chartOfAccountsDict = {}
-
-
-
-# for indexOfRow in range(1, chartAccRowTotal):
-#
-#     mapDict = {}
-#
-#     for indexOfColumn in range(1, chartAccColTotal):
-#
-#         colNameFromChartAcc = googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, sheetsToDownload.index("Chart of Accounts"), 0, indexOfColumn)
-#         mapDict[colNameFromChartAcc] = googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, sheetsToDownload.index("Chart of Accounts"), indexOfRow, indexOfColumn)
-#
-#     chartOfAccountsDict[googleSheetsFunctions.getCellValue(googleSheetsDataWithGrid, sheetsToDownload.index("Chart of Accounts"), indexOfRow, 0)] = mapDict
-
-
-# pp(chartOfAccountsDict)
