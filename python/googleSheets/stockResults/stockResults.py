@@ -8,9 +8,8 @@ startTime = myPythonFunctions.startCode()
 
 multiplyFactor = 1
 accountColumn = 1
-# listOfSheetData = []
 destRange = "Transactions - Scrubbed"
-rangesToDownload = ["Transactions", "Transactions - Scrubbed", "Chart of Accounts", "Transactions - Robinhood"]
+rangesToDownload = ["Transactions", "Transactions - Scrubbed", "Chart of Accounts", "Transactions - Robinhood", "Ticker Map"]
 saveJSONFile = False
 # spreadsheetID = "1yZfwzel6R3HTUtH5HIv7LEjAaoJDPESG6jCEz-b7jBw" #simple spreadsheet
 spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
