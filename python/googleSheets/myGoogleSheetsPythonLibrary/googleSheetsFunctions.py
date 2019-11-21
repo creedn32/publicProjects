@@ -103,6 +103,7 @@ def getCellValueEffective(dataObj, sheetPos, rowPos, colPos):
 
 
 def countRows(dataObj, sheetPos):
+
     sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
 
     # saveFile(sheetsData, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"sheetsData.json"))
@@ -177,3 +178,43 @@ def extractValuesAndTypes(numRows, numCols, dataObj, sheetPos):
 
 
 
+
+def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadsheetID):
+
+    googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
+    totalRows =  countRows(googleSheetsDataWithGrid, 0)
+    totalColumns = countColumns(googleSheetsDataWithGrid, 0)
+
+    # pp(totalRows)
+    # pp(totalColumns)
+
+    if totalRows > rowsToKeep and totalColumns > columnsToKeep:
+
+        requestObj = {
+            "requests": [
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
+                            "dimension": "ROWS",
+                            "startIndex": rowsToKeep,
+                            "endIndex": totalRows
+                        }
+                    }
+                },
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
+                            "dimension": "COLUMNS",
+                            "startIndex": columnsToKeep,
+                            "endIndex": totalColumns
+                        }
+                    }
+                },
+            ],
+        }
+
+        googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
+
+    googleSheetsObj.values().clear(spreadsheetId=spreadsheetID, range=sheetName, body={}).execute()

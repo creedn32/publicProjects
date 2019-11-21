@@ -255,6 +255,100 @@ def executeSQLStatements(sqlList, sqlCursor):
 
 
 
+
+def createDatabase(databaseName, dbPath, tblName, columnsObj):
+
+    import sqlite3
+
+    dbPath = dbPath + "\\" + databaseName
+    sqlObj = {"sqlConnection": sqlite3.connect(dbPath)}
+    sqlObj["sqlCursor"] = sqlObj["sqlConnection"].cursor()
+
+    createTable(tblName, columnsObj, sqlObj["sqlCursor"])
+
+    return sqlObj
+
+
+def closeDatabase(sqlConnection):
+
+    sqlConnection.commit()
+    sqlConnection.close()
+
+
+def createTable(tblName, columnsObj, sqlCursor):
+
+    sqlList = []
+
+    sqlList.append("drop table if exists " + tblName + ";")
+    sqlCommand = "create table " + tblName + " ("
+
+    for key, value in columnsObj.items():
+        sqlCommand = sqlCommand + key + " " + value
+
+        if key != next(reversed(columnsObj)):
+            sqlCommand = sqlCommand + ", "
+
+    sqlCommand = sqlCommand + ");"
+
+
+    sqlList.append(sqlCommand)
+
+    # sqlList.append(
+    #     "create table " + tblName + " (tranDate date, account varchar(255), accountType varchar(255), accountCategory varchar(255), amount float, tranType varchar(255), stockName varchar(255), broker varchar(255), lot varchar(255), shares float);")
+
+
+    executeSQLStatements(sqlList, sqlCursor)
+
+
+
+
+
+
+
+def populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, listOfDateColumns):
+
+    sqlCommand = "insert into " + tblName + " values "
+
+    for indexOfRow in range(1, totalRows):
+
+        sqlCommand = sqlCommand + "("
+
+        for indexOfColumn in range(0, totalColumns):
+
+            sqlCommand = sqlCommand + "\""
+
+            if indexOfColumn in listOfDateColumns:
+                sqlCommand = sqlCommand + convertSerialDateToMySQLDate(
+                    sheetDataList[indexOfRow][indexOfColumn])
+            else:
+                sqlCommand = sqlCommand + str(sheetDataList[indexOfRow][indexOfColumn])
+
+            sqlCommand = sqlCommand + "\""
+
+            if indexOfColumn != totalColumns - 1:
+                sqlCommand = sqlCommand + ", "
+
+        sqlCommand = sqlCommand + ")"
+
+        if indexOfRow != totalRows - 1:
+            sqlCommand = sqlCommand + ", "
+
+    sqlCommand = sqlCommand + ";"
+
+    executeSQLStatements([sqlCommand], sqlCursor)
+     
+
+
+
+
+
+
+
+
+
+
+
+
     #
     # while column > 0:
     #     temp = (column - 1) % 26
