@@ -47,7 +47,7 @@ queryResult = sqlObj["sqlCursor"].fetchall()
 myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
 
 
-googleSheetsFunctions.populateSheet(1, 1, "SQL Query Result", googleSheetsObj, spreadsheetID, queryResult)
+googleSheetsFunctions.populateSheet(1, 1, "SQL Query Result", googleSheetsObj, spreadsheetID, queryResult, True)
 
 
 

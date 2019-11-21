@@ -71,10 +71,12 @@ for indexOfRow in range(0, tranRowTotal):
     accountName = tranDataList[indexOfRow][tranDataListAccountIndex]
 
     for i in range(0, len(chartOfAccountsDict[accountName])):
-        tranDataList[indexOfRow].insert(tranDataListAccountIndex + 1, list(chartOfAccountsDict[accountName].values())[i]) #chartOfAccountsDict[accountName][columnHeading])
+        tranDataList[indexOfRow].insert(tranDataListAccountIndex + 1, list(chartOfAccountsDict[accountName].values())[i])
 
 
-googleSheetsFunctions.populateSheet(1, 1, "Transactions - Scrubbed", googleSheetsObj, spreadsheetID, tranDataList)
+# pp(tranDataList)
+
+googleSheetsFunctions.populateSheet(2, 10, "Transactions - Scrubbed", googleSheetsObj, spreadsheetID, tranDataList, False)
 
 # valuesToWrite = {"values": tranDataList}
 # googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=, valueInputOption="USER_ENTERED", body=valuesToWrite).execute()

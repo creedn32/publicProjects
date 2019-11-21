@@ -137,20 +137,16 @@ def extractValuesAndTypes(numRows, numCols, dataObj, sheetPos):
 
 
 
-def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadsheetID):
+def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet):
 
     googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
     totalRows =  countRows(googleSheetsDataWithGrid, 0)
     totalColumns = countColumns(googleSheetsDataWithGrid, 0)
+    requestObj = {}
+    requestObj["requests"] = []
 
-    # pp(totalRows)
-    # pp(totalColumns)
-
-    if totalRows > rowsToKeep and totalColumns > columnsToKeep:
-
-        requestObj = {
-            "requests": [
-                {
+    if totalRows > rowsToKeep:
+        requestObj["requests"].append({
                     "deleteDimension": {
                         "range": {
                             "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
@@ -159,8 +155,14 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
                             "endIndex": totalRows
                         }
                     }
-                },
-                {
+                })
+
+
+
+
+    if totalColumns > columnsToKeep:
+
+        requestObj["requests"].append({
                     "deleteDimension": {
                         "range": {
                             "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
@@ -169,13 +171,13 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
                             "endIndex": totalColumns
                         }
                     }
-                },
-            ],
-        }
+                })
 
-        googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
 
-    googleSheetsObj.values().clear(spreadsheetId=spreadsheetID, range=sheetName, body={}).execute()
+    googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
+
+    if clearSheet:
+        googleSheetsObj.values().clear(spreadsheetId=spreadsheetID, range=sheetName, body={}).execute()
 
 
 
@@ -205,7 +207,7 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
     return mappingDict
 
 
-def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList):
+def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet):
 
-    reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID)
+    reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
     googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
