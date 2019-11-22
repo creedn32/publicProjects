@@ -89,7 +89,6 @@ myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
 
 
 
-
 # if os.path.exists(dbPath):
 #   os.remove(dbPath)
 # else:
