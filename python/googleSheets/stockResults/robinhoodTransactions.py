@@ -1,14 +1,13 @@
 import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[0]))
+sys.path.append(str(pathlib.Path.cwd().parents[0]/"myGoogleSheetsPythonLibrary"))
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPythonLibrary import myPythonFunctions
 startTime = myPythonFunctions.startCode()
 
 import importlib, datetime
-googleSheetsFunctions = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsFunctions")
-googleSheetsAuthenticate = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsAuthenticate")
+import googleSheetsFunctions, googleSheetsAuthenticate
 from pprint import pprint as pp
-# from datetime import date
+
 
 
 sheetInfoObj = {0:
@@ -30,11 +29,11 @@ sheetInfoObj = {0:
                 }
 
 
-rangesToDownload = list(sheetInfoObj[0]["download"].keys())
+sheetsToDownload = list(sheetInfoObj[0]["download"].keys())
 saveJSONFile = False
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
-googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(sheetInfoObj[0]["id"], googleSheetsObj, rangesToDownload)
-sleepTime = .7
+googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(sheetInfoObj[0]["id"], googleSheetsObj, sheetsToDownload)
+sleepTime = .8
 
 
 finishSetupTime = myPythonFunctions.time.time()
