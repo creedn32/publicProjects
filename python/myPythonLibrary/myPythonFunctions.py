@@ -245,6 +245,13 @@ def convertSerialDateToMySQLDate(serialDate):
     return dateStr
 
 
+def convertSerialDateToYear(serialDate):
+    from datetime import date
+
+    dateObj = date.fromordinal(date(1900, 1, 1).toordinal() + serialDate - 2)
+
+    return str(dateObj.year)
+
 
 
 def executeSQLStatements(sqlList, sqlCursor):
@@ -348,7 +355,8 @@ def getQueryResult(sqlCommand, sqlCursor):
 
 
 
-
+def listToStr(list):
+    return ", ".join(list)
 
 
 

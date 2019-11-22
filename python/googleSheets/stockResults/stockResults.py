@@ -82,7 +82,12 @@ for indexOfRow in range(0, tranRowTotal):
     for i in range(0, len(chartOfAccountsDict[accountName])):
         tranDataList[indexOfRow].insert(tranDataListAccountIndex + 1, list(chartOfAccountsDict[accountName].values())[i])
 
+    if indexOfRow == 0:
+        tranDataList[indexOfRow].append("Year")
+    else:
+        tranDataList[indexOfRow].append(myPythonFunctions.convertSerialDateToYear(tranDataList[indexOfRow][0]))
 
 
-googleSheetsFunctions.populateSheet(2, 10, "Transactions - Scrubbed", googleSheetsObj, spreadsheetID, tranDataList, False)
+
+googleSheetsFunctions.populateSheet(2, 100, "Transactions - Scrubbed", googleSheetsObj, spreadsheetID, tranDataList, False)
 
