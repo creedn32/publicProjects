@@ -4,7 +4,7 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPythonLibrary import myPythonFunctions
 startTime = myPythonFunctions.startCode()
 
-import importlib
+import importlib, datetime
 googleSheetsFunctions = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsFunctions")
 googleSheetsAuthenticate = importlib.import_module("myGoogleSheetsPythonLibrary.googleSheetsAuthenticate")
 from pprint import pprint as pp
@@ -121,7 +121,7 @@ for transaction in transactionsList:
         transaction[2] = abs(transaction[2])
 
         if filterList:
-            if transaction[1] > 43404:
+            if transaction[1] > int(myPythonFunctions.convertDateToSerialDate(datetime.datetime(2018, 10, 31))):
                 newTransactionsList.append(transaction)
         else:
             newTransactionsList.append(transaction)
@@ -203,7 +203,7 @@ for transaction in listOfSheetData:
 
 
 unsoldStockSheet = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
-dateForUnsold = 43787
+dateForUnsold = int(myPythonFunctions.convertDateToSerialDate(datetime.datetime.now()))
 tranType = "Sale - Hypothetical"
 googleSheetsTempData = None
 

@@ -254,6 +254,17 @@ def convertSerialDateToYear(serialDate):
 
 
 
+def convertDateToSerialDate(dateObj):
+
+    import datetime
+
+    temp = datetime.datetime(1899, 12, 30)    # Note, not 31st Dec but 30th!
+    delta = dateObj - temp
+
+    return float(delta.days) + (float(delta.seconds) / 86400)
+
+
+
 def executeSQLStatements(sqlList, sqlCursor):
 
     for cmd in sqlList:
