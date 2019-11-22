@@ -32,8 +32,7 @@ tranDataList = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRo
 tranRobinhoodDataList = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood")), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood")), googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood"))
 tranDataList.extend(tranRobinhoodDataList[1:len(tranRobinhoodDataList)])
 
-tranRowTotal = len(tranDataList)
-tranColTotal = len(tranDataList[0])
+
 
 brokerageMap = {"Mt": "Motif",
                 "Rh": "Robinhood"}
@@ -44,6 +43,14 @@ chartOfAccountsDict = googleSheetsFunctions.createDictMapFromSheet(googleSheetsD
 
 
 #Scrub Transactions sheet
+
+
+tranDataList = [item for item in tranDataList if item[2] != 0]
+
+tranRowTotal = len(tranDataList)
+# tranColTotal = len(tranDataList[0])
+
+
 
 for indexOfRow in range(1, tranRowTotal):
 
