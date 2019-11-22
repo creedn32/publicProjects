@@ -45,7 +45,7 @@ myPythonFunctions.populateTable(tranScrubRowTotal, tranScrubColTotal, tblName, t
 fieldsStr = myPythonFunctions.listToStr(["broker", "stockName", "lot"])
 
 
-sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldsStr}, tranDate, sum(amount) as purchaseAmount from {tblName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
+sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldsStr}, tranDate, -sum(amount) as purchaseAmount from {tblName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 sqlList = ["drop table if exists tblSale;", f"create table tblSale as select {fieldsStr}, tranDate, sum(amount) from {tblName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
@@ -75,8 +75,11 @@ sqlList = ["drop table if exists tblResults;", f"create table tblResults as sele
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
-sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResultsJoined as select tblResults.broker, tblResults.stockName, tblResults.lot, tblPurchase.purchaseAmount from tblResults " \
-                                                        "left outer join tblPurchase on tblResults.broker = tblPurchase.broker and tblResults.stockName = tblPurchase.stockName and tblResults.lot = tblPurchase.lot;"]
+sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResultsJoined as select tblResults.*, tblPurchase.*, tblSale.*, tblDividends.* from tblResults " \
+                                                        "left outer join tblPurchase on tblResults.broker = tblPurchase.broker and tblResults.stockName = tblPurchase.stockName and tblResults.lot = tblPurchase.lot " \
+                                                        "left outer join tblSale on tblResults.broker = tblSale.broker and tblResults.stockName = tblSale.stockName and tblResults.lot = tblSale.lot " \
+                                                        "left outer join tblDividends on tblResults.broker = tblDividends.broker and tblResults.stockName = tblDividends.stockName and tblResults.lot = tblDividends.lot"]
+
 
 myPythonFunctions.executeSQLStatements(sqlCommand, sqlObj["sqlCursor"])
 
