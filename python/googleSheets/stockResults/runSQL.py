@@ -45,10 +45,10 @@ myPythonFunctions.populateTable(tranScrubRowTotal, tranScrubColTotal, tblName, t
 fieldsStr = myPythonFunctions.listToStr(["broker", "stockName", "lot"])
 
 
-sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldsStr}, tranDate, -sum(amount) as purchaseAmount from {tblName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
+sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldsStr}, tranDate, shares, -sum(amount) as purchaseAmount from {tblName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate, shares;"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
-sqlList = ["drop table if exists tblSale;", f"create table tblSale as select {fieldsStr}, tranDate, sum(amount) from {tblName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
+sqlList = ["drop table if exists tblSale;", f"create table tblSale as select {fieldsStr}, case when tranType != 'Sale - Hypothetical' then tranDate end, '', sum(amount) from {tblName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
@@ -84,10 +84,11 @@ sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResult
 myPythonFunctions.executeSQLStatements(sqlCommand, sqlObj["sqlCursor"])
 
 
-
-
 googleSheetsFunctions.populateSheet(1, 1, "SQL Query Result", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined", sqlObj["sqlCursor"]), True)
 myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
+
+
+
 
 
 # if os.path.exists(dbPath):
