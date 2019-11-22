@@ -340,7 +340,10 @@ def populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, li
 
 
 
+def getQueryResult(sqlCommand, sqlCursor):
 
+    sqlCursor.execute(sqlCommand)
+    return sqlCursor.fetchall()
 
 
 
