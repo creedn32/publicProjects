@@ -347,10 +347,20 @@ def populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, li
 
 
 
-def getQueryResult(sqlCommand, sqlCursor):
+def getQueryResult(sqlCommand, tblName, sqlCursor):
 
     sqlCursor.execute(sqlCommand)
-    return sqlCursor.fetchall()
+    queryResult = sqlCursor.fetchall()
+
+    sqlCursor.execute('pragma table_info({})'.format(tblName))
+    fetchedList = sqlCursor.fetchall()
+    # pp(fetchedList)
+    colNames = [item[1] for item in fetchedList]
+    queryResult.insert(0, colNames)
+    # pp(queryResult)
+
+    return queryResult
+
 
 
 
