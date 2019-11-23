@@ -48,6 +48,9 @@ fieldsStr = myPythonFunctions.listToStr(["broker", "stockName", "lot"])
 sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldsStr}, tranDate, shares, -sum(amount) as purchaseAmount from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate, shares;"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
+sqlList = ["drop table if exists tblShares;", f"create table tblShares as select {fieldsStr}, tranDate, shares, sum(shares) from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate, shares;"]
+myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
+
 sqlList = ["drop table if exists tblSale;", f"create table tblSale as select {fieldsStr}, case when tranType != 'Sale - Hypothetical' then tranDate end, '', sum(amount) from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
@@ -75,8 +78,9 @@ sqlList = ["drop table if exists tblResults;", f"create table tblResults as sele
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
-sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResultsJoined as select tblResults.*, tblPurchase.*, tblSale.*, tblDividends.* from tblResults " \
+sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResultsJoined as select tblResults.*, tblPurchase.*, tblShares.*, tblSale.*, tblDividends.* from tblResults " \
                                                         "left outer join tblPurchase on tblResults.broker = tblPurchase.broker and tblResults.stockName = tblPurchase.stockName and tblResults.lot = tblPurchase.lot " \
+                                                        "left outer join tblShares on tblResults.broker = tblShares.broker and tblResults.stockName = tblShares.stockName and tblResults.lot = tblShares.lot " \
                                                         "left outer join tblSale on tblResults.broker = tblSale.broker and tblResults.stockName = tblSale.stockName and tblResults.lot = tblSale.lot " \
                                                         "left outer join tblDividends on tblResults.broker = tblDividends.broker and tblResults.stockName = tblDividends.stockName and tblResults.lot = tblDividends.lot"]
 
