@@ -45,10 +45,10 @@ myPythonFunctions.populateTable(tranScrubRowTotal, tranScrubColTotal, tblMainNam
 fieldsStr = myPythonFunctions.listToStr(["broker", "stockName", "lot"])
 
 
-sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldsStr}, tranDate, shares, -sum(amount) as purchaseAmount from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate, shares;"]
+sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldsStr}, tranDate, -sum(amount) as purchaseAmount from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
-sqlList = ["drop table if exists tblShares;", f"create table tblShares as select {fieldsStr}, tranDate, shares, sum(shares) from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate, shares;"]
+sqlList = ["drop table if exists tblShares;", f"create table tblShares as select {fieldsStr}, sum(shares) from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr};"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 sqlList = ["drop table if exists tblSale;", f"create table tblSale as select {fieldsStr}, case when tranType != 'Sale - Hypothetical' then tranDate end, '', sum(amount) from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
