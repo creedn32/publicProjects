@@ -71,7 +71,7 @@ for colItem in colData:
 
 pivotColumns = myPythonFunctions.listToStr(pivotColList)
 
-sqlList = ["drop table if exists tblDividends;", f"create table tblDividends as select {fieldsStr}, {pivotColumns} from {tblMainName} where account = 'Cash' and tranType like '%Dividend' group by {fieldsStr};"]
+sqlList = ["drop table if exists tblDividends;", f"create table tblDividends as select {fieldsStr}, {pivotColumns} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldsStr};"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 sqlList = ["drop table if exists tblResults;", f"create table tblResults as select {fieldsStr} from tblPurchase union select {fieldsStr} from tblSale union select {fieldsStr} from tblDividends;"]
