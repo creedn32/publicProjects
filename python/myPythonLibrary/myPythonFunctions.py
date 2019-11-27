@@ -363,7 +363,7 @@ def getQueryResult(sqlCommand, tblName, sqlCursor):
     sqlCursor.execute(sqlCommand)
     queryResult = sqlCursor.fetchall()
 
-    colNames = getSQLColNamesList(sqlCursor, tblName)
+    colNames = getSQLColNamesList(sqlCursor, [tblName])
     queryResult.insert(0, colNames)
     # pp(queryResult)
 
@@ -372,11 +372,16 @@ def getQueryResult(sqlCommand, tblName, sqlCursor):
 
 
 
-def getSQLColNamesList(sqlCursor, tblName):
+def getSQLColNamesList(sqlCursor, tblNames):
 
-    sqlCursor.execute("pragma table_info(" + tblName + ");")
-    fetchedList = sqlCursor.fetchall()
-    colNames = [tblName + "." + item[1] for item in fetchedList]
+    colNames = []
+
+    for tblName in tblNames:
+
+        sqlCursor.execute("pragma table_info(" + tblName + ");")
+        fetchedList = sqlCursor.fetchall()
+        colNames.extend([tblName + "." + item[1] for item in fetchedList])
+
 
     return colNames
 

@@ -78,7 +78,7 @@ sqlList = ["drop table if exists tblResults;", f"create table tblResults as sele
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
-pp(myPythonFunctions.getSQLColNamesList(sqlObj["sqlCursor"], "tblResults"))
+pp(myPythonFunctions.getSQLColNamesList(sqlObj["sqlCursor"], {"tblResults": [], "tblPurchase": [], "tblShares": [], "tblSale": [], "tblDividends": []}))
 
 
 sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResultsJoined as select tblResults.*, tblPurchase.*, tblShares.*, tblSale.*, tblDividends.* from tblResults " \
