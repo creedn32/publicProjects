@@ -42,7 +42,7 @@ sqlObj = myPythonFunctions.createDatabase("stockResults.db", str(pathlib.Path.cw
 myPythonFunctions.populateTable(tranScrubRowTotal, tranScrubColTotal, tblMainName, tranScrubDataList, sqlObj["sqlCursor"], [0])
 
 
-fieldsStr = myPythonFunctions.listToStr(["broker", "stockName", "lot"])
+fieldsStr = myPythonFunctions.listToStr(["stockName", "broker", "lot"])
 
 
 sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldsStr}, tranDate, -sum(amount) as purchaseAmount from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldsStr}, tranDate;"]
@@ -76,6 +76,9 @@ myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 sqlList = ["drop table if exists tblResults;", f"create table tblResults as select {fieldsStr} from tblPurchase union select {fieldsStr} from tblSale union select {fieldsStr} from tblDividends;"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
+
+
+pp(myPythonFunctions.getSQLColNamesList(sqlObj["sqlCursor"], "tblResults"))
 
 
 sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResultsJoined as select tblResults.*, tblPurchase.*, tblShares.*, tblSale.*, tblDividends.* from tblResults " \
