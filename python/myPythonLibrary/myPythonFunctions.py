@@ -363,7 +363,7 @@ def getQueryResult(sqlCommand, tblName, sqlCursor):
     sqlCursor.execute(sqlCommand)
     queryResult = sqlCursor.fetchall()
 
-    colNames = getSQLColNamesList(sqlCursor, [tblName])
+    colNames = getSQLColNamesList(sqlCursor, tblName)
     queryResult.insert(0, colNames)
     # pp(queryResult)
 
@@ -372,21 +372,46 @@ def getQueryResult(sqlCommand, tblName, sqlCursor):
 
 
 
-def getSQLColNamesList(sqlCursor, tblNames):
+def getSQLColNamesList(sqlCursor, tblName):
 
     colNames = []
 
-    for tblName in tblNames:
+    # for tblName in tblNames:
 
-        sqlCursor.execute("pragma table_info(" + tblName + ");")
-        fetchedList = sqlCursor.fetchall()
-        colNames.extend([tblName + "." + item[1] for item in fetchedList])
-
+    sqlCursor.execute("pragma table_info(" + tblName + ");")
+    fetchedList = sqlCursor.fetchall()
+    colNames.extend([tblName + "." + item[1] for item in fetchedList])
 
     return colNames
 
 
 
+
+def fieldsDictToStr(dict, fieldBool, aliasBool):
+
+    strToReturn = ""
+
+    for i in range(0, len(dict)):
+
+        if fieldBool:
+
+            strToReturn = strToReturn + dict[i]["field"]
+
+        if fieldBool and aliasBool:
+
+            strToReturn = strToReturn + " as "
+
+        if aliasBool:
+
+            strToReturn = strToReturn + dict[i]["alias"]
+
+        if i != len(dict) - 1:
+            strToReturn = strToReturn + ", "
+
+
+        # strToReturn = strToReturn + item
+
+    return strToReturn
 
 
 
