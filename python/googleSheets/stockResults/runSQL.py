@@ -115,11 +115,24 @@ colList = []
 
 for i in range(0, len(colDict)):
 
-    testList = colDict[i]["excludedFields"]
-
     tableColNamesList = myPythonFunctions.getSQLColNamesList(sqlObj["sqlCursor"], colDict[i]["table"])
-    compList = [item for item in tableColNamesList if item in ["tblResults.Stock"]]
-    colList.extend(compList)
+
+    tableColNamesExcl = []
+
+    for col in tableColNamesList:
+
+        for excludedField in colDict[i]["excludedFields"]:
+            pass
+
+        excludedField = "Stock"
+        
+        if "." + excludedField not in col:
+            tableColNamesExcl.append(col)
+
+
+    # compList = [item for item in tableColNamesList if item in ["tblResults.Stock"]]
+
+    colList.extend(tableColNamesExcl)
 
 
 colListStr = myPythonFunctions.listToStr(colList)
