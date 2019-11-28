@@ -125,7 +125,7 @@ for i in range(0, len(colDict)):
             pass
 
         excludedField = "Stock"
-        
+
         if "." + excludedField not in col:
             tableColNamesExcl.append(col)
 
