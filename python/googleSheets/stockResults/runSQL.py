@@ -58,13 +58,13 @@ fieldAliasStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, True, True)
 fieldStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, True, False)
 aliasStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, False, True)
 
-sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldAliasStr}, tranDate as purchaseDate, -sum(amount) as purchaseAmount from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;"]
+sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldAliasStr}, tranDate as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 sqlList = ["drop table if exists tblShares;", f"create table tblShares as select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
-sqlList = ["drop table if exists tblSale;", f"create table tblSale as select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then tranDate end as saleDate, '' as blankCol, sum(amount) as saleAmount from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;"]
+sqlList = ["drop table if exists tblSale;", f"create table tblSale as select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then tranDate end as 'Sale Date', sum(amount) as 'Last Value', '' as 'Gain (Loss)', '' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;"]
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
@@ -86,7 +86,7 @@ colData.sort()
 pivotColStr = ""
 
 for colItem in colData:
-    pivotColStr = pivotColStr + "sum(case when dateYear = '" + str(colItem) + "' then amount end) as div" + str(colItem)
+    pivotColStr = pivotColStr + "sum(case when dateYear = '" + str(colItem) + "' then amount end) as '" + str(colItem) + "'"
 
     if colItem != colData[len(colData) - 1]:
         pivotColStr = pivotColStr + ", "
@@ -101,9 +101,9 @@ myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 colDict = {0:
                {"table": "tblResults",
                 "excludedFields": []},
-            1: {"table": "tblPurchase",
+            2: {"table": "tblPurchase",
                 "excludedFields": ["Stock", "Broker", "Lot"]},
-            2: {"table": "tblShares",
+            1: {"table": "tblShares",
                 "excludedFields": ["Stock", "Broker", "Lot"]},
             3: {"table": "tblSale",
                 "excludedFields": ["Stock", "Broker", "Lot"]},
@@ -115,7 +115,7 @@ colList = []
 
 for i in range(0, len(colDict)):
 
-    tableColNamesList = myPythonFunctions.getSQLColNamesList(sqlObj["sqlCursor"], colDict[i]["table"])
+    tableColNamesList = myPythonFunctions.getSQLColNamesList(sqlObj["sqlCursor"], colDict[i]["table"], True)
 
     tableColNamesExcl = []
 
@@ -124,7 +124,7 @@ for i in range(0, len(colDict)):
         excluded = False
 
         for excludedField in colDict[i]["excludedFields"]:
-            if "." + excludedField not in col:
+            if ".'" + excludedField + "'" in col:
                 excluded = True
 
         if not excluded:
@@ -138,7 +138,7 @@ for i in range(0, len(colDict)):
 
 colListStr = myPythonFunctions.listToStr(colList)
 
-pp(colListStr)
+# pp(colListStr)
 
 
 sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResultsJoined as select " + colListStr + " from tblResults " \
@@ -147,10 +147,12 @@ sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResult
                                                         "left outer join tblSale on tblResults.Broker = tblSale.Broker and tblResults.Stock = tblSale.Stock and tblResults.Lot = tblSale.Lot " \
                                                         "left outer join tblDividends on tblResults.Broker = tblDividends.Broker and tblResults.Stock = tblDividends.Stock and tblResults.Lot = tblDividends.Lot"]
 
+
+# pp(sqlCommand[1])
 myPythonFunctions.executeSQLStatements(sqlCommand, sqlObj["sqlCursor"])
 
 
-googleSheetsFunctions.populateSheet(2, 100, "SQL Query Result", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined", "tblResultsJoined", sqlObj["sqlCursor"]), True)
+googleSheetsFunctions.populateSheet(2, 1, "SQL Query Result", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined", "tblResultsJoined", sqlObj["sqlCursor"]), True)
 myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
 
 
