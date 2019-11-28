@@ -121,12 +121,13 @@ for i in range(0, len(colDict)):
 
     for col in tableColNamesList:
 
+        excluded = False
+
         for excludedField in colDict[i]["excludedFields"]:
-            pass
+            if "." + excludedField not in col:
+                excluded = True
 
-        excludedField = "Stock"
-
-        if "." + excludedField not in col:
+        if not excluded:
             tableColNamesExcl.append(col)
 
 
