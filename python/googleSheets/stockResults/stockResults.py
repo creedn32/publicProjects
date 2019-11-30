@@ -4,9 +4,10 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPythonLibrary import myPythonFunctions
 startTime = myPythonFunctions.startCode()
 
-# import robinhoodTransactions
+import robinhoodTransactions
 import googleSheetsFunctions, googleSheetsAuthenticate
 from pprint import pprint as pp
+
 
 sheetsToDownload = ["Transactions", "Transactions - Robinhood", "Chart of Accounts", "Ticker Map"]
 saveJSONFile = False

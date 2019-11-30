@@ -358,24 +358,32 @@ def populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, li
 
 
 
-def getQueryResult(sqlCommand, tblName, sqlCursor):
+def getQueryResult(sqlCommand, tblName, sqlCursor, includeColumnNames):
 
     sqlCursor.execute(sqlCommand)
     queryResult = sqlCursor.fetchall()
 
-    colNames = getSQLColNamesList(sqlCursor, tblName, False)
+    if includeColumnNames:
 
-    for i in range(0, len(colNames)):
-        if colNames[i].startswith("'"):
-            # pp(1)
-            colNames[i] = colNames[i][1:]
+        colNames = []
 
-        if colNames[i].endswith("'"):
-            # pp(2)
-            colNames[i] = colNames[i][:-1]
+        for column in sqlCursor.description:
+            colNames.append(column[0])
+
+        # colNames = getSQLColNamesList(sqlCursor, tblName, False)
+
+        for i in range(0, len(colNames)):
+            if colNames[i].startswith("'"):
+                # pp(1)
+                colNames[i] = colNames[i][1:]
+
+            if colNames[i].endswith("'"):
+                # pp(2)
+                colNames[i] = colNames[i][:-1]
 
 
-    queryResult.insert(0, colNames)
+        queryResult.insert(0, colNames)
+
     # pp(queryResult)
 
     return queryResult
