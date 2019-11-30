@@ -117,14 +117,6 @@ for indexOfRow in range(0, rawDataRows):
 transactionList.sort(key=lambda x: int(x[1]))
 # googleSheetsFunctions.populateSheet(1, 1, "Trial", googleSheetsObj, robinhoodSpreadsheetID, transactionList, True)
 
-
-# filteredTransactionList = []
-
-# for transaction in transactionList:
-        # filteredTransactionList.append(transaction)
-
-
-# transactionList = filteredTransactionList
 # transactionList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
 
 
@@ -135,7 +127,10 @@ transactionList.sort(key=lambda x: int(x[1]))
 #create Transactions - Robinhood
 
 
-listOfSheetData = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
+doubleEntryTransactionList = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
+doubleEntryTransactionList.extend(transactionsToAddListData[1:])
+
+
 leftStrMap = {"Dividend from ": {"transactionType": "Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue"},
        "Withdrawal to ": {"transactionType": "Owners - Pay", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks", "lotInfo": "All Lots"},
        "Deposit from ": {"transactionType": "Owners - Receive Cash", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks", "lotInfo": "All Lots"},
@@ -183,35 +178,45 @@ for transaction in transactionList:
         elif mappedTransactionData["transactionType"] in ["Purchase", "Purchase - Stock Gift", "Purchase - Stock From Merger"]:
             lot = myPythonFunctions.convertSerialDateToDateWithoutDashes(transaction[1])
         else:
-            lot = "Lot To Be Determined"
+            filterForLots = [{1: "Investment Asset", 3: "Purchase", 4: stockName},
+                             {1: "Investment Asset", 3: "Purchase - Stock From Merger", 4: stockName}]
+            filteredList = myPythonFunctions.filterListOfLists(doubleEntryTransactionList, filterForLots)
+
+            if len(filteredList) == 1:
+                lot = myPythonFunctions.convertSerialDateToDateWithoutDashes(filteredList[0][0])
+
 
         if "shares" in mappedTransactionData:
             shares = mappedTransactionData["shares"]
         else:
             shares = transaction[4]
 
-        listOfSheetData.append([transaction[1], mappedTransactionData["debitAccount"], transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, shares])
-        listOfSheetData.append([transaction[1], mappedTransactionData["creditAccount"], -transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, ""])
-
-
-
-listOfSheetData.extend(transactionsToAddListData[1:])
+        doubleEntryTransactionList.append([transaction[1], mappedTransactionData["debitAccount"], transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, shares])
+        doubleEntryTransactionList.append([transaction[1], mappedTransactionData["creditAccount"], -transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, ""])
 
 
 
 
 #
-# for transaction in listOfSheetData:
+#
+# for transaction in doubleEntryTransactionList:
 #
 #     if transaction[6] == "Lot To Be Determined":
 #
 #         filterForLots = [{1: "Investment Asset", 3: "Purchase", 4: transaction[4]}, {1: "Investment Asset", 3: "Purchase - Stock From Merger", 4: transaction[4]}]
+#         filteredList = myPythonFunctions.filterListOfLists(doubleEntryTransactionList, filterForLots)
+#         # pp(filteredList)
 #
-#         if len(myPythonFunctions.filterListOfLists(listOfSheetData, filterForLots)) == 1:
-#             transaction[6] = myPythonFunctions.convertSerialDateToDateWithoutDashes(myPythonFunctions.filterListOfLists(listOfSheetData, filterForLots)[0][0])
-#
-#
-#
+#         if len(filteredList) == 1:
+#             transaction[6] = myPythonFunctions.convertSerialDateToDateWithoutDashes(filteredList[0][0])
+
+# pp(doubleEntryTransactionList)
+
+
+
+googleSheetsFunctions.populateSheet(3, 8, "Trial", googleSheetsObj, robinhoodSpreadsheetID, doubleEntryTransactionList, True)
+
+
 # unsoldStockSheet = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 # dateForUnsold = int(myPythonFunctions.convertDateToSerialDate(datetime.datetime.now()))
 # tranType = "Sale - Hypothetical"
@@ -241,7 +246,7 @@ listOfSheetData.extend(transactionsToAddListData[1:])
 # for stockToFilter in sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"]:
 #
 #     ticker = sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"][stockToFilter]
-#     filteredTransactions = myPythonFunctions.filterListOfLists(listOfSheetData, [{1: "Investment Asset", 4: stockToFilter, 5: "Robinhood"}])
+#     filteredTransactions = myPythonFunctions.filterListOfLists(doubleEntryTransactionList, [{1: "Investment Asset", 4: stockToFilter, 5: "Robinhood"}])
 #
 #     # pp(filteredTransactions)
 #
@@ -334,8 +339,8 @@ listOfSheetData.extend(transactionsToAddListData[1:])
 #
 #
 #
-# listOfSheetData.extend(unsoldStockSheet[1:])
-# valuesToPopulate = {"values": listOfSheetData}
+# doubleEntryTransactionList.extend(unsoldStockSheet[1:])
+# valuesToPopulate = {"values": doubleEntryTransactionList}
 # googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[1]["id"], range="Transactions - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
 #
 #
@@ -343,51 +348,3 @@ listOfSheetData.extend(transactionsToAddListData[1:])
 #
 
 
-
-
-    # currentValueList = str(rawDataListDataWithTypes[indexOfRow][0]["value"]).split(" share")
-    #
-    # if :
-    #     nextValueList = str(rawDataListDataWithTypes[indexOfRow + 1][0]["value"]).split(" share")
-    #
-    # # pp(str(currentValueList) + " " + str(nextValueList))
-    #
-    # newTransactionListToAppend.append(currentValue)
-    #
-    # if (len(nextValueList) != 2 and newTransactionListCurrentColumnIndex == 3) or (len(currentValueList) == 2 and newTransactionListCurrentColumnIndex == 4):
-    #     newTransactionListCurrentColumnIndex = 1
-    #     # transactionList.append(newTransactionListToAppend)
-    # #     pp(newTransactionListToAppend)
-    #     pp(newTransactionListToAppend)
-    #     newTransactionListToAppend = []
-
-
-
-
-
-
-#
-#
-#     if newTransactionListCurrentColumnIndex > 3 and not matchObj:
-#         newTransactionListCurrentColumnIndex = 1
-#
-#         if len(newTransactionListToAppend) == 3:
-#             newTransactionListToAppend.append("")
-#             newTransactionListToAppend.append("")
-#
-#         transactionList.append(newTransactionListToAppend)
-#         newTransactionListToAppend = []
-#
-#     newTransactionListToAppend.append(currentValue)
-#
-#     if newTransactionListCurrentColumnIndex > 3 and matchObj:
-#         newTransactionListToAppend.append(int(matchObj.group(0).split(" share")[0]))
-#
-#
-#     newTransactionListCurrentColumnIndex = newTransactionListCurrentColumnIndex + 1
-#
-#
-#
-# transactionList.append(newTransactionListToAppend)
-# # pp(transactionList)
-#
