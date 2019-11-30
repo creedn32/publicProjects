@@ -70,7 +70,11 @@ def countRows(dataObj, sheetPos):
 
     currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
     dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
-    return len(myPythonFunctions.getFromDict(dataOnSheet, "rowData"))
+
+    if "rowData" in dataOnSheet:
+        return len(myPythonFunctions.getFromDict(dataOnSheet, "rowData"))
+    else:
+        return 1000000
 
 
 
@@ -80,9 +84,13 @@ def countColumns(dataObj, sheetPos):
     sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
     currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
     dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
-    currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
-    currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, 0), "values")
-    return len(currentRowData)
+
+    if "rowData" in dataOnSheet:
+        currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
+        currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, 0), "values")
+        return len(currentRowData)
+    else:
+        return 1000000
 
 
 
@@ -174,7 +182,8 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
                 })
 
 
-    googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
+    if requestObj["requests"]:
+        googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
 
     if clearSheet:
         googleSheetsObj.values().clear(spreadsheetId=spreadsheetID, range=sheetName, body={}).execute()
@@ -204,6 +213,8 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
         mappingDict[getCellValue(googleSheetsDataWithGrid, sheetIndex, indexOfRow, 0)] = colDict
 
     return mappingDict
+
+
 
 
 def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet):
