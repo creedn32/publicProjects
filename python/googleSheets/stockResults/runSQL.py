@@ -30,7 +30,6 @@ columnsObj["accountType"] = "varchar(255)"
 columnsObj["accountCategory"] = "varchar(255)"
 columnsObj["amount"] = "float"
 columnsObj["tranType"] = "varchar(255)"
-columnsObj["tranType"] = "varchar(255)"
 columnsObj["stockName"] = "varchar(255)"
 columnsObj["broker"] = "varchar(255)"
 columnsObj["lot"] = "varchar(255)"
@@ -152,7 +151,7 @@ sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResult
 myPythonFunctions.executeSQLStatements(sqlCommand, sqlObj["sqlCursor"])
 
 
-googleSheetsFunctions.populateSheet(2, 1, "SQL Query Result", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined", "tblResultsJoined", sqlObj["sqlCursor"]), True)
+googleSheetsFunctions.populateSheet(2, 1, "SQL Query Result", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
 myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
 
 

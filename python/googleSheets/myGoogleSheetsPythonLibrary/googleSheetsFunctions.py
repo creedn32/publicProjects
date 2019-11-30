@@ -221,3 +221,22 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
     reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
     googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
+    googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
+
+
+    requestObj = {
+        "requests": [
+            {
+                "autoResizeDimensions": {
+                    "dimensions": {
+                        "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
+                        "dimension": "COLUMNS",
+                        "startIndex": 0,
+                        "endIndex": len(valuesList[0]) + 1
+                    }
+                }
+            }
+        ]
+    }
+
+    googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
