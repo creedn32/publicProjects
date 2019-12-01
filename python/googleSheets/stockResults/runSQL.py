@@ -112,7 +112,7 @@ myPythonFunctions.createTableAs("tblSale", sqlObj["sqlCursor"], f"select {fieldA
 
 pivotColDict = myPythonFunctions.createPivotColDict("dateYear", 10, "amount", 1, tranScrubDataList)
 pivotColStr = pivotColDict["pivotColStr"]
-pp(pivotColStr)
+# pp(pivotColStr)
 
 myPythonFunctions.createTableAs("tblDividends", sqlObj["sqlCursor"], f"select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
 myPythonFunctions.createTableAs("tblResults", sqlObj["sqlCursor"], f"select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
@@ -120,22 +120,34 @@ myPythonFunctions.createTableAs("tblResults", sqlObj["sqlCursor"], f"select {ali
 
 colListStr = myPythonFunctions.getAllColumns(colDict, sqlObj["sqlCursor"])
 
-pivotColCaseStr = ""
+
+
+
+
+divColStr = ""
+percentColStr = ""
 
 for colCount in range(0, len(pivotColDict["colList"])):
 
     currentColName = "tblDividends.'" + str(pivotColDict["colList"][colCount]) + "'"
-    # =if (or (M140 <> "", and (T$2 >= year($G140), T$2 <= if ($H140="", year(today()), year($H140)))), M140, "NO")
-    pivotColCaseStr = pivotColCaseStr + "case when " + currentColName + " is null then '=if(indirect(\"L\"&\"1\")<year(indirect(\"E\"&row())),\"Has been purchased\",\"NO\")' else " + currentColName + " end as '" + str(pivotColDict["colList"][colCount]) + "'"
+    divColStr = divColStr + "case when " + currentColName + " is null then '=if(or(int(left(indirect(\"R1C[0]\",false),4))<year(indirect(\"E\"&row())),int(left(indirect(\"R1C[0]\",false),4))>if(indirect(\"H\"&row())=\"\",year(today()),year(indirect(\"H\"&row())))),\"NO\",\"\")' else " + currentColName + " end as '" + str(pivotColDict["colList"][colCount]) + "'"
+    # =if (
+    # or (M90 <> "", and (AA$2 >= year($G90), AA$2 <= if ($H90="", year(today()), year($H90)))), iferror(M90 / $I90, 0), "")
+
+    percentColStr = percentColStr + "'=if(or(and(indirect(\"R[0]C[-6]\",false)<>\"\",indirect(\"R[0]C[-6]\",false)<>\"NO\"),and(int(left(indirect(\"R1C[0]\",false),4))>=year(indirect(\"E\"&row())),int(left(indirect(\"R1C[0]\",false),4))<=if(indirect(\"H\"&row())=\"\",year(today()),year(indirect(\"H\"&row()))))),iferror(indirect(\"R[0]C[-6]\",false)/indirect(\"F\"&row()),0),\"\")' as '" + str(pivotColDict["colList"][colCount]) + " %'"   #int(left(indirect(\"R1C[0]\",false),4))<year(indirect(\"E\"&row())),int(left(indirect(\"R1C[0]\",false),4))>if(indirect(\"H\"&row())=\"\",year(today()),year(indirect(\"H\"&row())))),\"NO\",\"\")'
 
     if colCount != len(pivotColDict["colList"]) - 1:
-        pivotColCaseStr = pivotColCaseStr + ", "
+        divColStr = divColStr + ", "
+        percentColStr = percentColStr + ", "
 
-pp(pivotColCaseStr)
+# pp(divColStr)
 
 
 
-sqlCommand = f"select " + colListStr + ", " + pivotColCaseStr + " from tblResults " \
+
+
+
+sqlCommand = f"select " + colListStr + ", " + divColStr + ", '', " + percentColStr + ", ' ', '=sum(indirect(\"L\"&row()):indirect(\"Q\"&row()))' as 'Total Dividends' from tblResults " \
             "left outer join tblTickerMap on tblResults.Stock = tblTickerMap.stockName " \
             "left outer join tblPurchase on tblResults.Broker = tblPurchase.Broker and tblResults.Stock = tblPurchase.Stock and tblResults.Lot = tblPurchase.Lot " \
             "left outer join tblShares on tblResults.Broker = tblShares.Broker and tblResults.Stock = tblShares.Stock and tblResults.Lot = tblShares.Lot " \
@@ -150,7 +162,7 @@ sqlList = ["update tblResultsJoined set 'Last Value' = '=googlefinance(indirect(
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
-googleSheetsFunctions.populateSheet(2, 1000, "SQL Query Result", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
+googleSheetsFunctions.populateSheet(2, 1000, "SQL Query Result", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
 myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
 
 
