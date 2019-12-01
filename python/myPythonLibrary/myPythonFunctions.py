@@ -321,7 +321,7 @@ def createTable(tblName, columnsObj, sqlCursor):
 
 def createTableAs(tblName, sqlCursor, sqlCommand):
 
-    sqlList = ["drop table if exists " + tblName, sqlCommand]
+    sqlList = ["drop table if exists " + tblName, "create table " + tblName + " as " + sqlCommand]
     executeSQLStatements(sqlList, sqlCursor)
 
 
@@ -393,9 +393,58 @@ def getQueryResult(sqlCommand, tblName, sqlCursor, includeColumnNames):
     return queryResult
 
 
-def createPivotColStr():
+def createPivotColStr(fieldToPivot, fieldColIndex, fieldToSum, rowStartIndex,  dataList):
 
-    return ""
+    colData = []
+
+    for row in dataList[rowStartIndex:]:
+        colData.append(row[fieldColIndex])
+
+    colData = list(set((colData)))
+    colData.sort()
+
+    # create formula for each column
+
+    pivotColStr = ""
+
+    for colItem in colData:
+        pivotColStr = pivotColStr + "sum(case when " + fieldToPivot + " = '" + str(colItem) + "' then " + fieldToSum + " end) as '" + str(colItem) + "'"
+
+        if colItem != colData[len(colData) - 1]:
+            pivotColStr = pivotColStr + ", "
+
+    return pivotColStr
+
+
+
+
+def getAllColumns(colDict, sqlCursor):
+
+    colList = []
+
+    for i in range(0, len(colDict)):
+
+        tableColNamesList = getSQLColNamesList(sqlCursor, colDict[i]["table"], True)
+
+        tableColNamesWithoutExcl = []
+
+        for col in tableColNamesList:
+
+            excluded = False
+
+            for excludedField in colDict[i]["excludedFields"]:
+                if ".'" + excludedField + "'" in col:
+                    excluded = True
+
+            if not excluded:
+                tableColNamesWithoutExcl.append(col)
+
+        colList.extend(tableColNamesWithoutExcl)
+
+    return listToStr(colList)
+
+
+
 
 
 def getSQLColNamesList(sqlCursor, tblName, addTableName):
