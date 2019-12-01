@@ -393,7 +393,7 @@ def getQueryResult(sqlCommand, tblName, sqlCursor, includeColumnNames):
     return queryResult
 
 
-def createPivotColStr(fieldToPivot, fieldColIndex, fieldToSum, rowStartIndex,  dataList):
+def createPivotColDict(fieldToPivot, fieldColIndex, fieldToSum, rowStartIndex,  dataList):
 
     colData = []
 
@@ -403,8 +403,7 @@ def createPivotColStr(fieldToPivot, fieldColIndex, fieldToSum, rowStartIndex,  d
     colData = list(set((colData)))
     colData.sort()
 
-    # create formula for each column
-
+    colDict = {"colList": colData}
     pivotColStr = ""
 
     for colItem in colData:
@@ -413,7 +412,9 @@ def createPivotColStr(fieldToPivot, fieldColIndex, fieldToSum, rowStartIndex,  d
         if colItem != colData[len(colData) - 1]:
             pivotColStr = pivotColStr + ", "
 
-    return pivotColStr
+    colDict["pivotColStr"] = pivotColStr
+
+    return colDict
 
 
 
@@ -437,6 +438,9 @@ def getAllColumns(colDict, sqlCursor):
                     excluded = True
 
             if not excluded:
+                # if "additionalColumnText" in colDict[i]:
+                #     tableColNamesWithoutExcl.append(col + " as '" + col.split("'")[1] + " " + colDict[i]["additionalColumnText"] + "'")
+                # else:
                 tableColNamesWithoutExcl.append(col)
 
         colList.extend(tableColNamesWithoutExcl)
