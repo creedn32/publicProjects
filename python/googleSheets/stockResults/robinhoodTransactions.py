@@ -181,9 +181,7 @@ myPythonFunctions.populateTable(stockNameMapRows, stockNameMapColumns, "tblStock
 # pp(myPythonFunctions.getQueryResult(f"select * from {tblStockMapName}", tblStockMapName, sqlObj["sqlCursor"], False))
 
 
-sqlList = ["drop table if exists tblLots;", f"create table tblLots as select stockName, lot, sum(amount), sum(shares) from {tblMainName} where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;"]
-myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
-
+myPythonFunctions.createTableAs("tblLots", sqlObj["sqlCursor"], f"select stockName, lot, sum(amount), sum(shares) from {tblMainName} where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
 
 sqlCommand = f"select tblLots.*, tblStockMap.ticker, '=googlefinance(indirect(\"E\"&row()))*indirect(\"D\"&row())' as googleFin, '=indirect(\"F\"&row())-indirect(\"C\"&row())' as gainLoss from tblLots left outer join tblStockMap on tblLots.stockName = tblStockMap.stockName;"
 googleSheetsFunctions.populateSheet(3, 1, "Unsold Stock Values - Robinhood", googleSheetsObj, robinhoodSpreadsheetID, myPythonFunctions.getQueryResult(sqlCommand, tblMainName, sqlObj["sqlCursor"], False), True)
@@ -209,7 +207,5 @@ for lot in unsoldStockValuesList:
 
 
 
-
 doubleEntryTransactionList.extend(doubleEntryUnsoldStockList)
 googleSheetsFunctions.populateSheet(2, 100, "Transactions - Robinhood", googleSheetsObj, stockResultsSpreadsheetID, doubleEntryTransactionList, True)
-

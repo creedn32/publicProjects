@@ -74,70 +74,22 @@ fieldAliasStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, True, True)
 fieldStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, True, False)
 aliasStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, False, True)
 
-myPythonFunctions.createTableAs("tblPurchase", sqlObj["sqlCursor"], f"create table tblPurchase as select {fieldAliasStr}, tranDate as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
-myPythonFunctions.createTableAs("tblShares", sqlObj["sqlCursor"], f"create table tblShares as select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
-myPythonFunctions.createTableAs("tblSale", sqlObj["sqlCursor"], f"create table tblSale as select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then tranDate end as 'Sale Date', sum(amount) as 'Last Value', '' as 'Gain (Loss)', '' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+myPythonFunctions.createTableAs("tblPurchase", sqlObj["sqlCursor"], f"select {fieldAliasStr}, tranDate as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+myPythonFunctions.createTableAs("tblShares", sqlObj["sqlCursor"], f"select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
+myPythonFunctions.createTableAs("tblSale", sqlObj["sqlCursor"], f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then tranDate end as 'Sale Date', sum(amount) as 'Last Value', '' as 'Gain (Loss)', '' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
 
 
 #get list of values to put as the pivot columns
 
-colData = []
-colIndex = 10
-rowStartIndex = 1
 
-for row in tranScrubDataList[rowStartIndex:]:
-    colData.append(row[colIndex])
-
-colData = list(set((colData)))
-colData.sort()
+pivotColStr = myPythonFunctions.createPivotColStr("dateYear", 10, "amount", 1, tranScrubDataList)
+myPythonFunctions.createTableAs("tblDividends", sqlObj["sqlCursor"], f"select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
+myPythonFunctions.createTableAs("tblResults", sqlObj["sqlCursor"], f"select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
 
 
-#create formula for each column
+colListStr = myPythonFunctions.getAllColumns(colDict, sqlObj["sqlCursor"])
 
-pivotColStr = ""
-
-for colItem in colData:
-    pivotColStr = pivotColStr + "sum(case when dateYear = '" + str(colItem) + "' then amount end) as '" + str(colItem) + "'"
-
-    if colItem != colData[len(colData) - 1]:
-        pivotColStr = pivotColStr + ", "
-
-
-pivotColStr = pivotColStr
-
-myPythonFunctions.createPivotColStr()
-
-myPythonFunctions.createTableAs("tblDividends", sqlObj["sqlCursor"], f"create table tblDividends as select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
-myPythonFunctions.createTableAs("tblResults", sqlObj["sqlCursor"], f"create table tblResults as select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
-
-
-
-
-colList = []
-
-for i in range(0, len(colDict)):
-
-    tableColNamesList = myPythonFunctions.getSQLColNamesList(sqlObj["sqlCursor"], colDict[i]["table"], True)
-
-    tableColNamesExcl = []
-
-    for col in tableColNamesList:
-
-        excluded = False
-
-        for excludedField in colDict[i]["excludedFields"]:
-            if ".'" + excludedField + "'" in col:
-                excluded = True
-
-        if not excluded:
-            tableColNamesExcl.append(col)
-
-
-
-    colList.extend(tableColNamesExcl)
-
-
-sqlCommand = f"create table tblResultsJoined as select " + myPythonFunctions.listToStr(colList) + " from tblResults " \
+sqlCommand = f"select " + colListStr + " from tblResults " \
             "left outer join tblPurchase on tblResults.Broker = tblPurchase.Broker and tblResults.Stock = tblPurchase.Stock and tblResults.Lot = tblPurchase.Lot " \
             "left outer join tblShares on tblResults.Broker = tblShares.Broker and tblResults.Stock = tblShares.Stock and tblResults.Lot = tblShares.Lot " \
             "left outer join tblSale on tblResults.Broker = tblSale.Broker and tblResults.Stock = tblSale.Stock and tblResults.Lot = tblSale.Lot " \
