@@ -6,7 +6,7 @@ startTime = myPythonFunctions.startCode()
 
 from pprint import pprint as pp
 from collections import OrderedDict
-import googleSheetsFunctions, googleSheetsAuthenticate, sqlite3
+import googleSheetsFunctions, googleSheetsAuthenticate
 
 spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
 sheetsToDownload = "Transactions - Scrubbed"
@@ -19,6 +19,35 @@ tranScrubDataList = googleSheetsFunctions.extractValues(tranScrubRowTotal, tranS
 
 finishSetupTime = myPythonFunctions.time.time()
 print("Comment: Importing modules and setting up variables...Done. " + str(round(finishSetupTime - startTime, 3)) + " seconds")
+
+
+
+firstFieldsDict = {0:
+                       {"field": "stockName",
+                        "alias": "Stock"},
+                   1:
+                       {"field": "broker",
+                        "alias": "Broker"},
+                   2:
+                       {"field": "lot",
+                        "alias": "Lot"}
+                   }
+
+
+
+colDict = {0:
+               {"table": "tblResults",
+                "excludedFields": []},
+            2: {"table": "tblPurchase",
+                "excludedFields": ["Stock", "Broker", "Lot"]},
+            1: {"table": "tblShares",
+                "excludedFields": ["Stock", "Broker", "Lot"]},
+            3: {"table": "tblSale",
+                "excludedFields": ["Stock", "Broker", "Lot"]},
+            4: {"table": "tblDividends",
+                "excludedFields": ["Stock", "Broker", "Lot"]}}
+
+
 
 
 tblMainName = "tblTScrub"
@@ -41,30 +70,13 @@ sqlObj = myPythonFunctions.createDatabase("stockResults.db", str(pathlib.Path.cw
 myPythonFunctions.populateTable(tranScrubRowTotal, tranScrubColTotal, tblMainName, tranScrubDataList, sqlObj["sqlCursor"], [0])
 
 
-firstFieldsDict = {0:
-                       {"field": "stockName",
-                        "alias": "Stock"},
-                   1:
-                       {"field": "broker",
-                        "alias": "Broker"},
-                   2:
-                       {"field": "lot",
-                        "alias": "Lot"}
-                   }
-
-
 fieldAliasStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, True, True)
 fieldStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, True, False)
 aliasStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, False, True)
 
-sqlList = ["drop table if exists tblPurchase;", f"create table tblPurchase as select {fieldAliasStr}, tranDate as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;"]
-myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
-
-sqlList = ["drop table if exists tblShares;", f"create table tblShares as select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};"]
-myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
-
-sqlList = ["drop table if exists tblSale;", f"create table tblSale as select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then tranDate end as 'Sale Date', sum(amount) as 'Last Value', '' as 'Gain (Loss)', '' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;"]
-myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
+myPythonFunctions.createTableAs("tblPurchase", sqlObj["sqlCursor"], f"create table tblPurchase as select {fieldAliasStr}, tranDate as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+myPythonFunctions.createTableAs("tblShares", sqlObj["sqlCursor"], f"create table tblShares as select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
+myPythonFunctions.createTableAs("tblSale", sqlObj["sqlCursor"], f"create table tblSale as select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then tranDate end as 'Sale Date', sum(amount) as 'Last Value', '' as 'Gain (Loss)', '' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
 
 
 #get list of values to put as the pivot columns
@@ -90,24 +102,15 @@ for colItem in colData:
     if colItem != colData[len(colData) - 1]:
         pivotColStr = pivotColStr + ", "
 
-sqlList = ["drop table if exists tblDividends;", f"create table tblDividends as select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};"]
-myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
-sqlList = ["drop table if exists tblResults;", f"create table tblResults as select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;"]
-myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
+pivotColStr = pivotColStr
+
+myPythonFunctions.createPivotColStr()
+
+myPythonFunctions.createTableAs("tblDividends", sqlObj["sqlCursor"], f"create table tblDividends as select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
+myPythonFunctions.createTableAs("tblResults", sqlObj["sqlCursor"], f"create table tblResults as select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
 
 
-colDict = {0:
-               {"table": "tblResults",
-                "excludedFields": []},
-            2: {"table": "tblPurchase",
-                "excludedFields": ["Stock", "Broker", "Lot"]},
-            1: {"table": "tblShares",
-                "excludedFields": ["Stock", "Broker", "Lot"]},
-            3: {"table": "tblSale",
-                "excludedFields": ["Stock", "Broker", "Lot"]},
-            4: {"table": "tblDividends",
-                "excludedFields": ["Stock", "Broker", "Lot"]}}
 
 
 colList = []
@@ -130,25 +133,17 @@ for i in range(0, len(colDict)):
             tableColNamesExcl.append(col)
 
 
-    # compList = [item for item in tableColNamesList if item in ["tblResults.Stock"]]
 
     colList.extend(tableColNamesExcl)
 
 
-colListStr = myPythonFunctions.listToStr(colList)
+sqlCommand = f"create table tblResultsJoined as select " + myPythonFunctions.listToStr(colList) + " from tblResults " \
+            "left outer join tblPurchase on tblResults.Broker = tblPurchase.Broker and tblResults.Stock = tblPurchase.Stock and tblResults.Lot = tblPurchase.Lot " \
+            "left outer join tblShares on tblResults.Broker = tblShares.Broker and tblResults.Stock = tblShares.Stock and tblResults.Lot = tblShares.Lot " \
+            "left outer join tblSale on tblResults.Broker = tblSale.Broker and tblResults.Stock = tblSale.Stock and tblResults.Lot = tblSale.Lot " \
+            "left outer join tblDividends on tblResults.Broker = tblDividends.Broker and tblResults.Stock = tblDividends.Stock and tblResults.Lot = tblDividends.Lot"
 
-# pp(colListStr)
-
-
-sqlCommand = ["drop table if exists tblResultsJoined;", f"create table tblResultsJoined as select " + colListStr + " from tblResults " \
-                                                        "left outer join tblPurchase on tblResults.Broker = tblPurchase.Broker and tblResults.Stock = tblPurchase.Stock and tblResults.Lot = tblPurchase.Lot " \
-                                                        "left outer join tblShares on tblResults.Broker = tblShares.Broker and tblResults.Stock = tblShares.Stock and tblResults.Lot = tblShares.Lot " \
-                                                        "left outer join tblSale on tblResults.Broker = tblSale.Broker and tblResults.Stock = tblSale.Stock and tblResults.Lot = tblSale.Lot " \
-                                                        "left outer join tblDividends on tblResults.Broker = tblDividends.Broker and tblResults.Stock = tblDividends.Stock and tblResults.Lot = tblDividends.Lot"]
-
-
-# pp(sqlCommand[1])
-myPythonFunctions.executeSQLStatements(sqlCommand, sqlObj["sqlCursor"])
+myPythonFunctions.createTableAs("tblResultsJoined", sqlObj["sqlCursor"], sqlCommand)
 
 
 googleSheetsFunctions.populateSheet(2, 1, "SQL Query Result", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
@@ -159,7 +154,6 @@ myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
 # if os.path.exists(dbPath):
 #   os.remove(dbPath)
 # else:
-
 #   print("The file does not exist")
 
 

@@ -10,7 +10,6 @@ from pprint import pprint as pp
 
 
 sheetsToDownload = ["Transactions", "Transactions - Robinhood", "Chart of Accounts", "Ticker Map"]
-saveJSONFile = False
 # spreadsheetID = "1yZfwzel6R3HTUtH5HIv7LEjAaoJDPESG6jCEz-b7jBw" #simple spreadsheet
 spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
 multiplyFactor = 1
@@ -24,15 +23,10 @@ googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, 
 finishSetupTime = myPythonFunctions.time.time()
 print("Comment: Importing modules and setting up variables...Done. " + str(round(finishSetupTime - startTime, 3)) + " seconds")
 
-if saveJSONFile:
-    myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"))
-    print("Comment: Writing data to file...Done. " + str(round(myPythonFunctions.time.time() - finishSetupTime, 3)) + " seconds")
-
 
 tranDataList = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions")), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions")), googleSheetsDataWithGrid, sheetsToDownload.index("Transactions"))
 tranRobinhoodDataList = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood")), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood")), googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Robinhood"))
 tranDataList.extend(tranRobinhoodDataList[1:len(tranRobinhoodDataList)])
-
 
 
 brokerageMap = {"Mt": "Motif",
@@ -45,12 +39,8 @@ chartOfAccountsDict = googleSheetsFunctions.createDictMapFromSheet(googleSheetsD
 
 #Scrub Transactions sheet
 
-
 tranDataList = [item for item in tranDataList if item[2] != 0]
-
 tranRowTotal = len(tranDataList)
-# tranColTotal = len(tranDataList[0])
-
 
 
 for indexOfRow in range(1, tranRowTotal):
@@ -71,8 +61,6 @@ for indexOfRow in range(1, tranRowTotal):
 
         for key in tickerDict[ticker]:
             tranDataList[indexOfRow][4] = tickerDict[ticker][key]
-
-
 
     tranDataList[indexOfRow][2] = tranDataList[indexOfRow][2] * multiplyFactor
 

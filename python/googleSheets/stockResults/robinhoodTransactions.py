@@ -9,73 +9,36 @@ from collections import OrderedDict
 import googleSheetsFunctions, googleSheetsAuthenticate
 from pprint import pprint as pp
 
-#
-# sheetInfoObj = {0:
-#                     {"name": "Stock Results - Robinhood",
-#                     "id": "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI",
-#                      "download":
-#                          {"Raw Data - Robinhood":
-#                               {},
-#                           "Transactions To Add - Robinhood":
-#                               {},
-#                           "Stock Name Map":
-#                               {}
-#                           }
-#                      },
-#                 1:
-#                     {"name": "Stock Results",
-#                     "id": "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
-#                     }
-#                 }
-
 
 robinhoodSpreadsheetID = "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI"
 stockResultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
 sheetsToDownload = ["Raw Data - Robinhood", "Transactions To Add - Robinhood", "Stock Name Map"]
-saveJSONFile = False
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
 googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(robinhoodSpreadsheetID, googleSheetsObj, sheetsToDownload)
-# sleepTime = .8
 
 
 finishSetupTime = myPythonFunctions.time.time()
 print("Comment: Importing modules and setting up variables...Done. " + str(round(finishSetupTime - startTime, 3)) + " seconds")
 
-if saveJSONFile:
-    myPythonFunctions.saveFile(googleSheetsDataWithGrid, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"googleSheetsDataWithGrid.json"), finishSetupTime)
-    print("Comment: Writing data to file...Done. " + str(round(myPythonFunctions.time.time() - finishSetupTime, 3)) + " seconds")
-
-
 
 rawDataRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood"))
-rawDataColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood"))
-transactionsToAddRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood"))
-transactionsToAddColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood"))
 stockNameMapRows = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Stock Name Map"))
 stockNameMapColumns = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Stock Name Map"))
 
 
-
-#load downloaded sheets into lists
-
-# rawDataListDataWithTypes = googleSheetsFunctions.extractValuesAndTypes(rawDataRows, rawDataColumns, googleSheetsDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood"))
-rawDataListData = googleSheetsFunctions.extractValues(rawDataRows, rawDataColumns, googleSheetsDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood"))
-transactionsToAddListData = googleSheetsFunctions.extractValues(transactionsToAddRows, transactionsToAddColumns, googleSheetsDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood"))
+rawDataListData = googleSheetsFunctions.extractValues(rawDataRows, googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood")), googleSheetsDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood"))
+transactionsToAddListData = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood")), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood")), googleSheetsDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood"))
 stockNameListData = googleSheetsFunctions.extractValues(stockNameMapRows, stockNameMapColumns, googleSheetsDataWithGrid, sheetsToDownload.index("Stock Name Map"))
 
-# listToConvert = googleSheetsFunctions.extractValues(stockNameMapRows, stockNameMapColumns, googleSheetsDataWithGrid, 2)
-# sheetInfoObj[0]["download"]["Stock Name Map"]["dictObj"] = myPythonFunctions.convertTwoColumnListToDict(listToConvert, 1)
-# stockNameDict = googleSheetsFunctions.createDictMapFromSheet(googleSheetsDataWithGrid, sheetsToDownload.index("Stock Name Map"))
 
-
-#create Data - Robinhood
+#create data
 
 newTransactionListCurrentColumnIndex = 0
 newTransactionListToAppend = []
 transactionList = []
 rawDataColumnWithData = 0
 
-# fieldsObj = {1: "Description", 2: "Date", 3: "Amount", 4: "Details"}
+
 # pp(rawDataListData)
 
 
@@ -118,17 +81,9 @@ for indexOfRow in range(0, rawDataRows):
 
 
 transactionList.sort(key=lambda x: int(x[1]))
-# googleSheetsFunctions.populateSheet(1, 1, "Trial", googleSheetsObj, robinhoodSpreadsheetID, transactionList, True)
-
-# transactionList.insert(0, ["Description", "Date", "Amount", "Details", "Shares"])
 
 
-# valuesToPopulate = {"values": transactionList}
-# googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[0]["id"], range="Data - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
-
-
-#create Transactions - Robinhood
-
+#create transactions
 
 doubleEntryTransactionList = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 doubleEntryTransactionList.extend(transactionsToAddListData[1:])
@@ -147,7 +102,6 @@ lastDate = int(myPythonFunctions.convertDateToSerialDate(datetime.datetime(2013,
 
 
 for transaction in transactionList:
-
 
     if transaction[2] != "Failed" and transaction[1] > lastDate:
 
@@ -200,41 +154,8 @@ for transaction in transactionList:
 
 
 
-# googleSheetsFunctions.populateSheet(3, 8, "Trial", googleSheetsObj, robinhoodSpreadsheetID, doubleEntryTransactionList, True)
-
-
-
-
-
-
-
-
-# dateForUnsold = int(myPythonFunctions.convertDateToSerialDate(datetime.datetime.now()))
-
-# googleSheetsTempData = None
-
-# createRequest = {
-#                           "requests": [
-#                             {
-#                               "addSheet": {
-#                                 "properties": {
-#                                   "title": "unsoldStockUpdateSheet",
-#                                   "gridProperties": {
-#                                     "rowCount": 1,
-#                                     "columnCount": 1
-#                                   }
-#                                 }
-#                               }
-#                             }
-#                           ]
-#                         }
-
-
-# googleSheetsObj.batchUpdate(spreadsheetId=robinhoodSpreadsheetID, body=createRequest).execute()
-
-
 tblMainName = "tblStockResultsRobinhood"
-tblStockMapName = "tblStockMap"
+
 
 columnsObj = OrderedDict()
 columnsObj["tranDate"] = "date"
@@ -255,8 +176,8 @@ doubleEntryUnsoldStockList = [] #["Date", "Account", "Amount+-", "Transaction Ty
 
 sqlObj = myPythonFunctions.createDatabase("stockResultsRobinhood.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
 myPythonFunctions.populateTable(len(doubleEntryTransactionList), len(doubleEntryTransactionList[0]), tblMainName, doubleEntryTransactionList, sqlObj["sqlCursor"], [0])
-myPythonFunctions.createTable(tblStockMapName, stockColumnsObj, sqlObj["sqlCursor"])
-myPythonFunctions.populateTable(stockNameMapRows, stockNameMapColumns, tblStockMapName, stockNameListData, sqlObj["sqlCursor"], [])
+myPythonFunctions.createTable("tblStockMap", stockColumnsObj, sqlObj["sqlCursor"])
+myPythonFunctions.populateTable(stockNameMapRows, stockNameMapColumns, "tblStockMap", stockNameListData, sqlObj["sqlCursor"], [])
 # pp(myPythonFunctions.getQueryResult(f"select * from {tblStockMapName}", tblStockMapName, sqlObj["sqlCursor"], False))
 
 
@@ -264,15 +185,15 @@ sqlList = ["drop table if exists tblLots;", f"create table tblLots as select sto
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
-sqlCommand = f"select tblLots.*, {tblStockMapName}.ticker, '=googlefinance(indirect(\"E\"&row()))*indirect(\"D\"&row())' as googleFinForm, '=indirect(\"F\"&row())-indirect(\"C\"&row())' as gainLoss from tblLots left outer join {tblStockMapName} on tblLots.stockName = {tblStockMapName}.stockName;"
+sqlCommand = f"select tblLots.*, tblStockMap.ticker, '=googlefinance(indirect(\"E\"&row()))*indirect(\"D\"&row())' as googleFin, '=indirect(\"F\"&row())-indirect(\"C\"&row())' as gainLoss from tblLots left outer join tblStockMap on tblLots.stockName = tblStockMap.stockName;"
 googleSheetsFunctions.populateSheet(3, 1, "Unsold Stock Values - Robinhood", googleSheetsObj, robinhoodSpreadsheetID, myPythonFunctions.getQueryResult(sqlCommand, tblMainName, sqlObj["sqlCursor"], False), True)
 myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
 
 
 tranType = "Sale - Hypothetical"
 priceDate = int(myPythonFunctions.convertDateToSerialDate(datetime.datetime.now()))
-googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(robinhoodSpreadsheetID, googleSheetsObj, ["Unsold Stock Values - Robinhood"])
-unsoldStockValuesList = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, 0), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, 0), googleSheetsDataWithGrid, 0)
+unsoldStockValuesDataWithGrid = googleSheetsFunctions.getDataWithGrid(robinhoodSpreadsheetID, googleSheetsObj, ["Unsold Stock Values - Robinhood"])
+unsoldStockValuesList = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(unsoldStockValuesDataWithGrid, 0), googleSheetsFunctions.countColumns(unsoldStockValuesDataWithGrid, 0), unsoldStockValuesDataWithGrid, 0)
 
 for lot in unsoldStockValuesList:
 
@@ -291,106 +212,4 @@ for lot in unsoldStockValuesList:
 
 doubleEntryTransactionList.extend(doubleEntryUnsoldStockList)
 googleSheetsFunctions.populateSheet(2, 100, "Transactions - Robinhood", googleSheetsObj, stockResultsSpreadsheetID, doubleEntryTransactionList, True)
-
-
-
-
-
-
-# for stockToFilter in stockNameDict:
-#
-#
-#     filteredTransactions =
-    # pp(stockToFilter)
-    # pp(filteredTransactions)
-
-
-#     # pp(filteredTransactions)
-#
-#     for lot in filteredTransactions:
-#
-#         if googleSheetsTempData:
-#
-#             deleteRowsCols = {
-#                 "requests": [
-#                     {
-#                         "deleteDimension": {
-#                             "range": {
-#                                 "sheetId": googleSheetsTempData["sheets"][0]["properties"]["sheetId"],
-#                                 "dimension": "ROWS",
-#                                 "startIndex": 1,
-#                                 "endIndex": 1000
-#                             }
-#                         }
-#                     },
-#                     {
-#                         "deleteDimension": {
-#                             "range": {
-#                                 "sheetId": googleSheetsTempData["sheets"][0]["properties"]["sheetId"],
-#                                 "dimension": "COLUMNS",
-#                                 "startIndex": 1,
-#                                 "endIndex": 1000
-#                             }
-#                         }
-#                     },
-#                 ],
-#             }
-#
-#
-#             myPythonFunctions.time.sleep(sleepTime)
-#             googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=deleteRowsCols).execute()
-#
-#
-#         myPythonFunctions.time.sleep(sleepTime)
-#         googleSheetsObj.values().clear(spreadsheetId=sheetInfoObj[0]["id"], range="unsoldStockUpdateSheet", body={}).execute()
-#
-#
-#         unsoldLotList = []
-#         unsoldLotList.append(
-#             [dateForUnsold, "Cash", "=GOOGLEFINANCE(\"" + ticker + "\")*INDIRECT(\"H\"&ROW())", tranType, stockToFilter,
-#              "Robinhood", lot[6], lot[7]])
-#         unsoldLotList.append(
-#             [dateForUnsold, "Investment Asset", -lot[2], tranType, stockToFilter, "Robinhood", lot[6], lot[7]])
-#
-#
-#         myPythonFunctions.time.sleep(sleepTime)
-#         googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[0]["id"], range="unsoldStockUpdateSheet", valueInputOption="USER_ENTERED", body={"values": unsoldLotList}).execute()
-#
-#
-#         googleSheetsTempData = googleSheetsFunctions.getDataWithGrid(sheetInfoObj[0]["id"], googleSheetsObj, ["unsoldStockUpdateSheet"])
-#
-#
-#         listObj = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsTempData, 0), googleSheetsFunctions.countColumns(googleSheetsTempData, 0), googleSheetsTempData, 0)
-#         netSum = myPythonFunctions.sumListOfLists(listObj, 2)
-#
-#         if netSum < 0:
-#             account = "Loss On Sale - Hypothetical"
-#         else:
-#             account = "Gain On Sale - Hypothetical"
-#
-#
-#         unsoldLotList[0][2] = listObj[0][2]
-#         unsoldLotList.append([dateForUnsold, account, -netSum, tranType, stockToFilter, "Robinhood", lot[6], lot[7]])
-#         doubleEntryUnsoldStockList.extend(unsoldLotList)
-#
-#
-# myPythonFunctions.time.sleep(sleepTime)
-# valuesToPopulate = {"values": doubleEntryUnsoldStockList}
-# googleSheetsObj.values().update(spreadsheetId=sheetInfoObj[0]["id"], range="Transactions - Unsold Stock - Robinhood", valueInputOption="USER_ENTERED", body=valuesToPopulate).execute()
-#
-#
-#
-#
-# deleteRequest = {
-#     "requests": [
-#         {
-#             "deleteSheet": {
-#                 "sheetId": googleSheetsTempData["sheets"][0]["properties"]["sheetId"]
-#             }
-#         }
-#     ]
-# }
-#
-# myPythonFunctions.time.sleep(sleepTime)
-# googleSheetsObj.batchUpdate(spreadsheetId=sheetInfoObj[0]["id"], body=deleteRequest).execute()
 

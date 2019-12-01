@@ -319,6 +319,10 @@ def createTable(tblName, columnsObj, sqlCursor):
 
 
 
+def createTableAs(tblName, sqlCursor, sqlCommand):
+
+    sqlList = ["drop table if exists " + tblName, sqlCommand]
+    executeSQLStatements(sqlList, sqlCursor)
 
 
 
@@ -389,6 +393,9 @@ def getQueryResult(sqlCommand, tblName, sqlCursor, includeColumnNames):
     return queryResult
 
 
+def createPivotColStr():
+
+    return ""
 
 
 def getSQLColNamesList(sqlCursor, tblName, addTableName):
