@@ -2,13 +2,13 @@ from myPythonLibrary import myPythonFunctions
 from pprint import pprint as pp
 
 
-# def hasFormattedValue(cell):
-#
-#     for item in cell:
-#         if "formattedValue" in item:
-#             return True
-#
-#     return False
+def hasFormattedValue(cell):
+
+    for item in cell:
+        if "formattedValue" in item:
+            return True
+
+    return False
 
 
 
