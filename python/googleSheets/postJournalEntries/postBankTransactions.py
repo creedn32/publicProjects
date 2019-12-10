@@ -12,7 +12,7 @@ import datetime, pynput.mouse, win32api, win32con, pyautogui
 from pprint import pprint as pp
 
 
-#
+
 # class moduleNameClass:
 #     pass
 #
@@ -37,8 +37,8 @@ import myGoogleSheetsPythonLibrary.googleSheetsFunctions
 # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
 spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"  #ID of private Google Sheet
 # spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
-# sheetName = "Bank Transactions"
-sheetName = "Bank Transactions - Recurring"
+sheetName = "Bank Transactions"
+# sheetName = "Bank Transactions - Recurring"
 changeCellColor = False
 numLockChanged = False
 pyautogui.PAUSE = 0
