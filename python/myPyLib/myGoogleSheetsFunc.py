@@ -1,4 +1,4 @@
-from myPythonLibrary import myPythonFunctions
+from myPyLib import myPyFunc
 from pprint import pprint as pp
 
 
@@ -34,13 +34,13 @@ def getDataWithGrid(spreadsheetIDStr, googleSheetsObj, rangesArgument):
 
 
 def getCellValue(dataObj, sheetPos, rowPos, colPos):
-    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
-    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
-    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
-    currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
-    currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
+    sheetsData = myPyFunc.getFromDict(dataObj, "sheets")
+    currentSheetData = myPyFunc.getFromList(sheetsData, sheetPos)
+    dataOnSheet = myPyFunc.getFromList(myPyFunc.getFromDict(currentSheetData, "data"), 0)
+    currentRowsData = myPyFunc.getFromDict(dataOnSheet, "rowData")
+    currentRowData = myPyFunc.getFromDict(myPyFunc.getFromList(currentRowsData, rowPos), "values")
     try:
-        return myPythonFunctions.getFromList(currentRowData, colPos)["formattedValue"]
+        return myPyFunc.getFromList(currentRowData, colPos)["formattedValue"]
     except:
         return ""
 
@@ -48,13 +48,13 @@ def getCellValue(dataObj, sheetPos, rowPos, colPos):
 
 
 def getCellValueEffective(dataObj, sheetPos, rowPos, colPos):
-    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
-    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
-    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
-    currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
-    currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, rowPos), "values")
+    sheetsData = myPyFunc.getFromDict(dataObj, "sheets")
+    currentSheetData = myPyFunc.getFromList(sheetsData, sheetPos)
+    dataOnSheet = myPyFunc.getFromList(myPyFunc.getFromDict(currentSheetData, "data"), 0)
+    currentRowsData = myPyFunc.getFromDict(dataOnSheet, "rowData")
+    currentRowData = myPyFunc.getFromDict(myPyFunc.getFromList(currentRowsData, rowPos), "values")
     try:
-        return myPythonFunctions.getFromList(currentRowData, colPos)["effectiveValue"]
+        return myPyFunc.getFromList(currentRowData, colPos)["effectiveValue"]
     except:
         return getCellValue(dataObj, sheetPos, rowPos, colPos)
 
@@ -62,17 +62,17 @@ def getCellValueEffective(dataObj, sheetPos, rowPos, colPos):
 
 def countRows(dataObj, sheetPos):
 
-    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
+    sheetsData = myPyFunc.getFromDict(dataObj, "sheets")
 
     # saveFile(sheetsData, pathlib.Path(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"/"sheetsData.json"))
     # for i in sheetsData:
     #     pp(str(i)[:50])
 
-    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
-    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
+    currentSheetData = myPyFunc.getFromList(sheetsData, sheetPos)
+    dataOnSheet = myPyFunc.getFromList(myPyFunc.getFromDict(currentSheetData, "data"), 0)
 
     if "rowData" in dataOnSheet:
-        return len(myPythonFunctions.getFromDict(dataOnSheet, "rowData"))
+        return len(myPyFunc.getFromDict(dataOnSheet, "rowData"))
     else:
         return 1000000
 
@@ -81,13 +81,13 @@ def countRows(dataObj, sheetPos):
 
 
 def countColumns(dataObj, sheetPos):
-    sheetsData = myPythonFunctions.getFromDict(dataObj, "sheets")
-    currentSheetData = myPythonFunctions.getFromList(sheetsData, sheetPos)
-    dataOnSheet = myPythonFunctions.getFromList(myPythonFunctions.getFromDict(currentSheetData, "data"), 0)
+    sheetsData = myPyFunc.getFromDict(dataObj, "sheets")
+    currentSheetData = myPyFunc.getFromList(sheetsData, sheetPos)
+    dataOnSheet = myPyFunc.getFromList(myPyFunc.getFromDict(currentSheetData, "data"), 0)
 
     if "rowData" in dataOnSheet:
-        currentRowsData = myPythonFunctions.getFromDict(dataOnSheet, "rowData")
-        currentRowData = myPythonFunctions.getFromDict(myPythonFunctions.getFromList(currentRowsData, 0), "values")
+        currentRowsData = myPyFunc.getFromDict(dataOnSheet, "rowData")
+        currentRowData = myPyFunc.getFromDict(myPyFunc.getFromList(currentRowsData, 0), "values")
         return len(currentRowData)
     else:
         return 1000000
@@ -240,3 +240,36 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
     }
 
     googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
+
+
+
+
+def authFunc():
+
+    import pickle, pathlib, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
+    # print(pathlib.Path.cwd().parents[3])
+
+    credentialsPath = str(pathlib.Path.cwd().parents[3]) + "\\privatedata\\googleCredentials\\googleCredentials.json"
+    tokenPath = str(pathlib.Path.cwd().parents[3]) + "\\privatedata\\googleCredentials\\googleToken.pickle"
+    googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
+    credentialsObj = None
+
+
+    if pathlib.Path.exists(pathlib.Path(tokenPath)):
+        with open(tokenPath, "rb") as tokenObj:
+            credentialsObj = pickle.load(tokenObj)
+
+
+    # If there are no (valid) credentials available, let the user log in.
+    if not credentialsObj or not credentialsObj.valid:
+        if credentialsObj and credentialsObj.expired and credentialsObj.refresh_token:
+            credentialsObj.refresh(google.auth.transport.requests.Request())
+        else:
+            flowObj = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(credentialsPath, googleScopes)
+            credentialsObj = flowObj.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open(tokenPath, "wb") as tokenObj:
+            pickle.dump(credentialsObj, tokenObj)
+
+
+    return googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
