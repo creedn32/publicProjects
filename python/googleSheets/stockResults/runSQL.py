@@ -102,11 +102,11 @@ fieldAliasStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, True, True)
 fieldStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, True, False)
 aliasStr = myPythonFunctions.fieldsDictToStr(firstFieldsDict, False, True)
 
-myPythonFunctions.createTableAs("tblPurchase", sqlObj["sqlCursor"], f"select {fieldAliasStr}, tranDate as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+myPythonFunctions.createTableAs("tblPurchase", sqlObj["sqlCursor"], f"select {fieldAliasStr}, ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
 myPythonFunctions.createTableAs("tblShares", sqlObj["sqlCursor"], f"select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
-myPythonFunctions.createTableAs("tblSale", sqlObj["sqlCursor"], f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then tranDate end as 'Sale Date', sum(amount) as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+myPythonFunctions.createTableAs("tblSale", sqlObj["sqlCursor"], f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) end as 'Sale Date', sum(amount) as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
 
-
+# strftime('%m/%d', tranDate) + '/' +
 #get list of values to put as the pivot columns
 
 
@@ -119,7 +119,7 @@ myPythonFunctions.createTableAs("tblResults", sqlObj["sqlCursor"], f"select {ali
 
 
 colListStr = myPythonFunctions.getAllColumns(colDict, sqlObj["sqlCursor"])
-
+# pp(colListStr)
 
 
 
@@ -154,6 +154,7 @@ sqlCommand = f"select " + colListStr + ", " + divColStr + ", '', " + percentColS
             "left outer join tblSale on tblResults.Broker = tblSale.Broker and tblResults.Stock = tblSale.Stock and tblResults.Lot = tblSale.Lot " \
             "left outer join tblDividends on tblResults.Broker = tblDividends.Broker and tblResults.Stock = tblDividends.Stock and tblResults.Lot = tblDividends.Lot"
 
+# pp("Blank line")
 # pp(sqlCommand)
 
 myPythonFunctions.createTableAs("tblResultsJoined", sqlObj["sqlCursor"], sqlCommand)
