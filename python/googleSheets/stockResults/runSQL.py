@@ -1,23 +1,24 @@
-import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[0]/"myGoogleSheetsPythonLibrary"))
-sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPythonLibrary import myPythonFunctions
-startTime = myPythonFunctions.startCode()
+import sys, pathlib, time
+sys.path.append(str(pathlib.Path.cwd().parents[1])) #for myPyLib
+from myPyLib import myPyFunc, myGoogleSheetsFunc
+
+startTime = time.time()
+print("Comment: Importing modules and setting up variables...")
 
 from pprint import pprint as pp
 from collections import OrderedDict
-import googleSheetsFunctions, googleSheetsAuthenticate
+
 
 spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
 sheetsToDownload = ["Transactions - Scrubbed", "Ticker Map"]
 downloadedSheetIndex = 0
-googleSheetsObj = googleSheetsAuthenticate.authFunc()
-googleSheetsDataWithGrid = googleSheetsFunctions.getDataWithGrid(spreadsheetID, googleSheetsObj, sheetsToDownload)
-tranScrubRowTotal = googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Scrubbed"))
-tranScrubColTotal = googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Scrubbed"))
-tranScrubDataList = googleSheetsFunctions.extractValues(tranScrubRowTotal, tranScrubColTotal, googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Scrubbed"))
+googleSheetsObj = myGoogleSheetsFunc.authFunc()
+googleSheetsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(spreadsheetID, googleSheetsObj, sheetsToDownload)
+tranScrubRowTotal = myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Scrubbed"))
+tranScrubColTotal = myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Scrubbed"))
+tranScrubDataList = myGoogleSheetsFunc.extractValues(tranScrubRowTotal, tranScrubColTotal, googleSheetsDataWithGrid, sheetsToDownload.index("Transactions - Scrubbed"))
 
-tickerMapListData = googleSheetsFunctions.extractValues(googleSheetsFunctions.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Ticker Map")), googleSheetsFunctions.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Ticker Map")), googleSheetsDataWithGrid, sheetsToDownload.index("Ticker Map"))
+tickerMapListData = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Ticker Map")), myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Ticker Map")), googleSheetsDataWithGrid, sheetsToDownload.index("Ticker Map"))
 tickerUniqueMapListData = []
 
 for stock in tickerMapListData:
@@ -27,9 +28,7 @@ for stock in tickerMapListData:
 
 
 
-
-finishSetupTime = myPythonFunctions.time.time()
-print("Comment: Importing modules and setting up variables...Done. " + str(round(finishSetupTime - startTime, 3)) + " seconds")
+print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
 
@@ -163,7 +162,7 @@ sqlList = ["update tblResultsJoined set 'Last Value' = '=googlefinance(indirect(
 myPythonFunctions.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
-googleSheetsFunctions.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
+myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsObj, spreadsheetID, myPythonFunctions.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
 myPythonFunctions.closeDatabase(sqlObj["sqlConnection"])
 
 
