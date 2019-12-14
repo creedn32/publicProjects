@@ -8,7 +8,7 @@ from pprint import pprint as pp
 from collections import OrderedDict
 import googleSheetsFunctions, googleSheetsAuthenticate
 
-spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc" #full spreadsheet
+spreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
 sheetsToDownload = ["Transactions - Scrubbed", "Ticker Map"]
 downloadedSheetIndex = 0
 googleSheetsObj = googleSheetsAuthenticate.authFunc()
