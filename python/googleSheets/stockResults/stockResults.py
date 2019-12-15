@@ -6,7 +6,7 @@ startTime = time.time()
 print("Comment: Importing modules and setting up variables...")
 
 
-# import robinhoodTransactions
+import robinhoodTransactions
 from pprint import pprint as pp
 
 googleSheetsObj = myGoogleSheetsFunc.authFunc()
