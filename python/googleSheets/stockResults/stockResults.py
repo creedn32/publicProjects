@@ -81,3 +81,5 @@ for indexOfRow in range(0, tranRowTotal):
 
 
 myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Scrubbed", googleSheetsObj, spreadsheetID, tranDataList, False)
+
+import runSQL
