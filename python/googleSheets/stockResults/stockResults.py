@@ -11,78 +11,79 @@ from pprint import pprint as pp
 
 robSpreadsheetID = "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI"
 resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
-googleSheetsObj = myGoogleSheetsFunc.authFunc()
+googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
 
 ###########################################################################################
 
-resultsToDownload = ["Ticker Map"]
-resultsDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsObj, resultsToDownload)
+resultsToDownload = ["Inputs", "Ticker Map"]
+resultsDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, resultsToDownload)
+inputsExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Inputs")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Inputs")), resultsDownloadedWithGrid, resultsToDownload.index("Inputs"))
+tickerMapIndexStockName = inputsExtractedValues[0][1]
 
-
-robToDownload = ["Raw Data - Robinhood", "Transactions To Add - Robinhood"]
-robDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(robSpreadsheetID, googleSheetsObj, robToDownload)
-
-robRawDataRows = myGoogleSheetsFunc.countRows(robDownloadedWithGrid, robToDownload.index("Raw Data - Robinhood"))
-robExtractedValues = myGoogleSheetsFunc.extractValues(robRawDataRows, myGoogleSheetsFunc.countColumns(robDownloadedWithGrid, robToDownload.index("Raw Data - Robinhood")), robDownloadedWithGrid, robToDownload.index("Raw Data - Robinhood"))
-robTransactionsToAddExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(robDownloadedWithGrid, robToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(robDownloadedWithGrid, robToDownload.index("Transactions To Add - Robinhood")), robDownloadedWithGrid, robToDownload.index("Transactions To Add - Robinhood"))
 
 tickerMapExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map")), resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map"))
 tickerMapUniqueExtractedValues = []
 
 for tickerMapItem in tickerMapExtractedValues:
 
-    if tickerMapItem[2] not in [tickerMapUniqueItem[2] for tickerMapUniqueItem in tickerMapUniqueExtractedValues]:
+    if tickerMapItem[tickerMapIndexStockName] not in [tickerMapUniqueItem[tickerMapIndexStockName] for tickerMapUniqueItem in tickerMapUniqueExtractedValues]:
         tickerMapUniqueExtractedValues.append(tickerMapItem)
+
+
+robToDownload = ["Raw Data - Robinhood", "Transactions To Add - Robinhood"]
+robDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(robSpreadsheetID, googleSheetsAPIObj, robToDownload)
+
+robRawDataRows = myGoogleSheetsFunc.countRows(robDownloadedWithGrid, robToDownload.index("Raw Data - Robinhood"))
+robRawDataExtractedValues = myGoogleSheetsFunc.extractValues(robRawDataRows, myGoogleSheetsFunc.countColumns(robDownloadedWithGrid, robToDownload.index("Raw Data - Robinhood")), robDownloadedWithGrid, robToDownload.index("Raw Data - Robinhood"))
+robTransactionsToAddExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(robDownloadedWithGrid, robToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(robDownloadedWithGrid, robToDownload.index("Transactions To Add - Robinhood")), robDownloadedWithGrid, robToDownload.index("Transactions To Add - Robinhood"))
+
 
 
 
 #create data
 
-newTransactionListCurrentColumnIndex = 0
-newTransactionListToAppend = []
-transactionList = []
+robNewTransListCurrColIndex = 0
+robNewTransRow = []
+robNewTransList = []
 robRawDataColumnIndexWithData = 0
 robRawDataLastRowIndex = robRawDataRows - 1
 
-for indexOfRow in range(0, robRawDataRows):
+for robRawDataIndexOfRow in range(0, robRawDataRows):
 
-    nextCellValueHasNoShares = True
-    currentCellValue = robExtractedValues[indexOfRow][robRawDataColumnIndexWithData]
+    robRawDataNextCellValueHasNoShares = True
+    robRawDataCurrentCellValue = robRawDataExtractedValues[robRawDataIndexOfRow][robRawDataColumnIndexWithData]
 
-    if indexOfRow + 1 <= robRawDataLastRowIndex:
-        if len(str(robExtractedValues[indexOfRow + 1][robRawDataColumnIndexWithData]).split(" share")) > 1:
-            nextCellValueHasNoShares = False
+    if robRawDataIndexOfRow + 1 <= robRawDataLastRowIndex:
+        if len(str(robRawDataExtractedValues[robRawDataIndexOfRow + 1][robRawDataColumnIndexWithData]).split(" share")) > 1:
+            robRawDataNextCellValueHasNoShares = False
 
-    if newTransactionListCurrentColumnIndex == 2 and currentCellValue != "Failed":
-        newTransactionListToAppend.append(abs(currentCellValue))
+    if robNewTransListCurrColIndex == 2 and robRawDataCurrentCellValue != "Failed":
+        robNewTransRow.append(abs(robRawDataCurrentCellValue))
     else:
-        newTransactionListToAppend.append(currentCellValue)
+        robNewTransRow.append(robRawDataCurrentCellValue)
 
 
 
-    # pp("indexofRow: " + str(indexOfRow))
-    # pp("newTransactionListCurrentColumnIndex:" + str(newTransactionListCurrentColumnIndex))
-    # pp(nextValueHasNoShares)
+    if (robNewTransListCurrColIndex == 2 and robRawDataNextCellValueHasNoShares) or robNewTransListCurrColIndex == 3:
+        robNewTransListCurrColIndex = -1
 
-    if (newTransactionListCurrentColumnIndex == 2 and nextCellValueHasNoShares) or newTransactionListCurrentColumnIndex == 3:
-        newTransactionListCurrentColumnIndex = -1
-
-        if len(newTransactionListToAppend) == 3:
-            newTransactionListToAppend.extend(["", ""])
-        elif len(newTransactionListToAppend) == 4:
-            newTransactionListToAppend.append(int(str(currentCellValue).split(" share")[0]))
+        if len(robNewTransRow) == 3:
+            robNewTransRow.extend(["", ""])
+        elif len(robNewTransRow) == 4:
+            robNewTransRow.append(int(str(robRawDataCurrentCellValue).split(" share")[0]))
 
 
-        transactionList.append(newTransactionListToAppend)
-        # pp(transactionList)
-        newTransactionListToAppend = []
+        robNewTransList.append(robNewTransRow)
+        robNewTransRow = []
 
-    newTransactionListCurrentColumnIndex = newTransactionListCurrentColumnIndex + 1
+    robNewTransListCurrColIndex = robNewTransListCurrColIndex + 1
 
 
-transactionList.sort(key=lambda x: int(x[1]))
+robNewTransList.sort(key=lambda x: int(x[1]))
+
+pp(robNewTransList)
 
 
 #create transactions
@@ -103,7 +104,7 @@ rightStrMap = {" Market Buy": {"transactionType": "Purchase", "debitAccount": "I
 lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31)))    # lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2018, 10, 31)))
 
 
-for transaction in transactionList:
+for transaction in robNewTransList:
 
     if transaction[2] != "Failed" and transaction[1] > lastDate:
 
@@ -188,13 +189,13 @@ myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueE
 myPyFunc.createTableAs("tblLots", sqlObj["sqlCursor"], f"select stockName, lot, sum(amount), sum(shares) from {tblMainName} where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
 
 sqlCommand = f"select tblLots.*, tblTickerMap.ticker, '=googlefinance(indirect(\"E\"&row()))*indirect(\"D\"&row())' as googleFin, '=indirect(\"F\"&row())-indirect(\"C\"&row())' as gainLoss from tblLots left outer join tblTickerMap on tblLots.stockName = tblTickerMap.stockName;"
-myGoogleSheetsFunc.populateSheet(3, 1, "Unsold Stock Values - Robinhood", googleSheetsObj, robSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, tblMainName, sqlObj["sqlCursor"], False), True)
+myGoogleSheetsFunc.populateSheet(3, 1, "Unsold Stock Values - Robinhood", googleSheetsAPIObj, robSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, tblMainName, sqlObj["sqlCursor"], False), True)
 myPyFunc.closeDatabase(sqlObj["sqlConnection"])
 
 
 tranType = "Sale - Hypothetical"
 priceDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime.now()))
-unsoldStockValuesDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(robSpreadsheetID, googleSheetsObj, ["Unsold Stock Values - Robinhood"])
+unsoldStockValuesDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(robSpreadsheetID, googleSheetsAPIObj, ["Unsold Stock Values - Robinhood"])
 unsoldStockValuesList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(unsoldStockValuesDataWithGrid, 0), myGoogleSheetsFunc.countColumns(unsoldStockValuesDataWithGrid, 0), unsoldStockValuesDataWithGrid, 0)
 doubleEntryUnsoldStockList = [] #["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
 
@@ -214,7 +215,7 @@ for lot in unsoldStockValuesList:
 
 
 doubleEntryTransactionList.extend(doubleEntryUnsoldStockList)
-myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Robinhood", googleSheetsObj, resultsSpreadsheetID, doubleEntryTransactionList, True)
+myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, doubleEntryTransactionList, True)
 
 
 
@@ -227,7 +228,7 @@ splitTime = myPyFunc.printElapsedTime(splitTime, "Finished processing Robinhood"
 
 
 stockResultsSheetsToDownload = ["Transactions", "Transactions - Robinhood", "Chart of Accounts", "Ticker Map"]
-googleSheetsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsObj, stockResultsSheetsToDownload)
+googleSheetsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, stockResultsSheetsToDownload)
 
 tranDataList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions")), myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions")), googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions"))
 tranRobinhoodDataList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions - Robinhood")), myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions - Robinhood")), googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions - Robinhood"))
@@ -293,7 +294,7 @@ for indexOfRow in range(0, tranRowTotal):
 
 
 
-myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Scrubbed", googleSheetsObj, resultsSpreadsheetID, tranDataList, False)
+myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, tranDataList, False)
 
 
 
@@ -312,7 +313,7 @@ myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Scrubbed", googleSheets
 
 stockResultsSheetsToDownload = ["Transactions - Scrubbed", "Ticker Map"]
 downloadedSheetIndex = 0
-resultsDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsObj, stockResultsSheetsToDownload)
+resultsDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, stockResultsSheetsToDownload)
 resultsTranScrubRowTotal = myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, stockResultsSheetsToDownload.index("Transactions - Scrubbed"))
 resultsTranScrubColTotal = myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, stockResultsSheetsToDownload.index("Transactions - Scrubbed"))
 resultsTranScrubExtractedValues = myGoogleSheetsFunc.extractValues(resultsTranScrubRowTotal, resultsTranScrubColTotal, resultsDownloadedWithGrid, stockResultsSheetsToDownload.index("Transactions - Scrubbed"))
@@ -451,5 +452,5 @@ sqlList = ["update tblResultsJoined set 'Last Value' = '=googlefinance(indirect(
 myPyFunc.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
-myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
+myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
 myPyFunc.closeDatabase(sqlObj["sqlConnection"])
