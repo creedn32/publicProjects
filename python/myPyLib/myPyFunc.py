@@ -1,6 +1,20 @@
 from pprint import pprint as pp
 
 
+def printElapsedTime(priorTime, message):
+
+    import time
+    currentTime = time.time()
+
+    if not priorTime:
+        priorTime = currentTime
+
+    pp("Split time: " + str(round(currentTime - priorTime, 1)) + " seconds. " + message + ".")
+
+    return currentTime
+
+
+
 def convertNothingToEmptyStr(s):
     if s:
         return str(s)
@@ -54,50 +68,49 @@ def functionOnClick(x, y, button, pressed):
 
 
 def printPythonInfo(var, length):
-    from pprint import pprint
 
-    pprint("1. Printing string of the variable: " + str(var)[0:length])
-    pprint(var)
+    pp("1. Printing string of the variable: " + str(var)[0:length])
+    pp(var)
 
-    pprint("2. Printing help() of the variable: " + str(var)[0:length])
-    pprint(help(var))
+    pp("2. Printing help() of the variable: " + str(var)[0:length])
+    pp(help(var))
 
-    pprint("3. Printing dir() of the variable: " + str(var)[0:length])
-    pprint(dir(var))
-
+    pp("3. Printing dir() of the variable: " + str(var)[0:length])
+    pp(dir(var))
 
 
-    pprint("4. Printing vars() of the variable: " + str(var)[0:length])
+
+    pp("4. Printing vars() of the variable: " + str(var)[0:length])
     try:
-        pprint(vars(var))
+        pp(vars(var))
     except:
-        pprint("An exception occurred printing vars() of the variable")
+        pp("An exception occurred printing vars() of the variable")
 
 
 
 
-    pprint("5. Printing and loopting through the variable: " + str(var)[0:length])
+    pp("5. Printing and loopting through the variable: " + str(var)[0:length])
     try:
         for attr in dir(var):
-            pprint("obj.%s = %r" % (attr, getattr(var, attr)))
+            pp("obj.%s = %r" % (attr, getattr(var, attr)))
     except:
-        pprint("An exception occurred printing and loopting through the variable")
+        pp("An exception occurred printing and loopting through the variable")
 
 
 
-    pprint("6. Printing the .__dict__ of the variable: " + str(var)[0:length])
+    pp("6. Printing the .__dict__ of the variable: " + str(var)[0:length])
     try:
-        pprint(var.__dict__)
+        pp(var.__dict__)
     except:
-        pprint("An exception occurred printing the .__dict__ of the variable")
+        pp("An exception occurred printing the .__dict__ of the variable")
 
 
 
-    pprint("7. Printing the repr() of the variable: " + str(var)[0:length])
+    pp("7. Printing the repr() of the variable: " + str(var)[0:length])
     try:
-        pprint(repr(var))
+        pp(repr(var))
     except:
-        pprint("An exception occurred printing the repr() of the variable")
+        pp("An exception occurred printing the repr() of the variable")
 
 
 
@@ -153,8 +166,6 @@ def getFromList(listObj, position):
 
 
 def saveFile(dataObj, path):
-
-    from pprint import pprint as pp
 
     with open(path, "w") as out:
         pp(dataObj, stream=out)
