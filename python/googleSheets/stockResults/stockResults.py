@@ -83,7 +83,7 @@ for robRawDataIndexOfRow in range(0, robRawDataRows):
 
 robNewTransList.sort(key=lambda x: int(x[1]))
 
-pp(robNewTransList)
+# pp(robNewTransList)
 
 
 #create transactions
