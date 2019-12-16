@@ -79,6 +79,8 @@ for robRawDataIndexOfRow in range(0, rawDataRobRows):
 
 
 newTransRobList.sort(key=lambda x: int(x[1]))
+myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True)
+
 
 
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished processing raw Robinhood data")
@@ -86,15 +88,17 @@ splitTime = myPyFunc.printElapsedTime(splitTime, "Finished processing raw Robinh
 
 #create transactions
 
-doubleEntryTransactionList = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
-doubleEntryTransactionList.extend(transactionsToAddRobExtractedValues[1:])
+robtranRobDoubleEntryList = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
+robtranRobDoubleEntryList.extend(transactionsToAddRobExtractedValues[1:])
 
 
-leftStrMap = {"Dividend from ": {"transactionType": "Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue"},
-       "Withdrawal to ": {"transactionType": "Owners - Pay", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks", "lotInfo": "All Lots"},
-       "Deposit from ": {"transactionType": "Owners - Receive Cash", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks", "lotInfo": "All Lots"},
-       "Interest Payment": {"transactionType": "Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "Cash", "lotInfo": "Cash"},
-       "AKS from Robinhood": {"transactionType": "Purchase - Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS", "shares": 1}}
+leftStrMap = {
+                "Dividend from ": {"transactionType": "Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue"},
+                "Withdrawal to ": {"transactionType": "Owners - Pay", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks", "lotInfo": "All Lots"},
+                "Deposit from ": {"transactionType": "Owners - Receive Cash", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks", "lotInfo": "All Lots"},
+                "Interest Payment": {"transactionType": "Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "Cash", "lotInfo": "Cash"},
+                "AKS from Robinhood": {"transactionType": "Purchase - Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS", "shares": 1}
+}
 
 rightStrMap = {" Market Buy": {"transactionType": "Purchase", "debitAccount": "Investment Asset", "creditAccount": "Cash"}}
 
@@ -138,7 +142,7 @@ for transaction in newTransRobList:
         else:
             filterForLots = [{1: "Investment Asset", 3: "Purchase", 4: stockName},
                              {1: "Investment Asset", 3: "Purchase - Stock From Merger", 4: stockName}]
-            filteredList = myPyFunc.filterListOfLists(doubleEntryTransactionList, filterForLots)
+            filteredList = myPyFunc.filterListOfLists(robtranRobDoubleEntryList, filterForLots)
 
             if len(filteredList) == 1:
                 lot = myPyFunc.convertSerialDateToDateWithoutDashes(filteredList[0][0])
@@ -149,8 +153,8 @@ for transaction in newTransRobList:
         else:
             shares = transaction[4]
 
-        doubleEntryTransactionList.append([transaction[1], mappedTransactionData["debitAccount"], transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, shares])
-        doubleEntryTransactionList.append([transaction[1], mappedTransactionData["creditAccount"], -transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, ""])
+        robtranRobDoubleEntryList.append([transaction[1], mappedTransactionData["debitAccount"], transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, shares])
+        robtranRobDoubleEntryList.append([transaction[1], mappedTransactionData["creditAccount"], -transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, ""])
 
 
 
@@ -172,7 +176,7 @@ columnsObj["shares"] = "float"
 
 
 sqlObj = myPyFunc.createDatabase("stockResultsRobinhood.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
-myPyFunc.populateTable(len(doubleEntryTransactionList), len(doubleEntryTransactionList[0]), tblMainName, doubleEntryTransactionList, sqlObj["sqlCursor"], [0])
+myPyFunc.populateTable(len(robtranRobDoubleEntryList), len(robtranRobDoubleEntryList[0]), tblMainName, robtranRobDoubleEntryList, sqlObj["sqlCursor"], [0])
 
 
 tickerColumnsObj = OrderedDict()
@@ -214,20 +218,19 @@ for lot in unsoldStockValuesList:
 
 
 
-doubleEntryTransactionList.extend(doubleEntryUnsoldStockList)
-myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, doubleEntryTransactionList, True)
+robtranRobDoubleEntryList.extend(doubleEntryUnsoldStockList)
+myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, robtranRobDoubleEntryList, True)
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished writing to Transactions - Robinhood")
 
 
 
 
 
-stockResultsSheetsToDownload = ["Transactions", "Transactions - Robinhood", "Chart of Accounts", "Ticker Map"]
+stockResultsSheetsToDownload = ["Transactions", "Chart of Accounts", "Ticker Map"]
 googleSheetsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, stockResultsSheetsToDownload)
 
 tranDataList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions")), myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions")), googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions"))
-tranRobinhoodDataList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions - Robinhood")), myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions - Robinhood")), googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions - Robinhood"))
-tranDataList.extend(tranRobinhoodDataList[1:len(tranRobinhoodDataList)])
+tranDataList.extend(robtranRobDoubleEntryList[1:len(robtranRobDoubleEntryList)])
 tranDataList = [item for item in tranDataList if item[2] != 0]
 
 chartOfAccountsDict = myGoogleSheetsFunc.createDictMapFromSheet(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Chart of Accounts"))
@@ -235,7 +238,7 @@ tickerDict = myGoogleSheetsFunc.createDictMapFromSheet(googleSheetsDataWithGrid,
 
 tranRowTotal = len(tranDataList)
 
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished setting up Stock Results")
+
 
 
 #Scrub Transactions sheet
@@ -289,7 +292,7 @@ for indexOfRow in range(0, tranRowTotal):
 
 
 
-myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, tranDataList, False)
+myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, tranDataList, False)
 
 
 
