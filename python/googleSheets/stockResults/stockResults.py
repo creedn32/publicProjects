@@ -1,4 +1,4 @@
-import sys, pathlib, time
+import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPyLib import myPyFunc, myGoogleSheetsFunc
 
@@ -9,36 +9,32 @@ import datetime
 from collections import OrderedDict
 from pprint import pprint as pp
 
+robSpreadsheetID = "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI"
+resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
+googleSheetsObj = myGoogleSheetsFunc.authFunc()
 
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules")
+splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
 
 ###########################################################################################
 
+resultsToDownload = ["Ticker Map"]
+resultsDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsObj, resultsToDownload)
 
 
-
-robSpreadsheetID = "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI"
-resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
 robToDownload = ["Raw Data - Robinhood", "Transactions To Add - Robinhood"]
-googleSheetsObj = myGoogleSheetsFunc.authFunc()
-robDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(robSpreadsheetID, googleSheetsObj, robToDownload)
-resultsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsObj, ["Ticker Map"])
+robDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(robSpreadsheetID, googleSheetsObj, robToDownload)
 
+robRawDataRows = myGoogleSheetsFunc.countRows(robDownloadedWithGrid, robToDownload.index("Raw Data - Robinhood"))
+robExtractedValues = myGoogleSheetsFunc.extractValues(robRawDataRows, myGoogleSheetsFunc.countColumns(robDownloadedWithGrid, robToDownload.index("Raw Data - Robinhood")), robDownloadedWithGrid, robToDownload.index("Raw Data - Robinhood"))
+robTransactionsToAddExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(robDownloadedWithGrid, robToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(robDownloadedWithGrid, robToDownload.index("Transactions To Add - Robinhood")), robDownloadedWithGrid, robToDownload.index("Transactions To Add - Robinhood"))
 
-rawDataRows = myGoogleSheetsFunc.countRows(robDataWithGrid, robToDownload.index("Raw Data - Robinhood"))
-rawDataListData = myGoogleSheetsFunc.extractValues(rawDataRows, myGoogleSheetsFunc.countColumns(robDataWithGrid, robToDownload.index("Raw Data - Robinhood")), robDataWithGrid, robToDownload.index("Raw Data - Robinhood"))
-transactionsToAddListData = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(robDataWithGrid, robToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(robDataWithGrid, robToDownload.index("Transactions To Add - Robinhood")), robDataWithGrid, robToDownload.index("Transactions To Add - Robinhood"))
+tickerMapExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map")), resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map"))
+tickerMapUniqueExtractedValues = []
 
-tickerMapListData = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDataWithGrid, 0), myGoogleSheetsFunc.countColumns(resultsDataWithGrid, 0), resultsDataWithGrid, 0)
-tickerUniqueMapListData = []
+for tickerMapItem in tickerMapExtractedValues:
 
-for stock in tickerMapListData:
-
-    if stock[2] not in [item[2] for item in tickerUniqueMapListData]:
-        tickerUniqueMapListData.append(stock)
-
-
-# pp(tickerUniqueMapListData)
+    if tickerMapItem[2] not in [tickerMapUniqueItem[2] for tickerMapUniqueItem in tickerMapUniqueExtractedValues]:
+        tickerMapUniqueExtractedValues.append(tickerMapItem)
 
 
 
@@ -47,21 +43,16 @@ for stock in tickerMapListData:
 newTransactionListCurrentColumnIndex = 0
 newTransactionListToAppend = []
 transactionList = []
-rawDataColumnWithData = 0
+robRawDataColumnIndexWithData = 0
+robRawDataLastRowIndex = robRawDataRows - 1
 
-
-# pp(rawDataListData)
-
-
-lastIndex = rawDataRows - 1
-
-for indexOfRow in range(0, rawDataRows):
+for indexOfRow in range(0, robRawDataRows):
 
     nextCellValueHasNoShares = True
-    currentCellValue = rawDataListData[indexOfRow][rawDataColumnWithData]
+    currentCellValue = robExtractedValues[indexOfRow][robRawDataColumnIndexWithData]
 
-    if indexOfRow + 1 <= lastIndex:
-        if len(str(rawDataListData[indexOfRow + 1][rawDataColumnWithData]).split(" share")) > 1:
+    if indexOfRow + 1 <= robRawDataLastRowIndex:
+        if len(str(robExtractedValues[indexOfRow + 1][robRawDataColumnIndexWithData]).split(" share")) > 1:
             nextCellValueHasNoShares = False
 
     if newTransactionListCurrentColumnIndex == 2 and currentCellValue != "Failed":
@@ -97,7 +88,7 @@ transactionList.sort(key=lambda x: int(x[1]))
 #create transactions
 
 doubleEntryTransactionList = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
-doubleEntryTransactionList.extend(transactionsToAddListData[1:])
+doubleEntryTransactionList.extend(robTransactionsToAddExtractedValues[1:])
 
 
 leftStrMap = {"Dividend from ": {"transactionType": "Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue"},
@@ -108,8 +99,8 @@ leftStrMap = {"Dividend from ": {"transactionType": "Dividend", "debitAccount": 
 
 rightStrMap = {" Market Buy": {"transactionType": "Purchase", "debitAccount": "Investment Asset", "creditAccount": "Cash"}}
 
-# lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2018, 10, 31)))
-lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31)))
+
+lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31)))    # lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2018, 10, 31)))
 
 
 for transaction in transactionList:
@@ -189,7 +180,7 @@ tickerColumnsObj["Ticker"] = "varchar(255)"
 tickerColumnsObj["stockName"] = "varchar(255)"
 
 myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlObj["sqlCursor"])
-myPyFunc.populateTable(len(tickerUniqueMapListData), len(tickerUniqueMapListData[0]), "tblTickerMap", tickerUniqueMapListData, sqlObj["sqlCursor"], [])
+myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueExtractedValues[0]), "tblTickerMap", tickerMapUniqueExtractedValues, sqlObj["sqlCursor"], [])
 # pp(myPyFunc.getQueryResult("select * from tblTickerMap", "tblTickerMap", sqlObj["sqlCursor"], False))
 
 
@@ -230,9 +221,6 @@ myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Robinhood", googleSheet
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished processing Robinhood")
 
 ###########################################################################################
-
-
-
 
 
 
@@ -324,18 +312,18 @@ myGoogleSheetsFunc.populateSheet(2, 100, "Transactions - Scrubbed", googleSheets
 
 stockResultsSheetsToDownload = ["Transactions - Scrubbed", "Ticker Map"]
 downloadedSheetIndex = 0
-googleSheetsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsObj, stockResultsSheetsToDownload)
-tranScrubRowTotal = myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions - Scrubbed"))
-tranScrubColTotal = myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions - Scrubbed"))
-tranScrubDataList = myGoogleSheetsFunc.extractValues(tranScrubRowTotal, tranScrubColTotal, googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions - Scrubbed"))
+resultsDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsObj, stockResultsSheetsToDownload)
+resultsTranScrubRowTotal = myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, stockResultsSheetsToDownload.index("Transactions - Scrubbed"))
+resultsTranScrubColTotal = myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, stockResultsSheetsToDownload.index("Transactions - Scrubbed"))
+resultsTranScrubExtractedValues = myGoogleSheetsFunc.extractValues(resultsTranScrubRowTotal, resultsTranScrubColTotal, resultsDownloadedWithGrid, stockResultsSheetsToDownload.index("Transactions - Scrubbed"))
 
-tickerMapListData = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Ticker Map")), myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Ticker Map")), googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Ticker Map"))
-tickerUniqueMapListData = []
+tickerMapExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, stockResultsSheetsToDownload.index("Ticker Map")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, stockResultsSheetsToDownload.index("Ticker Map")), resultsDownloadedWithGrid, stockResultsSheetsToDownload.index("Ticker Map"))
+tickerMapUniqueExtractedValues = []
 
-for stock in tickerMapListData:
+for stock in tickerMapExtractedValues:
 
-    if stock[2] not in [item[2] for item in tickerUniqueMapListData]:
-        tickerUniqueMapListData.append(stock)
+    if stock[2] not in [item[2] for item in tickerMapUniqueExtractedValues]:
+        tickerMapUniqueExtractedValues.append(stock)
 
 
 
@@ -365,13 +353,6 @@ colDict =   {
                 4:  {"table": "tblSale",
                     "excludedFields": ["Stock", "Broker", "Lot"]}
             }
-                # 5:  {"table": "tblDividends",
-                #     "excludedFields": ["Stock", "Broker", "Lot"]},
-                # 6:  {"table": "tblDividends",
-                #     "excludedFields": ["Stock", "Broker", "Lot"],
-                #      "additionalColumnText": "%"}
-            # }
-
 
 
 
@@ -392,7 +373,7 @@ columnsObj["dateYear"] = "int"
 
 
 sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
-myPyFunc.populateTable(tranScrubRowTotal, tranScrubColTotal, tblMainName, tranScrubDataList, sqlObj["sqlCursor"], [0])
+myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, tblMainName, resultsTranScrubExtractedValues, sqlObj["sqlCursor"], [0])
 
 
 tickerColumnsObj = OrderedDict()
@@ -401,7 +382,7 @@ tickerColumnsObj["Ticker"] = "varchar(255)"
 tickerColumnsObj["stockName"] = "varchar(255)"
 
 myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlObj["sqlCursor"])
-myPyFunc.populateTable(len(tickerUniqueMapListData), len(tickerUniqueMapListData[0]), "tblTickerMap", tickerUniqueMapListData, sqlObj["sqlCursor"], [])
+myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueExtractedValues[0]), "tblTickerMap", tickerMapUniqueExtractedValues, sqlObj["sqlCursor"], [])
 
 
 
@@ -417,7 +398,7 @@ myPyFunc.createTableAs("tblSale", sqlObj["sqlCursor"], f"select {fieldAliasStr},
 #get list of values to put as the pivot columns
 
 
-pivotColDict = myPyFunc.createPivotColDict("dateYear", 10, "amount", 1, tranScrubDataList)
+pivotColDict = myPyFunc.createPivotColDict("dateYear", 10, "amount", 1, resultsTranScrubExtractedValues)
 pivotColStr = pivotColDict["pivotColStr"]
 # pp(pivotColStr)
 
