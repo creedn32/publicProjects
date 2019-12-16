@@ -14,15 +14,15 @@ robinhoodSpreadsheetID = "1oisLtuJJOZnU-nMvILNWO43_8w2rCT3V6vq3vMnAnCI"
 stockResultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
 sheetsToDownload = ["Raw Data - Robinhood", "Transactions To Add - Robinhood"]
 googleSheetsObj = myGoogleSheetsFunc.authFunc()
-googleSheetsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(robinhoodSpreadsheetID, googleSheetsObj, sheetsToDownload)
+robinhoodDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(robinhoodSpreadsheetID, googleSheetsObj, sheetsToDownload)
 stockResultsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(stockResultsSpreadsheetID, googleSheetsObj, ["Ticker Map"])
 
 print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
 
 
-rawDataRows = myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood"))
-rawDataListData = myGoogleSheetsFunc.extractValues(rawDataRows, myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood")), googleSheetsDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood"))
-transactionsToAddListData = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood")), googleSheetsDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood"))
+rawDataRows = myGoogleSheetsFunc.countRows(robinhoodDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood"))
+rawDataListData = myGoogleSheetsFunc.extractValues(rawDataRows, myGoogleSheetsFunc.countColumns(robinhoodDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood")), robinhoodDataWithGrid, sheetsToDownload.index("Raw Data - Robinhood"))
+transactionsToAddListData = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(robinhoodDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(robinhoodDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood")), robinhoodDataWithGrid, sheetsToDownload.index("Transactions To Add - Robinhood"))
 
 tickerMapListData = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(stockResultsDataWithGrid, 0), myGoogleSheetsFunc.countColumns(stockResultsDataWithGrid, 0), stockResultsDataWithGrid, 0)
 tickerUniqueMapListData = []
