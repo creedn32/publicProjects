@@ -10,6 +10,7 @@ from collections import OrderedDict
 from pprint import pprint as pp
 
 resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
+firstIndex = 0
 googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
@@ -49,6 +50,9 @@ splitTime = myPyFunc.printElapsedTime(splitTime, "Finished downloading and extra
 newTransRobListCurrColIndex = 0
 newTransRobRow = []
 newTransRobList = []
+newTransRobListDescColIndex = 0
+newTransRobListDateColIndex = 1
+newTransRobListAmountColIndex = 2
 rawDataRobColumnIndexWithData = 0
 rawDataRobLastRowIndex = rawDataRobRows - 1
 
@@ -61,20 +65,20 @@ for rawDataRobIndexOfRow in range(0, rawDataRobRows):
         if len(str(rawDataRobExtractedValues[rawDataRobIndexOfRow + 1][rawDataRobColumnIndexWithData]).split(" share")) > 1:
             rawDataRobNextCellValueHasNoShares = False
 
-    if newTransRobListCurrColIndex == 2 and robRawDataCurrentCellValue != "Failed":
+    if newTransRobListCurrColIndex == newTransRobListAmountColIndex and robRawDataCurrentCellValue != "Failed":
         newTransRobRow.append(abs(robRawDataCurrentCellValue))
     else:
         newTransRobRow.append(robRawDataCurrentCellValue)
 
 
 
-    if (newTransRobListCurrColIndex == 2 and rawDataRobNextCellValueHasNoShares) or newTransRobListCurrColIndex == 3:
+    if (newTransRobListCurrColIndex == newTransRobListAmountColIndex and rawDataRobNextCellValueHasNoShares) or newTransRobListCurrColIndex == 3:
         newTransRobListCurrColIndex = -1
 
         if len(newTransRobRow) == 3:
             newTransRobRow.extend(["", ""])
         elif len(newTransRobRow) == 4:
-            newTransRobRow.append(int(str(robRawDataCurrentCellValue).split(" share")[0]))
+            newTransRobRow.append(int(str(robRawDataCurrentCellValue).split(" share")[newTransRobListDescColIndex]))
 
 
         newTransRobList.append(newTransRobRow)
@@ -83,8 +87,8 @@ for rawDataRobIndexOfRow in range(0, rawDataRobRows):
     newTransRobListCurrColIndex = newTransRobListCurrColIndex + 1
 
 
-newTransRobList.sort(key=lambda x: int(x[1]))
-splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True, dontPopulateSheet=True)
+newTransRobList.sort(key=lambda x: int(x[newTransRobListDateColIndex]))
+splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True, dontPopulateSheet=False)
 
 
 
@@ -110,7 +114,7 @@ lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31))
 
 for transaction in newTransRobList:
 
-    if transaction[2] != "Failed" and transaction[1] > lastDate:
+    if transaction[newTransRobListAmountColIndex] != "Failed" and transaction[newTransRobListDateColIndex] > lastDate:
 
         mappedTransactionData = {}
 
