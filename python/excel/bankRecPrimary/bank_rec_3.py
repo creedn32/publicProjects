@@ -3,14 +3,15 @@
 #Copy the comparison sheet into it's own workbook
 
 
-print("Cmt: Importing modules...")
+import sys, pathlib
+sys.path.append(str(pathlib.Path.cwd().parents[1]))
+from myPyLib import myPyFunc
 
-import time, win32com.client, pathlib
+splitTime = myPyFunc.printElapsedTime(False, "Starting script")
+
+import win32com.client
 from pprint import pprint as pp
 
-startTime = time.time()
-print("Cmt: Importing modules...Done.")
-print("Cmt: Open and connect to file...")
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = True
@@ -48,7 +49,7 @@ gpTrxTypeCol = 12
 gpTrxNumCol = 13
 
 
-print("Cmt: Open and connect to file...Done.")
+splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
 
 #copy column names to Comparison
 
@@ -143,4 +144,4 @@ excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
-print("Elapsed time is " + str(time.time() - startTime))
+splitTime = myPyFunc.printElapsedTime(splitTime, "Finished bank_rec_3")
