@@ -219,27 +219,32 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
 
 def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet, **kwargs):
 
-    reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
-    googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
-    googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
+    dontPopulateSheet = kwargs.get("dontPopulateSheet", False)
+
+    if not dontPopulateSheet:
+
+        reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
+        googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
+        googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
 
 
-    requestObj = {
-        "requests": [
-            {
-                "autoResizeDimensions": {
-                    "dimensions": {
-                        "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
-                        "dimension": "COLUMNS",
-                        "startIndex": 0,
-                        "endIndex": len(valuesList[0]) + 1
+        requestObj = {
+            "requests": [
+                {
+                    "autoResizeDimensions": {
+                        "dimensions": {
+                            "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
+                            "dimension": "COLUMNS",
+                            "startIndex": 0,
+                            "endIndex": len(valuesList[0]) + 1
+                        }
                     }
                 }
-            }
-        ]
-    }
+            ]
+        }
 
-    googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
+        googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
+
     splitTime = kwargs.get("splitTimeArg", None)
 
     if splitTime:
