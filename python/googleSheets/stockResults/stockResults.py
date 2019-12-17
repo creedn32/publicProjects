@@ -10,7 +10,6 @@ from collections import OrderedDict
 from pprint import pprint as pp
 
 resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
-firstIndex = 0
 googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
