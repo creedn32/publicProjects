@@ -15,7 +15,7 @@ googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
 
 
-resultsToDownload = ["Inputs", "Ticker Map", "Raw Data - Robinhood", "Transactions To Add - Robinhood"]
+resultsToDownload = ["Inputs", "Ticker Map", "Raw Data - Robinhood", "Transactions To Add - Robinhood", "Transactions", "Chart of Accounts"]
 resultsDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, resultsToDownload)
 
 inputsExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Inputs")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Inputs")), resultsDownloadedWithGrid, resultsToDownload.index("Inputs"))
@@ -30,10 +30,15 @@ for tickerMapItem in tickerMapExtractedValues:
     if tickerMapItem[tickerMapIndexStockName] not in [tickerMapUniqueItem[tickerMapIndexStockName] for tickerMapUniqueItem in tickerMapUniqueExtractedValues]:
         tickerMapUniqueExtractedValues.append(tickerMapItem)
 
+tickerDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map"))
 
 rawDataRobRows = myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood"))
 rawDataRobExtractedValues = myGoogleSheetsFunc.extractValues(rawDataRobRows, myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood"))
 transactionsToAddRobExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood"))
+
+
+resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions"))
+chartOfAccountsDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload.index("Chart of Accounts"))
 
 
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished downloading and extracting data")
@@ -79,7 +84,7 @@ for rawDataRobIndexOfRow in range(0, rawDataRobRows):
 
 
 newTransRobList.sort(key=lambda x: int(x[1]))
-myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True)
+# myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True)
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished writing to Transactions - Robinhood")
 
 
@@ -216,23 +221,18 @@ for lot in unsoldStockValuesList:
 
 
 robtranRobDoubleEntryList.extend(doubleEntryUnsoldStockList)
-myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, robtranRobDoubleEntryList, True)
+# myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, robtranRobDoubleEntryList, True)
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished writing to Transactions - Robinhood - Double Entry")
 
 
 
 
 
-stockResultsSheetsToDownload = ["Ticker Map", "Transactions", "Chart of Accounts"]
+stockResultsSheetsToDownload = ["Ticker Map"]
 googleSheetsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, stockResultsSheetsToDownload)
 
-resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions")), myGoogleSheetsFunc.countColumns(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions")), googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Transactions"))
 resultsTranScrubList.extend(robtranRobDoubleEntryList[1:len(robtranRobDoubleEntryList)])
 resultsTranScrubList = [item for item in resultsTranScrubList if item[2] != 0]
-
-chartOfAccountsDict = myGoogleSheetsFunc.createDictMapFromSheet(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Chart of Accounts"))
-tickerDict = myGoogleSheetsFunc.createDictMapFromSheet(googleSheetsDataWithGrid, stockResultsSheetsToDownload.index("Ticker Map"))
-
 tranRowTotal = len(resultsTranScrubList)
 
 
