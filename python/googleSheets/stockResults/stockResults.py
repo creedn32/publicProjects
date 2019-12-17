@@ -84,8 +84,8 @@ for rawDataRobIndexOfRow in range(0, rawDataRobRows):
 
 
 newTransRobList.sort(key=lambda x: int(x[1]))
-# myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True)
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished writing to Transactions - Robinhood")
+splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True, dontPopulateSheet=True)
+
 
 
 #create transactions
@@ -222,8 +222,8 @@ for lot in unsoldStockValuesList:
 
 
 robtranRobDoubleEntryList.extend(doubleEntryUnsoldStockList)
-# myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, robtranRobDoubleEntryList, True)
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished writing to Transactions - Robinhood - Double Entry")
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, robtranRobDoubleEntryList, True, dontPopulateSheet=True)
+
 
 
 
@@ -287,8 +287,8 @@ for indexOfRow in range(0, tranRowTotal):
 
 
 
-myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False)
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished writing to Transactions - Scrubbed")
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, splitTimeArg=splitTime)
+
 
 
 
