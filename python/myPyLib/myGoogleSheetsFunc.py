@@ -217,7 +217,7 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
 
 
 
-def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet):
+def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet, **kwargs):
 
     reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
     googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
@@ -240,7 +240,10 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
     }
 
     googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
+    splitTime = kwargs.get("splitTimeArg", None)
 
+    if splitTime:
+        return myPyFunc.printElapsedTime(splitTime, "Finished writing to " + sheetName)
 
 
 

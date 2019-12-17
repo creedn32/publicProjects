@@ -163,7 +163,7 @@ for transaction in newTransRobList:
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished creating Robinhood double entry transactions")
 
 
-tblMainName = "tblStockResultsRobinhood"
+
 
 
 columnsObj = OrderedDict()
@@ -176,8 +176,9 @@ columnsObj["broker"] = "varchar(255)"
 columnsObj["lot"] = "varchar(255)"
 columnsObj["shares"] = "float"
 
+tblMainName = "tblStockResultsRobinhood"
 
-sqlObj = myPyFunc.createDatabase("stockResultsRobinhood.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
+sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
 myPyFunc.populateTable(len(robtranRobDoubleEntryList), len(robtranRobDoubleEntryList[0]), tblMainName, robtranRobDoubleEntryList, sqlObj["sqlCursor"], [0])
 
 
@@ -196,7 +197,7 @@ myPyFunc.createTableAs("tblLots", sqlObj["sqlCursor"], f"select stockName, lot, 
 
 sqlCommand = f"select tblLots.*, tblTickerMap.ticker, '=googlefinance(indirect(\"E\"&row()))*indirect(\"D\"&row())' as googleFin, '=indirect(\"F\"&row())-indirect(\"C\"&row())' as gainLoss from tblLots left outer join tblTickerMap on tblLots.stockName = tblTickerMap.stockName;"
 myGoogleSheetsFunc.populateSheet(3, 1000, "Unsold Stock Values - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, tblMainName, sqlObj["sqlCursor"], False), True)
-myPyFunc.closeDatabase(sqlObj["sqlConnection"])
+
 
 
 tranType = "Sale - Hypothetical"
@@ -227,9 +228,6 @@ splitTime = myPyFunc.printElapsedTime(splitTime, "Finished writing to Transactio
 
 
 
-
-stockResultsSheetsToDownload = ["Ticker Map"]
-googleSheetsDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, stockResultsSheetsToDownload)
 
 resultsTranScrubList.extend(robtranRobDoubleEntryList[1:len(robtranRobDoubleEntryList)])
 resultsTranScrubList = [item for item in resultsTranScrubList if item[2] != 0]
@@ -328,7 +326,7 @@ colDict =   {
 
 
 
-tblMainName = "tblTScrub"
+
 
 columnsObj = OrderedDict()
 columnsObj["tranDate"] = "date"
@@ -343,8 +341,8 @@ columnsObj["lot"] = "varchar(255)"
 columnsObj["shares"] = "float"
 columnsObj["dateYear"] = "int"
 
-
-sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
+tblMainName = "tblTScrub"
+myPyFunc.createTable(tblMainName, columnsObj, sqlObj["sqlCursor"])
 myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, tblMainName, resultsTranScrubList, sqlObj["sqlCursor"], [0])
 
 
@@ -423,9 +421,11 @@ sqlList = ["update tblResultsJoined set 'Last Value' = '=googlefinance(indirect(
 myPyFunc.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
-myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True, splitTimeArg=splitTime)
+
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True, splitTimeArg=splitTime)
+
+
+
 myPyFunc.closeDatabase(sqlObj["sqlConnection"])
-
-
-
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished writing to SQL Query Result - Table")
+splitTime = myPyFunc.printElapsedTime(splitTime, "Finished with database")
