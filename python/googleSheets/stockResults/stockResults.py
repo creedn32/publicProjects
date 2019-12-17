@@ -10,6 +10,7 @@ from collections import OrderedDict
 from pprint import pprint as pp
 
 resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
+sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"))
 googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
@@ -192,7 +193,8 @@ columnsObj["shares"] = "float"
 
 tblMainName = "tblStockResultsRobinhood"
 
-sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
+
+myPyFunc.createTable(tblMainName, columnsObj, sqlObj["sqlCursor"])
 myPyFunc.populateTable(len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tblMainName, tranRobDoubleEntryList, sqlObj["sqlCursor"], [0])
 
 

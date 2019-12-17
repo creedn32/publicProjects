@@ -286,15 +286,13 @@ def executeSQLStatements(sqlList, sqlCursor):
 
 
 
-def createDatabase(databaseName, dbPath, tblName, columnsObj):
+def createDatabase(databaseName, dbPath):
 
     import sqlite3
 
     dbPath = dbPath + "\\" + databaseName
     sqlObj = {"sqlConnection": sqlite3.connect(dbPath)}
     sqlObj["sqlCursor"] = sqlObj["sqlConnection"].cursor()
-
-    createTable(tblName, columnsObj, sqlObj["sqlCursor"])
 
     return sqlObj
 
