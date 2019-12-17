@@ -1,13 +1,11 @@
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
-sys.path.append(str(pathlib.Path.cwd().parents[0]))
-from myPythonLibrary import myPythonFunctions
+from myPyLib import myPyFunc, myGoogleSheetsFunc
 
 
-startTime = myPythonFunctions.startCode()
+splitTime = myPyFunc.printElapsedTime(False, "Starting script")
 
 
-import time, importlib
 import datetime, pynput.mouse, win32api, win32con, pyautogui
 from pprint import pprint as pp
 
@@ -29,8 +27,6 @@ from pprint import pprint as pp
 # myGoogleSheetsPythonLibrary = moduleNameObj
 
 
-import myGoogleSheetsPythonLibrary.googleSheetsAuthenticate
-import myGoogleSheetsPythonLibrary.googleSheetsFunctions
 
 
 
@@ -46,11 +42,9 @@ activateKeyboard = True
 
 
 
-googleSheetsObj = myGoogleSheetsPythonLibrary.googleSheetsAuthenticate.authFunc()
-googleSheetsData = googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
+googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
+googleSheetsData = googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
 
-# with open("output.txt", "wt") as out:
-#     pprint(googleSheetsData, stream=out)
 
 
 
@@ -79,11 +73,12 @@ requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(ba
 
 
 
-print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
+
 
 if activateKeyboard:
 
-    with pynput.mouse.Listener(on_click=myPythonFunctions.functionOnClick) as listenerObj:
+    with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
         print("Click on 'Clear' to begin posting...")
         listenerObj.join()
 
@@ -93,7 +88,7 @@ if activateKeyboard:
 for row in currentSheetData[1:]:
 
 
-    if myGoogleSheetsPythonLibrary.googleSheetsFunctions.isWhite(row["values"][0]) and myGoogleSheetsPythonLibrary.googleSheetsFunctions.hasFormattedValue(row["values"][0]):
+    if myGoogleSheetsFunc.isWhite(row["values"][0]) and myGoogleSheetsFunc.hasFormattedValue(row["values"][0]):
 
 
         if row["values"][0]["formattedValue"] != "Enter/Edit" and activateKeyboard:
@@ -130,9 +125,9 @@ for row in currentSheetData[1:]:
                     if string == "Cash":
                         pyautogui.press("down")
                     elif string == "Increase Adjustment":
-                        myPythonFunctions.repetitiveKeyPress(2, "down")
+                        myPyFunc.repetitiveKeyPress(2, "down")
                     elif string == "Decrease Adjustment":
-                        myPythonFunctions.repetitiveKeyPress(3, "down")
+                        myPyFunc.repetitiveKeyPress(3, "down")
 
 
                 elif col == 2:
@@ -181,127 +176,14 @@ for row in currentSheetData[1:]:
                             pyautogui.press(letter)
 
 
-                myPythonFunctions.repetitiveKeyPress(numberTabs, "tab")
+                myPyFunc.repetitiveKeyPress(numberTabs, "tab")
 
 
             if win32api.GetKeyState(win32con.VK_NUMLOCK) == 0:
                 pyautogui.press("numlock")
 
 
-            with pynput.mouse.Listener(on_click=myPythonFunctions.functionOnClick) as listenerObj:
+            with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
                 print("Click on 'Post' or 'Clear' to continue with this entry...")
                 listenerObj.join()
 
-
-    # requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = rowCount - 1
-    # requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = rowCount
-
-    # if changeCellColor:
-    #     googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestDictionary).execute()
-
-
-
-
-
-
-
-
-################################################################################################################
-
-
-# for row in googleSheetValues:
-#     row.insert(0, "Blank Space")
-
-# googleSheetValues.insert(0, ["Blank Space"])
-
-
-
-# requestDictionary2 = {
-#     "requests": [
-#         {
-#             "repeatCell": {
-#                 "range": {
-#                     "sheetId": 0,
-#                     "startRowIndex": 0,
-#                     "endRowIndex": 1
-#                 },
-#                 "cell": {
-#                     "userEnteredFormat": {
-#                         "backgroundColor": {
-#                             "red": 0.0,
-#                             "green": 1.0,
-#                             "blue": 0.0
-#                         }
-#                     }
-#                 },
-#                 "fields": "userEnteredFormat(backgroundColor)"
-#             }
-#         }
-#     ]
-# }
-#
-# print(str(requestDictionary2).replace("'", "\""))
-
-
-#
-# requestDictionary = {}
-# print(requestDictionary)
-#
-# requestDictionary["requests"] = []
-# print(requestDictionary)
-#
-# requestDictionary["requests"].append({})
-# print(requestDictionary)
-#
-# requestDictionary["requests"][0]["updateSpreadsheetProperties"] = {}
-# print(requestDictionary)
-#
-# requestDictionary["requests"][0]["updateSpreadsheetProperties"]["properties"] = {}
-# print(requestDictionary)
-#
-# requestDictionary["requests"][0]["updateSpreadsheetProperties"]["properties"]["title"] = "this title is new"
-# print(requestDictionary)
-#
-# requestDictionary["requests"][0]["updateSpreadsheetProperties"]["fields"] = "title"
-# print(requestDictionary)
-
-#
-# requestDictionary = []
-# print(requestDictionary)
-#
-#
-# requestDictionary.append({
-#     'updateSpreadsheetProperties': {
-#         'properties': {
-#             'title': "this title is new"
-#         },
-#         'fields': 'title'
-#     }
-# })
-# print(requestDictionary)
-#
-#
-# requestDictionary = {
-#     'requests': requestDictionary
-# }
-# print(requestDictionary)
-#
-#
-
-
-
-
-# pprint.pprint(googleSheetsObj)
-# print("dir: ")
-# pprint.pprint(dir(googleSheetsObj))
-# print("help: ")
-# pprint.pprint(help(googleSheetsObj))
-
-# print("Creed's List: ")
-# pprint.pprint([(name,type(getattr(googleSheetsObj, name))) for name in dir(googleSheetsObj)])
-# print("An attribute: ")
-# print(googleSheetsObj._baseUrl)
-# print("A method: ")
-# print(googleSheetsObj.values().get(spreadsheetId=spreadsheetIDStr, range=rangeName).execute())
-# print("Another method: ")
-# print(googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestDictionary).execute())
