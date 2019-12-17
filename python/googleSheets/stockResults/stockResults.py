@@ -23,6 +23,7 @@ tickerMapIndexStockName = inputsExtractedValues[0][1]
 
 
 tickerMapExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map")), resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map"))
+tickerMapStockNameColIndex = 2
 tickerMapUniqueExtractedValues = []
 
 for tickerMapItem in tickerMapExtractedValues:
@@ -37,7 +38,7 @@ rawDataRobExtractedValues = myGoogleSheetsFunc.extractValues(rawDataRobRows, myG
 transactionsToAddRobExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood"))
 
 
-resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions"))
+resultsTranScrubExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions"))
 chartOfAccountsDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload.index("Chart of Accounts"))
 
 
@@ -52,8 +53,11 @@ newTransRobList = []
 newTransRobListDescColIndex = 0
 newTransRobListDateColIndex = 1
 newTransRobListAmountColIndex = 2
+newTransRobListNumSharesColIndex = 4
 rawDataRobColumnIndexWithData = 0
 rawDataRobLastRowIndex = rawDataRobRows - 1
+newTransLengthWithoutShares = newTransRobListAmountColIndex + 1
+
 
 for rawDataRobIndexOfRow in range(0, rawDataRobRows):
 
@@ -74,9 +78,9 @@ for rawDataRobIndexOfRow in range(0, rawDataRobRows):
     if (newTransRobListCurrColIndex == newTransRobListAmountColIndex and rawDataRobNextCellValueHasNoShares) or newTransRobListCurrColIndex == 3:
         newTransRobListCurrColIndex = -1
 
-        if len(newTransRobRow) == 3:
+        if len(newTransRobRow) == newTransLengthWithoutShares:
             newTransRobRow.extend(["", ""])
-        elif len(newTransRobRow) == 4:
+        elif len(newTransRobRow) == newTransRobListNumSharesColIndex:
             newTransRobRow.append(int(str(robRawDataCurrentCellValue).split(" share")[newTransRobListDescColIndex]))
 
 
@@ -86,15 +90,15 @@ for rawDataRobIndexOfRow in range(0, rawDataRobRows):
     newTransRobListCurrColIndex = newTransRobListCurrColIndex + 1
 
 
-newTransRobList.sort(key=lambda x: int(x[newTransRobListDateColIndex]))
-splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True, dontPopulateSheet=False)
+newTransRobList.sort(key=lambda item: int(item[newTransRobListDateColIndex]))
+splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True, dontPopulateSheet=True)
 
 
 
 #create transactions
 
-robtranRobDoubleEntryList = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
-robtranRobDoubleEntryList.extend(transactionsToAddRobExtractedValues[1:])
+tranRobDoubleEntryList = [["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
+tranRobDoubleEntryList.extend(transactionsToAddRobExtractedValues[1:])
 
 
 leftStrMap = {
@@ -111,21 +115,21 @@ rightStrMap = {" Market Buy": {"transactionType": "Purchase", "debitAccount": "I
 lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31)))    # lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2018, 10, 31)))
 
 
-for transaction in newTransRobList:
+for line in newTransRobList:
 
-    if transaction[newTransRobListAmountColIndex] != "Failed" and transaction[newTransRobListDateColIndex] > lastDate:
+    if line[newTransRobListAmountColIndex] != "Failed" and line[newTransRobListDateColIndex] > lastDate:
 
         mappedTransactionData = {}
 
         for leftStringToCheckFor in leftStrMap:
-            if transaction[0][:len(leftStringToCheckFor)] == leftStringToCheckFor:
+            if line[newTransRobListDescColIndex][:len(leftStringToCheckFor)] == leftStringToCheckFor:
                 mappedTransactionData = leftStrMap[leftStringToCheckFor]
                 mappedTransactionData["strToCheckFor"] = leftStringToCheckFor
                 mappedTransactionData["stockNamePosition"] = 1
 
         if not mappedTransactionData:
             for rightStrToCheckFor in rightStrMap:
-                if transaction[0][-len(rightStrToCheckFor):] == rightStrToCheckFor:
+                if line[newTransRobListDescColIndex][-len(rightStrToCheckFor):] == rightStrToCheckFor:
                     mappedTransactionData = rightStrMap[rightStrToCheckFor]
                     mappedTransactionData["strToCheckFor"] = rightStrToCheckFor
                     mappedTransactionData["stockNamePosition"] = 0
@@ -134,20 +138,20 @@ for transaction in newTransRobList:
 
         if "stockName" in mappedTransactionData:
             stockName = mappedTransactionData["stockName"]
-        elif transaction[0].split(mappedTransactionData["strToCheckFor"])[mappedTransactionData["stockNamePosition"]] in ["Xperi", "Tessera Technologies, Inc. - Common Stock"]:
+        elif line[newTransRobListDescColIndex].split(mappedTransactionData["strToCheckFor"])[mappedTransactionData["stockNamePosition"]] in ["Xperi", "Tessera Technologies, Inc. - Common Stock"]:
             stockName = "Xperi, formerly Tessera"
         else:
-            stockName = transaction[0].split(mappedTransactionData["strToCheckFor"])[mappedTransactionData["stockNamePosition"]]
+            stockName = line[newTransRobListDescColIndex].split(mappedTransactionData["strToCheckFor"])[mappedTransactionData["stockNamePosition"]]
 
 
         if "lotInfo" in mappedTransactionData:
             lot = mappedTransactionData["lotInfo"]
         elif mappedTransactionData["transactionType"] in ["Purchase", "Purchase - Stock Gift", "Purchase - Stock From Merger"]:
-            lot = myPyFunc.convertSerialDateToDateWithoutDashes(transaction[1])
+            lot = myPyFunc.convertSerialDateToDateWithoutDashes(line[newTransRobListDateColIndex])
         else:
             filterForLots = [{1: "Investment Asset", 3: "Purchase", 4: stockName},
                              {1: "Investment Asset", 3: "Purchase - Stock From Merger", 4: stockName}]
-            filteredList = myPyFunc.filterListOfLists(robtranRobDoubleEntryList, filterForLots)
+            filteredList = myPyFunc.filterListOfLists(tranRobDoubleEntryList, filterForLots)
 
             if len(filteredList) == 1:
                 lot = myPyFunc.convertSerialDateToDateWithoutDashes(filteredList[0][0])
@@ -156,14 +160,21 @@ for transaction in newTransRobList:
         if "shares" in mappedTransactionData:
             shares = mappedTransactionData["shares"]
         else:
-            shares = transaction[4]
+            shares = line[newTransRobListNumSharesColIndex]
 
-        robtranRobDoubleEntryList.append([transaction[1], mappedTransactionData["debitAccount"], transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, shares])
-        robtranRobDoubleEntryList.append([transaction[1], mappedTransactionData["creditAccount"], -transaction[2], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, ""])
+        tranRobDoubleEntryList.append([line[newTransRobListDateColIndex], mappedTransactionData["debitAccount"], line[newTransRobListAmountColIndex], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, shares])
+        tranRobDoubleEntryList.append([line[newTransRobListDateColIndex], mappedTransactionData["creditAccount"], -line[newTransRobListAmountColIndex], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, ""])
 
 
 
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished creating Robinhood double entry transactions")
+
+
+
+
+
+for ticker in tickerMapUniqueExtractedValues:
+    pp(ticker[tickerMapStockNameColIndex])
 
 
 
@@ -182,7 +193,7 @@ columnsObj["shares"] = "float"
 tblMainName = "tblStockResultsRobinhood"
 
 sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
-myPyFunc.populateTable(len(robtranRobDoubleEntryList), len(robtranRobDoubleEntryList[0]), tblMainName, robtranRobDoubleEntryList, sqlObj["sqlCursor"], [0])
+myPyFunc.populateTable(len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tblMainName, tranRobDoubleEntryList, sqlObj["sqlCursor"], [0])
 
 
 tickerColumnsObj = OrderedDict()
@@ -224,17 +235,25 @@ for lot in unsoldStockValuesList:
 
 
 
-robtranRobDoubleEntryList.extend(doubleEntryUnsoldStockList)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, robtranRobDoubleEntryList, True, dontPopulateSheet=True)
+tranRobDoubleEntryList.extend(doubleEntryUnsoldStockList)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, dontPopulateSheet=True)
 
 
 
+tranDateColIndex = 0
+tranAccountColIndex = 1
+tranAmountColIndex = 2
+tranStockColIndex = 4
+tranBrokerColIndex = 5
+tranLotColIndex = 6
+tranSharesColIndex = 7
 
 
 
-resultsTranScrubList.extend(robtranRobDoubleEntryList[1:len(robtranRobDoubleEntryList)])
-resultsTranScrubList = [item for item in resultsTranScrubList if item[2] != 0]
-tranRowTotal = len(resultsTranScrubList)
+resultsTranScrubExtractedValues.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)])
+resultsTranScrubList = resultsTranScrubExtractedValues
+resultsTranScrubList = [item for item in resultsTranScrubList if item[tranAmountColIndex] != 0]
+resultsTranScrubRowTotal = len(resultsTranScrubList)
 
 
 
@@ -245,48 +264,50 @@ brokerageMap = {"Mt": "Motif",
                 "Rh": "Robinhood"}
 
 multiplyFactor = 1
-resultsTranScrubListAccountIndex = 1
 
 
-for indexOfRow in range(1, tranRowTotal):
 
-    resultsTranScrubList[indexOfRow][resultsTranScrubListAccountIndex] = resultsTranScrubList[indexOfRow][resultsTranScrubListAccountIndex].replace(" - " + resultsTranScrubList[indexOfRow][5], " ")
-    resultsTranScrubList[indexOfRow][resultsTranScrubListAccountIndex] = resultsTranScrubList[indexOfRow][resultsTranScrubListAccountIndex].replace(
-        " - " + str(resultsTranScrubList[indexOfRow][6]), " ")
-    resultsTranScrubList[indexOfRow][resultsTranScrubListAccountIndex] = resultsTranScrubList[indexOfRow][resultsTranScrubListAccountIndex].replace(
-        resultsTranScrubList[indexOfRow][4] + " - ", "")
-    resultsTranScrubList[indexOfRow][resultsTranScrubListAccountIndex] = resultsTranScrubList[indexOfRow][resultsTranScrubListAccountIndex].rstrip()
+for resultsTranScrubIndexOfRow in range(1, resultsTranScrubRowTotal):
 
-    if resultsTranScrubList[indexOfRow][5] in brokerageMap:
-        resultsTranScrubList[indexOfRow][5] = brokerageMap[resultsTranScrubList[indexOfRow][5]]
+    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(" - " + resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex], " ")
+    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(
+        " - " + str(resultsTranScrubList[resultsTranScrubIndexOfRow][tranLotColIndex]), " ")
+    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(
+        resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex] + " - ", "")
+    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].rstrip()
 
-    ticker = resultsTranScrubList[indexOfRow][4]
+    if resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] in brokerageMap:
+        resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] = brokerageMap[resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex]]
+
+    ticker = resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex]
 
     if ticker in tickerDict:
 
         for key in tickerDict[ticker]:
-            resultsTranScrubList[indexOfRow][4] = tickerDict[ticker][key]
+            resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex] = tickerDict[ticker][key]
 
-    resultsTranScrubList[indexOfRow][2] = resultsTranScrubList[indexOfRow][2] * multiplyFactor
+    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] * multiplyFactor
 
-    if resultsTranScrubList[indexOfRow][7] == "":
-        resultsTranScrubList[indexOfRow][7] = 0
+    if resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] == "":
+        resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] = 0
 
 
 
 #use map
 
-for indexOfRow in range(0, tranRowTotal):
+# pp(chartOfAccountsDict)
 
-    accountName = resultsTranScrubList[indexOfRow][resultsTranScrubListAccountIndex]
+for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
 
-    for i in range(0, len(chartOfAccountsDict[accountName])):
-        resultsTranScrubList[indexOfRow].insert(resultsTranScrubListAccountIndex + 1, list(chartOfAccountsDict[accountName].values())[i])
+    accountName = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex]
 
-    if indexOfRow == 0:
-        resultsTranScrubList[indexOfRow].append("Year")
+    for indexOfAccountChartOfAccountsDict in range(0, len(chartOfAccountsDict[accountName])):
+        resultsTranScrubList[resultsTranScrubIndexOfRow].insert(tranAccountColIndex + 1, list(chartOfAccountsDict[accountName].values())[indexOfAccountChartOfAccountsDict])
+
+    if resultsTranScrubIndexOfRow == 0:
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append("Year")
     else:
-        resultsTranScrubList[indexOfRow].append(myPyFunc.convertSerialDateToYear(resultsTranScrubList[indexOfRow][0]))
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append(myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex]))
 
 
 
