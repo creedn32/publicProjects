@@ -350,6 +350,14 @@ def createTableAs(tblName, sqlCursor, sqlCommand):
 
 
 
+def createAndPopulateTable(tblName, columnsObj, sqlCursor, totalRows, totalColumns, sheetDataList, listOfDateColumns):
+
+    createTable(tblName, columnsObj, sqlCursor)
+    populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, listOfDateColumns)
+
+
+
+
 
 def populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, listOfDateColumns):
 
