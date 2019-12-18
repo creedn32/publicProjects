@@ -196,10 +196,6 @@ columnsObj = myPyFunc.createColumnsDict([
 
 
 
-tblMainName = "tblStockResultsRobinhood"
-myPyFunc.createAndPopulateTable(tblMainName, columnsObj, sqlObj["sqlCursor"], len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tranRobDoubleEntryList, [0])
-myPyFunc.createTableAs("tblLots2", sqlObj["sqlCursor"], f"select stockName, lot, sum(amount), sum(shares) from {tblMainName} where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
-
 
 
 tickerColumnsObj = OrderedDict()
@@ -210,6 +206,14 @@ tickerColumnsObj["stockName"] = "varchar(255)"
 myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlObj["sqlCursor"])
 myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueExtractedValues[0]), "tblTickerMap", tickerMapUniqueExtractedValues, sqlObj["sqlCursor"], [])
 # pp(myPyFunc.getQueryResult("select * from tblTickerMap", "tblTickerMap", sqlObj["sqlCursor"], False))
+
+
+
+
+tblMainName = "tblStockResultsRobinhood"
+myPyFunc.createAndPopulateTable(tblMainName, columnsObj, sqlObj["sqlCursor"], len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tranRobDoubleEntryList, [0])
+myPyFunc.createTableAs("tblLots2", sqlObj["sqlCursor"], f"select stockName, lot, sum(amount), sum(shares) from {tblMainName} where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
+
 
 
 
@@ -227,10 +231,7 @@ unsoldStockValuesDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpread
 unsoldStockValuesList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(unsoldStockValuesDataWithGrid, 0), myGoogleSheetsFunc.countColumns(unsoldStockValuesDataWithGrid, 0), unsoldStockValuesDataWithGrid, 0)
 
 
-doubleEntryUnsoldStockList = [] #["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]
-
-
-
+doubleEntryUnsoldStockList = []
 
 
 for lot in unsoldStockValuesList:
@@ -244,6 +245,29 @@ for lot in unsoldStockValuesList:
         gainLossAccount = "Gain On Sale - Hypothetical"
 
     doubleEntryUnsoldStockList.append([priceDate, gainLossAccount, -lot[6], tranType, lot[0], "Robinhood", lot[1], ""])
+
+
+
+
+
+doubleEntryUnsoldStockList2 = []
+
+for lot in unsoldStockValuesList:
+
+    doubleEntryUnsoldStockList2.append([priceDate, "Cash", lot[5], tranType, lot[0], "Robinhood", lot[1], ""])
+    doubleEntryUnsoldStockList2.append([priceDate, "Investment Asset", -lot[2], tranType, lot[0], "Robinhood", lot[1], lot[3]])
+
+    if lot[6] < 0:
+        gainLossAccount = "Loss On Sale - Hypothetical"
+    else:
+        gainLossAccount = "Gain On Sale - Hypothetical"
+
+    doubleEntryUnsoldStockList2.append([priceDate, gainLossAccount, -lot[6], tranType, lot[0], "Robinhood", lot[1], ""])
+
+
+
+
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Unsold Stock", googleSheetsAPIObj, resultsSpreadsheetID, doubleEntryUnsoldStockList2, True, dontPopulateSheet=False)
 
 
 
