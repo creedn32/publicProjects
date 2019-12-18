@@ -196,21 +196,10 @@ columnsObj = myPyFunc.createColumnsDict([
 
 
 
-# columnsObj = OrderedDict()
-# columnsObj["tranDate"] = "date"
-# columnsObj["accountName"] = "varchar(255)"
-# columnsObj["amount"] = "float"
-# columnsObj["transactionType"] = "varchar(255)"
-# columnsObj["stockName"] = "varchar(255)"
-# columnsObj["broker"] = "varchar(255)"
-# columnsObj["lot"] = "varchar(255)"
-# columnsObj["shares"] = "float"
-
 tblMainName = "tblStockResultsRobinhood"
+myPyFunc.createAndPopulateTable(tblMainName, columnsObj, sqlObj["sqlCursor"], len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tranRobDoubleEntryList, [0])
+myPyFunc.createTableAs("tblLots2", sqlObj["sqlCursor"], f"select stockName, lot, sum(amount), sum(shares) from {tblMainName} where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
 
-
-myPyFunc.createTable(tblMainName, columnsObj, sqlObj["sqlCursor"])
-myPyFunc.populateTable(len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tblMainName, tranRobDoubleEntryList, sqlObj["sqlCursor"], [0])
 
 
 tickerColumnsObj = OrderedDict()
