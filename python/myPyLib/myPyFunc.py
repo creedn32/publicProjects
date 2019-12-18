@@ -303,6 +303,20 @@ def closeDatabase(sqlConnection):
     sqlConnection.close()
 
 
+def createColumnsDict(list):
+
+    from collections import OrderedDict
+    columnsDict = OrderedDict()
+
+    for pair in list:
+        for key, value in pair.items():
+            columnsDict[key] = value
+
+    return columnsDict
+
+
+
+
 def createTable(tblName, columnsObj, sqlCursor):
 
     sqlList = []

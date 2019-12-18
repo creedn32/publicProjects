@@ -150,6 +150,7 @@ for line in newTransRobList:
         elif mappedTransactionData["transactionType"] in ["Purchase", "Purchase - Stock Gift", "Purchase - Stock From Merger"]:
             lot = myPyFunc.convertSerialDateToDateWithoutDashes(line[newTransRobListDateColIndex])
         else:
+
             filterForLots = [{1: "Investment Asset", 3: "Purchase", 4: stockName},
                              {1: "Investment Asset", 3: "Purchase - Stock From Merger", 4: stockName}]
             filteredList = myPyFunc.filterListOfLists(tranRobDoubleEntryList, filterForLots)
@@ -175,21 +176,35 @@ splitTime = myPyFunc.printElapsedTime(splitTime, "Finished creating Robinhood do
 
 
 for ticker in tickerMapUniqueExtractedValues:
-    pp(ticker[tickerMapStockNameColIndex])
+    pass
+    # pp(ticker[tickerMapStockNameColIndex])
 
 
 
 
 
-columnsObj = OrderedDict()
-columnsObj["tranDate"] = "date"
-columnsObj["accountName"] = "varchar(255)"
-columnsObj["amount"] = "float"
-columnsObj["transactionType"] = "varchar(255)"
-columnsObj["stockName"] = "varchar(255)"
-columnsObj["broker"] = "varchar(255)"
-columnsObj["lot"] = "varchar(255)"
-columnsObj["shares"] = "float"
+columnsObj = myPyFunc.createColumnsDict([
+    {"tranDate": "date"},
+    {"accountName": "varchar(255)"},
+    {"amount": "float"},
+    {"transactionType": "varchar(255)"},
+    {"stockName": "varchar(255)"},
+    {"broker": "varchar(255)"},
+    {"lot": "varchar(255)"},
+    {"shares": "float"}
+])
+
+
+
+# columnsObj = OrderedDict()
+# columnsObj["tranDate"] = "date"
+# columnsObj["accountName"] = "varchar(255)"
+# columnsObj["amount"] = "float"
+# columnsObj["transactionType"] = "varchar(255)"
+# columnsObj["stockName"] = "varchar(255)"
+# columnsObj["broker"] = "varchar(255)"
+# columnsObj["lot"] = "varchar(255)"
+# columnsObj["shares"] = "float"
 
 tblMainName = "tblStockResultsRobinhood"
 
