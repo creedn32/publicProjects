@@ -394,7 +394,7 @@ def populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, li
 
 
 
-def getQueryResult(sqlCommand, tblName, sqlCursor, includeColumnNames):
+def getQueryResult(sqlCommand, sqlCursor, includeColumnNames):
 
     sqlCursor.execute(sqlCommand)
     queryResult = sqlCursor.fetchall()
