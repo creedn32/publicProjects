@@ -389,6 +389,7 @@ def populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, li
 
     sqlCommand = sqlCommand + ";"
 
+    pp(sqlCommand)
     executeSQLStatements([sqlCommand], sqlCursor)
      
 

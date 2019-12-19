@@ -11,6 +11,7 @@ from pprint import pprint as pp
 
 resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
 sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"))
+sqlCursor = sqlObj["sqlCursor"]
 googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
@@ -103,14 +104,14 @@ tranRobDoubleEntryList.extend(transactionsToAddRobExtractedValues[1:])
 
 
 leftStrMap = {
-                "Dividend from ": {"transactionType": "Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue"},
-                "Withdrawal to ": {"transactionType": "Owners - Pay", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks", "lotInfo": "All Lots"},
-                "Deposit from ": {"transactionType": "Owners - Receive Cash", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks", "lotInfo": "All Lots"},
-                "Interest Payment": {"transactionType": "Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "Cash", "lotInfo": "Cash"},
-                "AKS from Robinhood": {"transactionType": "Purchase - Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS", "shares": 1}
+                "Dividend from ": {"tranType": "Dividend", "debitAccount": "Cash", "creditAccount": "Dividend Revenue"},
+                "Withdrawal to ": {"tranType": "Owners - Pay", "debitAccount": "Capital Contributions", "creditAccount": "Cash", "stockName": "All Stocks", "lotInfo": "All Lots"},
+                "Deposit from ": {"tranType": "Owners - Receive Cash", "debitAccount": "Cash", "creditAccount": "Capital Contributions", "stockName": "All Stocks", "lotInfo": "All Lots"},
+                "Interest Payment": {"tranType": "Interest", "debitAccount": "Cash", "creditAccount": "Interest Revenue", "stockName": "Cash", "lotInfo": "Cash"},
+                "AKS from Robinhood": {"tranType": "Purchase - Stock Gift", "debitAccount": "Investment Asset", "creditAccount": "Gain On Gift", "stockName": "AKS", "shares": 1}
 }
 
-rightStrMap = {" Market Buy": {"transactionType": "Purchase", "debitAccount": "Investment Asset", "creditAccount": "Cash"}}
+rightStrMap = {" Market Buy": {"tranType": "Purchase", "debitAccount": "Investment Asset", "creditAccount": "Cash"}}
 
 
 lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31)))    # lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2018, 10, 31)))
@@ -147,7 +148,7 @@ for line in newTransRobList:
 
         if "lotInfo" in mappedTransactionData:
             lot = mappedTransactionData["lotInfo"]
-        elif mappedTransactionData["transactionType"] in ["Purchase", "Purchase - Stock Gift", "Purchase - Stock From Merger"]:
+        elif mappedTransactionData["tranType"] in ["Purchase", "Purchase - Stock Gift", "Purchase - Stock From Merger"]:
             lot = myPyFunc.convertSerialDateToDateWithoutDashes(line[newTransRobListDateColIndex])
         else:
 
@@ -164,8 +165,8 @@ for line in newTransRobList:
         else:
             shares = line[newTransRobListNumSharesColIndex]
 
-        tranRobDoubleEntryList.append([line[newTransRobListDateColIndex], mappedTransactionData["debitAccount"], line[newTransRobListAmountColIndex], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, shares, "", ""])
-        tranRobDoubleEntryList.append([line[newTransRobListDateColIndex], mappedTransactionData["creditAccount"], -line[newTransRobListAmountColIndex], mappedTransactionData["transactionType"], stockName, "Robinhood", lot, "", "", ""])
+        tranRobDoubleEntryList.append([line[newTransRobListDateColIndex], mappedTransactionData["debitAccount"], line[newTransRobListAmountColIndex], mappedTransactionData["tranType"], stockName, "Robinhood", lot, shares, "", ""])
+        tranRobDoubleEntryList.append([line[newTransRobListDateColIndex], mappedTransactionData["creditAccount"], -line[newTransRobListAmountColIndex], mappedTransactionData["tranType"], stockName, "Robinhood", lot, "", "", ""])
 
 
 
@@ -174,11 +175,11 @@ splitTime = myPyFunc.printElapsedTime(splitTime, "Finished creating Robinhood do
 
 
 
-columnsObj = myPyFunc.createColumnsDict([
+tblRobinhoodColumns = myPyFunc.createColumnsDict([
     {"tranDate": "date"},
-    {"accountName": "varchar(255)"},
+    {"account": "varchar(255)"},
     {"amount": "float"},
-    {"transactionType": "varchar(255)"},
+    {"tranType": "varchar(255)"},
     {"stockName": "varchar(255)"},
     {"broker": "varchar(255)"},
     {"lot": "varchar(255)"},
@@ -196,22 +197,22 @@ columnsObj = myPyFunc.createColumnsDict([
 # tickerColumnsObj["Ticker"] = "varchar(255)"
 # tickerColumnsObj["stockName"] = "varchar(255)"
 #
-# myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlObj["sqlCursor"])
-# myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueExtractedValues[0]), "tblTickerMap", tickerMapUniqueExtractedValues, sqlObj["sqlCursor"], [])
-# pp(myPyFunc.getQueryResult("select * from tblTickerMap", "tblTickerMap", sqlObj["sqlCursor"], False))
+# myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlCursor)
+# myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueExtractedValues[0]), "tblTickerMap", tickerMapUniqueExtractedValues, sqlCursor, [])
+# pp(myPyFunc.getQueryResult("select * from tblTickerMap", "tblTickerMap", sqlCursor, False))
 
 
-myPyFunc.createAndPopulateTable("tblStockResultsRobinhood", columnsObj, sqlObj["sqlCursor"], len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tranRobDoubleEntryList, [0])
+myPyFunc.createAndPopulateTable("tblRobinhood", tblRobinhoodColumns, sqlCursor, len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tranRobDoubleEntryList, [0])
 
 
 
-# myPyFunc.createTableAs("tblLots", sqlObj["sqlCursor"], f"select stockName, lot, sum(amount), sum(shares) from tblStockResultsRobinhood where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
-unsoldStockValuesList = myPyFunc.getQueryResult("select stockName, lot, sum(amount), sum(shares) from tblStockResultsRobinhood where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;", sqlObj["sqlCursor"], False)
+# myPyFunc.createTableAs("tblLots", sqlCursor, f"select stockName, lot, sum(amount), sum(shares) from tblRobinhood where account = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
+unsoldStockValuesList = myPyFunc.getQueryResult("select stockName, lot, sum(amount), sum(shares) from tblRobinhood where account = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;", sqlCursor, False)
 # myGoogleSheetsFunc.populateSheet(1, 1000, "Lots", googleSheetsAPIObj, resultsSpreadsheetID, unsoldStockValuesList2, True)
 
 
 # sqlCommand = f"select tblLots.*, tblTickerMap.ticker, '=googlefinance(indirect(\"E\"&row()))*indirect(\"D\"&row())' as googleFin, '=indirect(\"F\"&row())-indirect(\"C\"&row())' as gainLoss from tblLots left outer join tblTickerMap on tblLots.stockName = tblTickerMap.stockName;"
-# myGoogleSheetsFunc.populateSheet(3, 1000, "Unsold Stock Values - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlObj["sqlCursor"], False), True)
+# myGoogleSheetsFunc.populateSheet(3, 1000, "Unsold Stock Values - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, False), True)
 
 
 
@@ -356,10 +357,11 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed",
 
 
 
-# resultsTranScrubRowTotal = len(resultsTranScrubList)
-# resultsTranScrubColTotal = len(resultsTranScrubList[0])
+resultsTranScrubRowTotal = len(resultsTranScrubList)
+resultsTranScrubColTotal = len(resultsTranScrubList[0])
 
-
+pp(resultsTranScrubRowTotal)
+pp(resultsTranScrubColTotal)
 
 
 # firstFieldsDict = {0:
@@ -387,64 +389,65 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed",
 #                 4:  {"table": "tblSale",
 #                     "excludedFields": ["Stock", "Broker", "Lot"]}
 #             }
-#
-#
-#
-#
-#
-# columnsObj = OrderedDict()
-# columnsObj["tranDate"] = "date"
-# columnsObj["account"] = "varchar(255)"
-# columnsObj["accountType"] = "varchar(255)"
-# columnsObj["accountCategory"] = "varchar(255)"
-# columnsObj["amount"] = "float"
-# columnsObj["tranType"] = "varchar(255)"
-# columnsObj["stockName"] = "varchar(255)"
-# columnsObj["broker"] = "varchar(255)"
-# columnsObj["lot"] = "varchar(255)"
-# columnsObj["shares"] = "float"
-# columnsObj["ticker"] = "varchar(255)"
-# columnsObj["capitalInvested"] = "varchar(255)"
-# columnsObj["dateYear"] = "int"
-#
-# tblMainName = "tblTScrub"
-# myPyFunc.createTable(tblMainName, columnsObj, sqlObj["sqlCursor"])
-#
-#
-# myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, tblMainName, resultsTranScrubList, sqlObj["sqlCursor"], [0])
-#
-#
+
+
+
+tblScrubbedColumns = myPyFunc.createColumnsDict([
+    {"tranDate": "date"},
+    {"account": "varchar(255)"},
+    {"amount": "float"},
+    {"tranType": "varchar(255)"},
+    {"stockName": "varchar(255)"},
+    {"broker": "varchar(255)"},
+    {"lot": "varchar(255)"},
+    {"shares": "float"},
+    {"ticker": "varchar(255)"},
+    {"capitalInvested": "varchar(255)"},
+    {"accountType": "varchar(255)"},
+    {"accountCategory": "varchar(255)"},
+    {"yearOfDate": "int"}
+])
+
+
+
+myPyFunc.createTable("tblScrubbed", tblScrubbedColumns, sqlCursor)
+myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
+
+
+
 # tickerColumnsObj = OrderedDict()
 # tickerColumnsObj["rowNumber"] = "int"
 # tickerColumnsObj["Ticker"] = "varchar(255)"
 # tickerColumnsObj["stockName"] = "varchar(255)"
 #
-# myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlObj["sqlCursor"])
-# myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueExtractedValues[0]), "tblTickerMap", tickerMapUniqueExtractedValues, sqlObj["sqlCursor"], [])
-#
-#
-#
+# myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlCursor)
+# myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueExtractedValues[0]), "tblTickerMap", tickerMapUniqueExtractedValues, sqlCursor, [])
+
+
+
+
+
 # fieldAliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, True)
 # fieldStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, False)
 # aliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, False, True)
 #
-# myPyFunc.createTableAs("tblPurchase", sqlObj["sqlCursor"], f"select {fieldAliasStr}, ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
-# myPyFunc.createTableAs("tblShares", sqlObj["sqlCursor"], f"select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
-# myPyFunc.createTableAs("tblSale", sqlObj["sqlCursor"], f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) end as 'Sale Date', sum(amount) as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+# myPyFunc.createTableAs("tblPurchase", sqlCursor, f"select {fieldAliasStr}, ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+# myPyFunc.createTableAs("tblShares", sqlCursor, f"select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
+# myPyFunc.createTableAs("tblSale", sqlCursor, f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) end as 'Sale Date', sum(amount) as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
 #
 # # strftime('%m/%d', tranDate) + '/' +
 # #get list of values to put as the pivot columns
 #
 #
-# pivotColDict = myPyFunc.createPivotColDict("dateYear", 10, "amount", 1, resultsTranScrubList)
+# pivotColDict = myPyFunc.createPivotColDict("yearOfDate", 10, "amount", 1, resultsTranScrubList)
 # pivotColStr = pivotColDict["pivotColStr"]
 # # pp(pivotColStr)
 #
-# myPyFunc.createTableAs("tblDividends", sqlObj["sqlCursor"], f"select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
-# myPyFunc.createTableAs("tblResults", sqlObj["sqlCursor"], f"select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
+# myPyFunc.createTableAs("tblDividends", sqlCursor, f"select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
+# myPyFunc.createTableAs("tblResults", sqlCursor, f"select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
 #
 #
-# colListStr = myPyFunc.getAllColumns(colDict, sqlObj["sqlCursor"])
+# colListStr = myPyFunc.getAllColumns(colDict, sqlCursor)
 # # pp(colListStr)
 #
 #
@@ -483,17 +486,17 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed",
 # # pp("Blank line")
 # # pp(sqlCommand)
 #
-# myPyFunc.createTableAs("tblResultsJoined", sqlObj["sqlCursor"], sqlCommand)
+# myPyFunc.createTableAs("tblResultsJoined", sqlCursor, sqlCommand)
 #
 # sqlList = ["update tblResultsJoined set 'Last Value' = '=googlefinance(indirect(\"D\"&row()))*indirect(\"G\"&row())' where tblResultsJoined.'Sale Date' is null;"]
-# myPyFunc.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
+# myPyFunc.executeSQLStatements(sqlList, sqlCursor)
 #
 #
 
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlObj["sqlCursor"], True), True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlObj["sqlCursor"], True), True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
