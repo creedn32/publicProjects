@@ -33,14 +33,14 @@ for tickerMapItem in tickerMapExtractedValues:
     if tickerMapItem[tickerMapIndexStockName] not in [tickerMapUniqueItem[tickerMapIndexStockName] for tickerMapUniqueItem in tickerMapUniqueExtractedValues]:
         tickerMapUniqueExtractedValues.append(tickerMapItem)
 
-tickerDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map"))
+# tickerDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map"))
 
 rawDataRobRows = myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood"))
 rawDataRobExtractedValues = myGoogleSheetsFunc.extractValues(rawDataRobRows, myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood"))
 transactionsToAddRobExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood"))
 
 
-resultsTranScrubExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions"))
+transExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions"))
 chartOfAccountsDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload.index("Chart of Accounts"))
 
 
@@ -271,7 +271,7 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Unsold Sto
 
 
 tranRobDoubleEntryList.extend(doubleEntryUnsoldStockList)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, dontPopulateSheet=True)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, dontPopulateSheet=False)
 
 
 ###################################################################################################################
@@ -287,8 +287,8 @@ tranSharesColIndex = 7
 
 
 
-resultsTranScrubExtractedValues.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)])
-resultsTranScrubList = resultsTranScrubExtractedValues
+transExtractedValues.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)])
+resultsTranScrubList = transExtractedValues
 resultsTranScrubList = [item for item in resultsTranScrubList if item[tranAmountColIndex] != 0]
 resultsTranScrubRowTotal = len(resultsTranScrubList)
 
@@ -316,17 +316,22 @@ for resultsTranScrubIndexOfRow in range(1, resultsTranScrubRowTotal):
     if resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] in brokerageMap:
         resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] = brokerageMap[resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex]]
 
-    ticker = resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex]
+    # ticker = resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex]
 
-    if ticker in tickerDict:
-
-        for key in tickerDict[ticker]:
-            resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex] = tickerDict[ticker][key]
+    # if ticker in tickerDict:
+    #
+    #     for key in tickerDict[ticker]:
+    #         resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex] = tickerDict[ticker][key]
 
     resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] * multiplyFactor
 
     if resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] == "":
         resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] = 0
+
+
+
+splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "1", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, True)
+
 
 
 
