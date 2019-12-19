@@ -438,7 +438,7 @@ myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblS
 
 
 fieldStr = "\"Stock Name\", \"Broker\", \"Lot\""
-sqlCommand = f"select {fieldStr}, ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', \"Date\"), '0') || '/' || substr(strftime('%Y', \"Date\"), 3, 2) as 'Purchase Date', -sum(\"Amount\") as 'Capital Invested' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Date\";"
+sqlCommand = f"select {fieldStr}, ltrim(strftime('%m', \"Date\"), '0') || '/' || ltrim(strftime('%d', \"Date\"), '0') || '/' || substr(strftime('%Y', \"Date\"), 3, 2) as 'Purchase Date', -sum(\"Amount\") as 'Capital Invested' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Date\";"
 
 myPyFunc.createTableAs("tblPurchase", sqlCursor, sqlCommand)
 
