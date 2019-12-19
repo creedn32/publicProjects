@@ -398,25 +398,25 @@ resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.count
 
 
 tblScrubbedColumns = myPyFunc.createColumnsDict([
-    {"tranDate": "date"},
-    {"account": "varchar(255)"},
-    {"amount": "float"},
-    {"tranType": "varchar(255)"},
-    {"stockName": "varchar(255)"},
-    {"broker": "varchar(255)"},
-    {"lot": "varchar(255)"},
-    {"shares": "float"},
-    {"ticker": "varchar(255)"},
-    {"capitalInvested": "varchar(255)"},
-    {"accountType": "varchar(255)"},
-    {"accountCategory": "varchar(255)"},
-    {"yearOfDate": "int"}
+    {"\"Date\"": "date"},
+    {"\"Account\"": "varchar(255)"},
+    {"\"Amount+-\"": "float"},
+    {"\"Transaction Type\"": "varchar(255)"},
+    {"\"Stock Name\"": "varchar(255)"},
+    {"\"Broker\"": "varchar(255)"},
+    {"\"Lot\"": "varchar(255)"},
+    {"\"Shares\"": "float"},
+    {"\"Ticker\"": "varchar(255)"},
+    {"\"Capital Invested\"": "varchar(255)"},
+    {"\"Account Type\"": "varchar(255)"},
+    {"\"Account Category\"": "varchar(255)"},
+    {"\"Year\"": "int"}
 ])
 
 
 
 myPyFunc.createTable("tblScrubbed", tblScrubbedColumns, sqlCursor)
-# myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
+myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
 
 
 
