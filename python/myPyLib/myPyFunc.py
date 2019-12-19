@@ -338,7 +338,7 @@ def createTable(tblName, columnsObj, sqlCursor):
     # sqlList.append(
     #     "create table " + tblName + " (tranDate date, account varchar(255), accountType varchar(255), accountCategory varchar(255), amount float, tranType varchar(255), stockName varchar(255), broker varchar(255), lot varchar(255), shares float);")
 
-
+    # pp(sqlList)
     executeSQLStatements(sqlList, sqlCursor)
 
 
@@ -389,7 +389,7 @@ def populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, li
 
     sqlCommand = sqlCommand + ";"
 
-    pp(sqlCommand)
+    # pp(sqlCommand)
     executeSQLStatements([sqlCommand], sqlCursor)
      
 
