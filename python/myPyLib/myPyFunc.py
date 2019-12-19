@@ -408,6 +408,7 @@ def getQueryResult(sqlCommand, sqlCursor, includeColumnNames):
 
         # colNames = getSQLColNamesList(sqlCursor, tblName, False)
 
+
         for i in range(0, len(colNames)):
             if colNames[i].startswith("'"):
                 # pp(1)
