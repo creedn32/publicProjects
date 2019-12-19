@@ -369,17 +369,6 @@ resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.count
 
 
 
-# firstFieldsDict = {0:
-#                        {"field": "stockName",
-#                         "alias": "Stock"},
-#                    1:
-#                        {"field": "broker",
-#                         "alias": "Broker"},
-#                    2:
-#                        {"field": "lot",
-#                         "alias": "Lot"}
-#                    }
-
 
 
 # colDict =   {
@@ -431,12 +420,28 @@ myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblS
 
 
 
+# firstFieldsDict = {0:
+#                        {"field": "stockName",
+#                         "alias": "Stock"},
+#                    1:
+#                        {"field": "broker",
+#                         "alias": "Broker"},
+#                    2:
+#                        {"field": "lot",
+#                         "alias": "Lot"}
+#                    }
+
 
 # fieldAliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, True)
 # fieldStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, False)
 # aliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, False, True)
-#
-# myPyFunc.createTableAs("tblPurchase", sqlCursor, f"select {fieldAliasStr}, ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+
+
+fieldStr = "\"Stock Name\", \"Broker\", \"Lot\""
+sqlCommand = f"select {fieldStr}, ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', \"Date\"), '0') || '/' || substr(strftime('%Y', \"Date\"), 3, 2) as 'Purchase Date', -sum(\"Amount\") as 'Capital Invested' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Date\";"
+
+myPyFunc.createTableAs("tblPurchase", sqlCursor, sqlCommand)
+
 # myPyFunc.createTableAs("tblShares", sqlCursor, f"select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
 # myPyFunc.createTableAs("tblSale", sqlCursor, f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) end as 'Sale Date', sum(amount) as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
 #
