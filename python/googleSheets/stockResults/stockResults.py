@@ -176,16 +176,16 @@ splitTime = myPyFunc.printElapsedTime(splitTime, "Finished creating Robinhood do
 
 
 tblRobinhoodColumns = myPyFunc.createColumnsDict([
-    {"tranDate": "date"},
-    {"account": "varchar(255)"},
-    {"amount": "float"},
-    {"tranType": "varchar(255)"},
-    {"stockName": "varchar(255)"},
-    {"broker": "varchar(255)"},
-    {"lot": "varchar(255)"},
-    {"shares": "float"},
-    {"ticker": "varchar(255)"},
-    {"capitalInvested": "varchar(255)"}
+    {"\"Date\"": "date"},
+    {"\"Account\"": "varchar(255)"},
+    {"\"Amount+-\"": "float"},
+    {"\"Transaction Type\"": "varchar(255)"},
+    {"\"Stock Name\"": "varchar(255)"},
+    {"\"Broker\"": "varchar(255)"},
+    {"\"Lot\"": "varchar(255)"},
+    {"\"Shares\"": "float"},
+    {"\"Ticker\"": "varchar(255)"},
+    {"\"Capital Invested\"": "varchar(255)"}
 ])
 
 
@@ -207,7 +207,7 @@ myPyFunc.createAndPopulateTable("tblRobinhood", tblRobinhoodColumns, sqlCursor, 
 
 
 # myPyFunc.createTableAs("tblLots", sqlCursor, f"select stockName, lot, sum(amount), sum(shares) from tblRobinhood where account = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
-unsoldStockValuesList = myPyFunc.getQueryResult("select stockName, lot, sum(amount), sum(shares) from tblRobinhood where account = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;", sqlCursor, False)
+unsoldStockValuesList = myPyFunc.getQueryResult("select \"Stock\", \"Lot\", sum(\"Amount+-\"), sum(\"Shares\") from tblRobinhood where \"Account\" = 'Investment Asset' and \"Broker\" = 'Robinhood' group by \"Stock\", \"Lot\" having sum(\"Shares\") > 0;", sqlCursor, False)
 # myGoogleSheetsFunc.populateSheet(1, 1000, "Lots", googleSheetsAPIObj, resultsSpreadsheetID, unsoldStockValuesList2, True)
 
 
@@ -356,12 +356,17 @@ for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=True, splitTimeArg=splitTime)
 
 
-
 resultsTranScrubRowTotal = len(resultsTranScrubList)
 resultsTranScrubColTotal = len(resultsTranScrubList[0])
+# pp(resultsTranScrubRowTotal)
+# pp(resultsTranScrubColTotal)
 
-pp(resultsTranScrubRowTotal)
-pp(resultsTranScrubColTotal)
+
+
+scrubTranToDownload = ["Transactions - Scrubbed"]
+scrubTranDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, scrubTranToDownload)
+resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(scrubTranDownloadedWithGrid, scrubTranToDownload.index("Transactions - Scrubbed")), myGoogleSheetsFunc.countColumns(scrubTranDownloadedWithGrid, scrubTranToDownload.index("Transactions - Scrubbed")), scrubTranDownloadedWithGrid, scrubTranToDownload.index("Transactions - Scrubbed"))
+
 
 
 # firstFieldsDict = {0:
@@ -374,9 +379,9 @@ pp(resultsTranScrubColTotal)
 #                        {"field": "lot",
 #                         "alias": "Lot"}
 #                    }
-#
-#
-#
+
+
+
 # colDict =   {
 #                 0:  {"table": "tblResults",
 #                     "excludedFields": []},
@@ -411,7 +416,7 @@ tblScrubbedColumns = myPyFunc.createColumnsDict([
 
 
 myPyFunc.createTable("tblScrubbed", tblScrubbedColumns, sqlCursor)
-myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
+# myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
 
 
 
