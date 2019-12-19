@@ -39,8 +39,7 @@ rawDataRobRows = myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, results
 rawDataRobExtractedValues = myGoogleSheetsFunc.extractValues(rawDataRobRows, myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood"))
 transactionsToAddRobExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood"))
 
-
-transExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions - Motif")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions - Motif")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions - Motif"))
+resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions - Motif")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions - Motif")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions - Motif"))
 chartOfAccountsDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload.index("Chart of Accounts"))
 
 
@@ -93,7 +92,7 @@ for rawDataRobIndexOfRow in range(0, rawDataRobRows):
 
 
 newTransRobList.sort(key=lambda item: int(item[newTransRobListDateColIndex]))
-splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True, dontPopulateSheet=True)
+splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "Transactions - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, newTransRobList, True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
@@ -216,8 +215,6 @@ unsoldStockValuesList = myPyFunc.getQueryResult("select stockName, lot, sum(amou
 
 
 
-tranType = "Sale - Hypothetical"
-priceDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime.now()))
 # unsoldStockValuesDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, ["Unsold Stock Values - Robinhood"])
 # unsoldStockValuesList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(unsoldStockValuesDataWithGrid, 0), myGoogleSheetsFunc.countColumns(unsoldStockValuesDataWithGrid, 0), unsoldStockValuesDataWithGrid, 0)
 
@@ -242,6 +239,9 @@ priceDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime.now()))
 
 
 doubleEntryUnsoldStockList = []
+tranType = "Sale - Hypothetical"
+priceDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime.now()))
+gainLossAccount = "=if(indirect(\"r[0]c[1]\",false)<0,\"Gain On Sale - Hypothetical\",\"Loss On Sale - Hypothetical\")"
 
 
 for line in unsoldStockValuesList:
@@ -257,40 +257,31 @@ for line in unsoldStockValuesList:
             tickerSymbol = ticker[tickerMapTickerColIndex]
 
 
-    lotCurrentAmount = "googlefinance(indirect(\"I\"&row()))*indirect(\"H\"&row())"
+    lotCurrentAmount = "googlefinance(indirect(\"r[0]c[6]\",false))*indirect(\"r[0]c[5]\",false)"
 
     doubleEntryUnsoldStockList.append([priceDate, "Cash", "=" + lotCurrentAmount, tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
     doubleEntryUnsoldStockList.append([priceDate, "Investment Asset", -lotInvestmentAmount, tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
-
-    doubleEntryUnsoldStockList.append([priceDate, "=if(indirect(\"C\"&row())<0,\"Gain On Sale - Hypothetical\",\"Loss On Sale - Hypothetical\")", "=-" + lotCurrentAmount + "+" + "indirect(\"J\"&row())", tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, lotInvestmentAmount])
-
-
-
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Unsold Stock", googleSheetsAPIObj, resultsSpreadsheetID, doubleEntryUnsoldStockList, True, dontPopulateSheet=True)
+    doubleEntryUnsoldStockList.append([priceDate, gainLossAccount, "=-" + lotCurrentAmount + "+" + "indirect(\"r[0]c[7]\",false)", tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, lotInvestmentAmount])
 
 
 
 tranRobDoubleEntryList.extend(doubleEntryUnsoldStockList)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, dontPopulateSheet=False)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, writeToSheet=False, splitTimeArg=splitTime)
 
-
-###################################################################################################################
 
 
 tranDateColIndex = 0
 tranAccountColIndex = 1
-tranAmountColIndex = 2
-tranStockColIndex = 4
-tranBrokerColIndex = 5
-tranLotColIndex = 6
-tranSharesColIndex = 7
+# tranAmountColIndex = 2
+# tranStockColIndex = 4
+# tranBrokerColIndex = 5
+# tranLotColIndex = 6
+# tranSharesColIndex = 7
 
 
 
-
-resultsTranScrubList = transExtractedValues
-resultsTranScrubList = [item for item in resultsTranScrubList if item[tranAmountColIndex] != 0]
-resultsTranScrubRowTotal = len(resultsTranScrubList)
+# resultsTranScrubList = transMotifExtractedValues
+# resultsTranScrubList = [item for item in resultsTranScrubList if item[tranAmountColIndex] != 0]
 
 
 
@@ -332,40 +323,45 @@ resultsTranScrubRowTotal = len(resultsTranScrubList)
 # splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "1", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, True)
 
 resultsTranScrubList.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)])
-
+resultsTranScrubRowTotal = len(resultsTranScrubList)
+accountDataPointsToMap = 2
 
 
 
 
 #use map
 
-# pp(chartOfAccountsDict)
 
-# for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
-#
-#     accountName = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex]
-#
-#     for indexOfAccountChartOfAccountsDict in range(0, len(chartOfAccountsDict[accountName])):
-#         resultsTranScrubList[resultsTranScrubIndexOfRow].insert(tranAccountColIndex + 1, list(chartOfAccountsDict[accountName].values())[indexOfAccountChartOfAccountsDict])
-#
-#     if resultsTranScrubIndexOfRow == 0:
-#         resultsTranScrubList[resultsTranScrubIndexOfRow].append("Year")
-#     else:
-#         resultsTranScrubList[resultsTranScrubIndexOfRow].append(myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex]))
-#
+for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
+
+    accountName = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex]
+
+    for indexOfAccountMap in range(0, accountDataPointsToMap):
+        # pp(chartOfAccountsDict[accountName].values())
+
+        if accountName == gainLossAccount:
+            mappedAccountData = "=vlookup(indirect(\"r[0]c[-" + str(indexOfAccountMap + 9) + "]\",false),indirect(\"Chart of Accounts!r1c1:r" + str(len(chartOfAccountsDict)) + "c" + str(accountDataPointsToMap + 1) + "\",false)," + str(indexOfAccountMap + 2) + ",)"                   #"=vlookup(indirect(\"r[0]c[-9]\",false),'Chart of Accounts'!$A$1:$C$26," + "2" + ",)"
+        else:
+            mappedAccountData = list(chartOfAccountsDict[accountName].values())[indexOfAccountMap]
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append(mappedAccountData)
+
+    if resultsTranScrubIndexOfRow == 0:
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append("Year")
+    else:
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append(myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex]))
 
 
-# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, splitTimeArg=splitTime)
-#
-#
-#
-#
+
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=True, splitTimeArg=splitTime)
+
+
+
 # resultsTranScrubRowTotal = len(resultsTranScrubList)
 # resultsTranScrubColTotal = len(resultsTranScrubList[0])
-#
-#
-#
-#
+
+
+
+
 # firstFieldsDict = {0:
 #                        {"field": "stockName",
 #                         "alias": "Stock"},
@@ -493,10 +489,12 @@ resultsTranScrubList.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)
 # myPyFunc.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 #
 #
-# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlObj["sqlCursor"], True), True, splitTimeArg=splitTime)
-#
-# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlObj["sqlCursor"], True), True, splitTimeArg=splitTime)
-#
+
+
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlObj["sqlCursor"], True), True, writeToSheet=True, splitTimeArg=splitTime)
+
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlObj["sqlCursor"], True), True, writeToSheet=True, splitTimeArg=splitTime)
+
 
 
 myPyFunc.closeDatabase(sqlObj["sqlConnection"])
