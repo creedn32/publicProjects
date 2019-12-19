@@ -287,7 +287,7 @@ tranSharesColIndex = 7
 
 
 
-transExtractedValues.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)])
+
 resultsTranScrubList = transExtractedValues
 resultsTranScrubList = [item for item in resultsTranScrubList if item[tranAmountColIndex] != 0]
 resultsTranScrubRowTotal = len(resultsTranScrubList)
@@ -297,24 +297,24 @@ resultsTranScrubRowTotal = len(resultsTranScrubList)
 
 #Scrub Transactions sheet
 
-brokerageMap = {"Mt": "Motif",
-                "Rh": "Robinhood"}
+# brokerageMap = {"Mt": "Motif",
+#                 "Rh": "Robinhood"}
+#
+# multiplyFactor = 1
 
-multiplyFactor = 1
 
 
+# for resultsTranScrubIndexOfRow in range(1, resultsTranScrubRowTotal):
 
-for resultsTranScrubIndexOfRow in range(1, resultsTranScrubRowTotal):
-
-    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(" - " + resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex], " ")
-    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(
-        " - " + str(resultsTranScrubList[resultsTranScrubIndexOfRow][tranLotColIndex]), " ")
-    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(
-        resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex] + " - ", "")
-    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].rstrip()
-
-    if resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] in brokerageMap:
-        resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] = brokerageMap[resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex]]
+    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(" - " + resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex], " ")
+    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(
+    #     " - " + str(resultsTranScrubList[resultsTranScrubIndexOfRow][tranLotColIndex]), " ")
+    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(
+    #     resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex] + " - ", "")
+    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].rstrip()
+    #
+    # if resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] in brokerageMap:
+    #     resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] = brokerageMap[resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex]]
 
     # ticker = resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex]
 
@@ -323,14 +323,16 @@ for resultsTranScrubIndexOfRow in range(1, resultsTranScrubRowTotal):
     #     for key in tickerDict[ticker]:
     #         resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex] = tickerDict[ticker][key]
 
-    resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] * multiplyFactor
+    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] * multiplyFactor
+    #
+    # if resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] == "":
+    #     resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] = 0
 
-    if resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] == "":
-        resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] = 0
 
+# splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "1", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, True)
 
+resultsTranScrubList.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)])
 
-splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "1", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, True)
 
 
 
