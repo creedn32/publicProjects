@@ -442,7 +442,7 @@ sqlCommand = f"select {fieldStr}, ltrim(strftime('%m', \"Date\"), '0') || '/' ||
 
 myPyFunc.createTableAs("tblPurchase", sqlCursor, sqlCommand)
 
-# myPyFunc.createTableAs("tblShares", sqlCursor, f"select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
+myPyFunc.createTableAs("tblShares", sqlCursor, f"select {fieldStr}, sum(/"Shares/") from tblScrubbed where /"Account/" = 'Investment Asset' and /"Transaction Type/" like %Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
 # myPyFunc.createTableAs("tblSale", sqlCursor, f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) end as 'Sale Date', sum(amount) as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
 #
 # # strftime('%m/%d', tranDate) + '/' +
