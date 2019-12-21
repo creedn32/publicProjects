@@ -1,6 +1,7 @@
 from pprint import pprint as pp
 
 
+
 def printElapsedTime(priorTime, message):
 
     import time
@@ -58,6 +59,8 @@ def repetitiveKeyPress(numberOfTabs, keyToPress):
 
     for i in range(0, numberOfTabs):
         pyautogui.press(keyToPress)
+
+
 
 
 def functionOnClick(x, y, button, pressed):
@@ -154,8 +157,10 @@ def columnToLetter(columnNumber):
 
 
 
+
 def getFromDict(dictObj, key):
     return dictObj[key]
+
 
 
 
@@ -297,10 +302,14 @@ def createDatabase(databaseName, dbPath):
     return sqlObj
 
 
+
+
 def closeDatabase(sqlConnection):
 
     sqlConnection.commit()
     sqlConnection.close()
+
+
 
 
 def createColumnsDict(list):
@@ -343,10 +352,13 @@ def createTable(tblName, columnsObj, sqlCursor):
 
 
 
+
+
 def createTableAs(tblName, sqlCursor, sqlCommand):
 
     sqlList = ["drop table if exists " + tblName, "create table " + tblName + " as " + sqlCommand]
     executeSQLStatements(sqlList, sqlCursor)
+
 
 
 
@@ -427,6 +439,8 @@ def getQueryResult(sqlCommand, sqlCursor, includeColumnNames):
     return queryResult
 
 
+
+
 def createPivotColDict(fieldToPivot, fieldColIndex, fieldToSum, rowStartIndex,  dataList):
 
     colData = []
@@ -449,6 +463,7 @@ def createPivotColDict(fieldToPivot, fieldColIndex, fieldToSum, rowStartIndex,  
     colDict["pivotColStr"] = pivotColStr
 
     return colDict
+
 
 
 
