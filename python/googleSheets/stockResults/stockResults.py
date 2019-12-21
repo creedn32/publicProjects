@@ -447,10 +447,12 @@ myPyFunc.createTableAs("tblPurchase", sqlCursor, sqlCommand)
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblPurchase", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblPurchase", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
+
 sqlCommand = f"select {fieldStr}, sum(\"Shares\") as 'Shares' from tblScrubbed where \"Account\" = 'Investment Asset' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}  order by \"Broker\", \"Stock Name\", \"Lot\";"
 # pp(sqlCommand)
 myPyFunc.createTableAs("tblShares", sqlCursor, sqlCommand)
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblShares", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblShares", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+
 
 
 sqlCommand = f"select {fieldStr}, case when \"Transaction Type\" != 'Sale - Hypothetical' then ltrim(strftime('%m', \"Transaction Type\"), '0') || '/' || ltrim(strftime('%d', \"Transaction Type\"), '0') || '/' || substr(strftime('%Y', \"Transaction Type\"), 3, 2) end as 'Sale Date', sum(\"Amount+-\") as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Sale%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Transaction Type\" order by \"Broker\", \"Stock Name\", \"Lot\";"
