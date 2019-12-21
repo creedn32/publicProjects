@@ -216,6 +216,15 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
 
 
 
+def checkForSheet(sheetName, googleSheetsObj, spreadsheetID):
+
+    return 0
+
+
+
+
+
+
 
 def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet, **kwargs):
 
@@ -225,6 +234,7 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
     if writeToSheet:
 
+        checkForSheet(sheetName, googleSheetsObj, spreadsheetID)
         reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
         googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
         googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
