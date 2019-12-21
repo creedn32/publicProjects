@@ -221,6 +221,8 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
     writeToSheet = kwargs.get("writeToSheet", False)
 
+    messageToPrint = ""
+
     if writeToSheet:
 
         reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
@@ -245,15 +247,19 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
         googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
 
-        splitTime = kwargs.get("splitTimeArg", None)
 
 
-        pp(sheetName)
-        pp(kwargs)
 
-        if splitTime:
+        # pp(sheetName)
+        # pp(kwargs)
 
-    return myPyFunc.printElapsedTime(splitTime, "Finished writing to " + sheetName)
+        messageToPrint = "Finished writing to " + sheetName
+
+
+    splitTime = kwargs.get("splitTimeArg", None)
+
+    if splitTime:
+        return myPyFunc.printElapsedTime(splitTime, messageToPrint)
 
 
 
