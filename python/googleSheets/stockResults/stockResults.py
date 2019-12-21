@@ -439,14 +439,26 @@ myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblS
 
 fieldStr = "\"Stock Name\", \"Broker\", \"Lot\""
 
-sqlCommand = f"select {fieldStr}, ltrim(strftime('%m', \"Date\"), '0') || '/' || ltrim(strftime('%d', \"Date\"), '0') || '/' || substr(strftime('%Y', \"Date\"), 3, 2) as 'Purchase Date', -sum(\"Amount\") as 'Capital Invested' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Date\";"
+sqlCommand = f"select {fieldStr}, ltrim(strftime('%m', \"Date\"), '0') || '/' || ltrim(strftime('%d', \"Date\"), '0') || '/' || substr(strftime('%Y', \"Date\"), 3, 2) as 'Purchase Date', -sum(\"Amount+-\") as 'Capital Invested' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Date\";"
+# pp(sqlCommand)
 myPyFunc.createTableAs("tblPurchase", sqlCursor, sqlCommand)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblPurchase", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblPurchase", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
-sqlCommand = f"select {fieldStr}, sum(/"Shares/") from tblScrubbed where /"Account/" = 'Investment Asset' and /"Transaction Type/" like %Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr};"
-pp(sqlCommand)
-# myPyFunc.createTableAs("tblShares", sqlCursor, sqlCommand)
-# myPyFunc.createTableAs("tblSale", sqlCursor, f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) end as 'Sale Date', sum(amount) as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
-#
+
+sqlCommand = f"select {fieldStr}, sum(\"Shares\") as 'Shares' from tblScrubbed where \"Account\" = 'Investment Asset' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr};"
+# pp(sqlCommand)
+myPyFunc.createTableAs("tblShares", sqlCursor, sqlCommand)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblShares", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblShares", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+
+
+sqlCommand = f"select {fieldStr}, case when \"Transaction Type\" != 'Sale - Hypothetical' then ltrim(strftime('%m', \"Transaction Type\"), '0') || '/' || ltrim(strftime('%d', \"Transaction Type\"), '0') || '/' || substr(strftime('%Y', \"Transaction Type\"), 3, 2) end as 'Sale Date', sum(\"Amount+-\") as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Sale%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Transaction Type\";"
+# pp(sqlCommand)
+# myPyFunc.createTableAs("tblSale", sqlCursor, sqlCommand)
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblSale", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+
+
+
+
 # # strftime('%m/%d', tranDate) + '/' +
 # #get list of values to put as the pivot columns
 #

@@ -247,8 +247,13 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
         splitTime = kwargs.get("splitTimeArg", None)
 
+
+        pp(sheetName)
+        pp(kwargs)
+
         if splitTime:
-            return myPyFunc.printElapsedTime(splitTime, "Finished writing to " + sheetName)
+
+    return myPyFunc.printElapsedTime(splitTime, "Finished writing to " + sheetName)
 
 
 
