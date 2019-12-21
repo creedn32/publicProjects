@@ -221,7 +221,7 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
     writeToSheet = kwargs.get("writeToSheet", False)
 
-    messageToPrint = ""
+    messageToPrint = "Task completed"
 
     if writeToSheet:
 

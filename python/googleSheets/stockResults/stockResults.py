@@ -267,7 +267,7 @@ for line in unsoldStockValuesList:
 
 
 tranRobDoubleEntryList.extend(doubleEntryUnsoldStockList)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, writeToSheet=False, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
@@ -439,30 +439,30 @@ myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblS
 
 fieldStr = "\"Stock Name\", \"Broker\", \"Lot\""
 
-sqlCommand = f"select {fieldStr}, ltrim(strftime('%m', \"Date\"), '0') || '/' || ltrim(strftime('%d', \"Date\"), '0') || '/' || substr(strftime('%Y', \"Date\"), 3, 2) as 'Purchase Date', -sum(\"Amount+-\") as 'Capital Invested' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Date\";"
+sqlCommand = f"select {fieldStr}, ltrim(strftime('%m', \"Date\"), '0') || '/' || ltrim(strftime('%d', \"Date\"), '0') || '/' || substr(strftime('%Y', \"Date\"), 3, 2) as 'Purchase Date', -sum(\"Amount+-\") as 'Capital Invested' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Date\" order by \"Broker\", \"Stock Name\", \"Lot\";"
 # pp(sqlCommand)
 myPyFunc.createTableAs("tblPurchase", sqlCursor, sqlCommand)
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblPurchase", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblPurchase", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
-sqlCommand = f"select {fieldStr}, sum(\"Shares\") as 'Shares' from tblScrubbed where \"Account\" = 'Investment Asset' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr};"
+sqlCommand = f"select {fieldStr}, sum(\"Shares\") as 'Shares' from tblScrubbed where \"Account\" = 'Investment Asset' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}  order by \"Broker\", \"Stock Name\", \"Lot\";"
 # pp(sqlCommand)
 myPyFunc.createTableAs("tblShares", sqlCursor, sqlCommand)
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblShares", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblShares", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
-sqlCommand = f"select {fieldStr}, case when \"Transaction Type\" != 'Sale - Hypothetical' then ltrim(strftime('%m', \"Transaction Type\"), '0') || '/' || ltrim(strftime('%d', \"Transaction Type\"), '0') || '/' || substr(strftime('%Y', \"Transaction Type\"), 3, 2) end as 'Sale Date', sum(\"Amount+-\") as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Sale%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Transaction Type\";"
+sqlCommand = f"select {fieldStr}, case when \"Transaction Type\" != 'Sale - Hypothetical' then ltrim(strftime('%m', \"Transaction Type\"), '0') || '/' || ltrim(strftime('%d', \"Transaction Type\"), '0') || '/' || substr(strftime('%Y', \"Transaction Type\"), 3, 2) end as 'Sale Date', sum(\"Amount+-\") as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Sale%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Transaction Type\" order by \"Broker\", \"Stock Name\", \"Lot\";"
 # pp(sqlCommand)
-# myPyFunc.createTableAs("tblSale", sqlCursor, sqlCommand)
-# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblSale", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+myPyFunc.createTableAs("tblSale", sqlCursor, sqlCommand)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblSale", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
 
-# # strftime('%m/%d', tranDate) + '/' +
-# #get list of values to put as the pivot columns
-#
-#
+# strftime('%m/%d', tranDate) + '/' +
+#get list of values to put as the pivot columns
+
+
 # pivotColDict = myPyFunc.createPivotColDict("yearOfDate", 10, "amount", 1, resultsTranScrubList)
 # pivotColStr = pivotColDict["pivotColStr"]
 # # pp(pivotColStr)
@@ -518,9 +518,9 @@ sqlCommand = f"select {fieldStr}, case when \"Transaction Type\" != 'Sale - Hypo
 #
 
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
