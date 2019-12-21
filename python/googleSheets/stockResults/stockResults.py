@@ -203,12 +203,14 @@ tblRobinhoodColumns = myPyFunc.createColumnsDict([
 
 
 myPyFunc.createAndPopulateTable("tblRobinhood", tblRobinhoodColumns, sqlCursor, len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tranRobDoubleEntryList, [0])
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblRobinhood", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblRobinhood;", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
 # myPyFunc.createTableAs("tblLots", sqlCursor, f"select stockName, lot, sum(amount), sum(shares) from tblRobinhood where account = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
-unsoldStockValuesList = myPyFunc.getQueryResult("select \"Stock\", \"Lot\", sum(\"Amount+-\"), sum(\"Shares\") from tblRobinhood where \"Account\" = 'Investment Asset' and \"Broker\" = 'Robinhood' group by \"Stock\", \"Lot\" having sum(\"Shares\") > 0;", sqlCursor, False)
-# myGoogleSheetsFunc.populateSheet(1, 1000, "Lots", googleSheetsAPIObj, resultsSpreadsheetID, unsoldStockValuesList2, True)
+unsoldStockValuesList = myPyFunc.getQueryResult("select \"Stock Name\", \"Lot\", sum(\"Amount+-\"), sum(\"Shares\") from tblRobinhood where \"Account\" = 'Investment Asset' and \"Broker\" = 'Robinhood' group by \"Stock Name\", \"Lot\" having sum(\"Shares\") > 0;", sqlCursor, False)
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Unsold Stock", googleSheetsAPIObj, resultsSpreadsheetID, unsoldStockValuesList, True, writeToSheet=True, splitTimeArg=splitTime)
+
 
 
 # sqlCommand = f"select tblLots.*, tblTickerMap.ticker, '=googlefinance(indirect(\"E\"&row()))*indirect(\"D\"&row())' as googleFin, '=indirect(\"F\"&row())-indirect(\"C\"&row())' as gainLoss from tblLots left outer join tblTickerMap on tblLots.stockName = tblTickerMap.stockName;"
