@@ -218,25 +218,10 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
     return mappingDict
 
 
-def getDataWithFieldMask(googleSheetsObj, spreadsheetID, fieldMask, **kwargs):
-
-    # sheetName = kwargs.get("sheetName", False)
-    # pp(sheetName)
-
-    # if sheetName:
-    #     return googleSheetsObj.get(spreadsheetId=spreadsheetID, range=sheetName).execute()
-    #     pp("here")
-    # else:
-
-    return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask).execute()
-
-
-
-
 
 def checkForSheet(sheetName, googleSheetsObj, spreadsheetID):
 
-    allSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)").get("sheets", "")
+    allSheetsResponse = googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields="sheets/properties(title)").execute().get("sheets", "")
 
     for rsp in allSheetsResponse:
         if sheetName == rsp.get("properties", "").get("title", ""):
@@ -276,7 +261,7 @@ def createSheet(sheetName, googleSheetsObj, spreadsheetID):
 
 def getSheetID(sheetName, googleSheetsObj, spreadsheetID):
 
-    allSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title,sheetId)").get(
+    allSheetsResponse = googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields="sheets/properties(title,sheetId)").execute().get(
         "sheets", "")
 
     for rsp in allSheetsResponse:
@@ -362,56 +347,6 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
         }
 
         googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=formatCellsRequest).execute()
-
-
-
-
-        trial = {
-            "requests": [
-                {
-                    "repeatCell": {
-                        "range": {
-                            "sheetId": sheetID,
-                            "startRowIndex": 0,
-                            "endRowIndex": 1
-                        },
-                        "cell": {
-                            "userEnteredFormat": {
-                                "backgroundColor": {
-                                    "red": 0.0,
-                                    "green": 0.0,
-                                    "blue": 0.0
-                                },
-                                "horizontalAlignment": "CENTER",
-                                "textFormat": {
-                                    "foregroundColor": {
-                                        "red": 1.0,
-                                        "green": 1.0,
-                                        "blue": 1.0
-                                    },
-                                    "fontSize": 12,
-                                    "bold": True
-                                }
-                            }
-                        },
-                        "fields": "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)"
-                    }
-                },
-                {
-                    "updateSheetProperties": {
-                        "properties": {
-                            "sheetId": sheetID,
-                            "gridProperties": {
-                                "frozenRowCount": 1
-                            }
-                        },
-                        "fields": "gridProperties.frozenRowCount"
-                    }
-                }
-            ]
-        }
-
-
 
 
         # pp(sheetName)
