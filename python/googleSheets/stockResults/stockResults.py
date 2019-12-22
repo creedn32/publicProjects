@@ -436,7 +436,7 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblShares", googleSheetsA
 
 
 
-sqlCommand = f"select {fieldStr}, case when \"Transaction Type\" != 'Sale - Hypothetical' then ltrim(strftime('%m', \"Transaction Type\"), '0') || '/' || ltrim(strftime('%d', \"Transaction Type\"), '0') || '/' || substr(strftime('%Y', \"Transaction Type\"), 3, 2) end as 'Sale Date', sum(\"Amount+-\") as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Sale%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Transaction Type\" order by \"Broker\", \"Stock Name\", \"Lot\";"
+sqlCommand = f"select {fieldStr}, case when \"Transaction Type\" != 'Sale - Hypothetical' then ltrim(strftime('%m', \"Transaction Type\"), '0') || '/' || ltrim(strftime('%d', \"Transaction Type\"), '0') || '/' || substr(strftime('%Y', \"Transaction Type\"), 3, 2) end as 'Sale Date', sum(\"Amount+-\") as 'Last Value' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Sale%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Transaction Type\" order by \"Broker\", \"Stock Name\", \"Lot\";"
 # pp(sqlCommand)
 myPyFunc.createTableAs("tblSale", sqlCursor, sqlCommand)
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblSale", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
@@ -490,13 +490,11 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblResults", googleSheets
 colDict =   {
                 0:  {"table": "tblAllLots",
                     "excludedFields": []},
-                1:  {"table": "tblTickerMap",
-                    "excludedFields": ["rowNumber", "stockName"]},
-                2:  {"table": "tblPurchase",
+                1:  {"table": "tblPurchase",
                     "excludedFields": ["Stock Name", "Broker", "Lot"]},
-                3:  {"table": "tblShares",
+                2:  {"table": "tblShares",
                     "excludedFields": ["Stock Name", "Broker", "Lot"]},
-                4:  {"table": "tblSale",
+                3:  {"table": "tblSale",
                     "excludedFields": ["Stock Name", "Broker", "Lot"]}
             }
 
@@ -536,7 +534,7 @@ for colCount in range(0, len(pivotColDict["colList"])):
 
 
 
-sqlCommand = f"select * from tblAllLots " \
+sqlCommand = f"select " + colListStr + " from tblAllLots " \
             "left outer join tblPurchase on tblAllLots.Broker = tblPurchase.Broker and tblAllLots.\"Stock Name\" = tblPurchase.\"Stock Name\" and tblAllLots.Lot = tblPurchase.Lot " \
             "left outer join tblShares on tblAllLots.Broker = tblShares.Broker and tblAllLots.\"Stock Name\" = tblShares.\"Stock Name\" and tblAllLots.Lot = tblShares.Lot " \
             "left outer join tblSale on tblAllLots.Broker = tblSale.Broker and tblAllLots.\"Stock Name\" = tblSale.\"Stock Name\" and tblAllLots.Lot = tblSale.Lot " \
@@ -547,6 +545,10 @@ sqlCommand = f"select * from tblAllLots " \
 
 myPyFunc.createTableAs("tblResults", sqlCursor, sqlCommand)
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblResults", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResults", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+
+
+
+# sqlCommand = f"select {fieldStr}, case when \"Transaction Type\" != 'Sale - Hypothetical' then ltrim(strftime('%m', \"Transaction Type\"), '0') || '/' || ltrim(strftime('%d', \"Transaction Type\"), '0') || '/' || substr(strftime('%Y', \"Transaction Type\"), 3, 2) end as 'Sale Date', sum(\"Amount+-\") as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Sale%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Transaction Type\" order by \"Broker\", \"Stock Name\", \"Lot\";"
 
 
 
