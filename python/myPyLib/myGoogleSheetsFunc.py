@@ -217,13 +217,16 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
 
 def getDataWithFieldMask(googleSheetsObj, spreadsheetID, fieldMask, **kwargs):
 
-    sheetName = kwargs.get("sheetName", False)
+    # sheetName = kwargs.get("sheetName", False)
+    # pp(sheetName)
 
-    if sheetName:
-        return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask,
-                                   range=sheetName).execute()
-    else:
-        return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask).execute()
+    # if sheetName:
+    #     return googleSheetsObj.get(spreadsheetId=spreadsheetID, range=sheetName).execute()
+    #     pp("here")
+    # else:
+
+    return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask).execute()
+
 
 
 
@@ -285,10 +288,16 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
         googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
 
-        googleSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)", range=sheetName).get(
+        allSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title,sheetId)").get(
             "sheets", "")
 
-        googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
+        for rsp in allSheetsResponse:
+            responseProperties = rsp.get("properties", "")
+
+            if sheetName == responseProperties.get("title", ""):
+                sheetID = responseProperties.get("sheetId", "")
+
+        # googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
 
 
         requestObj = {
@@ -296,7 +305,7 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
                 {
                     "autoResizeDimensions": {
                         "dimensions": {
-                            "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
+                            "sheetId": sheetID,
                             "dimension": "COLUMNS",
                             "startIndex": 0,
                             "endIndex": len(valuesList[0]) + 1
@@ -315,6 +324,7 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
 
     splitTime = kwargs.get("splitTimeArg", None)
+
 
     if splitTime:
         return myPyFunc.printElapsedTime(splitTime, messageToPrint)
