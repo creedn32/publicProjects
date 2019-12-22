@@ -5,7 +5,7 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPyLib import myPyFunc, myGoogleSheetsFunc
 
 
-splitTime = myPyFunc.printElapsedTime(False, "Starting script")
+startTime = myPyFunc.printElapsedTime(False, "Starting script")
 
 import datetime
 from collections import OrderedDict
@@ -17,7 +17,7 @@ sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().paren
 sqlCursor = sqlObj["sqlCursor"]
 googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
+splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
 
 
 resultsToDownload = ["Inputs", "Ticker Map", "Raw Data - Robinhood", "Transactions To Add - Robinhood", "Transactions - Motif", "Chart of Accounts"]
@@ -533,3 +533,4 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPI
 
 myPyFunc.closeDatabase(sqlObj["sqlConnection"])
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished with database")
+myPyFunc.printElapsedTime(startTime, "Total time to run code")
