@@ -166,11 +166,6 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
                             "endIndex": totalRows
                         }
                     }
-                },
-                {
-                    "clearBasicFilter": {
-                        "sheetId": sheetID
-                    }
                 }
         )
 
@@ -190,9 +185,15 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
                     }
                 })
 
+    requestObj["requests"].append({
+                    "clearBasicFilter": {
+                        "sheetId": sheetID
+                    }
+                }
+    )
 
-    if requestObj["requests"]:
-        googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
+
+    googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
 
     if clearSheet:
         googleSheetsObj.values().clear(spreadsheetId=spreadsheetID, range=sheetName, body={}).execute()
