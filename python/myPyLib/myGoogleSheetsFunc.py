@@ -215,20 +215,29 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
     return mappingDict
 
 
-def getDataWithFieldMask(googleSheetsObj, spreadsheetID, fieldMask):
+def getDataWithFieldMask(googleSheetsObj, spreadsheetID, fieldMask, **kwargs):
 
-    return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask).execute()
+    sheetName = kwargs.get("sheetName", False)
+
+    if 1 == 1:
+        return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask).execute()
+    else:
+        return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask, range=sheetName).execute()
+
+
 
 
 def checkForSheet(sheetName, googleSheetsObj, spreadsheetID):
 
-    googleSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)").get("sheets", "")
+    allSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)").get("sheets", "")
 
-    for rsp in googleSheetsResponse:
+    for rsp in allSheetsResponse:
         if sheetName == rsp.get("properties", "").get("title", ""):
             return True
 
     return False
+
+
 
 
 def createSheet(sheetName, googleSheetsObj, spreadsheetID):
@@ -257,6 +266,9 @@ def createSheet(sheetName, googleSheetsObj, spreadsheetID):
     googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=spreadsheetBody).execute()
 
 
+
+
+
 def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet, **kwargs):
 
     writeToSheet = kwargs.get("writeToSheet", False)
@@ -272,7 +284,7 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
         googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
 
-        googleSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)").get(
+        googleSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)", sheetName=sheetName).get(
             "sheets", "")
 
         googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
@@ -295,9 +307,6 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
         googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
 
-
-
-
         # pp(sheetName)
         # pp(kwargs)
 
@@ -308,6 +317,9 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
     if splitTime:
         return myPyFunc.printElapsedTime(splitTime, messageToPrint)
+
+
+
 
 
 
