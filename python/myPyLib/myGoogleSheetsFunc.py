@@ -215,21 +215,46 @@ def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
     return mappingDict
 
 
+def getDataWithFieldMask(googleSheetsObj, spreadsheetID, fieldMask):
+
+    return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask).execute()
+
 
 def checkForSheet(sheetName, googleSheetsObj, spreadsheetID):
 
-    pp("checkForSheet")
+    googleSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)").get("sheets", "")
+
+    for rsp in googleSheetsResponse:
+        if sheetName == rsp.get("properties", "").get("title", ""):
+            return True
+
+    return False
 
 
-def createSheet(googleSheetsObj):
+def createSheet(sheetName, googleSheetsObj, spreadsheetID):
 
     spreadsheetBody = {
-        # TODO: Add desired entries to the request body.
+        "requests": [
+            {
+                "addSheet": {
+                    "properties": {
+                        "title": sheetName,
+                        "gridProperties": {
+                            "rowCount": 1,
+                            "columnCount": 1
+                        },
+                        # "tabColor": {
+                        #     "red": 1.0,
+                        #     "green": 0.3,
+                        #     "blue": 0.4
+                        # }
+                    }
+                }
+            }
+        ]
     }
 
-    googleSheetsObj.create(body=spreadsheetBody)
-
-    pp("createSheet")
+    googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=spreadsheetBody).execute()
 
 
 def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet, **kwargs):
@@ -240,11 +265,16 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
     if writeToSheet:
 
-        checkForSheet(sheetName, googleSheetsObj, spreadsheetID)
-        createSheet(googleSheetsObj)
+        if not checkForSheet(sheetName, googleSheetsObj, spreadsheetID):
+            createSheet(sheetName, googleSheetsObj, spreadsheetID)
+        else:
+            reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
 
-        reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
         googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
+
+        googleSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)").get(
+            "sheets", "")
+
         googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
 
 
