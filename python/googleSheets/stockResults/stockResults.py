@@ -481,14 +481,14 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblDividends", googleShee
 # pp(aliasStr)
 
 
-myPyFunc.createTableAs("tblResults", sqlCursor, f"select {fieldStr} from tblPurchase union select {fieldStr} from tblSale union select {fieldStr} from tblDividends;")
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblResults", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResults", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+myPyFunc.createTableAs("tblAllLots", sqlCursor, f"select {fieldStr} from tblPurchase union select {fieldStr} from tblSale union select {fieldStr} from tblDividends;")
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblResults", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblAllLots", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
 
 colDict =   {
-                0:  {"table": "tblResults",
+                0:  {"table": "tblAllLots",
                     "excludedFields": []},
                 1:  {"table": "tblTickerMap",
                     "excludedFields": ["rowNumber", "stockName"]},
@@ -502,7 +502,7 @@ colDict =   {
 
 
 colListStr = myPyFunc.getAllColumns(colDict, sqlCursor)
-# pp(colListStr)
+pp(colListStr)
 
 
 
@@ -510,10 +510,10 @@ colListStr = myPyFunc.getAllColumns(colDict, sqlCursor)
 divColStr = ""
 percentColStr = ""
 
-pp(pivotColDict)
 
-# for colCount in range(0, len(pivotColDict["colList"])):
-#
+for colCount in range(0, len(pivotColDict["colList"])):
+    pass
+
 #     currentColName = "tblDividends.'" + str(pivotColDict["colList"][colCount]) + "'"
 #     divColStr = divColStr + "case when " + currentColName + " is null then '=if(or(int(left(indirect(\"R1C[0]\",false),4))<year(indirect(\"E\"&row())),int(left(indirect(\"R1C[0]\",false),4))>if(indirect(\"H\"&row())=\"\",year(today()),year(indirect(\"H\"&row())))),\"NO\",\"\")' else " + currentColName + " end as '" + str(pivotColDict["colList"][colCount]) + "'"
 #     # =if (
@@ -527,31 +527,35 @@ pp(pivotColDict)
 #
 # # pp(divColStr)
 #
-#
-#
-#
-#
-#
+
+
+
+
 # sqlCommand = f"select " + colListStr + ", " + divColStr + ", '', " + percentColStr + ", ' ', '=sum(indirect(\"L\"&row()):indirect(\"Q\"&row()))' as 'Total Dividends', '' as 'Dividend Yield on Cost', '' as 'Forward Dividend', '' as 'Forward Dividend Yield', '' as '% of Portfolio' from tblResults " \
 #             "left outer join tblTickerMap on tblResults.Stock = tblTickerMap.stockName " \
-#             "left outer join tblPurchase on tblResults.Broker = tblPurchase.Broker and tblResults.Stock = tblPurchase.Stock and tblResults.Lot = tblPurchase.Lot " \
-#             "left outer join tblShares on tblResults.Broker = tblShares.Broker and tblResults.Stock = tblShares.Stock and tblResults.Lot = tblShares.Lot " \
-#             "left outer join tblSale on tblResults.Broker = tblSale.Broker and tblResults.Stock = tblSale.Stock and tblResults.Lot = tblSale.Lot " \
-#             "left outer join tblDividends on tblResults.Broker = tblDividends.Broker and tblResults.Stock = tblDividends.Stock and tblResults.Lot = tblDividends.Lot"
-#
-# # pp("Blank line")
-# # pp(sqlCommand)
-#
-# myPyFunc.createTableAs("tblResultsJoined", sqlCursor, sqlCommand)
-#
+
+
+
+sqlCommand = f"select * from tblAllLots " \
+            "left outer join tblPurchase on tblAllLots.Broker = tblPurchase.Broker and tblAllLots.\"Stock Name\" = tblPurchase.\"Stock Name\" and tblAllLots.Lot = tblPurchase.Lot " \
+            "left outer join tblShares on tblAllLots.Broker = tblShares.Broker and tblAllLots.\"Stock Name\" = tblShares.\"Stock Name\" and tblAllLots.Lot = tblShares.Lot " \
+            "left outer join tblSale on tblAllLots.Broker = tblSale.Broker and tblAllLots.\"Stock Name\" = tblSale.\"Stock Name\" and tblAllLots.Lot = tblSale.Lot " \
+            "left outer join tblDividends on tblAllLots.Broker = tblDividends.Broker and tblAllLots.\"Stock Name\" = tblDividends.\"Stock Name\" and tblAllLots.Lot = tblDividends.Lot"
+
+
+
+
+myPyFunc.createTableAs("tblResults", sqlCursor, sqlCommand)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblResults", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResults", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+
+
+
 # sqlList = ["update tblResultsJoined set 'Last Value' = '=googlefinance(indirect(\"D\"&row()))*indirect(\"G\"&row())' where tblResultsJoined.'Sale Date' is null;"]
 # myPyFunc.executeSQLStatements(sqlList, sqlCursor)
-#
-#
+
 
 
 # splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
-
 # splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
