@@ -378,21 +378,6 @@ resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.count
 
 
 
-# colDict =   {
-#                 0:  {"table": "tblResults",
-#                     "excludedFields": []},
-#                 1:  {"table": "tblTickerMap",
-#                     "excludedFields": ["rowNumber", "stockName"]},
-#                 2:  {"table": "tblPurchase",
-#                     "excludedFields": ["Stock", "Broker", "Lot"]},
-#                 3:  {"table": "tblShares",
-#                     "excludedFields": ["Stock", "Broker", "Lot"]},
-#                 4:  {"table": "tblSale",
-#                     "excludedFields": ["Stock", "Broker", "Lot"]}
-#             }
-
-
-
 tblScrubbedColumns = myPyFunc.createColumnsDict([
     {"\"Date\"": "date"},
     {"\"Account\"": "varchar(255)"},
@@ -427,21 +412,12 @@ myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblS
 
 
 
-# firstFieldsDict = {0:
-#                        {"field": "stockName",
-#                         "alias": "Stock"},
-#                    1:
-#                        {"field": "broker",
-#                         "alias": "Broker"},
-#                    2:
-#                        {"field": "lot",
-#                         "alias": "Lot"}
-#                    }
 
 
 # fieldAliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, True)
 # fieldStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, False)
-# aliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, False, True)
+
+
 
 
 fieldStr = "\"Stock Name\", \"Broker\", \"Lot\""
@@ -476,24 +452,66 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPI
 
 pivotColDict = myPyFunc.createPivotColDict("Year", 12, "Amount+-", 1, resultsTranScrubList)
 pivotColStr = pivotColDict["pivotColStr"]
-pp(pivotColStr)
+# pp(pivotColStr)
+
+myPyFunc.createTableAs("tblDividends", sqlCursor, f"select {fieldStr}, {pivotColStr} from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Dividend%' group by {fieldStr};")
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblDividends", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblDividends", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
 
-# myPyFunc.createTableAs("tblDividends", sqlCursor, f"select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
-# myPyFunc.createTableAs("tblResults", sqlCursor, f"select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
+
+
+# firstFieldsDict = {0:
+#                        {"field": "stockName",
+#                         "alias": "Stock"},
+#                    1:
+#                        {"field": "broker",
+#                         "alias": "Broker"},
+#                    2:
+#                        {"field": "lot",
+#                         "alias": "Lot"}
+#                    }
 #
 #
-# colListStr = myPyFunc.getAllColumns(colDict, sqlCursor)
-# # pp(colListStr)
 #
 #
 #
-#
-# divColStr = ""
-# percentColStr = ""
-#
+# aliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, False, True)
+# pp(aliasStr)
+
+
+myPyFunc.createTableAs("tblResults", sqlCursor, f"select {fieldStr} from tblPurchase union select {fieldStr} from tblSale union select {fieldStr} from tblDividends;")
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblResults", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResults", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+
+
+
+
+colDict =   {
+                0:  {"table": "tblResults",
+                    "excludedFields": []},
+                1:  {"table": "tblTickerMap",
+                    "excludedFields": ["rowNumber", "stockName"]},
+                2:  {"table": "tblPurchase",
+                    "excludedFields": ["Stock Name", "Broker", "Lot"]},
+                3:  {"table": "tblShares",
+                    "excludedFields": ["Stock Name", "Broker", "Lot"]},
+                4:  {"table": "tblSale",
+                    "excludedFields": ["Stock Name", "Broker", "Lot"]}
+            }
+
+
+colListStr = myPyFunc.getAllColumns(colDict, sqlCursor)
+# pp(colListStr)
+
+
+
+
+divColStr = ""
+percentColStr = ""
+
+pp(pivotColDict)
+
 # for colCount in range(0, len(pivotColDict["colList"])):
 #
 #     currentColName = "tblDividends.'" + str(pivotColDict["colList"][colCount]) + "'"
