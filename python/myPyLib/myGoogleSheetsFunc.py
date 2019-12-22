@@ -166,7 +166,13 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
                             "endIndex": totalRows
                         }
                     }
-                })
+                },
+                {
+                    "clearBasicFilter": {
+                        "sheetId": sheetID
+                    }
+                }
+        )
 
 
 
