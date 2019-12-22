@@ -1,8 +1,6 @@
 #add multiply factor
-#bold first line of new sheet
-#freeze top line of new sheet
 #add autofilter to first line of new sheet
-
+#count rows in function arguments
 
 
 import sys, pathlib

@@ -259,11 +259,11 @@ def createSheet(sheetName, googleSheetsObj, spreadsheetID):
                             "rowCount": 1,
                             "columnCount": 1
                         },
-                        # "tabColor": {
-                        #     "red": 1.0,
-                        #     "green": 0.3,
-                        #     "blue": 0.4
-                        # }
+                        "tabColor": {
+                            "red": 0,
+                            "green": 0,
+                            "blue": 0
+                        }
                     }
                 }
             }
@@ -302,28 +302,124 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
             reduceSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet)
 
         googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
+        lastColumnNum = len(valuesList[0]) + 1
+        sheetID = getSheetID(sheetName, googleSheetsObj, spreadsheetID)
 
-        requestObj = {
+
+        formatCellsRequest = {
             "requests": [
+                {
+                    "repeatCell": {
+                        "range": {
+                            "sheetId": sheetID,
+                            "startRowIndex": 0,
+                            "endRowIndex": 1
+                        },
+                        "cell": {
+                            "userEnteredFormat": {
+                                "textFormat": {
+                                    "bold": True
+                                }
+                            }
+                        },
+                        "fields": "userEnteredFormat(textFormat)"
+                    }
+                },
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": sheetID,
+                            "gridProperties": {
+                                "frozenRowCount": 1
+                            }
+                        },
+                        "fields": "gridProperties.frozenRowCount"
+                    }
+                },
+                {
+                    "setBasicFilter": {
+                        "filter": {
+                            "range": {
+                                "sheetId": sheetID,
+                                "startRowIndex": 0,
+                                "endRowIndex": 1
+                            }
+                        }
+
+                    }
+                },
                 {
                     "autoResizeDimensions": {
                         "dimensions": {
-                            "sheetId": getSheetID(sheetName, googleSheetsObj, spreadsheetID),
+                            "sheetId": sheetID,
                             "dimension": "COLUMNS",
                             "startIndex": 0,
-                            "endIndex": len(valuesList[0]) + 1
+                            "endIndex": lastColumnNum
                         }
                     }
                 }
             ]
         }
 
-        googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=requestObj).execute()
+        googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=formatCellsRequest).execute()
+
+
+
+
+        trial = {
+            "requests": [
+                {
+                    "repeatCell": {
+                        "range": {
+                            "sheetId": sheetID,
+                            "startRowIndex": 0,
+                            "endRowIndex": 1
+                        },
+                        "cell": {
+                            "userEnteredFormat": {
+                                "backgroundColor": {
+                                    "red": 0.0,
+                                    "green": 0.0,
+                                    "blue": 0.0
+                                },
+                                "horizontalAlignment": "CENTER",
+                                "textFormat": {
+                                    "foregroundColor": {
+                                        "red": 1.0,
+                                        "green": 1.0,
+                                        "blue": 1.0
+                                    },
+                                    "fontSize": 12,
+                                    "bold": True
+                                }
+                            }
+                        },
+                        "fields": "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)"
+                    }
+                },
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": sheetID,
+                            "gridProperties": {
+                                "frozenRowCount": 1
+                            }
+                        },
+                        "fields": "gridProperties.frozenRowCount"
+                    }
+                }
+            ]
+        }
+
+
+
 
         # pp(sheetName)
         # pp(kwargs)
 
         messageToPrint = "Finished writing to " + sheetName
+
+
 
 
     splitTime = kwargs.get("splitTimeArg", None)
