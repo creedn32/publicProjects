@@ -203,7 +203,7 @@ tblRobinhoodColumns = myPyFunc.createColumnsDict([
 
 
 myPyFunc.createAndPopulateTable("tblRobinhood", tblRobinhoodColumns, sqlCursor, len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tranRobDoubleEntryList, [0])
-# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblRobinhood", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblRobinhood;", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+# splitTime = m|}yGoogleSheetsFunc.populateSheet(2, 1000, "tblRobinhood", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblRobinhood;", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 

@@ -219,10 +219,11 @@ def getDataWithFieldMask(googleSheetsObj, spreadsheetID, fieldMask, **kwargs):
 
     sheetName = kwargs.get("sheetName", False)
 
-    if 1 == 1:
-        return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask).execute()
+    if sheetName:
+        return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask,
+                                   range=sheetName).execute()
     else:
-        return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask, range=sheetName).execute()
+        return googleSheetsObj.get(spreadsheetId=spreadsheetID, includeGridData=False, fields=fieldMask).execute()
 
 
 
@@ -284,7 +285,7 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
         googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
 
-        googleSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)", sheetName=sheetName).get(
+        googleSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title)", range=sheetName).get(
             "sheets", "")
 
         googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
