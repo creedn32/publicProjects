@@ -193,7 +193,7 @@ tblRobinhoodColumns = myPyFunc.createColumnsDict([
 
 #
 # tickerColumnsObj = OrderedDict()
-# tickerColumnsObj["rowNumber"] = "int"
+# tickerColumxnsObj["rowNumber"] = "int"
 # tickerColumnsObj["Ticker"] = "varchar(255)"
 # tickerColumnsObj["stockName"] = "varchar(255)"
 #
