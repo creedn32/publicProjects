@@ -153,11 +153,14 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
     requestObj = {}
     requestObj["requests"] = []
 
+    sheetID = googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"]
+    # sheetID = getSheetID(sheetName, googleSheetsObj, spreadsheetID)
+
     if totalRows > rowsToKeep:
         requestObj["requests"].append({
                     "deleteDimension": {
                         "range": {
-                            "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
+                            "sheetId": sheetID,
                             "dimension": "ROWS",
                             "startIndex": rowsToKeep,
                             "endIndex": totalRows
@@ -173,7 +176,7 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
         requestObj["requests"].append({
                     "deleteDimension": {
                         "range": {
-                            "sheetId": googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"],
+                            "sheetId": sheetID,
                             "dimension": "COLUMNS",
                             "startIndex": columnsToKeep,
                             "endIndex": totalColumns
@@ -271,6 +274,18 @@ def createSheet(sheetName, googleSheetsObj, spreadsheetID):
 
 
 
+def getSheetID(sheetName, googleSheetsObj, spreadsheetID):
+
+    allSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title,sheetId)").get(
+        "sheets", "")
+
+    for rsp in allSheetsResponse:
+        responseProperties = rsp.get("properties", "")
+
+        if sheetName == responseProperties.get("title", ""):
+            return responseProperties.get("sheetId", "")
+
+
 
 
 def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet, **kwargs):
@@ -288,24 +303,12 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
         googleSheetsObj.values().update(spreadsheetId=spreadsheetID, range=sheetName, valueInputOption="USER_ENTERED", body={"values": valuesList}).execute()
 
-        allSheetsResponse = getDataWithFieldMask(googleSheetsObj, spreadsheetID, "sheets/properties(title,sheetId)").get(
-            "sheets", "")
-
-        for rsp in allSheetsResponse:
-            responseProperties = rsp.get("properties", "")
-
-            if sheetName == responseProperties.get("title", ""):
-                sheetID = responseProperties.get("sheetId", "")
-
-        # googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
-
-
         requestObj = {
             "requests": [
                 {
                     "autoResizeDimensions": {
                         "dimensions": {
-                            "sheetId": sheetID,
+                            "sheetId": getSheetID(sheetName, googleSheetsObj, spreadsheetID),
                             "dimension": "COLUMNS",
                             "startIndex": 0,
                             "endIndex": len(valuesList[0]) + 1
