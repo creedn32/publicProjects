@@ -1,5 +1,4 @@
 #add multiply factor
-#add autofilter to first line of new sheet
 #count rows in function arguments
 
 
@@ -470,13 +469,18 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPI
 
 
 # strftime('%m/%d', tranDate) + '/' +
+
+
 #get list of values to put as the pivot columns
 
 
-# pivotColDict = myPyFunc.createPivotColDict("yearOfDate", 10, "amount", 1, resultsTranScrubList)
-# pivotColStr = pivotColDict["pivotColStr"]
-# # pp(pivotColStr)
-#
+pivotColDict = myPyFunc.createPivotColDict("Year", 12, "Amount+-", 1, resultsTranScrubList)
+pivotColStr = pivotColDict["pivotColStr"]
+pp(pivotColStr)
+
+
+
+
 # myPyFunc.createTableAs("tblDividends", sqlCursor, f"select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
 # myPyFunc.createTableAs("tblResults", sqlCursor, f"select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
 #

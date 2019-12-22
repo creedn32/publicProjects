@@ -454,8 +454,11 @@ def createPivotColDict(fieldToPivot, fieldColIndex, fieldToSum, rowStartIndex,  
     colDict = {"colList": colData}
     pivotColStr = ""
 
+
+    pp(colData)
+
     for colItem in colData:
-        pivotColStr = pivotColStr + "sum(case when " + fieldToPivot + " = '" + str(colItem) + "' then " + fieldToSum + " end) as '" + str(colItem) + "'"
+        pivotColStr = pivotColStr + "sum(case when \"" + fieldToPivot + "\" = \"" + str(colItem) + "\" then \"" + fieldToSum + "\" end) as '" + str(colItem) + "'"
 
         if colItem != colData[len(colData) - 1]:
             pivotColStr = pivotColStr + ", "
