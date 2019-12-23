@@ -39,7 +39,6 @@ for tickerMapItem in tickerMapExtractedValues:
     if tickerMapItem[tickerMapIndexStockName] not in [tickerMapUniqueItem[tickerMapIndexStockName] for tickerMapUniqueItem in tickerMapUniqueExtractedValues]:
         tickerMapUniqueExtractedValues.append(tickerMapItem)
 
-# tickerDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map"))
 
 rawDataRobRows = myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood"))
 rawDataRobExtractedValues = myGoogleSheetsFunc.extractValues(rawDataRobRows, myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood"))
@@ -181,69 +180,24 @@ splitTime = myPyFunc.printElapsedTime(splitTime, "Finished creating Robinhood do
 
 
 tblRobinhoodColumns = myPyFunc.createColumnsDict([
-    {"\"Date\"": "date"},
-    {"\"Account\"": "varchar(255)"},
-    {"\"Amount+-\"": "float"},
-    {"\"Transaction Type\"": "varchar(255)"},
-    {"\"Stock Name\"": "varchar(255)"},
-    {"\"Broker\"": "varchar(255)"},
-    {"\"Lot\"": "varchar(255)"},
-    {"\"Shares\"": "float"},
-    {"\"Ticker\"": "varchar(255)"},
-    {"\"Capital Invested\"": "varchar(255)"}
+    {"'Date'": "date"},
+    {"Account": "varchar(255)"},
+    {"'Amount+-'": "float"},
+    {"'Transaction Type'": "varchar(255)"},
+    {"'Stock Name'": "varchar(255)"},
+    {"Broker": "varchar(255)"},
+    {"Lot": "varchar(255)"},
+    {"Shares": "float"},
+    {"Ticker": "varchar(255)"},
+    {"'Capital Invested'": "varchar(255)"}
 ])
 
 
 
-
-#
-# tickerColumnsObj = OrderedDict()
-# tickerColumxnsObj["rowNumber"] = "int"
-# tickerColumnsObj["Ticker"] = "varchar(255)"
-# tickerColumnsObj["stockName"] = "varchar(255)"
-#
-# myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlCursor)
-# myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueExtractedValues[0]), "tblTickerMap", tickerMapUniqueExtractedValues, sqlCursor, [])
-# pp(myPyFunc.getQueryResult("select * from tblTickerMap", "tblTickerMap", sqlCursor, False))
-
-
 myPyFunc.createAndPopulateTable("tblRobinhood", tblRobinhoodColumns, sqlCursor, len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tranRobDoubleEntryList, [0])
-# splitTime = m|}yGoogleSheetsFunc.populateSheet(2, 1000, "tblRobinhood", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblRobinhood;", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
-
-# myPyFunc.createTableAs("tblLots", sqlCursor, f"select stockName, lot, sum(amount), sum(shares) from tblRobinhood where account = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
 unsoldStockValuesList = myPyFunc.getQueryResult("select \"Stock Name\", \"Lot\", sum(\"Amount+-\"), sum(\"Shares\") from tblRobinhood where \"Account\" = 'Investment Asset' and \"Broker\" = 'Robinhood' group by \"Stock Name\", \"Lot\" having sum(\"Shares\") > 0;", sqlCursor, False)
-# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Unsold Stock", googleSheetsAPIObj, resultsSpreadsheetID, unsoldStockValuesList, True, writeToSheet=True, splitTimeArg=splitTime)
-
-
-
-# sqlCommand = f"select tblLots.*, tblTickerMap.ticker, '=googlefinance(indirect(\"E\"&row()))*indirect(\"D\"&row())' as googleFin, '=indirect(\"F\"&row())-indirect(\"C\"&row())' as gainLoss from tblLots left outer join tblTickerMap on tblLots.stockName = tblTickerMap.stockName;"
-# myGoogleSheetsFunc.populateSheet(3, 1000, "Unsold Stock Values - Robinhood", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, False), True)
-
-
-
-# unsoldStockValuesDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, ["Unsold Stock Values - Robinhood"])
-# unsoldStockValuesList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(unsoldStockValuesDataWithGrid, 0), myGoogleSheetsFunc.countColumns(unsoldStockValuesDataWithGrid, 0), unsoldStockValuesDataWithGrid, 0)
-
-
-# doubleEntryUnsoldStockList = []
-
-#
-# for lot in unsoldStockValuesList:
-#
-#     doubleEntryUnsoldStockList.append([priceDate, "Cash", lot[5], tranType, lot[0], "Robinhood", lot[1], "", "", ""])
-#     doubleEntryUnsoldStockList.append([priceDate, "Investment Asset", -lot[2], tranType, lot[0], "Robinhood", lot[1], lot[3], "", ""])
-#
-#     if lot[6] < 0:
-#         gainLossAccount = "Loss On Sale - Hypothetical"
-#     else:
-#         gainLossAccount = "Gain On Sale - Hypothetical"
-#
-#     doubleEntryUnsoldStockList.append([priceDate, gainLossAccount, -lot[6], tranType, lot[0], "Robinhood", lot[1], "", "", ""])
-#
-
-
 
 
 doubleEntryUnsoldStockList = []
@@ -280,55 +234,7 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood 
 
 tranDateColIndex = 0
 tranAccountColIndex = 1
-# tranAmountColIndex = 2
-# tranStockColIndex = 4
-# tranBrokerColIndex = 5
-# tranLotColIndex = 6
-# tranSharesColIndex = 7
 
-
-
-# resultsTranScrubList = transMotifExtractedValues
-# resultsTranScrubList = [item for item in resultsTranScrubList if item[tranAmountColIndex] != 0]
-
-
-
-
-#Scrub Transactions sheet
-
-# brokerageMap = {"Mt": "Motif",
-#                 "Rh": "Robinhood"}
-#
-# multiplyFactor = 1
-
-
-
-# for resultsTranScrubIndexOfRow in range(1, resultsTranScrubRowTotal):
-
-    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(" - " + resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex], " ")
-    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(
-    #     " - " + str(resultsTranScrubList[resultsTranScrubIndexOfRow][tranLotColIndex]), " ")
-    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].replace(
-    #     resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex] + " - ", "")
-    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAccountColIndex].rstrip()
-    #
-    # if resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] in brokerageMap:
-    #     resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex] = brokerageMap[resultsTranScrubList[resultsTranScrubIndexOfRow][tranBrokerColIndex]]
-
-    # ticker = resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex]
-
-    # if ticker in tickerDict:
-    #
-    #     for key in tickerDict[ticker]:
-    #         resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockColIndex] = tickerDict[ticker][key]
-
-    # resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] * multiplyFactor
-    #
-    # if resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] == "":
-    #     resultsTranScrubList[resultsTranScrubIndexOfRow][tranSharesColIndex] = 0
-
-
-# splitTime = myGoogleSheetsFunc.populateSheet(1, 1000, "1", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, True)
 
 resultsTranScrubList.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)])
 resultsTranScrubRowTotal = len(resultsTranScrubList)
@@ -380,18 +286,18 @@ resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.count
 
 tblScrubbedColumns = myPyFunc.createColumnsDict([
     {"\"Date\"": "date"},
-    {"\"Account\"": "varchar(255)"},
+    {"Account": "varchar(255)"},
     {"\"Amount+-\"": "float"},
     {"\"Transaction Type\"": "varchar(255)"},
     {"\"Stock Name\"": "varchar(255)"},
-    {"\"Broker\"": "varchar(255)"},
-    {"\"Lot\"": "varchar(255)"},
-    {"\"Shares\"": "float"},
-    {"\"Ticker\"": "varchar(255)"},
+    {"Broker": "varchar(255)"},
+    {"Lot": "varchar(255)"},
+    {"Shares": "float"},
+    {"Ticker": "varchar(255)"},
     {"\"Capital Invested\"": "varchar(255)"},
     {"\"Account Type\"": "varchar(255)"},
     {"\"Account Category\"": "varchar(255)"},
-    {"\"Year\"": "int"}
+    {"Year": "int"}
 ])
 
 
@@ -401,46 +307,29 @@ myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblS
 
 
 
-# tickerColumnsObj = OrderedDict()
-# tickerColumnsObj["rowNumber"] = "int"
-# tickerColumnsObj["Ticker"] = "varchar(255)"
-# tickerColumnsObj["stockName"] = "varchar(255)"
-#
-# myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlCursor)
-# myPyFunc.populateTable(len(tickerMapUniqueExtractedValues), len(tickerMapUniqueExtractedValues[0]), "tblTickerMap", tickerMapUniqueExtractedValues, sqlCursor, [])
 
 
-
-
-
-
-# fieldAliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, True)
-# fieldStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, False)
-
-
-
-
-fieldStr = "\"Stock Name\", \"Broker\", \"Lot\", \"Ticker\""
+fieldStr = "Broker, \"Stock Name\", Lot, Ticker"
 sqlConvertedDate = "ltrim(strftime('%m', \"Date\"), '0') || '/' || ltrim(strftime('%d', \"Date\"), '0') || '/' || substr(strftime('%Y', \"Date\"), 3, 2)"
 
 
-sqlCommand = f"select {fieldStr}, {sqlConvertedDate} as 'Purchase Date', -sum(\"Amount+-\") as 'Capital Invested' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Date\" order by \"Broker\", \"Stock Name\", \"Lot\";"
+sqlCommand = f"select {fieldStr}, {sqlConvertedDate} as 'Purchase Date', -sum(\"Amount+-\") as 'Capital Invested' from tblScrubbed where Account = 'Cash' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Date\" order by {fieldStr};"
 # pp(sqlCommand)
 myPyFunc.createTableAs("tblPurchase", sqlCursor, sqlCommand)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblPurchase", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblPurchase", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblPurchase", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblPurchase", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
-sqlCommand = f"select {fieldStr}, sum(\"Shares\") as 'Shares' from tblScrubbed where \"Account\" = 'Investment Asset' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}  order by \"Broker\", \"Stock Name\", \"Lot\";"
+sqlCommand = f"select {fieldStr}, sum(Shares) as 'Shares' from tblScrubbed where Account = 'Investment Asset' and \"Transaction Type\" like '%Purchase%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}  order by {fieldStr};"
 # pp(sqlCommand)
 myPyFunc.createTableAs("tblShares", sqlCursor, sqlCommand)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblShares", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblShares", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblShares", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblShares", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
-sqlCommand = f"select {fieldStr}, \"Transaction Type\", case when \"Transaction Type\" != 'Sale - Hypothetical' then {sqlConvertedDate} end as 'Sale Date', sum(\"Amount+-\") as 'Last Value' from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Sale%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Transaction Type\" order by \"Broker\", \"Stock Name\", \"Lot\";"
+sqlCommand = f"select {fieldStr}, \"Transaction Type\", case when \"Transaction Type\" != 'Sale - Hypothetical' then {sqlConvertedDate} end as 'Sale Date', sum(\"Amount+-\") as 'Last Value' from tblScrubbed where Account = 'Cash' and \"Transaction Type\" like '%Sale%' and \"Transaction Type\" not like '%Group Shares%' group by {fieldStr}, \"Transaction Type\" order by {fieldStr};"
 # pp(sqlCommand)
 myPyFunc.createTableAs("tblSale", sqlCursor, sqlCommand)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblSale", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblSale", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
