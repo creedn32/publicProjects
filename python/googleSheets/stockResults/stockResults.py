@@ -214,9 +214,11 @@ for line in unsoldStockValuesList:
     lotShares = line[3]
     tickerSymbol = ""
 
-    for ticker in tickerMapUniqueExtractedValues:
-        if lotStockName == ticker[tickerMapStockNameColIndex]:
-            tickerSymbol = ticker[tickerMapTickerColIndex]
+    tickerSymbol = myPyFunc.vlookup(lotStockName, tickerMapUniqueExtractedValues, 2, 1)
+
+    # for ticker in tickerMapUniqueExtractedValues:
+    #     if lotStockName == ticker[tickerMapStockNameColIndex]:
+    #         tickerSymbol = ticker[tickerMapTickerColIndex]
 
 
     lotCurrentAmount = "googlefinance(" + myGoogleSheetsFunc.cellOff(0, 6) + ")*" + myGoogleSheetsFunc.cellOff(0, 5)
@@ -234,6 +236,7 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood 
 
 tranDateColIndex = 0
 tranAccountColIndex = 1
+tranTickerColIndex = 8
 
 
 resultsTranScrubList.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)])
@@ -264,6 +267,8 @@ for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
     else:
         resultsTranScrubList[resultsTranScrubIndexOfRow].append(myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex]))
 
+    if resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] == "":
+        resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] = myPyFunc.vlookup(, tickerMapUniqueExtractedValues, 2, 1)
 
 
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=False, splitTimeArg=splitTime)
