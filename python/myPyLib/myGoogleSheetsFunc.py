@@ -200,6 +200,19 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
 
 
 
+def cellOff(rowOffset, colOffset, **kwargs):
+
+    sheetName = kwargs.get("sheetName", False)
+
+    if sheetName:
+        ref = "indirect(\"" + sheetName + "!r[" + str(rowOffset) + "]c[" + str(colOffset) + "]\",false)"
+    else:
+        ref = "indirect(\"" + "r[" + str(rowOffset) + "]c[" + str(colOffset) + "]\", false)"
+
+    return ref
+
+
+
 
 def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
 
