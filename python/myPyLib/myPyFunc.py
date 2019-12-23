@@ -558,6 +558,18 @@ def listToStr(list):
 
 
 
+
+def vlookup(searchTerm, map, colIndexToSearch, colIndexToReturn):
+
+    for line in map:
+
+        if searchTerm == line[colIndexToSearch]:
+            return "AAA"
+
+
+
+
+
     #
     # while column > 0:
     #     temp = (column - 1) % 26
