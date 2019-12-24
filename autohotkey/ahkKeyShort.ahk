@@ -19,19 +19,19 @@
 
 
 
-F13 & m::
+F13 & j::
     SendInput {Blind}{Down}
 return
 
-F13 & u::
+F13 & k::
     SendInput {Blind}{Up}
 return
 
-F13 & j::
+F13 & h::
     SendInput {Blind}{Left}
 return
 
-F13 & k::
+F13 & l::
     SendInput {Blind}{Right}
 return
 
