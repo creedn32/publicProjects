@@ -1,5 +1,6 @@
 #add multiply factor
 #count rows in function arguments
+#change apostrophes
 
 
 import sys, pathlib
@@ -174,12 +175,12 @@ for line in newTransRobList:
 
 
 
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished creating Robinhood double entry transactions")
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "robinhood", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
 
-tblRobinhoodColumns = myPyFunc.createColumnsDict([
+colTblRobinhood = myPyFunc.createColumnsDict([
     {"'Date'": "date"},
     {"Account": "varchar(255)"},
     {"'Amount+-'": "float"},
@@ -193,11 +194,10 @@ tblRobinhoodColumns = myPyFunc.createColumnsDict([
 ])
 
 
+sqlCommand = "select \"Stock Name\", \"Lot\", sum(\"Amount+-\"), sum(\"Shares\") from tblRobinhood where \"Account\" = 'Investment Asset' and \"Broker\" = 'Robinhood' group by \"Stock Name\", \"Lot\" having sum(\"Shares\") > 0;"
+unsoldStockValuesList = myPyFunc.createPopulateSelect("tblRobinhood", colTblRobinhood, sqlCursor, tranRobDoubleEntryList, [0], sqlCommand, False)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Unsold Stock", googleSheetsAPIObj, resultsSpreadsheetID, unsoldStockValuesList, True, writeToSheet=True, splitTimeArg=splitTime)
 
-myPyFunc.createAndPopulateTable("tblRobinhood", tblRobinhoodColumns, sqlCursor, len(tranRobDoubleEntryList), len(tranRobDoubleEntryList[0]), tranRobDoubleEntryList, [0])
-
-
-unsoldStockValuesList = myPyFunc.getQueryResult("select \"Stock Name\", \"Lot\", sum(\"Amount+-\"), sum(\"Shares\") from tblRobinhood where \"Account\" = 'Investment Asset' and \"Broker\" = 'Robinhood' group by \"Stock Name\", \"Lot\" having sum(\"Shares\") > 0;", sqlCursor, False)
 
 
 doubleEntryUnsoldStockList = []
@@ -209,23 +209,26 @@ gainLossAccount = "=if(" + myGoogleSheetsFunc.cellOff(0, 1) + "<0,\"Gain On Sale
 for line in unsoldStockValuesList:
 
     lotStockName = line[0]
-    lotFromLotList = line[1]
-    lotInvestmentAmount = line[2]
-    lotShares = line[3]
-    tickerSymbol = ""
 
-    # tickerSym = myPyFunc.vlookup(lotStockName, tickerMapUniqueExtractedValues)
+    if lotStockName != "Wi-LAN":
 
-    for ticker in tickerMapUniqueExtractedValues:
-        if lotStockName == ticker[tickerMapStockNameColIndex]:
-            tickerSymbol = ticker[tickerMapTickerColIndex]
+        lotFromLotList = line[1]
+        lotInvestmentAmount = line[2]
+        lotShares = line[3]
+        tickerSymbol = ""
+
+        # tickerSym = myPyFunc.vlookup(lotStockName, tickerMapUniqueExtractedValues)
+
+        for ticker in tickerMapUniqueExtractedValues:
+            if lotStockName == ticker[tickerMapStockNameColIndex]:
+                tickerSymbol = ticker[tickerMapTickerColIndex]
 
 
-    lotCurrentAmount = "googlefinance(" + myGoogleSheetsFunc.cellOff(0, 6) + ")*" + myGoogleSheetsFunc.cellOff(0, 5)
+        lotCurrentAmount = "googlefinance(" + myGoogleSheetsFunc.cellOff(0, 6) + ")*" + myGoogleSheetsFunc.cellOff(0, 5)
 
-    doubleEntryUnsoldStockList.append([priceDate, "Cash", "=" + lotCurrentAmount, tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
-    doubleEntryUnsoldStockList.append([priceDate, "Investment Asset", -lotInvestmentAmount, tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
-    doubleEntryUnsoldStockList.append([priceDate, gainLossAccount, "=-" + lotCurrentAmount + "+" + myGoogleSheetsFunc.cellOff(0, 7), tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, lotInvestmentAmount])
+        doubleEntryUnsoldStockList.append([priceDate, "Cash", "=" + lotCurrentAmount, tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
+        doubleEntryUnsoldStockList.append([priceDate, "Investment Asset", -lotInvestmentAmount, tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
+        doubleEntryUnsoldStockList.append([priceDate, gainLossAccount, "=-" + lotCurrentAmount + "+" + myGoogleSheetsFunc.cellOff(0, 7), tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, lotInvestmentAmount])
 
 
 
@@ -290,7 +293,7 @@ resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.count
 
 
 
-tblScrubbedColumns = myPyFunc.createColumnsDict([
+colTblScrubbed = myPyFunc.createColumnsDict([
     {"\"Date\"": "date"},
     {"Account": "varchar(255)"},
     {"\"Amount+-\"": "float"},
@@ -308,7 +311,7 @@ tblScrubbedColumns = myPyFunc.createColumnsDict([
 
 
 
-myPyFunc.createTable("tblScrubbed", tblScrubbedColumns, sqlCursor)
+myPyFunc.createTable("tblScrubbed", colTblScrubbed, sqlCursor)
 
 pp(resultsTranScrubList)
 
