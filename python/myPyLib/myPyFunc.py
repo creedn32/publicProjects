@@ -362,12 +362,20 @@ def createTableAs(tblName, sqlCursor, sqlCommand):
 
 
 
-def createAndPopulateTable(tblName, columnsObj, sqlCursor, totalRows, totalColumns, sheetDataList, listOfDateColumns):
+def createAndPopulateTable(tblName, columnsObj, sqlCursor, sheetDataList, listOfDateColumns):
 
     createTable(tblName, columnsObj, sqlCursor)
-    populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, listOfDateColumns)
+    populateTable(len(sheetDataList), len(sheetDataList[0]), tblName, sheetDataList, sqlCursor, listOfDateColumns)
 
 
+
+
+def createPopulateSelect(tblName, columnsObj, sqlCursor, sheetDataList, listOfDateColumns, sqlCommand, includeColumnNames):
+
+    createTable(tblName, columnsObj, sqlCursor)
+    populateTable(len(sheetDataList), len(sheetDataList[0]), tblName, sheetDataList, sqlCursor, listOfDateColumns)
+
+    return getQueryResult(sqlCommand, sqlCursor, includeColumnNames)
 
 
 
