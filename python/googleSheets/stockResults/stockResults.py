@@ -175,7 +175,7 @@ for line in newTransRobList:
 
 
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "robinhood", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "robinhood", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
@@ -194,9 +194,9 @@ colTblRobinhood = myPyFunc.createColumnsDict([
 ])
 
 
-sqlCommand = "select \"Stock Name\", \"Lot\", sum(\"Amount+-\"), sum(\"Shares\") from tblRobinhood where \"Account\" = 'Investment Asset' and \"Broker\" = 'Robinhood' group by \"Stock Name\", \"Lot\" having sum(\"Shares\") > 0;"
+sqlCommand = "select \"Stock Name\", \"Lot\", sum(\"Amount+-\"), sum(\"Shares\") from tblRobinhood where \"Account\" = 'Investment Asset' group by \"Stock Name\", \"Lot\" having sum(\"Shares\") > 0;"
 unsoldStockValuesList = myPyFunc.createPopulateSelect("tblRobinhood", colTblRobinhood, sqlCursor, tranRobDoubleEntryList, [0], sqlCommand, False)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Unsold Stock", googleSheetsAPIObj, resultsSpreadsheetID, unsoldStockValuesList, True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Unsold Stock", googleSheetsAPIObj, resultsSpreadsheetID, unsoldStockValuesList, True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
@@ -208,12 +208,13 @@ gainLossAccount = "=if(" + myGoogleSheetsFunc.cellOff(0, 1) + "<0,\"Gain On Sale
 
 for line in unsoldStockValuesList:
 
-    lotStockName = line[0]
+    lotInvestmentAmount = line[2]
 
-    if lotStockName != "Wi-LAN":
+    if lotInvestmentAmount != 0:
 
+        lotStockName = line[0]
         lotFromLotList = line[1]
-        lotInvestmentAmount = line[2]
+
         lotShares = line[3]
         tickerSymbol = ""
 
@@ -275,7 +276,7 @@ for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
 
 # pp(resultsTranScrubList)
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=False, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=True, splitTimeArg=splitTime)
 
 
 resultsTranScrubRowTotal = len(resultsTranScrubList)
@@ -312,15 +313,15 @@ colTblScrubbed = myPyFunc.createColumnsDict([
 
 
 myPyFunc.createTable("tblScrubbed", colTblScrubbed, sqlCursor)
-
-pp(resultsTranScrubList)
+# pp(resultsTranScrubList)
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed2", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=True, splitTimeArg=splitTime)
 
 # myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
-#
-#
-#
-#
-#
+
+
+
+
+
 # fieldStr = "Broker, \"Stock Name\", Lot, Ticker"
 # sqlConvertedDate = "ltrim(strftime('%m', \"Date\"), '0') || '/' || ltrim(strftime('%d', \"Date\"), '0') || '/' || substr(strftime('%Y', \"Date\"), 3, 2)"
 #
