@@ -264,8 +264,9 @@ for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
         resultsTranScrubList[resultsTranScrubIndexOfRow].append("Year")
         resultsTranScrubList[resultsTranScrubIndexOfRow].append("Month")
     else:
-        resultsTranScrubList[resultsTranScrubIndexOfRow].append(myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex]))
-        resultsTranScrubList[resultsTranScrubIndexOfRow].append("201401")
+        convertedYear = myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex])
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append(convertedYear)
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append(convertedYear + "01")
 
     if resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] == "":
         resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] = myPyFunc.mapData(tickerMapUniqueExtractedValues, resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockNameColIndex], 2, 1)
@@ -349,6 +350,8 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPI
 
 pivotColDict = myPyFunc.createPivotColDict("Year", 12, "Amount+-", 1, resultsTranScrubList)
 pivotColStr = pivotColDict["pivotColStr"]
+
+
 # pp(pivotColStr)
 
 myPyFunc.createTableAs("tblDividends", sqlCursor, f"select {fieldStr}, {pivotColStr} from tblScrubbed where \"Account\" = 'Cash' and \"Transaction Type\" like '%Dividend%' group by {fieldStr};")
@@ -472,6 +475,11 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblStockSummary", googleS
 
 
 #add column to table
+
+
+pivotColDict = myPyFunc.createPivotColDict("Month", 12, "Amount+-", 1, resultsTranScrubList)
+pivotColStr = pivotColDict["pivotColStr"]
+pp(pivotColStr)
 
 sqlCommand = f"select \"Account Type\", \"Account Category\", \"Account\", {pivotColStr} from tblScrubbed group by \"Account Type\", \"Account Category\", \"Account\""
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
