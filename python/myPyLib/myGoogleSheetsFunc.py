@@ -97,9 +97,13 @@ def countColumns(dataObj, sheetPos):
 
 
 
-def extractValues(numRows, numCols, dataObj, sheetPos):
+def extractValues(dataObj, downloadList, sheetName):
 
     listToReturn = []
+
+    sheetPos = downloadList.index(sheetName)
+    numRows = countRows(dataObj, sheetPos)
+    numCols = countColumns(dataObj, sheetPos)
 
     for indexOfRow in range(0, numRows):
         currentRowData = []
@@ -214,10 +218,11 @@ def cellOff(rowOffset, colOffset, **kwargs):
 
 
 
-def createDictMapFromSheet(googleSheetsDataWithGrid, sheetIndex):
+def createDictMapFromSheet(googleSheetsDataWithGrid, downloadList, sheetName):
 
     from collections import OrderedDict
 
+    sheetIndex = downloadList.index(sheetName)
     rowTotal = countRows(googleSheetsDataWithGrid, sheetIndex)
     colTotal = countColumns(googleSheetsDataWithGrid, sheetIndex)
 
