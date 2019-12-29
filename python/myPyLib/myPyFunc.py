@@ -271,6 +271,15 @@ def convertSerialDateToYear(serialDate):
 
 
 
+def convertSerialDateToMonth(serialDate):
+    from datetime import date
+
+    dateObj = date.fromordinal(date(1900, 1, 1).toordinal() + serialDate - 2)
+
+    return str(dateObj.month)
+
+
+
 def convertDateToSerialDate(dateObj):
 
     import datetime
@@ -418,7 +427,11 @@ def populateTable(totalRows, totalColumns, tblName, sheetDataList, sqlCursor, li
 def getQueryResult(sqlCommand, sqlCursor, includeColumnNames):
 
     sqlCursor.execute(sqlCommand)
-    queryResult = sqlCursor.fetchall()
+    fetchResult = sqlCursor.fetchall()
+    queryResult = []
+
+    for row in fetchResult:
+        queryResult.append(list(row))
 
     if includeColumnNames:
 
@@ -449,11 +462,15 @@ def getQueryResult(sqlCommand, sqlCursor, includeColumnNames):
 
 
 
-def createPivotColDict(fieldToPivot, fieldColIndex, fieldToSum, rowStartIndex,  dataList):
+def createPivotColDict(fieldToPivot, fieldToSum, dataList):
 
     colData = []
 
-    for row in dataList[rowStartIndex:]:
+    for fieldIndex in range(0, len(dataList[0])):
+        if dataList[0][fieldIndex] == fieldToPivot:
+            fieldColIndex = fieldIndex
+
+    for row in dataList[1:]:
         colData.append(row[fieldColIndex])
 
     colData = list(set((colData)))
@@ -591,6 +608,64 @@ def mapData(map, valueToGive, valueToGiveColIndex, valueToGetColIndex):
 
 
     return valueToGet
+
+
+
+
+def removeRepeatedDataFromList(listToProcess):
+
+    import copy
+
+    newList = copy.deepcopy(listToProcess)
+
+    # for row in listToProcess:
+    #     pp(type(row))
+
+    for rowIndex in range(0, len(listToProcess)):
+        if rowIndex != 0:
+            for colIndex in range(0, len(listToProcess[rowIndex])):
+                if listToProcess[rowIndex][colIndex] == listToProcess[rowIndex - 1][colIndex] and listToProcess[rowIndex][colIndex] is not None:
+                    newList[rowIndex][colIndex] = ""
+                    # pp("repeat val: " + listToProcess[rowIndex][colIndex])
+
+    return newList
+
+
+
+def addTotal(listToProcess, colToTotal):
+
+    import copy
+    newList = copy.deepcopy(listToProcess)
+
+    for rowIndex in range(1, len(listToProcess)):
+
+        if rowIndex > 1:
+
+            if listToProcess[rowIndex - 1][colToTotal] != listToProcess[rowIndex][colToTotal]:
+
+                newList.insert(rowIndex, createRow(listToProcess[rowIndex], colToTotal, listToProcess[rowIndex - 1][colToTotal]))
+                # pp(listToProcess[rowIndex][colToTotal])
+
+            if rowIndex == len(listToProcess) - 1:
+
+                newList.append(createRow(listToProcess[rowIndex], colToTotal, listToProcess[rowIndex][colToTotal]))
+
+    return newList
+
+
+
+def createRow(row, colToTotal, colToTotalName):
+
+    newRow = []
+
+    for colIndex in range(0, len(row)):
+        if colIndex == colToTotal:
+            newRow.append("Total " + colToTotalName)
+        else:
+            newRow.append("")
+
+    return newRow
+
 
 
 
