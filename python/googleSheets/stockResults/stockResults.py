@@ -486,7 +486,8 @@ sqlCommand = f"select \"Account Type\", \"Account Category\", \"Account\", {pivo
 queryResult = myPyFunc.getQueryResult(sqlCommand, sqlCursor, True)
 
 
-pp(pivotColDict[colList])
+pp(pivotColDict["colList"])
+
 queryResultFormatted = myPyFunc.removeRepeatedDataFromList(myPyFunc.addTotal(queryResult, 0))
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, queryResultFormatted, True, writeToSheet=True, splitTimeArg=splitTime)
 
