@@ -567,13 +567,30 @@ def listToStr(list):
 
 
 
-def vlookup(searchTerm, map, colIndexToSearch, colIndexToReturn):
+# def vlookup(searchTerm, map, colIndexToSearch, colIndexToReturn):
+#
+#     for line in map:
+#
+#         if searchTerm == line[colIndexToSearch]:
+#             return "AAA"
+
+
+
+
+def mapData(map, valueToGive, valueToGiveColIndex, valueToGetColIndex):
+
+    valueToGet = ""
+
+    # pp(map)
+
+    # tickerSym = myPyFunc.vlookup(lotStockName, tickerMapUniqueExtractedValues)
 
     for line in map:
+        if valueToGive == line[valueToGiveColIndex]:
+            valueToGet = line[valueToGetColIndex]
 
-        if searchTerm == line[colIndexToSearch]:
-            return "AAA"
 
+    return valueToGet
 
 
 
