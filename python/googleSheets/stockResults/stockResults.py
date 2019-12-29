@@ -1,5 +1,4 @@
 #add multiply factor
-#count rows in function arguments
 #change apostrophes
 
 
@@ -26,11 +25,11 @@ splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and
 resultsToDownload = ["Inputs", "Ticker Map", "Raw Data - Robinhood", "Transactions To Add - Robinhood", "Transactions - Motif", "Chart of Accounts"]
 resultsDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, resultsToDownload)
 
-inputsExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Inputs")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Inputs")), resultsDownloadedWithGrid, resultsToDownload.index("Inputs"))
+inputsExtractedValues = myGoogleSheetsFunc.extractValues(resultsDownloadedWithGrid, resultsToDownload, "Inputs")
 tickerMapIndexStockName = inputsExtractedValues[0][1]
 
 
-tickerMapExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map")), resultsDownloadedWithGrid, resultsToDownload.index("Ticker Map"))
+tickerMapExtractedValues = myGoogleSheetsFunc.extractValues(resultsDownloadedWithGrid, resultsToDownload, "Ticker Map")
 tickerMapTickerColIndex = 1
 tickerMapStockNameColIndex = 2
 tickerMapUniqueExtractedValues = []
@@ -42,11 +41,11 @@ for tickerMapItem in tickerMapExtractedValues:
 
 
 rawDataRobRows = myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood"))
-rawDataRobExtractedValues = myGoogleSheetsFunc.extractValues(rawDataRobRows, myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Raw Data - Robinhood"))
-transactionsToAddRobExtractedValues = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions To Add - Robinhood"))
+rawDataRobExtractedValues = myGoogleSheetsFunc.extractValues(resultsDownloadedWithGrid, resultsToDownload, "Raw Data - Robinhood")
+transactionsToAddRobExtractedValues = myGoogleSheetsFunc.extractValues(resultsDownloadedWithGrid, resultsToDownload, "Transactions To Add - Robinhood")
 
-resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(resultsDownloadedWithGrid, resultsToDownload.index("Transactions - Motif")), myGoogleSheetsFunc.countColumns(resultsDownloadedWithGrid, resultsToDownload.index("Transactions - Motif")), resultsDownloadedWithGrid, resultsToDownload.index("Transactions - Motif"))
-chartOfAccountsDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload.index("Chart of Accounts"))
+resultsTranScrubList = myGoogleSheetsFunc.extractValues(resultsDownloadedWithGrid,  resultsToDownload, "Transactions - Motif")
+chartOfAccountsDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload, "Chart of Accounts")
 
 
 splitTime = myPyFunc.printElapsedTime(splitTime, "Finished downloading and extracting data")
@@ -263,8 +262,10 @@ for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
 
     if resultsTranScrubIndexOfRow == 0:
         resultsTranScrubList[resultsTranScrubIndexOfRow].append("Year")
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append("Month")
     else:
         resultsTranScrubList[resultsTranScrubIndexOfRow].append(myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex]))
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append("201401")
 
     if resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] == "":
         resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] = myPyFunc.mapData(tickerMapUniqueExtractedValues, resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockNameColIndex], 2, 1)
@@ -283,7 +284,7 @@ resultsTranScrubColTotal = len(resultsTranScrubList[0])
 
 scrubTranToDownload = ["Transactions - Scrubbed"]
 scrubTranDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, scrubTranToDownload)
-resultsTranScrubList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(scrubTranDownloadedWithGrid, scrubTranToDownload.index("Transactions - Scrubbed")), myGoogleSheetsFunc.countColumns(scrubTranDownloadedWithGrid, scrubTranToDownload.index("Transactions - Scrubbed")), scrubTranDownloadedWithGrid, scrubTranToDownload.index("Transactions - Scrubbed"))
+resultsTranScrubList = myGoogleSheetsFunc.extractValues(scrubTranDownloadedWithGrid, scrubTranToDownload, "Transactions - Scrubbed")
 
 
 
@@ -302,15 +303,17 @@ colTblScrubbed = myPyFunc.createColumnsDict([
     {"\"Capital Invested\"": "varchar(255)"},
     {"\"Account Type\"": "varchar(255)"},
     {"\"Account Category\"": "varchar(255)"},
-    {"Year": "int"}
+    {"Year": "int"},
+    {"Month": "int"}
 ])
 
 
+myPyFunc.createAndPopulateTable("tblScrubbed", colTblScrubbed, sqlCursor, resultsTranScrubList, [0])
 
-myPyFunc.createTable("tblScrubbed", colTblScrubbed, sqlCursor)
+# myPyFunc.createTable("tblScrubbed", colTblScrubbed, sqlCursor)
 # pp(resultsTranScrubList)
 
-myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
+# myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
 
 
 
@@ -403,7 +406,7 @@ for colCount in range(0, len(pivotColDict["colList"])):
     capitalInvestedCell = "indirect(\"f\"&row())"
     currentYearTotalDividendCell = myGoogleSheetsFunc.cellOff(0, -7)
     currentYearTotalDividend = "if(" + currentYearTotalDividendCell + "=\"\", 0, " + currentYearTotalDividendCell + ")"
-    currentYearTotalDividendCondition = "if(" + currentYearTotalDividendCell + "<>\"NO\", " + currentYearTotalDividendCell + "/" + capitalInvestedCell + ", \"\")"
+    currentYearTotalDividendCondition = "if(" + "and(" + currentYearTotalDividendCell + "<>\"NO\"" + ", " + capitalInvestedCell + "<>0" + ")" + ", " + currentYearTotalDividendCell + "/" + capitalInvestedCell + ", \"\")"
 
 
     # if (or ( and (" + myGoogleSheetsFunc.cellOff(0, -6) + " <> \"\"," + myGoogleSheetsFunc.cellOff(0, -6) + "<>\"NO\"),and(int(left(indirect(\"R1C[0]\",false),4))>=year(indirect(\"E\"&row())),int(left(indirect(\"R1C[0]\",false),4))<=if(indirect(\"H\"&row())=\"\",year(today()),year(indirect(\"H\"&row()))))),iferror(indirect(\"R[0]C[-6]\",false)/indirect(\"F\"&row()),0),\"\")'
@@ -414,7 +417,7 @@ for colCount in range(0, len(pivotColDict["colList"])):
         percentColStr = percentColStr + ", "
 
 # pp(divColStr)
-# pp(percentColStr)
+
 
 
 
@@ -451,7 +454,7 @@ sqlCommand = "select " + colListStr + ", " + \
 
 
 
-myPyFunc.createTableAs("tblResults", sqlCursor, sqlCommand)
+myPyFunc.createTableAs("tblStockSummary", sqlCursor, sqlCommand)
 
 
 
@@ -459,14 +462,19 @@ myPyFunc.createTableAs("tblResults", sqlCursor, sqlCommand)
 
 
 
-sqlList = ["update tblResults set \"Last Value\" = '=googlefinance(" + myGoogleSheetsFunc.cellOff(0, -6) + ")" + "*" + myGoogleSheetsFunc.cellOff(0, -3) + "' where \"Sale Date\" is null;"] #and 'Transaction Type' not like '%Manual%'
-myPyFunc.executeSQLStatements(sqlList, sqlCursor)
+sqlCommand = ["update tblStockSummary set \"Last Value\" = '=googlefinance(" + myGoogleSheetsFunc.cellOff(0, -6) + ")" + "*" + myGoogleSheetsFunc.cellOff(0, -3) + "' where \"Sale Date\" is null;"] #and 'Transaction Type' not like '%Manual%'
+myPyFunc.executeSQLStatements(sqlCommand, sqlCursor)
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblResults", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResults", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+sqlCommand = "select * from tblStockSummary"
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblStockSummary", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
-# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
-# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+
+
+#add column to table
+
+sqlCommand = f"select \"Account Type\", \"Account Category\", \"Account\", {pivotColStr} from tblScrubbed group by \"Account Type\", \"Account Category\", \"Account\""
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
