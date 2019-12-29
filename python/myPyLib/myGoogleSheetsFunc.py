@@ -347,7 +347,7 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
                             "range": {
                                 "sheetId": sheetID,
                                 "startRowIndex": 0,
-                                "endRowIndex": 1
+                                "endRowIndex": len(valuesList)
                             }
                         }
 
