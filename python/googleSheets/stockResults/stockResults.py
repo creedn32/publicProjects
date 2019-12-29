@@ -10,7 +10,7 @@ from myPyLib import myPyFunc, myGoogleSheetsFunc
 startTime = myPyFunc.printElapsedTime(False, "Starting script")
 
 import datetime
-from collections import OrderedDict
+# from collections import OrderedDict
 from pprint import pprint as pp
 
 resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
@@ -225,10 +225,15 @@ for line in unsoldStockValuesList:
 
 
 
-tranRobDoubleEntryList.extend(doubleEntryUnsoldStockList)
+doubleEntryUnsoldSheetName = "Transactions - Robinhood - Double Entry - Unsold Stock"
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, doubleEntryUnsoldSheetName, googleSheetsAPIObj, resultsSpreadsheetID, doubleEntryUnsoldStockList, True, writeToSheet=True, splitTimeArg=splitTime)
+doubleEntryUnsoldToDownload = [doubleEntryUnsoldSheetName]
+doubleEntryUnsoldDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, doubleEntryUnsoldToDownload)
+doubleEntryUnsoldDownloadedList = myGoogleSheetsFunc.extractValues(doubleEntryUnsoldDownloadedWithGrid, doubleEntryUnsoldToDownload, doubleEntryUnsoldSheetName)
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood - Double Entry - With Unsold Stock", googleSheetsAPIObj, resultsSpreadsheetID, tranRobDoubleEntryList, True, writeToSheet=False, splitTimeArg=splitTime)
 
+
+tranRobDoubleEntryList.extend(doubleEntryUnsoldDownloadedList)
 resultsTranScrubList.extend(tranRobDoubleEntryList[1:len(tranRobDoubleEntryList)])
 
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed - Before Mapping", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=False, splitTimeArg=splitTime)
@@ -265,27 +270,22 @@ for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
         resultsTranScrubList[resultsTranScrubIndexOfRow].append("Month")
     else:
         convertedYear = myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex])
+        convertedMonth = str(myPyFunc.convertSerialDateToMonth(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex])).zfill(2)
         resultsTranScrubList[resultsTranScrubIndexOfRow].append(convertedYear)
-        resultsTranScrubList[resultsTranScrubIndexOfRow].append(convertedYear + "01")
+        resultsTranScrubList[resultsTranScrubIndexOfRow].append(convertedYear + convertedMonth)
 
     if resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] == "":
         resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] = myPyFunc.mapData(tickerMapUniqueExtractedValues, resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockNameColIndex], 2, 1)
 
 # pp(resultsTranScrubList)
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=False, splitTimeArg=splitTime)
 
 
-resultsTranScrubRowTotal = len(resultsTranScrubList)
-resultsTranScrubColTotal = len(resultsTranScrubList[0])
+# resultsTranScrubRowTotal = len(resultsTranScrubList)
+# resultsTranScrubColTotal = len(resultsTranScrubList[0])
 # pp(resultsTranScrubRowTotal)
 # pp(resultsTranScrubColTotal)
-
-
-
-scrubTranToDownload = ["Transactions - Scrubbed"]
-scrubTranDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, scrubTranToDownload)
-resultsTranScrubList = myGoogleSheetsFunc.extractValues(scrubTranDownloadedWithGrid, scrubTranToDownload, "Transactions - Scrubbed")
 
 
 
@@ -348,7 +348,7 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPI
 #get list of values to put as the pivot columns
 
 
-pivotColDict = myPyFunc.createPivotColDict("Year", 12, "Amount+-", 1, resultsTranScrubList)
+pivotColDict = myPyFunc.createPivotColDict("Year", "Amount+-", resultsTranScrubList)
 pivotColStr = pivotColDict["pivotColStr"]
 
 
@@ -469,7 +469,7 @@ sqlCommand = ["update tblStockSummary set \"Last Value\" = '=googlefinance(" + m
 myPyFunc.executeSQLStatements(sqlCommand, sqlCursor)
 
 sqlCommand = "select * from tblStockSummary"
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblStockSummary", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblStockSummary", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
@@ -477,13 +477,18 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblStockSummary", googleS
 #add column to table
 
 
-pivotColDict = myPyFunc.createPivotColDict("Month", 12, "Amount+-", 1, resultsTranScrubList)
+pivotColDict = myPyFunc.createPivotColDict("Month", "Amount+-", resultsTranScrubList)
 pivotColStr = pivotColDict["pivotColStr"]
-pp(pivotColStr)
+# pp(pivotColStr)
+
 
 sqlCommand = f"select \"Account Type\", \"Account Category\", \"Account\", {pivotColStr} from tblScrubbed group by \"Account Type\", \"Account Category\", \"Account\""
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+queryResult = myPyFunc.getQueryResult(sqlCommand, sqlCursor, True)
 
+
+pp(pivotColDict[colList])
+queryResultFormatted = myPyFunc.removeRepeatedDataFromList(myPyFunc.addTotal(queryResult, 0))
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, queryResultFormatted, True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 myPyFunc.closeDatabase(sqlObj["sqlConnection"])
