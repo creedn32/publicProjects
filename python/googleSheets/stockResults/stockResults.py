@@ -22,21 +22,23 @@ googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
 
 
-resultsToDownload = ["Inputs", "Ticker Map", "Raw Data - Robinhood", "Transactions To Add - Robinhood", "Transactions - Motif", "Chart of Accounts"]
+resultsToDownload = ["Ticker Map", "Raw Data - Robinhood", "Transactions To Add - Robinhood", "Transactions - Motif", "Chart of Accounts"]
 resultsDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(resultsSpreadsheetID, googleSheetsAPIObj, resultsToDownload)
 
-inputsExtractedValues = myGoogleSheetsFunc.extractValues(resultsDownloadedWithGrid, resultsToDownload, "Inputs")
-tickerMapIndexStockName = inputsExtractedValues[0][1]
+# inputsExtractedValues = myGoogleSheetsFunc.extractValues(resultsDownloadedWithGrid, resultsToDownload, "Inputs")
 
 
 tickerMapExtractedValues = myGoogleSheetsFunc.extractValues(resultsDownloadedWithGrid, resultsToDownload, "Ticker Map")
+
+
 tickerMapTickerColIndex = 1
 tickerMapStockNameColIndex = 2
 tickerMapUniqueExtractedValues = []
 
 for tickerMapItem in tickerMapExtractedValues:
 
-    if tickerMapItem[tickerMapIndexStockName] not in [tickerMapUniqueItem[tickerMapIndexStockName] for tickerMapUniqueItem in tickerMapUniqueExtractedValues]:
+    if tickerMapItem[tickerMapStockNameColIndex] not in [tickerMapUniqueItem[tickerMapStockNameColIndex] for tickerMapUniqueItem in tickerMapUniqueExtractedValues]:
+
         tickerMapUniqueExtractedValues.append(tickerMapItem)
 
 
@@ -219,9 +221,9 @@ for line in unsoldStockValuesList:
 
         lotCurrentAmount = "googlefinance(" + myGoogleSheetsFunc.cellOff(0, 6) + ")*" + myGoogleSheetsFunc.cellOff(0, 5)
 
-        doubleEntryUnsoldStockList.append([priceDate, "Cash", "=" + lotCurrentAmount, tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
-        doubleEntryUnsoldStockList.append([priceDate, "Investment Asset", -lotInvestmentAmount, tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
-        doubleEntryUnsoldStockList.append([priceDate, gainLossAccount, "=-" + lotCurrentAmount + "+" + myGoogleSheetsFunc.cellOff(0, 7), tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, lotInvestmentAmount])
+        doubleEntryUnsoldStockList.append([priceDate, "Cash", "=" + lotCurrentAmount, tranType, lotStockName, "Robinhood - Related", lotFromLotList, lotShares, tickerSymbol, ""])
+        doubleEntryUnsoldStockList.append([priceDate, "Investment Asset", -lotInvestmentAmount, tranType, lotStockName, "Robinhood - Related", lotFromLotList, lotShares, tickerSymbol, ""])
+        doubleEntryUnsoldStockList.append([priceDate, gainLossAccount, "=-" + lotCurrentAmount + "+" + myGoogleSheetsFunc.cellOff(0, 7), tranType, lotStockName, "Robinhood - Related", lotFromLotList, lotShares, tickerSymbol, lotInvestmentAmount])
 
 
 
@@ -279,7 +281,7 @@ for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
 
 # pp(resultsTranScrubList)
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=False, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=True, splitTimeArg=splitTime)
 
 
 # resultsTranScrubRowTotal = len(resultsTranScrubList)
