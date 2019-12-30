@@ -281,7 +281,7 @@ for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
 
 # pp(resultsTranScrubList)
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed", googleSheetsAPIObj, resultsSpreadsheetID, resultsTranScrubList, False, writeToSheet=False, splitTimeArg=splitTime)
 
 
 # resultsTranScrubRowTotal = len(resultsTranScrubList)
@@ -381,7 +381,7 @@ colDict =   {
             }
 
 
-colListStr = myPyFunc.getAllColumns(colDict, sqlCursor)
+colListStr = myPyFunc.listToStr(myPyFunc.getAllColumns(colDict, sqlCursor))
 # pp(colListStr)
 
 
@@ -504,9 +504,31 @@ pivotColStr = pivotColDict["pivotColStr"]
 
 
 sqlCommand = f"select \"Account Type\", \"Account Category\", \"Account\", \"Broker\", {pivotColStr} from tblScrubBalanceSheet group by \"Account Type\", \"Account Category\", \"Account\", \"Broker\""
-queryResult = myPyFunc.getQueryResult(sqlCommand, sqlCursor, True)
+myPyFunc.createTableAs("tblBalanceSheet", sqlCursor, sqlCommand)
 
-queryResultFormatted = myPyFunc.removeRepeatedDataFromList(myPyFunc.addTotal(queryResult, 0))
+
+colDict =   {
+                0:  {"table": "tblBalanceSheet",
+                    "excludedFields": ["Account Type", "Account Category", "Account", "Broker"]},
+            }
+
+
+colList = myPyFunc.getAllColumns(colDict, sqlCursor)
+sqlCommand = "select \"Account Type\", '', '', ''"
+
+for columnIndex in range(0, len(colList)):
+    sqlCommand = sqlCommand + ", sum(" + colList[columnIndex] + ")" + " as " + colList[columnIndex].split(".")[1]
+
+
+sqlCommand = sqlCommand + " from tblBalanceSheet group by \"Account Type\""
+myPyFunc.createTableAs("tblBalanceSheetTotals", sqlCursor, sqlCommand)
+myPyFunc.executeSQLStatements(["update tblBalanceSheetTotals set \"Account Type\" = 'Total ' || \"Account Type\""], sqlCursor)
+balanceSheetTotalsList = myPyFunc.getQueryResult("select * from tblBalanceSheetTotals", sqlCursor, False)
+
+# splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblBalanceSheetTotals", googleSheetsAPIObj, resultsSpreadsheetID, balanceSheetTotalsList, True, writeToSheet=False, splitTimeArg=splitTime)
+
+queryResult = myPyFunc.getQueryResult("select * from tblBalanceSheet", sqlCursor, True)
+queryResultFormatted = myPyFunc.removeRepeatedDataFromList(myPyFunc.addTotal(queryResult, 0, balanceSheetTotalsList))
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, queryResultFormatted, True, writeToSheet=True, splitTimeArg=splitTime)
 
 
