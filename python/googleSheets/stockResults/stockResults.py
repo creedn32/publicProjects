@@ -474,19 +474,35 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblStockSummary", googleS
 
 
 
-#add column to table
+uniquePeriods = myPyFunc.getQueryResult("select distinct \"Month\" from tblScrubbed", sqlCursor, False)
+myPyFunc.createTableAs("tblBalanceSheetNoMonth", sqlCursor, "select * from tblScrubbed")
+myPyFunc.createTableAs("tblScrubBalanceSheet", sqlCursor, "select * from tblScrubbed limit 1")
+myPyFunc.executeSQLStatements(["alter table tblScrubBalanceSheet add column \"Balance Sheet Period\" int", "delete from tblScrubBalanceSheet"], sqlCursor)
 
 
-pivotColDict = myPyFunc.createPivotColDict("Month", "Amount+-", resultsTranScrubList)
+for uniquePeriod in uniquePeriods:
+    # sqlCommand = "select '2014-11-21', null, null, null, null, null, null, null, null, null, null, null, null, null, null"
+    # sqlList = ["insert into tblScrubBalanceSheet " + sqlCommand]
+    # pp(myPyFunc.getQueryResult("select * from tblBalanceSheetNoMonth where 1 < 2 limit 1", sqlCursor, True))
+    # sqlList.append("update tblScrubBalanceSheet set \"Balance Sheet Month\" = '" + str(uniqueMonth[0]) + "'")
+
+    sqlList = ["insert into tblScrubBalanceSheet select *, '" + str(uniquePeriod[0]) + "' from tblBalanceSheetNoMonth where \"Month\" <= " + str(uniquePeriod[0])]
+
+    myPyFunc.executeSQLStatements(sqlList, sqlCursor)
+
+
+scrubBalanceSheetList = myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sqlCursor, True)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, scrubBalanceSheetList, True, writeToSheet=False, splitTimeArg=splitTime)
+
+
+
+pivotColDict = myPyFunc.createPivotColDict("Balance Sheet Period", "Amount+-", scrubBalanceSheetList)
 pivotColStr = pivotColDict["pivotColStr"]
 # pp(pivotColStr)
 
 
-sqlCommand = f"select \"Account Type\", \"Account Category\", \"Account\", {pivotColStr} from tblScrubbed group by \"Account Type\", \"Account Category\", \"Account\""
+sqlCommand = f"select \"Account Type\", \"Account Category\", \"Account\", \"Broker\", {pivotColStr} from tblScrubBalanceSheet group by \"Account Type\", \"Account Category\", \"Account\", \"Broker\""
 queryResult = myPyFunc.getQueryResult(sqlCommand, sqlCursor, True)
-
-
-pp(pivotColDict["colList"])
 
 queryResultFormatted = myPyFunc.removeRepeatedDataFromList(myPyFunc.addTotal(queryResult, 0))
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, queryResultFormatted, True, writeToSheet=True, splitTimeArg=splitTime)
