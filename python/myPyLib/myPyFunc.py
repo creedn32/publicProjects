@@ -522,7 +522,7 @@ def getAllColumns(colDict, sqlCursor):
 
         colList.extend(tableColNamesWithoutExcl)
 
-    return listToStr(colList)
+    return colList
 
 
 
@@ -632,7 +632,7 @@ def removeRepeatedDataFromList(listToProcess):
 
 
 
-def addTotal(listToProcess, colToTotal):
+def addTotal(listToProcess, colToTotal, totalsList):
 
     import copy
     newList = copy.deepcopy(listToProcess)
@@ -643,28 +643,31 @@ def addTotal(listToProcess, colToTotal):
 
             if listToProcess[rowIndex - 1][colToTotal] != listToProcess[rowIndex][colToTotal]:
 
-                newList.insert(rowIndex, createRow(listToProcess[rowIndex], colToTotal, listToProcess[rowIndex - 1][colToTotal]))
+                # pp(totalsList[0])
+                newList.insert(rowIndex, totalsList[0])
                 # pp(listToProcess[rowIndex][colToTotal])
 
             if rowIndex == len(listToProcess) - 1:
 
-                newList.append(createRow(listToProcess[rowIndex], colToTotal, listToProcess[rowIndex][colToTotal]))
+                newList.append(totalsList[1])
 
     return newList
 
 
 
-def createRow(row, colToTotal, colToTotalName):
+# createRow(listToProcess[rowIndex], colToTotal, listToProcess[rowIndex - 1][colToTotal])
 
-    newRow = []
-
-    for colIndex in range(0, len(row)):
-        if colIndex == colToTotal:
-            newRow.append("Total " + colToTotalName)
-        else:
-            newRow.append("")
-
-    return newRow
+# def createRow(row, colToTotal, colToTotalName):
+#
+#     newRow = []
+#
+#     for colIndex in range(0, len(row)):
+#         if colIndex == colToTotal:
+#             newRow.append("Total " + colToTotalName)
+#         else:
+#             newRow.append("")
+#
+#     return newRow
 
 
 
