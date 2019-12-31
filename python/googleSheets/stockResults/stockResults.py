@@ -221,9 +221,9 @@ for line in unsoldStockValuesList:
 
         lotCurrentAmount = "googlefinance(" + myGoogleSheetsFunc.cellOff(0, 6) + ")*" + myGoogleSheetsFunc.cellOff(0, 5)
 
-        doubleEntryUnsoldStockList.append([priceDate, "Cash", "=round(" + lotCurrentAmount + ", 2)", tranType, lotStockName, "Robinhood - Related", lotFromLotList, lotShares, tickerSymbol, ""])
-        doubleEntryUnsoldStockList.append([priceDate, "Investment Asset", -lotInvestmentAmount, tranType, lotStockName, "Robinhood - Related", lotFromLotList, lotShares, tickerSymbol, ""])
-        doubleEntryUnsoldStockList.append([priceDate, gainLossAccount, "=round(-" + lotCurrentAmount + "+" + myGoogleSheetsFunc.cellOff(0, 7) + ", 2)", tranType, lotStockName, "Robinhood - Related", lotFromLotList, lotShares, tickerSymbol, lotInvestmentAmount])
+        doubleEntryUnsoldStockList.append([priceDate, "Cash", "=round(" + lotCurrentAmount + ", 2)", tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
+        doubleEntryUnsoldStockList.append([priceDate, "Investment Asset", -lotInvestmentAmount, tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, ""])
+        doubleEntryUnsoldStockList.append([priceDate, gainLossAccount, "=round(-" + lotCurrentAmount + "+" + myGoogleSheetsFunc.cellOff(0, 7) + ", 2)", tranType, lotStockName, "Robinhood", lotFromLotList, lotShares, tickerSymbol, lotInvestmentAmount])
 
 
 
@@ -459,7 +459,8 @@ sqlCommand = "select " + colListStr + ", " + \
             f"order by tblAllLots.Broker desc, tblAllLots.\"Stock Name\", tblAllLots.Lot"
 
 
-sqlCommand = "select *, '' as `Last Value` from tblAllLots"
+# sqlCommand = "select *, '' as `Last Value` from tblAllLots " + \
+#              "" #"left outer join tblPurchase on tblAllLots.Broker = tblPurchase.Broker and tblAllLots.\"Stock Name\" = tblPurchase.\"Stock Name\" and tblAllLots.Lot = tblPurchase.Lot "
 
 
 myPyFunc.createTableAs("tblStockSummary", sqlCursor, sqlCommand)
