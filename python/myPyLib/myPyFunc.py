@@ -466,12 +466,6 @@ def createPivotColDict(fieldToPivot, fieldToSum, dataList, **kwargs):
 
     receivedFunc = kwargs.get("customColumn", False)
 
-    if receivedFunc:
-        receivedFunc("hi")
-
-    # if func:
-    #     print("hi")
-
     colData = []
 
     for fieldIndex in range(0, len(dataList[0])):
@@ -492,7 +486,13 @@ def createPivotColDict(fieldToPivot, fieldToSum, dataList, **kwargs):
 
     for colItem in colData:
 
-        pivotColStr = pivotColStr + "sum(case when \"" + fieldToPivot + "\" = \"" + str(colItem) + "\" then \"" + fieldToSum + "\" end) as \"" + str(colItem) + "\""
+        if receivedFunc:
+            columnName = receivedFunc(str(colItem))
+        else:
+            columnName = str(colItem)
+
+
+        pivotColStr = pivotColStr + "sum(case when \"" + fieldToPivot + "\" = \"" + str(colItem) + "\" then \"" + fieldToSum + "\" end) as \"" + columnName + "\""
 
         if colItem != colData[len(colData) - 1]:
             pivotColStr = pivotColStr + ", "

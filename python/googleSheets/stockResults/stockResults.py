@@ -497,18 +497,18 @@ for uniquePeriod in uniquePeriods:
     myPyFunc.executeSQLStatements(sqlList, sqlCursor)
 
 
+
 scrubBalanceSheetList = myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sqlCursor, True)
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, scrubBalanceSheetList, True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
-def printstuff(textToPrint):
-    print(textToPrint)
+def prettyMonth(colName):
+
+    return colName[-2:].lstrip("0") + " - " + colName[0:4]
 
 
-
-
-pivotColDict = myPyFunc.createPivotColDict("Balance Sheet Period", "Amount+-", scrubBalanceSheetList, customColumn=printstuff)
+pivotColDict = myPyFunc.createPivotColDict("Balance Sheet Period", "Amount+-", scrubBalanceSheetList, customColumn=prettyMonth)
 pivotColStr = pivotColDict["pivotColStr"]
 # pp(pivotColStr)
 
@@ -521,6 +521,7 @@ colDict =   {
                 0:  {"table": "tblBalanceSheet",
                     "excludedFields": ["Account Type", "Account Category", "Account", "Broker"]},
             }
+
 
 
 colList = myPyFunc.getAllColumns(colDict, sqlCursor)
