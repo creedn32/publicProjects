@@ -502,9 +502,15 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", go
 
 
 
-pivotColDict = myPyFunc.createPivotColDict("Balance Sheet Period", "Amount+-", scrubBalanceSheetList) # customColumnName="1")
+def printstuff(textToPrint):
+    print(textToPrint)
+
+
+
+
+pivotColDict = myPyFunc.createPivotColDict("Balance Sheet Period", "Amount+-", scrubBalanceSheetList, customColumn=printstuff)
 pivotColStr = pivotColDict["pivotColStr"]
-pp(pivotColStr)
+# pp(pivotColStr)
 
 
 sqlCommand = f"select `Account Type`, `Account Category`, `Account`, `Broker`, {pivotColStr} from tblScrubBalanceSheet group by `Account Type`, `Account Category`, `Account`, `Broker`"
