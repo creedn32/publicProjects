@@ -462,7 +462,7 @@ def getQueryResult(sqlCommand, sqlCursor, includeColumnNames):
 
 
 
-def createPivotColDict(fieldToPivot, fieldToSum, dataList):
+def createPivotColDict(fieldToPivot, fieldToSum, dataList, **kwargs):
 
     colData = []
 
@@ -483,7 +483,10 @@ def createPivotColDict(fieldToPivot, fieldToSum, dataList):
     # pp(colData)
 
     for colItem in colData:
-        pivotColStr = pivotColStr + "sum(case when \"" + fieldToPivot + "\" = \"" + str(colItem) + "\" then \"" + fieldToSum + "\" end) as \"" + str(colItem) + "\""
+
+        customColumnName = kwargs.get("customColumnName", str(colItem))
+
+        pivotColStr = pivotColStr + "sum(case when \"" + fieldToPivot + "\" = \"" + str(colItem) + "\" then \"" + fieldToSum + "\" end) as \"" + customColumnName + "\""
 
         if colItem != colData[len(colData) - 1]:
             pivotColStr = pivotColStr + ", "
