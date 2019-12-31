@@ -459,7 +459,7 @@ sqlCommand = "select " + colListStr + ", " + \
             f"order by tblAllLots.Broker desc, tblAllLots.\"Stock Name\", tblAllLots.Lot"
 
 
-
+sqlCommand = "select *, '' as `Last Value` from tblAllLots"
 
 
 myPyFunc.createTableAs("tblStockSummary", sqlCursor, sqlCommand)
@@ -474,7 +474,7 @@ sqlCommand = ["update tblStockSummary set \"Last Value\" = '=googlefinance(" + m
 myPyFunc.executeSQLStatements(sqlCommand, sqlCursor)
 
 sqlCommand = "select * from tblStockSummary"
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblStockSummary", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Summary", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
@@ -532,7 +532,7 @@ balanceSheetTotalsList = myPyFunc.getQueryResult("select * from tblBalanceSheetT
 
 queryResult = myPyFunc.getQueryResult("select * from tblBalanceSheet", sqlCursor, True)
 queryResultFormatted = myPyFunc.removeRepeatedDataFromList(myPyFunc.addTotal(queryResult, 0, balanceSheetTotalsList))
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, queryResultFormatted, True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, queryResultFormatted, True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 myPyFunc.closeDatabase(sqlObj["sqlConnection"])
