@@ -500,6 +500,8 @@ def createBalanceSheet(sCursor, gSheetsAPIObj, spreadsheetID, firstColumnList):
     scrubBalanceSheetList = myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sCursor, True)
     myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", gSheetsAPIObj, spreadsheetID, scrubBalanceSheetList, True, writeToSheet=False)
 
+    pp(myPyFunc.getQueryResult("select count(*) from tblScrubBalanceSheet", sCursor, True))
+
 
     def prettyMonth(colName):
 
