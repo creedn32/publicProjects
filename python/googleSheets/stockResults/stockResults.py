@@ -495,16 +495,17 @@ def createBalanceSheet(sCursor, gSheetsAPIObj, spreadsheetID, firstColumnList):
         myPyFunc.executeSQLStatements(sqlList, sCursor)
 
 
-
+    myPyFunc.executeSQLStatements(["update tblScrubBalanceSheet set `Balance Sheet Period` = substr(`Balance Sheet Period`, -2, 2) || ' - ' || substr(`Balance Sheet Period`, 1, 4)"], sqlCursor)
     scrubBalanceSheetList = myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sCursor, True)
 
 
-    def prettyMonth(colName):
+    # def prettyMonth(colName):
+    #
+    #     return colName[-2:].lstrip("0") + " - " + colName[0:4]
 
-        return colName[-2:].lstrip("0") + " - " + colName[0:4]
 
 
-    pivotColDict = myPyFunc.createPivotColDict("Balance Sheet Period", "Amount+-", scrubBalanceSheetList, customColumn=prettyMonth)
+    pivotColDict = myPyFunc.createPivotColDict("Balance Sheet Period", "Amount+-", scrubBalanceSheetList)
     pivotColStr = pivotColDict["pivotColStr"]
     # pp(pivotColStr)
 
@@ -559,14 +560,14 @@ def createBalanceSheet(sCursor, gSheetsAPIObj, spreadsheetID, firstColumnList):
 
 
 
-myPyFunc.executeSQLStatements(["update tblScrubBalanceSheet set `Balance Sheet Period` = substr(`Balance Sheet Period`, -2, 2) || ' - ' || substr(`Balance Sheet Period`, 1, 4)"], sqlCursor)     #     right(`Balance Sheet Period`, 2) || ' - '"    colName[-2:].lstrip("0") + " - " + colName[0:4]"], sCursor)
+
 pp(myPyFunc.getQueryResult("select count(*) from tblScrubBalanceSheet", sqlCursor, False))
 
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblScrubBalanceSheet limit 4", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
-splitTime = myGoogleSheetsFunc.populateSheet(41, 1000, "Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, createBalanceSheet(sqlCursor, googleSheetsAPIObj, resultsSpreadsheetID, ["Account Type", "Account Category", "Account", "Broker"]), True, writeToSheet=False, splitTimeArg=splitTime)
-splitTime = myGoogleSheetsFunc.populateSheet(27, 1000, "Simple Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, createBalanceSheet(sqlCursor, googleSheetsAPIObj, resultsSpreadsheetID, ["Account Type", "Account Category", "Account"]), True, writeToSheet=False, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(41, 1000, "Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, createBalanceSheet(sqlCursor, googleSheetsAPIObj, resultsSpreadsheetID, ["Account Type", "Account Category", "Account", "Broker"]), True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(27, 1000, "Simple Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, createBalanceSheet(sqlCursor, googleSheetsAPIObj, resultsSpreadsheetID, ["Account Type", "Account Category", "Account"]), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 myPyFunc.closeDatabase(sqlObj["sqlConnection"])
