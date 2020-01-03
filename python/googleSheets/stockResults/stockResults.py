@@ -471,7 +471,7 @@ sqlCommand = ["update tblStockSummary set `Last Value` = '=googlefinance(" + myG
 myPyFunc.executeSQLStatements(sqlCommand, sqlCursor)
 
 sqlCommand = "select * from tblStockSummary"
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Summary", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Summary", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
