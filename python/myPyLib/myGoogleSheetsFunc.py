@@ -151,14 +151,23 @@ def extractValuesAndTypes(numRows, numCols, dataObj, sheetPos):
 
 def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadsheetID, clearSheet):
 
-    googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
-    totalRows =  countRows(googleSheetsDataWithGrid, 0)
-    totalColumns = countColumns(googleSheetsDataWithGrid, 0)
+    if sheetName == "tblScrubBalanceSheet":
+
+        sheetID = getSheetID(sheetName, googleSheetsObj, spreadsheetID)
+        totalRows = 10000000
+        totalColumns = 999
+    else:
+
+        googleSheetsDataWithGrid = getDataWithGrid(spreadsheetID, googleSheetsObj, sheetName)
+        totalRows =  countRows(googleSheetsDataWithGrid, 0)
+        totalColumns = countColumns(googleSheetsDataWithGrid, 0)
+        sheetID = googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"]
+
+
     requestObj = {}
     requestObj["requests"] = []
 
-    sheetID = googleSheetsDataWithGrid["sheets"][0]["properties"]["sheetId"]
-    # sheetID = getSheetID(sheetName, googleSheetsObj, spreadsheetID)
+
 
     if totalRows > rowsToKeep:
         requestObj["requests"].append({
@@ -201,6 +210,8 @@ def reduceSheet(rowsToKeep, columnsToKeep, sheetName, googleSheetsObj, spreadshe
 
     if clearSheet:
         googleSheetsObj.values().clear(spreadsheetId=spreadsheetID, range=sheetName, body={}).execute()
+
+
 
 
 
