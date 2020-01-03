@@ -1,4 +1,3 @@
-
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPyLib import myPyFunc, myGoogleSheetsFunc
@@ -11,7 +10,7 @@ import datetime
 from pprint import pprint as pp
 
 resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
-multiplyFactor = .2
+multiplyFactor = 1
 sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"))
 sqlCursor = sqlObj["sqlCursor"]
 googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
