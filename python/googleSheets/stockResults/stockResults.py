@@ -1,7 +1,3 @@
-#create another balance sheet
-
-
-
 
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
