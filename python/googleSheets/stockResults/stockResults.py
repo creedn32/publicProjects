@@ -488,7 +488,7 @@ for uniquePeriod in uniquePeriods:
     myPyFunc.executeSQLStatements(sqlList, sqlCursor)
 
 
-myPyFunc.executeSQLStatements(["update tblScrubBalanceSheet set `Balance Sheet Period` = substr(`Balance Sheet Period`, 1, 4) || ' - ' || ltrim(substr(`Balance Sheet Period`, -2, 2), '0')"], sqlCursor)
+myPyFunc.executeSQLStatements(["update tblScrubBalanceSheet set `Balance Sheet Period` = substr(`Balance Sheet Period`, 1, 4) || ' - ' || substr(`Balance Sheet Period`, -2, 2)"], sqlCursor)
 
 
 
