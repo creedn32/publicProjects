@@ -1,19 +1,15 @@
 #deal with "In Progress" transactions
 
-print("Cmt: Importing modules...")
-import time
-startTime = time.time()
-
-from pprint import pprint as pp
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPythonLibrary import myPythonFunctions
+from myPyLib import myPyFunc, myGoogleSheetsFunc
+
+startTime = myPyFunc.printElapsedTime(False, "Starting script")
+from pprint import pprint as pp
+from decimal import *
+
 
 import win32com.client
-
-
-print("Cmt: Importing modules...Done.")
-print("Cmt: Open and connect to file...")
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = False
@@ -53,7 +49,7 @@ gpAmountCol = 6
 gpTrxTypeCol = 12
 
 
-print("Cmt: Open and connect to file...Done.")
+splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
 
 excelBankTableSheet.Cells(1, bankColumns + 1).Value = "B Amount"
 
@@ -69,11 +65,13 @@ excelBankSheet.Range(firstCell, excelBankSheet.Cells(firstCell.CurrentRegion.Row
 bankTableSheetRow = rowAfterHeader
 
 while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
-    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = myPythonFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value) - myPythonFunctions.convertSingleSpaceToZero(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
+
+
+    paymentAmount = myPyFunc.convertToZero(excelBankTableSheet.Cells(bankTableSheetRow, 6).Value)
+    depositAmount =myPyFunc.convertToZero(excelBankTableSheet.Cells(bankTableSheetRow, 7).Value)
+
+    excelBankTableSheet.Cells(bankTableSheetRow, bankColumns + 1).Value = float(depositAmount - paymentAmount)
     bankTableSheetRow = bankTableSheetRow + 1
-
-
-
 
 
 
@@ -130,17 +128,7 @@ excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
-print("Elapsed time is " + str(time.time() - startTime))
-
-
-
-
-
-
-
-
-
-
+myPyFunc.printElapsedTime(startTime, "Total time to run code")
 
 
 

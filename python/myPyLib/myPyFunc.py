@@ -31,6 +31,29 @@ def convertSingleSpaceToZero(s):
         return s
 
 
+def convertToZero(s):
+    if s in [" ", None]:
+        return 0
+    else:
+        return s
+
+
+# def excelNumToPyNum(s):
+#
+#     import re
+#
+#     quoted = re.compile("(?<=')[^']+(?=')")
+#     for value in quoted.findall(s):
+#         i.append(value)
+#         print(i)
+
+
+
+
+
+
+
+
 def convertEmptyStrToZero(s):
     if s == "":
         return 0

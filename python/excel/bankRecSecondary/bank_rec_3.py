@@ -1,13 +1,13 @@
 #on comparison sheet, could write only the necessary columns
 
-print("Cmt: Importing modules...")
+import sys, pathlib
+sys.path.append(str(pathlib.Path.cwd().parents[1]))
+from myPyLib import myPyFunc, myGoogleSheetsFunc
 
-import time, win32com.client, pathlib
+startTime = myPyFunc.printElapsedTime(False, "Starting script")
 
-startTime = time.time()
-print("Cmt: Importing modules...Done.")
-print("Cmt: Open and connect to file...")
-
+from pprint import pprint as pp
+import win32com.client
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = True
@@ -43,7 +43,7 @@ gpSearchValueCol = 6
 
 
 
-print("Cmt: Open and connect to file...Done.")
+splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
 
 
 excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(1, 1), excelBankTableSearchSheet.Cells(1, bankColumns)).Copy(excelCompSheet.Cells(1, 1))
@@ -55,7 +55,7 @@ gpRow = rowAfterHeader
 while excelGPTableSheet.Cells(gpRow, 1).Value:
 
     #put in GP data
-    
+
     excelGPTableSheet.Range(excelGPTableSheet.Cells(gpRow, 1), excelGPTableSheet.Cells(gpRow, gpColumns)).Copy(excelCompSheet.Cells(gpRow, bankColumns + 1))
 
     #check bank data
@@ -65,22 +65,34 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
     startingSearchRow = 2
     endingSearchRow = excelBankTableSearchSheet.Cells(2, bankTableSearchCol).End(win32com.client.constants.xlDown).Row
     searchText = excelGPTableSheet.Cells(gpRow, gpSearchValueCol).Value
+    endingSearchRow = excelBankTableSearchSheet.Cells(rowAfterHeader, bankTableSearchCol).End(win32com.client.constants.xlDown).Row
 
-    while startingSearchRow <= excelBankTableSearchSheet.Cells(rowAfterHeader, bankTableSearchCol).End(win32com.client.constants.xlDown).Row:
-        
-        foundRange = excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(startingSearchRow, bankTableSearchCol), excelBankTableSearchSheet.Cells(startingSearchRow, bankTableSearchCol).End(win32com.client.constants.xlDown)).Find(What=searchText, LookAt=win32com.client.constants.xlWhole) 
 
-        if foundRange:         
+    while startingSearchRow <= endingSearchRow:
+
+        startingSearchCell = excelBankTableSearchSheet.Cells(startingSearchRow, bankTableSearchCol)
+        endingSearchCell = excelBankTableSearchSheet.Cells(startingSearchRow, bankTableSearchCol).End(
+            win32com.client.constants.xlDown)
+
+        # pp(startingSearchCell.Address)
+        # pp(endingSearchCell.Address)
+
+        foundRange = excelBankTableSearchSheet.Range(startingSearchCell, endingSearchCell).Find(What=searchText, LookAt=win32com.client.constants.xlWhole)
+
+        pp("foundRange is " + str(foundRange))
+
+        if foundRange:
             rowsToCheck.append(foundRange.Row)
             startingSearchRow = foundRange.Row + 1
+            pp(foundRange)
         else:
             break
 
-            
+
     if len(rowsToCheck) == 1:
             excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(rowsToCheck[0], 1), excelBankTableSearchSheet.Cells(rowsToCheck[0], bankColumns)).Copy(excelCompSheet.Cells(gpRow, 1))
             excelBankTableSearchSheet.Cells(rowsToCheck[0], 1).EntireRow.Delete()
- 
+
     gpRow = gpRow + 1
 
 
@@ -90,4 +102,5 @@ excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
-print("Elapsed time is " + str(time.time() - startTime))
+
+myPyFunc.printElapsedTime(startTime, "Total time to run code")
