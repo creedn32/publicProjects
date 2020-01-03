@@ -560,7 +560,7 @@ def createBalanceSheet(sCursor, gSheetsAPIObj, spreadsheetID, firstColumnList):
 pp(myPyFunc.getQueryResult("select count(*) from tblScrubBalanceSheet", sqlCursor, False))
 
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sqlCursor, True), False, writeToSheet=True, splitTimeArg=splitTime)
 
 splitTime = myGoogleSheetsFunc.populateSheet(41, 1000, "Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, createBalanceSheet(sqlCursor, googleSheetsAPIObj, resultsSpreadsheetID, ["Account Type", "Account Category", "Account", "Broker"]), True, writeToSheet=True, splitTimeArg=splitTime)
 splitTime = myGoogleSheetsFunc.populateSheet(27, 1000, "Simple Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, createBalanceSheet(sqlCursor, googleSheetsAPIObj, resultsSpreadsheetID, ["Account Type", "Account Category", "Account"]), True, writeToSheet=True, splitTimeArg=splitTime)
