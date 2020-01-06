@@ -27,6 +27,7 @@ colTblJournal = myPyFunc.createColumnsDict([
 
 
 myPyFunc.createAndPopulateTable("tblJournal", colTblJournal, sqlCursor, journalList, [0])
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "tblJournalAccounts", googleSheetsAPIObj, spreadsheetID, myPyFunc.getQueryResult("select distinct `Account` from tblJournal", sqlCursor, False), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 pp(journalList)
