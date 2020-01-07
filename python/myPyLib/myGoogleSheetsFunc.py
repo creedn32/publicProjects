@@ -312,6 +312,10 @@ def getSheetID(sheetName, googleSheetsObj, spreadsheetID):
 def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadsheetID, valuesList, clearSheet, **kwargs):
 
     writeToSheet = kwargs.get("writeToSheet", False)
+    columnRow = kwargs.get("columnRow", True)
+    cellFormattingRequest = kwargs.get("cellFormattingRequest", [])
+
+
 
     messageToPrint = "Task completed"
 
@@ -329,6 +333,27 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
         formatCellsRequest = {
             "requests": [
+                {
+                    "autoResizeDimensions": {
+                        "dimensions": {
+                            "sheetId": sheetID,
+                            "dimension": "COLUMNS",
+                            "startIndex": 0,
+                            "endIndex": lastColumnNum
+                        }
+                    }
+                }
+            ]
+        }
+
+        if cellFormattingRequest:
+            formatCellsRequest["requests"].extend(cellFormattingRequest)
+
+
+
+        if columnRow:
+
+            formatCellsRequest["requests"].extend([
                 {
                     "repeatCell": {
                         "range": {
@@ -368,19 +393,15 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
                         }
 
                     }
-                },
-                {
-                    "autoResizeDimensions": {
-                        "dimensions": {
-                            "sheetId": sheetID,
-                            "dimension": "COLUMNS",
-                            "startIndex": 0,
-                            "endIndex": lastColumnNum
-                        }
-                    }
                 }
-            ]
-        }
+
+            ])
+
+
+
+
+
+
 
         googleSheetsObj.batchUpdate(spreadsheetId=spreadsheetID, body=formatCellsRequest).execute()
 
