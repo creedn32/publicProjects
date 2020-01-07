@@ -28,7 +28,7 @@ colTblJournal = myPyFunc.createColumnsDict([
 
 myPyFunc.createAndPopulateTable("tblJournal", colTblJournal, sqlCursor, journalList, [0])
 uniqueAccountList = myPyFunc.getQueryResult("select distinct `Account` from tblJournal", sqlCursor, False)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "tblJournalAccounts", googleSheetsAPIObj, spreadsheetID, uniqueAccountList, True, writeToSheet=True, splitTimeArg=splitTime, columnRow=False)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "tblJournalAccounts", googleSheetsAPIObj, spreadsheetID, uniqueAccountList, True, writeToSheet=False, splitTimeArg=splitTime, columnRow=False)
 
 
 ledgerData = {}
@@ -40,6 +40,10 @@ for account in uniqueAccountList:
     accountTransactionList = myPyFunc.getQueryResult(sqlCommand, sqlCursor, False)
     for transaction in accountTransactionList:
         ledgerData[accountName].append(transaction[-2:])
+
+
+
+ledgerList = ledgerData["Cash"]
 
 
 cellFormattingRequest = [{
@@ -60,7 +64,7 @@ cellFormattingRequest = [{
                     }
                 }]
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "Ledger", googleSheetsAPIObj, spreadsheetID, ledgerData["Cash"], True, writeToSheet=True, splitTimeArg=splitTime, columnRow=False, cellFormattingRequest=cellFormattingRequest)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "Ledger", googleSheetsAPIObj, spreadsheetID, ledgerList, True, writeToSheet=True, splitTimeArg=splitTime, columnRow=False, cellFormattingRequest=cellFormattingRequest)
 
 
 
