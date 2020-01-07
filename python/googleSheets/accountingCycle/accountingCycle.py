@@ -27,7 +27,42 @@ colTblJournal = myPyFunc.createColumnsDict([
 
 
 myPyFunc.createAndPopulateTable("tblJournal", colTblJournal, sqlCursor, journalList, [0])
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "tblJournalAccounts", googleSheetsAPIObj, spreadsheetID, myPyFunc.getQueryResult("select distinct `Account` from tblJournal", sqlCursor, False), True, writeToSheet=True, splitTimeArg=splitTime)
+uniqueAccountList = myPyFunc.getQueryResult("select distinct `Account` from tblJournal", sqlCursor, False)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "tblJournalAccounts", googleSheetsAPIObj, spreadsheetID, uniqueAccountList, True, writeToSheet=True, splitTimeArg=splitTime, columnRow=False)
 
 
-pp(journalList)
+ledgerData = {}
+
+for account in uniqueAccountList:
+    accountName = account[0]
+    ledgerData[accountName] = [[accountName, ""]]
+    sqlCommand = "select * from tblJournal where `Account` = '" + accountName + "'"
+    accountTransactionList = myPyFunc.getQueryResult(sqlCommand, sqlCursor, False)
+    for transaction in accountTransactionList:
+        ledgerData[accountName].append(transaction[-2:])
+
+
+cellFormattingRequest = [{
+                    "repeatCell": {
+                        "range": {
+                            "sheetId": myGoogleSheetsFunc.getSheetID("Ledger", googleSheetsAPIObj, spreadsheetID),
+                            "startRowIndex": 0,
+                            "endRowIndex": 1
+                        },
+                        "cell": {
+                            "userEnteredFormat": {
+                                "textFormat": {
+                                    "bold": True
+                                }
+                            }
+                        },
+                        "fields": "userEnteredFormat(textFormat)"
+                    }
+                }]
+
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "Ledger", googleSheetsAPIObj, spreadsheetID, ledgerData["Cash"], True, writeToSheet=True, splitTimeArg=splitTime, columnRow=False, cellFormattingRequest=cellFormattingRequest)
+
+
+
+
+
