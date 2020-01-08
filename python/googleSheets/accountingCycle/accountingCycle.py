@@ -70,3 +70,31 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "Ledger", googleSheetsAPIObj,
 
 
 
+# {
+#   "requests": [
+#     {
+#       "mergeCells": {
+#         "range": {
+#           "sheetId": sheetId,
+#           "startRowIndex": 0,
+#           "endRowIndex": 2,
+#           "startColumnIndex": 0,
+#           "endColumnIndex": 2
+#         },
+#         "mergeType": "MERGE_ALL"
+#       }
+#     },
+#     {
+#       "mergeCells": {
+#         "range": {
+#           "sheetId": sheetId,
+#           "startRowIndex": 2,
+#           "endRowIndex": 6,
+#           "startColumnIndex": 0,
+#           "endColumnIndex": 2
+#         },
+#         "mergeType": "MERGE_COLUMNS"
+#       }
+#     },
+#   ]
+# }
