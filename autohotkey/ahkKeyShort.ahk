@@ -35,6 +35,9 @@ F13 & l::
     SendInput {Blind}{Right}
 return
 
+F13 & o::
+    SendInput {Blind}{Delete}
+return
 
 
 ;Sc029 & m::
