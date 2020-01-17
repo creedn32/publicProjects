@@ -2,7 +2,7 @@ import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPyLib import myPyFunc, myGoogleSheetsFunc
 
-startTime = myPyFunc.printElapsedTime(False, "Starting script")
+startTime = myPyFunc.printElapsedTime(False, "Starting code")
 
 import win32com.client
 
