@@ -3,7 +3,7 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPyLib import myPyFunc, myGoogleSheetsFunc
 
 
-splitTime = myPyFunc.printElapsedTime(False, "Starting script")
+splitTime = myPyFunc.printElapsedTime(False, "Starting code")
 
 
 import datetime, pynput.mouse, win32api, win32con, pyautogui

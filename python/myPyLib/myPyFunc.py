@@ -88,8 +88,14 @@ def repetitiveKeyPress(numberOfTabs, keyToPress):
 
 def functionOnClick(x, y, button, pressed):
     if not pressed:
+
+
+        # upXPosition = x
+        # upYPosition = y
+
         print("Mouse {2} was {0} at {1}.".format("pressed" if pressed else "released", (x, y), button))
         return False
+        # return [x, y]
 
 
 

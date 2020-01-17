@@ -2,7 +2,7 @@ import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPyLib import myPyFunc
 
-splitTime = myPyFunc.printElapsedTime(False, "Starting script")
+splitTime = myPyFunc.printElapsedTime(False, "Starting code")
 
 
 from pprint import pprint as pp
