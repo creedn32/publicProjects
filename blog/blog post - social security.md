@@ -1,3 +1,5 @@
+Discussion Question:
+
 Is there a limit on how much income is taxed for Social Security each year? Is there a limit on how much income is taxed for Medicare each year? Check out this article: https://www.irs.gov/taxtopics/tc751. Do you think that these rules are fair?
 
 
