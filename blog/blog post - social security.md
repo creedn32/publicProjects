@@ -1,3 +1,4 @@
+```
 Discussion Question:
 
 Is there a limit on how much income is taxed for Social Security each year? Is there a limit on how much income is taxed for Medicare each year? Check out this article: https://www.irs.gov/taxtopics/tc751. Do you think that these rules are fair?
@@ -140,3 +141,5 @@ Recall that for every dollar of OASDI and HI tax withheld from an employee's pay
 
 References
 Tax withholding in the United States. (2018). Retrieved from https://en.wikipedia.org/wiki/Tax_withholding_in_the_United_States
+
+```
