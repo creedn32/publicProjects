@@ -73,19 +73,43 @@ Powell, R. (2020, January 17). 4 changes that could affect Social Security in 20
 
 #3
 
-Ok, 
+Ok, so we know that Social Security would pay up to $2,639 per month if you retired in 2016  (Investopedia, 2014). We also know that you would need to have made $118,500 that year and a similarly high amount in all of your previous working years to qualify for this benefit.
 
+Now, let's compare two hypothetical workers. First, we have Jerry, who made $118,500 per year throughout his 35-year career. Thus, he qualifies for the maximum monthly Social Security check.
 
-Now consider Larry. Larry makes $40,000 per month (or $480,000 per year) for 35 years. Imagine that social security is deducted from Larry's entire salary, but the maximum benefit that he can receive back from social security is also $2,639 per month.
+Second, we have Jane. Jane made $20,000 per month (or $240,000 per year) for 35 years. She then decides to retire in 2016. How much would the Social Security administration pay Jane each month? The answer: $2,639.
 
-Do you think that it is fair for Larry, who that makes more than four times what George makes, ($480,000 compared to $118,500) to receive the same amount from social security in retirement ($31,668 per year)?
+Do you think that it is fair for Jane, who makes more than Jerry, to receive the same amount from Social Security in retirement?
 
-Lawmakers continue to debate this issue, and there is no easy answer upon which everyone agrees. (Liou, 2017)
+Lawmakers continue to debate this issue. There is no easy answer upon which everyone agrees. (Liou, 2017)
 
+In my next post, we'll discuss this issue further.
 
 References
 
+Investopedia. (2014, October). What is the maximum I can receive from my Social Security retirement benefit? Retrieved from Investopedia: https://www.investopedia.com
+
 Liou, W. (2017). Social Security: Raising or Eliminating the Taxable Earnings Base. Congressional Research Service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Imagine that social security is deducted from Larry's entire salary, but the maximum benefit that he can receive back from social security is also $2,639 per month.
+
+
+
+
+
+
 
 
 
