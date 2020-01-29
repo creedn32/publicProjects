@@ -31,6 +31,12 @@ Investopedia. (2014, October). What is the maximum I can receive from my Social 
 Bieber, C. (2019, April 8). Why You Should Work at Least 35 Years Before Retiring. Retrieved from The Motley Fool: https://www.fool.com/retirement/2018/01/21/why-you-should-work-at-least-35-years-before-retir.aspx
 
 
+
+
+
+
+
+
 #2
 
 Ok, so we know that there is a maximum monthly check that you can receive from Social Security. If you retired in 2016, that maximum check would be $2,639 (Investopedia, 2014).
@@ -59,6 +65,15 @@ Investopedia. (2014, October). What is the maximum I can receive from my Social 
 Powell, R. (2020, January 17). 4 changes that could affect Social Security in 2020. Retrieved from USA Today: https://www.usatoday.com/story/money/2020/01/17/social-security-2020-6-changes-you-should-expect-year/2827098001/
 
 
+
+
+
+
+
+
+#3
+
+Ok, 
 
 
 Now consider Larry. Larry makes $40,000 per month (or $480,000 per year) for 35 years. Imagine that social security is deducted from Larry's entire salary, but the maximum benefit that he can receive back from social security is also $2,639 per month.
