@@ -13,7 +13,7 @@ Is there a limit on how much income is taxed for Social Security each year? Is t
 
 As you think about how you are going to respond to this question, consider this: How much money am I going to get back from Social Security during retirement?
 
-You've probably all heard concerns about Social Security running out of money in the future. For this post, let's assume that Social Security will have ample funding throughout your retirement years.
+You've probably all heard concerns about Social Security running out of money in the future. For this week's discussion, let's assume that Social Security will have ample funding throughout your retirement years.
 
 Now, how much can you expect to get back from social security? Let's look at an example from Investopedia. For this example, imagine that you retired in 2016. (Wouldn't that be nice?!)
 
@@ -74,13 +74,13 @@ Powell, R. (2020, January 17). 4 changes that could affect Social Security in 20
 
 #3
 
-Ok, so we know that Social Security would pay up to $2,639 per month if you retired in 2016  (Investopedia, 2014). We also know that you would need to have made $118,500 that year and a similarly high amount in all of your previous working years to qualify for this benefit.
+Ok, so we know that Social Security pays up to $2,639 per month if you retired in 2016  (Investopedia, 2014). In addition, we know that you would need to have made $118,500 in 2016 and a similarly high amount in all of your previous working years to qualify for this benefit.
 
-Now, let's compare two hypothetical workers. First, we have Jerry, who made $118,500 per year throughout his 35-year career. Thus, he qualifies for the maximum monthly Social Security check.
+Now, let's compare two hypothetical workers. First, we have Jerry. He made $118,500 per year throughout his 35-year career and retires in 2016. Thus he qualifies for the maximum monthly Social Security check.
 
-Second, we have Jane. Jane made $20,000 per month (or $240,000 per year) for 35 years. She then decides to retire in 2016. How much would the Social Security administration pay Jane each month? The answer: $2,639.
+Second, we have Jane. Jane made $20,000 per month (or $240,000 per year) for 35 years. She also retires in 2016. So, how much would the Social Security Administration pay Jane each month during her retirement? The answer: $2,639.
 
-Do you think that it is fair for Jane, who makes more than Jerry, to receive the same amount from Social Security in retirement?
+Do you think that it's fair for Jane, who made more money than Jerry, to receive the same Social Security check during retirement?
 
 Lawmakers continue to debate this issue. There is no easy answer upon which everyone agrees. (Liou, 2017)
 
