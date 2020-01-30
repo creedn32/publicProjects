@@ -50,7 +50,7 @@ If you retired at the end of 2016, you would need to have earned $118,500 that y
 
 Why do I say "almost"? The $118,500 requirement is increased every year to account for inflation. Therefore, in 2015 and the other years that you worked, the required amount would have been lower.
 
-At this point, you might be asking, "But we're in 2020 now. Is the 2020 requirement higher than the 2016 requirement?" If that is what you were asking, I like your thought process! Because the requirement increases every year, it has climbed to $137,700 for 2020  (Powell, 2020).
+At this point, you might be asking, "But we're in 2020 now. Is the 2020 requirement higher than the 2016 requirement?" If that is what you were asking, I like your thought process! Because the requirement increases every year, it has climbed to $137,700 for 2020 (Powell, 2020).
 
 Now, does the average person receive a monthly Social Security check of $2,639 during retirement?
 
