@@ -3,4 +3,4 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 from myPyLib import myPostBankTransactions
 
 
-myPostBankTransactions.postTrans("Bank Transactions")
+myPostBankTransactions.postTrans("Bank Transactions - Recurring")
