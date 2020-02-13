@@ -1,3 +1,0 @@
-#check for existing modules
->get-module -listavailable
-
