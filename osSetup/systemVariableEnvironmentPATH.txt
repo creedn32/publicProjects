@@ -1,7 +1,0 @@
-#list of folders to add to the enviroment PATH system variable
-
-
-#for git
-
-C:\Users\cnaylor\Desktop\Portable Procedures\bin
-C:\Users\cnaylor\Desktop\Portable Procedures\cmd
