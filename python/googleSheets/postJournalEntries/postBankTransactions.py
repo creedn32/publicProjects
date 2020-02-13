@@ -7,6 +7,4 @@ sys.path.append(str(pathlib.Path.cwd().parents[1]))
 
 from myPyLib import myPostBankTransactions
 
-# import datetime, pynput.mouse #, win32api, win32con, pyautogui
-
-# myPostBankTransactions.postTrans("Bank Transactions")
+myPostBankTransactions.postTrans("Bank Transactions")
