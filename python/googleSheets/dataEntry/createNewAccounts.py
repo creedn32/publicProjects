@@ -2,37 +2,26 @@ import sys, pathlib, time
 sys.path.append(str(pathlib.Path.cwd().parents[1])) #for myPyLib
 from myPyLib import myPyFunc, myGoogleSheetsFunc
 
-startTime = time.time()
-print("Comment: Importing modules and setting up variables...")
+import pynput.mouse, pyautogui
+pyautogui.PAUSE = .0000000000001
 
-# import datetime, pynput.mouse, win32api, win32con, pyautogui
-import pynput.mouse, pyautogui, time
 
-pyautogui.PAUSE = 0
-activateKeyboard = True
-
-dataEntrypreadsheetID = "1Jdl2wIHinX6A8O6H18l34V-qzorLPXxWMGeRsQ8FYy4"
-# sheetsToDownload = ["Raw Data - Robinhood", "Transactions To Add - Robinhood"]
+idOfSpreadsheetToPullDataFrom = "1Jdl2wIHinX6A8O6H18l34V-qzorLPXxWMGeRsQ8FYy4"
 googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
-googleSheetsData = googleSheetsAPIObj.get(spreadsheetId=dataEntrypreadsheetID, includeGridData=True).execute()
+dataOfSpreadsheetToPullDataFrom = googleSheetsAPIObj.get(spreadsheetId=idOfSpreadsheetToPullDataFrom, includeGridData=True).execute()
 
-for dict in googleSheetsData["sheets"]:
+for dict in dataOfSpreadsheetToPullDataFrom["sheets"]:
     if dict["properties"]["title"] == "Accounts To Create":
-        currentSheetIDStr = dict["properties"]["sheetId"]
-        currentSheetData = dict["data"][0]["rowData"]
+        dataOfSheetToPullDataFrom = dict["data"][0]["rowData"]
 
 
 
-print("Comment: Importing modules and setting up variables...Done. " + str(round(time.time() - startTime, 3)) + " seconds")
+with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
+    print("Click the mouse to begin...")
+    listenerObj.join()
 
 
-if activateKeyboard:
-    with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
-        print("Click 'Save' to begin creating accounts...")
-        listenerObj.join()
-
-
-for row in currentSheetData[1:]:
+for row in dataOfSheetToPullDataFrom[1:]:
 
     charactersToType = row["values"][0]["formattedValue"]
 
@@ -59,7 +48,7 @@ for row in currentSheetData[1:]:
 
 
     with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
-        print("Click 'Save' to continue with this entry...")
+        print("Click the mouse to continue...")
         listenerObj.join()
 
 
