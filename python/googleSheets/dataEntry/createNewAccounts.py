@@ -6,7 +6,7 @@ startTime = time.time()
 print("Comment: Importing modules and setting up variables...")
 
 # import datetime, pynput.mouse, win32api, win32con, pyautogui
-import pynput.mouse, pyautogui
+import pynput.mouse, pyautogui, time
 
 pyautogui.PAUSE = 0
 activateKeyboard = True
@@ -36,7 +36,9 @@ for row in currentSheetData[1:]:
 
     charactersToType = row["values"][0]["formattedValue"]
 
-    print("Will be entering the following string of characters: " + charactersToType)
+    print("The following string of characters will be entered: " + charactersToType)
+
+    time.sleep(.5)
 
     for character in charactersToType:
 
