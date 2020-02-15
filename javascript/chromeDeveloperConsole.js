@@ -1,5 +1,9 @@
 // increase YouTube playback speed
 
+var speed = prompt("How fast do you want to play the video?")
+document.getElementsByTagName("video")[0].playbackRate = speed
+
+
 document.getElementsByTagName("video")[0].playbackRate = 3
 
 
