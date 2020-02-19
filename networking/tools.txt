@@ -1,0 +1,4 @@
+#get router internal and external IP address
+
+http://whatsmyrouterip.com/
+
