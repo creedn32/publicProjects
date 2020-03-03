@@ -5,4 +5,4 @@ sys.path.append(str(pathlib.Path.cwd()/"publicProjects/python"))
 
 from myPyLib import myPostBankTransactions
 
-myPostBankTransactions.postTrans("Bank Transactions")
+# myPostBankTransactions.postTrans("Bank Transactions")
