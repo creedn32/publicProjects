@@ -1,10 +1,23 @@
 #see all git settings
 git config --list --show-origin
 
+
 #see all git settings with config file details
 git config --list --show-origin
 
 
 #ignore line endings in git
 git config --global core.autocrlf true
+
+
+#see the remote URL
+git config --get remote.origin.url
+
+
+#see the remote URL details
+git remote show origin
+
+
+#understand output from git diff
+https://www.git-tower.com/learn/git/ebook/en/command-line/advanced-topics/diffs
 
