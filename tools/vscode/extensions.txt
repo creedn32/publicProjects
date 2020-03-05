@@ -1,3 +1,4 @@
 #extensions for vscode (recommended by vscode)
 
 Remote - WSL
+Python
