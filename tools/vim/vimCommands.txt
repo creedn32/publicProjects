@@ -1,0 +1,9 @@
+#vim commands
+
+
+#quit
+:q
+
+
+#save a commit message
+Escape key + :wq
