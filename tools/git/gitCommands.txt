@@ -1,6 +1,15 @@
 #git commands
 
 
+#see user.name
+git config user.name
+
+
+#set user.email
+git config --global user.email "
+
+
+
 #set editor
 git config --global core.editor "vim"
 
