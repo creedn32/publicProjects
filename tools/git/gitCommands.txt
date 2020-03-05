@@ -58,3 +58,7 @@ git ac
 
 #unset an alias
 git config --global --unset alias.ac
+
+
+#see alias
+git config --global --list
