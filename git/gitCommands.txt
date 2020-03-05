@@ -21,3 +21,14 @@ git remote show origin
 #understand output from git diff
 https://www.git-tower.com/learn/git/ebook/en/command-line/advanced-topics/diffs
 
+
+#create an alias
+git config --global alias.ac "!git add . && git commit"
+
+
+#use an alias
+git ac
+
+
+#unset an alias
+git config --global --unset alias.aC
