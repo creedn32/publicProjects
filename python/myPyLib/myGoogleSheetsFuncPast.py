@@ -425,13 +425,13 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
 
 
-def authFunc(pathToGoogleCredentials):
+def authFunc():
 
     import pickle, pathlib, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
     # print(pathlib.Path.cwd().parents[3])
 
-    credentialsPath = str(pathToGoogleCredentials) + "\\googleCredentials.json"
-    tokenPath = str(pathToGoogleCredentials) + "\\googleToken.pickle"
+    credentialsPath = str(pathlib.Path.cwd().parents[3]) + "\\privatedata\\googleCredentials\\googleCredentials.json"
+    tokenPath = str(pathlib.Path.cwd().parents[3]) + "\\privatedata\\googleCredentials\\googleToken.pickle"
     googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
     credentialsObj = None
 
