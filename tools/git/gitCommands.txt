@@ -1,3 +1,14 @@
+#git commands
+
+
+#set editor
+git config --global core.editor "vim"
+
+
+#see remote URL
+git remote -v
+
+
 #see all git settings
 git config --list --show-origin
 
