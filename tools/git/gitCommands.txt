@@ -1,13 +1,19 @@
 #git commands
 
 
+
+#unset user settings
+git config --global --unset user.name
+git config --global --unset user.email
+git config --global --unset credential.helper
+
+
 #see user.name
 git config user.name
 
 
 #set user.email
-git config --global user.email "
-
+git config --global user.email "16467643+creednaylor@users.noreply.github.com"
 
 
 #set editor
