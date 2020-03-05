@@ -49,7 +49,7 @@ https://www.git-tower.com/learn/git/ebook/en/command-line/advanced-topics/diffs
 
 
 #create an alias
-git config --global alias.ac "!git add . && git commit"
+git config --global alias.ac "!git add . && git commit -m 'a'"
 
 
 #use an alias
