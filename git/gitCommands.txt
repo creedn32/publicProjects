@@ -1,0 +1,10 @@
+#see all git settings
+git config --list --show-origin
+
+#see all git settings with config file details
+git config --list --show-origin
+
+
+#ignore line endings in git
+git config --global core.autocrlf true
+
