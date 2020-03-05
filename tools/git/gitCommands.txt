@@ -49,7 +49,7 @@ https://www.git-tower.com/learn/git/ebook/en/command-line/advanced-topics/diffs
 
 
 #create an alias
-git config --global alias.ac "!git add . && git commit -m 'latest updates'"
+git config --global alias.acp "!git add . && git commit -m 'latest updates' && git push"
 
 
 #use an alias
@@ -57,4 +57,4 @@ git ac
 
 
 #unset an alias
-git config --global --unset alias.aC
+git config --global --unset alias.ac
