@@ -41,7 +41,7 @@ pyautogui.PAUSE = 0
 activateKeyboard = True
 
 
-pp("Manual prinout: " + str(pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"))
+# pp("Manual prinout: " + str(pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"))
 pathToGoogleCredentials = pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"
 googleSheetsObj = myGoogleSheetsFunc.authFunc(pathToGoogleCredentials)
 googleSheetsData = myGoogleSheetsFunc.getDataWithGrid(spreadsheetIDStr, googleSheetsObj, sheetName)
