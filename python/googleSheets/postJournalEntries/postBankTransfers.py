@@ -1,7 +1,7 @@
 import sys, pathlib
 
-# sys.path.append(str(pathlib.Path.cwd().parents[1]))
-sys.path.append(str(pathlib.Path.cwd()/"publicProjects/python"))
+sys.path.append(str(pathlib.Path.cwd().parents[1]))
+# sys.path.append(str(pathlib.Path.cwd()/"publicProjects/python"))
 
 from myPyLib import myPyFunc, myGoogleSheetsFunc
 
@@ -12,7 +12,7 @@ startTime = myPyFunc.printElapsedTime(False, "Starting code")
 
 import time, importlib
 import datetime, pynput.mouse, win32api, win32con, pyautogui
-from pprint import pprint
+from pprint import pprint as pp
 
 
 
@@ -41,8 +41,8 @@ pyautogui.PAUSE = 0
 activateKeyboard = True
 
 
-
-pathToGoogleCredentials = pathlib.Path.cwd()/"privateData/python/googleCredentials"
+pp("Manual prinout: " + str(pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"))
+pathToGoogleCredentials = pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"
 googleSheetsObj = myGoogleSheetsFunc.authFunc(pathToGoogleCredentials)
 googleSheetsData = myGoogleSheetsFunc.getDataWithGrid(spreadsheetIDStr, googleSheetsObj, sheetName)
 
