@@ -12,7 +12,9 @@ import win32com.client
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = True
 excelApp.DisplayAlerts = False
-filePath = str(pathlib.Path.cwd().parents[3]) + "\\privateData\\bankRecSecondary"
+
+# pp("Manual printout: " + str(pathlib.Path.cwd().parents[3]) + "\\privateData\\python\\excel\\bankRecSecondary")
+filePath = str(pathlib.Path.cwd().parents[3]) + "\\privateData\\python\\excel\\bankRecSecondary"
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 

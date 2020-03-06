@@ -12,8 +12,11 @@ def postTrans(sheetName):
     import datetime, pynput.mouse, win32api, win32con, pyautogui
     from pprint import pprint as pp
 
-    pathToGoogleCredentials = pathlib.Path.cwd()/"privateData/python/googleCredentials"
-    # pp(str(pathToGoogleCredentials))
+
+    
+    pathToGoogleCredentials = pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"
+    # pathToGoogleCredentials = pathlib.Path.cwd()/"privateData/python/googleCredentials"
+    # pp(pathToGoogleCredentials)
 
 
     # class moduleNameClass:
