@@ -2,3 +2,4 @@
 
 Remote - WSL
 Python
+"The Marketplace has extensions that can help with .ahk files"
