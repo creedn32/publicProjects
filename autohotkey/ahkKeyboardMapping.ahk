@@ -47,7 +47,9 @@ F13 & t::
     SendInput ^!{t}
 return
 
-
+F13 & u::
+    SendInput {c}{d}{Space}{.}{/}{.}{.}{/}{Enter}
+return
 
 
 
