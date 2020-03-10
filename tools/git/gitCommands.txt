@@ -53,7 +53,7 @@ git config --global alias.acp "!git add . && git commit -m 'latest updates' && g
 
 
 #use an alias
-git ac
+git acp
 
 
 #unset an alias
