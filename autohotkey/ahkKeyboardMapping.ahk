@@ -43,8 +43,8 @@ F13 & m::
     SendInput {Blind}{End}
 return
 
-F13 & u::
-    SendInput ^!{u}
+F13 & t::
+    SendInput ^!{t}
 return
 
 
