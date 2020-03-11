@@ -1,0 +1,11 @@
+
+
+
+#list of installed packages
+pip3 freeze
+pip3 list
+
+
+#install package
+pip3 install pyautogui
+
