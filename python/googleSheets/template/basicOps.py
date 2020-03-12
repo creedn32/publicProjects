@@ -7,9 +7,8 @@ import pathlib, pickle, os.path, googleapiclient.discovery, google_auth_oauthlib
 from pprint import pprint as pp
 
 credentialsPath = pathlib.Path(pathlib.Path.cwd().parents[3], "privateData", "python", "googleCredentials", "googleCredentials.json")
-pp(credentialsPath)
-# credentialsPath = str(pathlib.Path.cwd().parents[3]) + "/privateData/python/googleCredentials/googleCredentials.json"
-tokenPath = str(pathlib.Path.cwd().parents[3]) + "/privateData/python/googleCredentials/googleToken.pickle"
+# pp(credentialsPath)
+tokenPath = pathlib.Path(pathlib.Path.cwd().parents[3], "privateData", "python", "googleCredentials", "googleTocken.pickle")
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
 
