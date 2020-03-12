@@ -4,9 +4,11 @@ startTime = time.time()
 
 
 import pathlib, pickle, os.path, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
-from pprint import pprint
+from pprint import pprint as pp
 
-credentialsPath = str(pathlib.Path.cwd().parents[3]) + "/privateData/python/googleCredentials/googleCredentials.json"
+credentialsPath = pathlib.Path(pathlib.Path.cwd().parents[3], "privateData", "python", "googleCredentials", "googleCredentials.json")
+pp(credentialsPath)
+# credentialsPath = str(pathlib.Path.cwd().parents[3]) + "/privateData/python/googleCredentials/googleCredentials.json"
 tokenPath = str(pathlib.Path.cwd().parents[3]) + "/privateData/python/googleCredentials/googleToken.pickle"
 googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
 credentialsObj = None
