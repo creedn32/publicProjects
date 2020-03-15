@@ -1,4 +1,5 @@
+#! /usr/bin/python3
 #! python3
-#! /usr/bin/env python3
+
 
 print("try")
