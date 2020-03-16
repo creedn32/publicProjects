@@ -1,17 +1,24 @@
 from pprint import pprint as pp
 from pathlib import Path
-import json, subprocess, sys
+import json, subprocess, sys, psutil
 
 
 pc = sys.argv[1]
-pathToCurrentFile = Path(__file__).resolve()
-currentFileName = pathToCurrentFile.stem
-pathToJSON = str(pathToCurrentFile).replace("publicProjects", "privateData").replace("pythonFiles\\" + pathToCurrentFile.name, currentFileName + "." + pc + ".json")
+thisPythonFilePath = Path(__file__).resolve()
+thisPythonFileName = thisPythonFilePath.stem
+jsonPath = str(thisPythonFilePath).replace("publicProjects", "privateData").replace("pythonFiles\\" + thisPythonFilePath.name, thisPythonFileName + "." + pc + ".json")
 
 
-with open(pathToJSON, "r") as filePathObj:
+with open(jsonPath, "r") as filePathObj:
     fileObj = json.load(filePathObj)
 
 for process in fileObj:
-    # pass
-    subprocess.call(process)
+    pass
+    # subprocess.Popen(process)
+
+
+for process in psutil.process_iter():
+    pass
+    # pp(process.name())
+    # pp(process.exe())
+    # pp(process.cmdline())
