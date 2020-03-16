@@ -16,6 +16,7 @@ with open(jsonPath, "r") as filePathObj:
 for process in fileObj["processesToStart"]:
     # pass
     subprocess.Popen(process)
+    
 
 
 for process in psutil.process_iter():
