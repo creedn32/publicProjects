@@ -4,12 +4,12 @@ from pprint import pprint as pp
 
 
 thisPythonFilePath = path(__file__).resolve()
-thisPythonFileStem = thisPythonFilePath.stem
+thisPythonFile = thisPythonFilePath.stem
 thisPythonFileContainingFolder = thisPythonFilePath.parents[0]
 
 listOfPythonFiles = list(thisPythonFileContainingFolder.glob("*"))
 batchFilesFolderPath = path(thisPythonFileContainingFolder.parents[0], "batchFiles")
-templateBatchFilePath = path(batchFilesFolderPath, thisPythonFileStem + ".bat")
+templateBatchFilePath = path(batchFilesFolderPath, thisPythonFile + ".bat")
 
 for pythonFile in listOfPythonFiles:
     
