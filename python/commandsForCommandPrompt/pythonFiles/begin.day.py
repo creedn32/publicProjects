@@ -13,10 +13,11 @@ with open(jsonPath, "r") as filePathObj:
     fileObj = json.load(filePathObj)
 
 
+
 for process in fileObj["processesToStart"]:
     # pass
     subprocess.Popen(process)
-    
+
 
 
 for process in psutil.process_iter():
