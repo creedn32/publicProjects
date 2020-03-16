@@ -2,6 +2,11 @@
 
 
 
+
+#see information of local commit (that hasn't been pushed yet)
+git diff origin/master..HEAD
+
+
 #unset user settings
 git config --global --unset user.name
 git config --global --unset user.email
