@@ -14,8 +14,8 @@ with open(jsonPath, "r") as filePathObj:
 
 
 for process in fileObj["processesToStart"]:
-    # pass
-    subprocess.Popen(process)
+    if process != "":
+        subprocess.Popen(process)
 
 
 
