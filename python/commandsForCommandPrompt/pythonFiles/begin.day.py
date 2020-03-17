@@ -1,12 +1,18 @@
-from pprint import pprint as pp
+
 from pathlib import Path
-import json, subprocess, sys, psutil
+import sys
 
-
-pc = sys.argv[1]
 thisPythonFilePath = Path(__file__).resolve()
+pathToPublicProjectsPython = thisPythonFilePath.parents[2]
+sys.path.append(str(pathToPublicProjectsPython))
+
+import json, subprocess, sys, psutil
+from pprint import pprint as pp
+
+
+currentMachine = sys.argv[1]
 thisPythonFileName = thisPythonFilePath.stem
-jsonPath = str(thisPythonFilePath).replace("publicProjects", "privateData").replace("pythonFiles\\" + thisPythonFilePath.name, thisPythonFileName + "." + pc + ".json")
+jsonPath = str(thisPythonFilePath).replace("publicProjects", "privateData").replace("pythonFiles\\" + thisPythonFilePath.name, thisPythonFileName + "." + currentMachine + ".json")
 
 
 with open(jsonPath, "r") as filePathObj:
@@ -15,12 +21,31 @@ with open(jsonPath, "r") as filePathObj:
 
 for process in fileObj["processesToStart"]:
     if process != "":
-        subprocess.Popen(process)
+        # subprocess.Popen(process)
+        pass
 
 
+pathToGoogleCredentials = Path(pathToPublicProjectsPython.parents[1], "privateData", "python", "googleCredentials")
 
-for process in psutil.process_iter():
-    pass
+
+for proc in psutil.process_iter ():
+    # print ('-' * 30)
+    # print (f'process ID: {proc.pid} ')
+    try:
+
+        # print (f'execution module: {proc.exe ()} ')
+        
+        if len(proc.cmdline()) > 1:
+            pp(proc.cmdline()[0])
+            pp(proc.cmdline()[1])
+        
+        # print (f'current directory: {proc.cwd ()} ')
+    except psutil.AccessDenied:
+        print ('(You do not have access to this process)')
+
+
+# for process in psutil.process_iter():
+    # pass
     # pp(process.name())
     # pp(process.exe())
     # pp(process.cmdline())
