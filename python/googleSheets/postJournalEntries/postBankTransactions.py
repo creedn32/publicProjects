@@ -1,12 +1,15 @@
-import sys, pathlib
+import sys
+from pathlib import Path
 from pprint import pprint as pp
 
-sys.path.append(str(pathlib.Path.cwd().parents[1]))
-# sys.path.append(str(pathlib.Path.cwd()/"publicProjects/python"))
-# pp(sys.path)
+thisPythonFilePath = Path(__file__).resolve()
+pathToPublicProjectsPython = thisPythonFilePath.parents[2]
+
+sys.path.append(str(pathToPublicProjectsPython))
 
 from myPyLib import myPostBankTransactions
 
-myPostBankTransactions.postTrans("Bank Transactions")
+
+myPostBankTransactions.postTrans("Bank Transactions", pathToPublicProjectsPython)
 
 

@@ -1,6 +1,6 @@
 
 
-def postTrans(sheetName):
+def postTrans(sheetName, pathToPublicProjectsPython):
 
 
     import sys, pathlib
@@ -14,7 +14,7 @@ def postTrans(sheetName):
 
 
     
-    pathToGoogleCredentials = pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"
+    pathToGoogleCredentials = pathToPublicProjectsPython.parents[1]/"privateData/python/googleCredentials"
     # pathToGoogleCredentials = pathlib.Path.cwd()/"privateData/python/googleCredentials"
     # pp(pathToGoogleCredentials)
 
@@ -187,5 +187,4 @@ def postTrans(sheetName):
                 with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
                     print("Click on 'Post' or 'Clear' to continue with this entry...")
                     listenerObj.join()
-
 
