@@ -1,11 +1,13 @@
-import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[1]))
+import sys
+from pathlib import Path
+from pprint import pprint as pp
+
+thisPythonFilePath = Path(__file__).resolve()
+pathToPublicProjectsPython = thisPythonFilePath.parents[2]
+
+sys.path.append(str(pathToPublicProjectsPython))
+
 from myPyLib import myPostBankTransactions
 
 
-# sys.path.append(str(pathlib.Path.cwd()/"publicProjects/python"))
-# pp(sys.path)
-
-from myPyLib import myPostBankTransactions
-
-myPostBankTransactions.postTrans("Bank Transactions - Recurring")
+myPostBankTransactions.postTrans("Bank Transactions - Recurring", pathToPublicProjectsPython)
