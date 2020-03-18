@@ -2,6 +2,13 @@
 
 
 
+#update git version
+git update-git-for-windows
+
+
+#see git version
+git --version
+
 
 #see information of local commit (that hasn't been pushed yet)
 git diff origin/master..HEAD
