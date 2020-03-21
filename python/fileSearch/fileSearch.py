@@ -20,7 +20,10 @@ folderArray = [pathToPublicProjectsPython]
 while folderArray:
     currentFolder = folderArray.pop(0)
     folderArray.extend(listOfSubFolders(currentFolder))
-    pp(currentFolder)
+    
+    for node in currentFolder.iterdir():
+        if node.is_file() and node.suffix == '.py':
+            pp(node.name)
 
 
 
