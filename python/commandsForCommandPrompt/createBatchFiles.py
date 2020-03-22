@@ -59,5 +59,6 @@ while folderArray:
     for node in currentFolder.iterdir():
         if node.is_file() and node.suffix == '.py':
             if node.stem != thisPythonFileStem:
+                pp(node)
                 newBatchFilePath = Path(batchFilesFolderPath, node.stem + ".bat")
                 shutil.copy(templateBatchFilePath, newBatchFilePath)
