@@ -19,15 +19,18 @@
 
 
 
+
+
 from pathlib import Path
 from pprint import pprint as pp
+import shutil, os
 
 
 thisPythonFilePath = Path(__file__).resolve()
+thisPythonFileStem = thisPythonFilePath.stem
 pathToPublicProjectsPython = thisPythonFilePath.parents[1]
-# pp(pathToPublicProjectsPython)
 batchFilesFolderPath = Path(thisPythonFilePath.parents[0], "batchFiles")
-# pp(batchFilesFolderPath)
+templateBatchFilePath = Path(batchFilesFolderPath, thisPythonFileStem + ".bat")
 
 
 def listOfSubFolders(folderPath):
@@ -42,11 +45,19 @@ def listOfSubFolders(folderPath):
 
 folderArray = [pathToPublicProjectsPython]
 
+
+for batchFile in os.listdir(batchFilesFolderPath):
+    if batchFile != thisPythonFileStem + ".bat":
+        shutil.move(Path(batchFilesFolderPath, batchFile), Path(batchFilesFolderPath.parents[0], "batchFilesTrashed", batchFile))
+        # pp(batchFile)
+
+
 while folderArray:
     currentFolder = folderArray.pop(0)
     folderArray.extend(listOfSubFolders(currentFolder))
     
     for node in currentFolder.iterdir():
         if node.is_file() and node.suffix == '.py':
-            pass
-            # pp(node)
+            if node.stem != thisPythonFileStem:
+                newBatchFilePath = Path(batchFilesFolderPath, node.stem + ".bat")
+                shutil.copy(templateBatchFilePath, newBatchFilePath)
