@@ -1,31 +1,30 @@
-
 from pathlib import Path
 import sys
 
 thisPythonFilePath = Path(__file__).resolve()
-pathToPublicProjectsPython = thisPythonFilePath.parents[2]
-sys.path.append(str(pathToPublicProjectsPython))
+pathToPublicProjectsPython = thisPythonFilePath.parents[1]
+# sys.path.append(str(pathToPublicProjectsPython))
 
 import json, subprocess, sys, psutil
 from pprint import pprint as pp
 
 
 currentMachine = sys.argv[1]
-thisPythonFileName = thisPythonFilePath.stem
-jsonPath = str(thisPythonFilePath).replace("publicProjects", "privateData").replace("pythonFiles\\" + thisPythonFilePath.name, thisPythonFileName + "." + currentMachine + ".json")
+thisPythonFileStem = thisPythonFilePath.stem
+jsonPath = str(thisPythonFilePath).replace('publicProjects', 'privateData').replace('.py', '.' + currentMachine + '.json') # + thisPythonFileStem + currentMachine + '.json')
 
 
-with open(jsonPath, "r") as filePathObj:
+with open(jsonPath, 'r') as filePathObj:
     fileObj = json.load(filePathObj)
 
 
-for process in fileObj["processesToStart"]:
-    if process != "":
+for process in fileObj['processesToStart']:
+    if process != '':
         # subprocess.Popen(process)
         pass
 
 
-pathToGoogleCredentials = Path(pathToPublicProjectsPython.parents[1], "privateData", "python", "googleCredentials")
+# pathToGoogleCredentials = Path(pathToPublicProjectsPython.parents[1], 'privateData', 'python', 'googleCredentials')
 
 
 for proc in psutil.process_iter ():
