@@ -23,7 +23,7 @@ while folderArray:
     
     for node in currentFolder.iterdir():
         if node.is_file() and node.suffix == '.py':
-            pp(node.name)
+            pp(node)
 
 
 
