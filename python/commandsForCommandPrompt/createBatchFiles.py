@@ -28,6 +28,8 @@ for batchFile in os.listdir(batchFilesFolderPath):
 
 folderArray = [pathToPublicProjectsPython]
 
+# %~dp0/..
+
 
 while folderArray:
     currentFolder = folderArray.pop(0)
@@ -36,7 +38,13 @@ while folderArray:
     for node in currentFolder.iterdir():
         if node.is_file() and node.suffix == '.py':
             if node.stem != thisPythonFileStem:
+                
+                additionalPath = ''
+                for part in node.parts[7:]:
+                    additionalPath = additionalPath + '/' + part
+
                 newBatchFilePath = Path(batchFilesFolderPath, node.stem + '.bat')
                 newBatchFileObj = open(newBatchFilePath, 'w+')
-                newBatchFileObj.write('@echo off \npython ' + str(node) + ' %*')
+
+                newBatchFileObj.write('@echo off \npython %~dp0/../..' + additionalPath + ' %*')
                 newBatchFileObj.close()
