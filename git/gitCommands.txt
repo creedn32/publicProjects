@@ -1,6 +1,10 @@
 #git commands
 
 
+#see changes between two commits
+git diff 7c32d14925d5111c28010e05e9693df5174f56d8 7ef9d514f5efaafeeabe163d6da5e58f1520f2bd > my.patch
+
+
 
 #update git version
 git update-git-for-windows
