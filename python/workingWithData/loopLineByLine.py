@@ -3,7 +3,7 @@ from pprint import pprint as pp
 
 thisPythonFilePath = Path(__file__).resolve()
 pathToRepos = thisPythonFilePath.parents[3]
-pathToDataFile = Path(pathToRepos, 'privateData', 'differences.patch')
+pathToDataFile = Path(pathToRepos, 'privateData', 'python', 'workingWithData', 'differences.patch')
 
 
 with open(pathToDataFile, 'r') as dataFile:
