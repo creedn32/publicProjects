@@ -1,6 +1,10 @@
 #git commands
 
 
+#interactive rebasing
+git rebase -i 7c32d14925d5111c28010e05e9693df5174f56d8
+
+
 #see changes between two commits
 git diff 7c32d14925d5111c28010e05e9693df5174f56d8 af8c667e9fbac9c53b9a6cf987cfaebb315712b0 > differences.patch
 
