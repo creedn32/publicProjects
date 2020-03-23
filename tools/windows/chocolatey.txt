@@ -1,0 +1,6 @@
+#list of installed packages
+choco list --local-only
+
+
+#uninstall package
+choco uninstall vscode
