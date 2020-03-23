@@ -9,6 +9,7 @@ import json, subprocess, sys, psutil
 from pprint import pprint as pp
 
 
+# currentMachine = __import__(sys.argv[1] + ".py")
 currentMachine = sys.argv[1]
 thisPythonFileStem = thisPythonFilePath.stem
 jsonPath = str(thisPythonFilePath).replace('publicProjects', 'privateData').replace('.py', '.' + currentMachine + '.json') # + thisPythonFileStem + currentMachine + '.json')
