@@ -1,6 +1,39 @@
 #git commands
 
 
+
+
+
+
+
+git filter-branch --tree-filter "rm -rf node_modules" --prune-empty HEAD
+git for-each-ref --format="%(refname)" refs/original/ | xargs -n 1 git update-ref -d
+
+
+git commit -m 'Removing node_modules from git history'
+git gc
+git push origin master --force
+
+
+
+
+$ git filter-branch --force --index-filter \
+  "git rm --cached --ignore-unmatch PATH-TO-YOUR-FILE-WITH-SENSITIVE-DATA" \
+  --prune-empty --tag-name-filter cat -- --all
+
+
+
+
+
+
+#see stashes
+git stash list
+
+
+#see HEAD
+git rev-parse HEAD
+
+
 #interactive rebasing
 git rebase -i 7c32d14925d5111c28010e05e9693df5174f56d8
 
