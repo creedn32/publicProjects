@@ -16,7 +16,7 @@ for nodeInRepos in pathToRepos.glob('*'):
             # subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' status')
             subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' add .')
             subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' commit -m \"latest updates, using Python to automate git\"')
-            # subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' push')
+            subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' push')
 
 
 # subprocess.run("git add .")
