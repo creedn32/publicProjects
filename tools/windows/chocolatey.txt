@@ -6,5 +6,11 @@ choco uninstall all
 choco list --local-only
 
 
+
 #uninstall package
 choco uninstall vscode
+
+
+#errors
+ - javaruntime (exited 1) - javaruntime not uninstalled. An error occurred during uninstall:
+ Could not find a part of the path 'C:\ProgramData\chocolatey\lib\javaruntime\javaruntime.nupkg'.
