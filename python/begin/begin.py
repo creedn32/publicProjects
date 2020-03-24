@@ -44,7 +44,7 @@ def arrayOfProcesses():
 def processIsRunning(processToStart):
     for runningProcess in arrayOfProcesses():
         if runningProcess[3:] == processToStart or runningProcess == processToStart:
-            pp('The process ' + processToStart + ' is already running.')
+            pp('The process ' + processToStart + ' is already running and will not be started.')
             return True
 
     pp('The process ' + processToStart + ' is not already running and will now be started.')
