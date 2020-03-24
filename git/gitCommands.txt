@@ -1,8 +1,10 @@
+#when "Your branch and 'origin/master' have diverged, throw away all local changes and non-pushed commits
+git fetch origin/master
+git reset --hard origin/master
 
 
 #see date of commit
 git show -s --format=%ci b6e4793f2eeb5de756ec2c7ddf1ef15efd27cc10
-
 
 
 #see stashes
