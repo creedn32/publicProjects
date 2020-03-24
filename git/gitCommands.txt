@@ -8,7 +8,6 @@ git stash list
 
 #see HEAD
 git rev-parse HEAD
->>>>>>> origin/master
 
 
 #interactive rebasing
