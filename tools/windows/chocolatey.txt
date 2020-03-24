@@ -1,3 +1,5 @@
+#uninstall all packages
+choco uninstall all
 
 
 #list of installed packages
