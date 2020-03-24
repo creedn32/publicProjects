@@ -1,4 +1,4 @@
-import subprocess
+import subprocess, sys
 from pathlib import Path
 from pprint import pprint as pp
 
@@ -13,12 +13,12 @@ for nodeInRepos in pathToRepos.glob('*'):
         if nodeInEachRepo.name == '.git':
             pp(str(nodeInEachRepo.parents[0]))
             
-            if 1 == 1:
+            if sys.argv[1] == 'acp':
                 subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' add .')
                 subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' commit -m \"latest updates, using Python to automate git\"')
                 subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' push')
                 # subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' status')
-            else:
+            elif sys.argv[1] == 'pull':
                 subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' pull')
 
 
