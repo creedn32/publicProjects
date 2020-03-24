@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../begin/begin.py %*
+python %~dp0/../../runProcesses/begin/begin.py %*
