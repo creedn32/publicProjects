@@ -36,11 +36,7 @@ git rebase -i 7c32d14925d5111c28010e05e9693df5174f56d8
 
 
 #see changes between two commits
-<<<<<<< HEAD
-git diff 7c32d14925d5111c28010e05e9693df5174f56d8 af8c667e9fbac9c53b9a6cf987cfaebb315712b0 > differences.patch
-=======
 git diff 7c32d14925d5111c28010e05e9693df5174f56d8 62ab2d94e58b860dcfb140c3580cb41d71e88a88 > gitDifferences.patch
->>>>>>> origin/master
 
 
 
