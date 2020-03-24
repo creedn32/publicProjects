@@ -1,10 +1,13 @@
 import subprocess
 from pathlib import Path
+from pprint import pprint as pp
 
 
 thisPythonFilePath = Path(__file__).resolve()
-pathToPublicProjectsPython = thisPythonFilePath.parents[1]
-pathToRepos = pathToPublicProjectsPython.parents[1]
+pathToRepos = thisPythonFilePath.parents[2]
+pp(pathToRepos)
+
+
 
 subprocess.run("git add .")
 subprocess.run("git commit -m \"latest updates, using Python to automate git\"")
