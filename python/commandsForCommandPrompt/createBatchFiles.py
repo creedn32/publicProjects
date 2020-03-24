@@ -28,7 +28,6 @@ for batchFile in os.listdir(batchFilesFolderPath):
 
 folderArray = [pathToPublicProjectsPython]
 
-# %~dp0/..
 
 
 while folderArray:
