@@ -36,9 +36,7 @@ while folderArray:
     
     for node in currentFolder.iterdir():
 
-        pp(node.stem[:1])
-
-        if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and 1 == 1:
+        if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and node.stem[:1] != '_':
            
             additionalPath = ''
             for part in node.parts[7:]:
