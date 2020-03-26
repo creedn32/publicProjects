@@ -68,9 +68,15 @@ currentMachine = runPath(Path(pathToRepos, 'privateData', 'python', 'begin', sys
 
 
 for processData in currentMachine.get('processesToStart'):
+    
     processToStart = processData[0]
+
     if not processIsRunning(processToStart):
-        pp('The process ' + processToStart + ' is not already running and will now be started.')
+        pp('The process ' + processToStart + ' is not running and will be started.')
+        
+        if len(processData) > 1:
+            processToStart = processData[1] + ' ' + processData[0]
+
         subprocess.Popen(processToStart)
     else:
         pp('The process ' + processToStart + ' is already running and will not be started.')
