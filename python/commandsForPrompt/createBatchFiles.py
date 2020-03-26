@@ -35,15 +35,17 @@ while folderArray:
     folderArray.extend(listOfSubFolders(currentFolder))
     
     for node in currentFolder.iterdir():
-        if node.is_file() and node.suffix == '.py':
-            if node.stem != thisPythonFileStem:
-                
-                additionalPath = ''
-                for part in node.parts[7:]:
-                    additionalPath = additionalPath + '/' + part
 
-                newBatchFilePath = Path(batchFilesFolderPath, node.stem + '.bat')
-                newBatchFileObj = open(newBatchFilePath, 'w+')
+        pp(node.stem[:1])
 
-                newBatchFileObj.write('@echo off \npython %~dp0/../..' + additionalPath + ' %*')
-                newBatchFileObj.close()
+        if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and 1 == 1:
+           
+            additionalPath = ''
+            for part in node.parts[7:]:
+                additionalPath = additionalPath + '/' + part
+
+            newBatchFilePath = Path(batchFilesFolderPath, node.stem + '.bat')
+            newBatchFileObj = open(newBatchFilePath, 'w+')
+
+            newBatchFileObj.write('@echo off \npython %~dp0/../..' + additionalPath + ' %*')
+            newBatchFileObj.close()
