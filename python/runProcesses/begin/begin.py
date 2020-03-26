@@ -36,14 +36,21 @@ def arrayOfProcesses():
 
     fileObj.close()
 
+
+    # pp(processArray)
+
+
     return processArray
 
 
 
 
 def processIsRunning(processToStart):
+
+
     for runningProcess in arrayOfProcesses():
-        if runningProcess[3:] == processToStart or runningProcess == processToStart:
+
+        if runningProcess[3:] == processToStart or runningProcess == processToStart or runningProcess.replace('explorer ', '') == runningProcess:
             pp('The process ' + processToStart + ' is already running and will not be started.')
             return True
 
@@ -55,7 +62,7 @@ def processIsRunning(processToStart):
 
 
 thisPythonFilePath = Path(__file__).resolve()
-pathToPublicProjectsPython = thisPythonFilePath.parents[1]
+pathToPublicProjectsPython = thisPythonFilePath.parents[2]
 pathToRepos = pathToPublicProjectsPython.parents[1]
 
 
