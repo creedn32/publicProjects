@@ -1,6 +1,14 @@
 from pathlib import Path
+pathToThisPythonFile = Path(__file__).resolve()
 import sys
+sys.path.append(pathToThisPythonFile.parents[0])
+
+import json, subprocess, psutil
 from runpy import run_path as runPath
+from pprint import pprint as pp
+
+
+
 
 
 
@@ -37,9 +45,6 @@ def arrayOfProcesses():
     fileObj.close()
 
 
-    # pp(processArray)
-
-
     return processArray
 
 
@@ -47,44 +52,25 @@ def arrayOfProcesses():
 
 def processIsRunning(processToStart):
 
-
     for runningProcess in arrayOfProcesses():
 
-        if runningProcess[3:] == processToStart or runningProcess == processToStart or runningProcess.replace('explorer ', '') == runningProcess:
-            pp('The process ' + processToStart + ' is already running and will not be started.')
+        if runningProcess[3:] == processToStart or runningProcess == processToStart or runningProcess[3:] == processToStart.replace('explorer ', ''):
+            
             return True
 
-    pp('The process ' + processToStart + ' is not already running and will now be started.')
     return False
 
 
 
 
-
-thisPythonFilePath = Path(__file__).resolve()
-pathToPublicProjectsPython = thisPythonFilePath.parents[2]
-pathToRepos = pathToPublicProjectsPython.parents[1]
-
-
-import json, subprocess, sys, psutil
-from pprint import pprint as pp
-
-
-pathToPythonDataFile = Path(pathToRepos, 'privateData', 'python', 'begin', sys.argv[1] + '.py')
-currentMachine = runPath(pathToPythonDataFile)
-thisPythonFileStem = thisPythonFilePath.stem
-
+pathToRepos = pathToThisPythonFile.parents[4]
+currentMachine = runPath(Path(pathToRepos, 'privateData', 'python', 'begin', sys.argv[1] + '.py'))
 
 
 for processToStart in currentMachine.get('processesToStart'):
     if not processIsRunning(processToStart):
+        pp('The process ' + processToStart + ' is not already running and will now be started.')
         subprocess.Popen(processToStart)
-
-
-
-    
-
-
-
-
+    else:
+        pp('The process ' + processToStart + ' is already running and will not be started.')
 
