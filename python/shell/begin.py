@@ -1,7 +1,7 @@
 from pathlib import Path
 pathToThisPythonFile = Path(__file__).resolve()
 import sys
-sys.path.append(pathToThisPythonFile.parents[0])
+sys.path.append(Path(pathToThisPythonFile.parents[1]))
 
 import json, subprocess, psutil
 from runpy import run_path as runPath
@@ -37,7 +37,7 @@ def arrayOfProcesses():
             processArray.append('You do not have access to this process')
   
 
-    fileObj = open(Path(pathToRepos, 'privateData', 'python', 'begin', 'runningProcesses.txt'), 'w')
+    fileObj = open(Path(pathToRepos, 'privateData', 'python', 'shell', 'begin', 'runningProcesses.txt'), 'w')
 
     for line in processArray:
         fileObj.write(line + '\n')
@@ -63,8 +63,8 @@ def processIsRunning(processToStart):
 
 
 
-pathToRepos = pathToThisPythonFile.parents[4]
-currentMachine = runPath(Path(pathToRepos, 'privateData', 'python', 'begin', sys.argv[1] + '.py'))
+pathToRepos = pathToThisPythonFile.parents[3]
+currentMachine = runPath(Path(pathToRepos, 'privateData', 'python', 'shell', 'begin', sys.argv[1] + '.py'))
 
 
 for processData in currentMachine.get('processesToStart'):

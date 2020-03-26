@@ -4,7 +4,7 @@ from pprint import pprint as pp
 
 
 thisPythonFilePath = Path(__file__).resolve()
-pathToRepos = thisPythonFilePath.parents[4]
+pathToRepos = thisPythonFilePath.parents[3]
 # pp(pathToRepos)
 
 for nodeInRepos in pathToRepos.glob('*'):
