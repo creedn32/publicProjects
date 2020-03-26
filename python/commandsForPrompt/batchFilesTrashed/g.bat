@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../runProcesses/shell/g.py %*
+python %~dp0/../../shell/g.py %*
