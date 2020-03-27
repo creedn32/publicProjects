@@ -46,6 +46,10 @@ git config --global --unset credential.helper
 git config user.name
 
 
+#set user.name (does not need to match GitHub username)
+git config --global user.name "Creed Naylor"
+
+
 #set user.email
 git config --global user.email "16467643+creednaylor@users.noreply.github.com"
 
