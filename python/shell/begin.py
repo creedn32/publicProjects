@@ -51,17 +51,12 @@ def arrayOfProcesses():
 
 
 def processIsRunning(processToStart):
-
-    for runningProcess in arrayOfProcesses():
-
-        if runningProcess[3:] == processToStart or runningProcess == processToStart or runningProcess[3:] == processToStart.replace('explorer ', ''):
-            
-            return True
-
-    return False
-
-
-
+    def isValid(process):
+        return process[3:] == processToStart \
+         or process == processToStart  \
+         or process[3:] == processToStart.replace('explorer ', '')
+    
+    return any(isValid(process) for process in arrayOfProcesses())
 
 pathToRepos = pathToThisPythonFile.parents[3]
 currentMachine = runPath(Path(pathToRepos, 'privateData', 'python', 'shell', 'begin', sys.argv[1] + '.py'))
