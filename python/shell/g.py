@@ -18,7 +18,8 @@ for nodeInRepos in pathToRepos.glob('*'):
                 subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' commit -m \"latest updates, using Python to automate git\"')
                 subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' push')
                 # subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' status')
-            elif sys.argv[1] == 'pull':
-                subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' pull')
+            else:
+                subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' ' + sys.argv[1])
+ 
 
 
