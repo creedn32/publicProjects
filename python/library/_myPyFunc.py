@@ -688,6 +688,18 @@ def addTotal(listToProcess, colToTotal, totalsList):
 
 
 
+def getShortenedPathLib(pathToShorten, lastDirectoryToInclude):
+
+    from pathlib import Path
+
+    shortenedPath = pathToShorten.parts[:pathToShorten.parts.index('repos') + 1]
+  
+    return Path(*shortenedPath)
+
+
+
+
+
 # createRow(listToProcess[rowIndex], colToTotal, listToProcess[rowIndex - 1][colToTotal])
 
 # def createRow(row, colToTotal, colToTotalName):

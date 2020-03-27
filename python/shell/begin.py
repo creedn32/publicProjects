@@ -3,7 +3,7 @@ pathToThisPythonFile = Path(__file__).resolve()
 import sys
 sys.path.append(Path(pathToThisPythonFile.parents[1]))
 
-import json, subprocess, psutil
+import subprocess, psutil
 from runpy import run_path as runPath
 from pprint import pprint as pp
 
