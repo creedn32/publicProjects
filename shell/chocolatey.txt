@@ -19,7 +19,6 @@ choco uninstall all
 choco list --local-only
 
 
-
 #uninstall package
 choco uninstall vscode
 
@@ -30,16 +29,39 @@ choco uninstall vscode
 
 
 
- #packages I have installed
 
+
+=======================================================================================
+#home computer
+
+
+#packages
+javaruntime
 vscode
 cmder
 python
-driver booster
+driverbooster
 zoom
+autohotkey
+adobereader
+synologydrive, a.k.a. synology drive client
 
+
+#list
+avastfreeantivirus
+revo-uninstaller
+onenote
+googlechrome
 
 
 #packages to consider
+everything
+totalcommander
+duplicatecleaner
 
-total commander
+
+#others
+adobedigitaleditions
+adobeair
+adobe-creative-cloud (this one is failing tests)
+flashplayerppapi
