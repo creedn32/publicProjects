@@ -45,11 +45,11 @@ zoom
 autohotkey
 adobereader
 synologydrive, a.k.a. synology drive client
+avastfreeantivirus
+revo-uninstaller
 
 
 #list
-avastfreeantivirus
-revo-uninstaller
 onenote
 googlechrome
 
