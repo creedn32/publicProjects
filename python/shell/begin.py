@@ -16,21 +16,21 @@ def arrayOfProcesses():
 
     processArray = []
 
-    for proc in psutil.process_iter():
+    for runningProcess in psutil.process_iter():
             
         processArray.append('-' * 30)
-        processArray.append(f'{proc.pid} (process ID)')
+        processArray.append(f'{runningProcess.pid} (process ID)')
 
         try:
 
-            processArray.append(f'{proc.exe()} (execution module)')
+            processArray.append(f'{runningProcess.exe()} (execution module)')
             
-            for i in range(0, len(proc.cmdline())):
-                processArray.append(str(i) + ': ' + proc.cmdline()[i])
+            for i in range(0, len(runningProcess.cmdline())):
+                processArray.append(str(i) + ': ' + runningProcess.cmdline()[i])
 
-            processArray.append(f'{proc.cwd()} (current directory)')
-            processArray.append(f'{proc.name()} (name)')
-            processArray.append(f'{proc.exe()} (exe)')
+            processArray.append(f'{runningProcess.cwd()} (current directory)')
+            processArray.append(f'{runningProcess.name()} (name)')
+            processArray.append(f'{runningProcess.exe()} (exe)')
 
         except psutil.AccessDenied:
             pass

@@ -1,3 +1,16 @@
+#upgrade chocolatey
+choco upgrade chocolatey
+
+
+#upgrade all packages
+choco upgrade all
+
+
+#check if any packages are out of date
+choco upgrade all --noop
+
+
+
 #uninstall all packages
 choco uninstall all
 
