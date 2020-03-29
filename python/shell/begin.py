@@ -59,7 +59,7 @@ def processIsRunning(processToStart):
     return any(isValid(process) for process in arrayOfProcesses())
 
 pathToRepos = pathToThisPythonFile.parents[3]
-currentMachine = runPath(Path(pathToRepos, 'privateData', 'python', 'shell', 'begin', sys.argv[1] + '.py'))
+currentMachine = runPath(str(Path(pathToRepos, 'privateData', 'python', 'shell', 'begin', sys.argv[1] + '.py')))
 
 
 for processData in currentMachine.get('processesToStart'):

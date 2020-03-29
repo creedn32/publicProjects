@@ -1,5 +1,18 @@
+#windows
+python -m pip list
 
 
+#upgrade pip
+python -m pip install --upgrade pip
+
+
+#install package
+
+
+
+===============================================================================
+
+#linux
 
 #list of installed packages
 pip3 freeze
