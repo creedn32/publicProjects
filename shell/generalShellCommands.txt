@@ -1,0 +1,3 @@
+#see where python is installed
+which python
+
