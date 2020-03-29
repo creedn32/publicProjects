@@ -14,6 +14,8 @@ pyautogui.PAUSE = .0000000000001
 
 idOfSpreadsheetToPullDataFrom = "1Jdl2wIHinX6A8O6H18l34V-qzorLPXxWMGeRsQ8FYy4"
 googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
+
+
 # dataOfSpreadsheetToPullDataFrom = googleSheetsAPIObj.get(spreadsheetId=idOfSpreadsheetToPullDataFrom, includeGridData=True).execute()
 
 # for dict in dataOfSpreadsheetToPullDataFrom["sheets"]:
