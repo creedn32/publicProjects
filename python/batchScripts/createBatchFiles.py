@@ -6,7 +6,7 @@ import shutil, os
 thisPythonFilePath = Path(__file__).resolve()
 thisPythonFileStem = thisPythonFilePath.stem
 pathToPublicProjectsPython = thisPythonFilePath.parents[1]
-batchFilesFolderPath = Path(thisPythonFilePath.parents[0], 'batchFiles')
+batchFilesFolderPath = Path(thisPythonFilePath.parents[0], 'scripts')
 templateBatchFilePath = Path(batchFilesFolderPath, thisPythonFileStem + '.bat')
 
 
@@ -23,7 +23,7 @@ def listOfSubFolders(folderPath):
 
 for batchFile in os.listdir(batchFilesFolderPath):
     if batchFile != thisPythonFileStem + '.bat':
-        shutil.move(Path(batchFilesFolderPath, batchFile), Path(batchFilesFolderPath.parents[0], "batchFilesTrashed", batchFile))
+        shutil.move(Path(batchFilesFolderPath, batchFile), Path(batchFilesFolderPath.parents[0], "scriptsTrashed", batchFile))
 
 
 folderArray = [pathToPublicProjectsPython]
