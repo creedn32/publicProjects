@@ -1,4 +1,4 @@
-def getGoogleSheetsAPIObj():
+def getGoogleSheetsAPIObj(partialPathArray):
 
     from pathlib import Path
     pathToThisPythonFile = Path(__file__).resolve()
@@ -7,10 +7,26 @@ def getGoogleSheetsAPIObj():
     import _myPyFunc
     
     import pickle, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
+    from pprint import pprint as pp
 
 
-    pathToJSONForCredentialsRetrieval = Path(pathToThisPythonFile.parents[4], 'privateData', 'python', 'googleCredentials', 'jsonForCredentialsRetrieval.json')
-    pathToPickleFileWithCredentials = Path(pathToThisPythonFile.parents[4], 'privateData', 'python', 'googleCredentials', 'pickleFileWithCredentials.pickle')
+    pathToRepos = _myPyFunc.getParentalDirectory(pathToThisPythonFile, 'repos')
+
+    pathToJSONForCredentialsRetrieval = pathToRepos
+
+    for pathPart in partialPathArray:
+        pathToJSONForCredentialsRetrieval = Path(pathToJSONForCredentialsRetrieval, pathPart)
+    
+    pathToJSONForCredentialsRetrieval = Path(pathToJSONForCredentialsRetrieval, 'jsonForCredentialsRetrieval.json')
+ 
+ 
+    pathToPickleFileWithCredentials = pathToRepos
+
+    for pathPart in partialPathArray:
+        pathToPickleFileWithCredentials = Path(pathToPickleFileWithCredentials, pathPart)
+    
+    pathToPickleFileWithCredentials = Path(pathToPickleFileWithCredentials, 'pickleFileWithCredentials.pickle')
+
 
     googleSheetsAPIScopes = ["https://www.googleapis.com/auth/spreadsheets"]
     credentialsObj = None

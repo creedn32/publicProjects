@@ -688,6 +688,10 @@ def addTotal(listToProcess, colToTotal, totalsList):
 
 
 
+
+
+
+
 def getShortenedPathLib(pathToShorten, lastDirectoryToInclude):
 
     from pathlib import Path
@@ -695,6 +699,25 @@ def getShortenedPathLib(pathToShorten, lastDirectoryToInclude):
     shortenedPath = pathToShorten.parts[:pathToShorten.parts.index('repos') + 1]
   
     return Path(*shortenedPath)
+
+
+
+
+
+def getParentalDirectory(pathToClimb, lastDirectory):
+
+    from pathlib import Path
+    
+    for x in range(0, len(pathToClimb.parts) - 1):
+
+        # print(pathToClimb.parents[x])
+
+        if pathToClimb.parents[x].name == lastDirectory:
+            return pathToClimb.parents[x]
+
+    return pathToClimb
+
+
 
 
 
