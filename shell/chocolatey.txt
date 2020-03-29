@@ -23,4 +23,10 @@ vscode
 cmder
 python
 driver booster
+zoom
 
+
+
+#packages to consider
+
+total commander
