@@ -87,8 +87,10 @@ adobereader
 everything
 revo-uninstaller
 autohotkey
+vscode
 
 
 #list
 sharpkeys
 googlechrome
+firefox
