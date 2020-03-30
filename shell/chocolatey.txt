@@ -48,18 +48,16 @@ synologydrive, a.k.a. synology drive client
 avastfreeantivirus
 revo-uninstaller
 googlechrome
+everything
 
-
-
-#list
-onenote
 
 
 
 #packages to consider
-everything
 totalcommander
 duplicatecleaner
+
+
 
 
 #others
@@ -67,3 +65,9 @@ adobedigitaleditions
 adobeair
 adobe-creative-cloud (this one is failing tests)
 flashplayerppapi
+
+
+
+
+#part of windows
+onenote
