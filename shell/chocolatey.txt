@@ -53,7 +53,7 @@ everything
 
 
 
-#packages to consider
+#consider
 totalcommander
 duplicatecleaner
 
