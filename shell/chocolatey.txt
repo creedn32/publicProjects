@@ -59,7 +59,6 @@ duplicatecleaner
 
 
 
-
 #others
 adobedigitaleditions
 adobeair
@@ -68,6 +67,6 @@ flashplayerppapi
 
 
 
-
-#part of windows
-onenote
+#not for chocolatey
+onenote, part of windows
+megasync, checksum doesn't work
