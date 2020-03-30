@@ -70,3 +70,21 @@ flashplayerppapi
 #not for chocolatey
 onenote, part of windows
 megasync, checksum doesn't work
+
+
+
+
+
+
+
+
+=======================================================================================
+#work computer
+
+
+#packages
+adobereader
+
+
+#list
+everything
