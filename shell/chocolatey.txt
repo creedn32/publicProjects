@@ -47,11 +47,13 @@ adobereader
 synologydrive, a.k.a. synology drive client
 avastfreeantivirus
 revo-uninstaller
+googlechrome
+
 
 
 #list
 onenote
-googlechrome
+
 
 
 #packages to consider
