@@ -91,6 +91,9 @@ vscode
 
 
 #list
-sharpkeys
 googlechrome
 firefox
+
+
+#others
+sharpkeys
