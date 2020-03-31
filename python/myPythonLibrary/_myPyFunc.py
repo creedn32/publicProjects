@@ -719,6 +719,13 @@ def getParentalDirectory(pathToClimb, lastDirectory):
 
 
 
+def replacePartOfPath(pathToConvert, partToBeReplaced, partToReplace):
+
+    from pathlib import Path
+    
+    return Path(str(pathToConvert).replace(partToBeReplaced, partToReplace))
+
+
 
 
 

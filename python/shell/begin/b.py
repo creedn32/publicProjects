@@ -1,7 +1,8 @@
 from pathlib import Path
 pathToThisPythonFile = Path(__file__).resolve()
 import sys
-sys.path.append(Path(pathToThisPythonFile.parents[1]))
+sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
 
 import subprocess, psutil
 from runpy import run_path as runPath
@@ -58,8 +59,12 @@ def processIsRunning(processToStart):
     
     return any(isValid(process) for process in arrayOfProcesses())
 
-pathToRepos = pathToThisPythonFile.parents[3]
-currentMachine = runPath(str(Path(pathToRepos, 'privateData', 'python', 'shell', 'begin', sys.argv[1] + '.py')))
+
+
+pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
+pathToRepos = _myPyFunc.getParentalDirectory(pathToThisPythonFile, 'repos')
+
+currentMachine = runPath(str(_myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData')) + '\\' + sys.argv[1] + '.py')
 
 
 for processData in currentMachine.get('processesToStart'):
