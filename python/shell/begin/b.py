@@ -13,7 +13,7 @@ from pprint import pprint as pp
 
 
 
-def arrayOfProcesses():
+def arrayOfProcesses(pathToSaveProcesses):
 
     processArray = []
 
@@ -38,7 +38,7 @@ def arrayOfProcesses():
             processArray.append('You do not have access to this process')
   
 
-    fileObj = open(Path(pathToRepos, 'privateData', 'python', 'shell', 'begin', 'runningProcesses.txt'), 'w')
+    fileObj = open(Path(pathToSaveProcesses, 'runningProcesses.txt'), 'w')
 
     for line in processArray:
         fileObj.write(line + '\n')
@@ -51,27 +51,26 @@ def arrayOfProcesses():
 
 
 
-def processIsRunning(processToStart):
+def processIsRunning(processToStart, pathToSaveProcesses):
     def isValid(process):
         return process[3:] == processToStart \
          or process == processToStart  \
          or process[3:] == processToStart.replace('explorer ', '')
     
-    return any(isValid(process) for process in arrayOfProcesses())
+    return any(isValid(process) for process in arrayOfProcesses(pathToSaveProcesses))
 
 
 
 pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
-pathToRepos = _myPyFunc.getParentalDirectory(pathToThisPythonFile, 'repos')
-
-currentMachine = runPath(str(_myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData')) + '\\' + sys.argv[1] + '.py')
+pathToThisPythonFileDirectoryPrivate = _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData')
+currentMachine = runPath(str(pathToThisPythonFileDirectoryPrivate) + '\\' + sys.argv[1] + '.py')
 
 
 for processData in currentMachine.get('processesToStart'):
     
     processToStart = processData[0]
 
-    if not processIsRunning(processToStart):
+    if not processIsRunning(processToStart, pathToThisPythonFileDirectoryPrivate):
         pp('The process ' + processToStart + ' is not running and will be started.')
         
         if len(processData) > 1:
