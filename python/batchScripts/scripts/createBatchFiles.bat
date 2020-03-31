@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../commandsForPrompt/createBatchFiles.py %*
+python %~dp0/../../batchScripts/createBatchFiles.py %*
