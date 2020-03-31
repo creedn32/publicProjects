@@ -3,7 +3,7 @@ def getGoogleSheetsAPIObj(partialPathArray):
     from pathlib import Path
     pathToThisPythonFile = Path(__file__).resolve()
     import sys
-    sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'library')))
+    sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
     import _myPyFunc
     
     import pickle, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
