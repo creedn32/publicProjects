@@ -90,10 +90,27 @@ autohotkey
 vscode
 
 
+
 #list
+microsoft office
+--try removing from Revo, Programs and Features, and Apps & Features
+
+
+
+synologydrive, a.k.a. synology drive client
 googlechrome
 firefox
+maybe box
+
 
 
 #others
 sharpkeys
+
+
+
+
+
+#not for chocolatey
+onenote, part of windows
+megasync, checksum doesn't work

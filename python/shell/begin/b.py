@@ -1,7 +1,8 @@
 from pathlib import Path
 pathToThisPythonFile = Path(__file__).resolve()
 import sys
-sys.path.append(Path(pathToThisPythonFile.parents[1]))
+sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
 
 import subprocess, psutil
 from runpy import run_path as runPath
@@ -12,7 +13,7 @@ from pprint import pprint as pp
 
 
 
-def arrayOfProcesses():
+def arrayOfProcesses(pathToSaveProcesses):
 
     processArray = []
 
@@ -37,7 +38,7 @@ def arrayOfProcesses():
             processArray.append('You do not have access to this process')
   
 
-    fileObj = open(Path(pathToRepos, 'privateData', 'python', 'shell', 'begin', 'runningProcesses.txt'), 'w')
+    fileObj = open(Path(pathToSaveProcesses, 'runningProcesses.txt'), 'w')
 
     for line in processArray:
         fileObj.write(line + '\n')
@@ -50,23 +51,26 @@ def arrayOfProcesses():
 
 
 
-def processIsRunning(processToStart):
+def processIsRunning(processToStart, pathToSaveProcesses):
     def isValid(process):
         return process[3:] == processToStart \
          or process == processToStart  \
          or process[3:] == processToStart.replace('explorer ', '')
     
-    return any(isValid(process) for process in arrayOfProcesses())
+    return any(isValid(process) for process in arrayOfProcesses(pathToSaveProcesses))
 
-pathToRepos = pathToThisPythonFile.parents[3]
-currentMachine = runPath(str(Path(pathToRepos, 'privateData', 'python', 'shell', 'begin', sys.argv[1] + '.py')))
+
+
+pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
+pathToThisPythonFileDirectoryPrivate = _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData')
+currentMachine = runPath(str(pathToThisPythonFileDirectoryPrivate) + '\\' + sys.argv[1] + '.py')
 
 
 for processData in currentMachine.get('processesToStart'):
     
     processToStart = processData[0]
 
-    if not processIsRunning(processToStart):
+    if not processIsRunning(processToStart, pathToThisPythonFileDirectoryPrivate):
         pp('The process ' + processToStart + ' is not running and will be started.')
         
         if len(processData) > 1:
