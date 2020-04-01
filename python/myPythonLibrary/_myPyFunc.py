@@ -706,7 +706,7 @@ def getShortenedPathLib(pathToShorten, lastDirectoryToInclude):
 
 def getParentalDirectory(pathToClimb, lastDirectory):
 
-    from pathlib import Path
+    # from pathlib import Path
     
     for x in range(0, len(pathToClimb.parts) - 1):
 
