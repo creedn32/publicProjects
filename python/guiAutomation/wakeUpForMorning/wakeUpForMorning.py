@@ -8,3 +8,9 @@ webbrowser.open('https://www.youtube.com/embed/Xf5QTs2NLRc?start=1&fs=1&autoplay
 
 #full screen video
 #https://stackoverflow.com/questions/37402749/url-syntax-for-youtube-video-in-fullscreen-and-start-at-time-index
+
+
+
+# https://developers.google.com/youtube/iframe_api_reference#setVolume
+# player.setVolume(volume:Number):Void
+# Sets the volume. Accepts an integer between 0 and 100.
