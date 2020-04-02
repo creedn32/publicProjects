@@ -1,8 +1,10 @@
 import webbrowser, pyautogui
 
 
-pyautogui.moveTo(100, 200) 
+pyautogui.moveTo(100, 200)
+webbrowser.open('https://www.youtube.com/embed/NvZtkt9973A?start=1&fs=1&autoplay=1')
 webbrowser.open('https://www.youtube.com/embed/Xf5QTs2NLRc?start=1&fs=1&autoplay=1')
+
 
 
 
