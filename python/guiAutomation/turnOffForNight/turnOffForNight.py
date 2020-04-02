@@ -9,5 +9,5 @@ pathToPowerShellScript = Path(_myPyFunc.getParentalDirectory(pathToThisPythonFil
 subprocess.Popen([r'C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe', str(pathToPowerShellScript)], cwd=os.getcwd())
 
 
-# time.sleep(10)
+# time.sleep(5)
 # webbrowser.open('https://www.youtube.com/embed/Xf5QTs2NLRc?start=1&fs=1&autoplay=1')
