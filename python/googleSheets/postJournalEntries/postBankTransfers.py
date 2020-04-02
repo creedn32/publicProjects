@@ -1,13 +1,14 @@
-import sys, pathlib
+from pathlib import Path
+pathToThisPythonFile = Path(__file__).resolve()
+import sys
+sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
 
-sys.path.append(str(pathlib.Path.cwd().parents[1]))
-# sys.path.append(str(pathlib.Path.cwd()/"publicProjects/python"))
-
-from myPyLib import myPyFunc, myGoogleSheetsFunc
+startTime = _myPyFunc.printElapsedTime(False, "Starting code")
 
 
-startTime = myPyFunc.printElapsedTime(False, "Starting code")
 
+# from myPyLib import _myPyFunc, myGoogleSheetsFunc
 
 
 import time, importlib
@@ -41,112 +42,111 @@ pyautogui.PAUSE = 0
 activateKeyboard = True
 
 
-# pp("Manual prinout: " + str(pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"))
-pathToGoogleCredentials = pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"
-googleSheetsObj = myGoogleSheetsFunc.authFunc(pathToGoogleCredentials)
-googleSheetsData = myGoogleSheetsFunc.getDataWithGrid(spreadsheetIDStr, googleSheetsObj, sheetName)
+# pathToGoogleCredentials = pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"
+# googleSheetsObj = myGoogleSheetsFunc.authFunc(pathToGoogleCredentials)
+# googleSheetsData = myGoogleSheetsFunc.getDataWithGrid(spreadsheetIDStr, googleSheetsObj, sheetName)
 
 
 
-# with open("output.txt", "wt") as out:
-#     pprint(googleSheetsData, stream=out)
+# # with open("output.txt", "wt") as out:
+# #     pprint(googleSheetsData, stream=out)
 
 
-for dict in googleSheetsData["sheets"]:
-    if dict["properties"]["title"] == sheetName:
-        currentSheetIDStr = dict["properties"]["sheetId"]
-        currentSheetData = dict["data"][0]["rowData"]
-
-
-
-requestDictionary = {}
-requestDictionary["requests"] = []
-requestDictionary["requests"].append({})
-requestDictionary["requests"][0]["repeatCell"] = {}
-requestDictionary["requests"][0]["repeatCell"]["range"] = {}
-requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = currentSheetIDStr
-requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
-requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 0
-requestDictionary["requests"][0]["repeatCell"]["cell"] = {}
-requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"] = {}
-requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"] = {}
-requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["red"] = 208/255
-requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 224/255
-requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 227/255
-requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
-
-
-splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
-
-
-if activateKeyboard:
-
-    with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
-        print("Click on 'Clear' to begin posting...")
-        listenerObj.join()
+# for dict in googleSheetsData["sheets"]:
+#     if dict["properties"]["title"] == sheetName:
+#         currentSheetIDStr = dict["properties"]["sheetId"]
+#         currentSheetData = dict["data"][0]["rowData"]
 
 
 
-for row in currentSheetData[1:]:
+# requestDictionary = {}
+# requestDictionary["requests"] = []
+# requestDictionary["requests"].append({})
+# requestDictionary["requests"][0]["repeatCell"] = {}
+# requestDictionary["requests"][0]["repeatCell"]["range"] = {}
+# requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = currentSheetIDStr
+# requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
+# requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 0
+# requestDictionary["requests"][0]["repeatCell"]["cell"] = {}
+# requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"] = {}
+# requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"] = {}
+# requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["red"] = 208/255
+# requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 224/255
+# requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 227/255
+# requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
 
 
-    if myGoogleSheetsFunc.isWhite(row["values"][0]) and myGoogleSheetsFunc.hasFormattedValue(row["values"][0]):
-
-        if activateKeyboard:
-
-            # pprint(row)
-
-            print("Row " + str("") + " will be populated into the Great Plains entry window.")
-
-            myPyFunc.repetitiveKeyPress(2, "tab")
-
-            for col in range(0, 5):
+# splitTime = _myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
 
 
-                numberTabs = 1
+# if activateKeyboard:
 
-                try:
-                    string = str(row["values"][col]["formattedValue"])
-                except:
-                    string = ""
-
-                if col == 0:
-
-                    # string = row["values"][col]["formattedValue"]
-                    dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
-                    # print(datetime.ParseExact(string, "yyMMdd", CultureInfo.InvariantCulture))
-                    string = dateObj.strftime("%m%d%Y")
+#     with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
+#         print("Click on 'Clear' to begin posting...")
+#         listenerObj.join()
 
 
 
-                elif col == 2:
-                    numberTabs = 2
-
-                elif col == 3:
-
-                    # if len(string.split(".")) == 1:
-                    #     string = string + "00"
-
-                    string = string.lstrip("$").replace(".", "").replace(",", "")
-
-                for letter in string:
-
-                    if ord(letter) in (
-                            list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
-                        range(40, 44)) + list(range(33, 39))):
-
-                        pyautogui.PAUSE = .0000000000001
-                        pyautogui.keyDown("shift")
-                        pyautogui.press(letter)
-                        pyautogui.keyUp("shift")
-                        pyautogui.PAUSE = 0
-
-                    else:
-                        pyautogui.press(letter)
-
-                myPyFunc.repetitiveKeyPress(numberTabs, "tab")
+# for row in currentSheetData[1:]:
 
 
-            with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
-                print("Click on 'Post' or 'Clear' to continue with this entry...")
-                listenerObj.join()
+#     if myGoogleSheetsFunc.isWhite(row["values"][0]) and myGoogleSheetsFunc.hasFormattedValue(row["values"][0]):
+
+#         if activateKeyboard:
+
+#             # pprint(row)
+
+#             print("Row " + str("") + " will be populated into the Great Plains entry window.")
+
+#             _myPyFunc.repetitiveKeyPress(2, "tab")
+
+#             for col in range(0, 5):
+
+
+#                 numberTabs = 1
+
+#                 try:
+#                     string = str(row["values"][col]["formattedValue"])
+#                 except:
+#                     string = ""
+
+#                 if col == 0:
+
+#                     # string = row["values"][col]["formattedValue"]
+#                     dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
+#                     # print(datetime.ParseExact(string, "yyMMdd", CultureInfo.InvariantCulture))
+#                     string = dateObj.strftime("%m%d%Y")
+
+
+
+#                 elif col == 2:
+#                     numberTabs = 2
+
+#                 elif col == 3:
+
+#                     # if len(string.split(".")) == 1:
+#                     #     string = string + "00"
+
+#                     string = string.lstrip("$").replace(".", "").replace(",", "")
+
+#                 for letter in string:
+
+#                     if ord(letter) in (
+#                             list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
+#                         range(40, 44)) + list(range(33, 39))):
+
+#                         pyautogui.PAUSE = .0000000000001
+#                         pyautogui.keyDown("shift")
+#                         pyautogui.press(letter)
+#                         pyautogui.keyUp("shift")
+#                         pyautogui.PAUSE = 0
+
+#                     else:
+#                         pyautogui.press(letter)
+
+#                 _myPyFunc.repetitiveKeyPress(numberTabs, "tab")
+
+
+#             with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
+#                 print("Click on 'Post' or 'Clear' to continue with this entry...")
+#                 listenerObj.join()
