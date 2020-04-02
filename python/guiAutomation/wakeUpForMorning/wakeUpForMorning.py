@@ -1,4 +1,4 @@
-import webbrowser, pyautogui
+import webbrowser, pyautogui, scheduler, time
 
 
 pyautogui.moveTo(100, 200)
@@ -18,4 +18,13 @@ webbrowser.open('https://www.youtube.com/embed/Xf5QTs2NLRc?start=1&fs=1&autoplay
 # Sets the volume. Accepts an integer between 0 and 100.
 
 # document.getElementsByClassName('video-stream html5-main-video')[0].volume = 0
+
+
+
+# # Set up scheduler
+# s = sched.scheduler(time.localtime, time.sleep)
+# # Schedule when you want the action to occur
+# s.enterabs(time.strptime('Tue May 01 11:05:17 2018'), 0, action)
+# # Block until the action has been run
+# s.run()
 
