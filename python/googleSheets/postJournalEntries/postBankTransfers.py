@@ -13,6 +13,7 @@ startTime = _myPyFunc.printElapsedTime(False, "Starting code")
 import time, importlib
 import datetime, pynput.mouse, win32api, win32con, pyautogui
 from pprint import pprint as pp
+import gspread
 
 
 
@@ -40,15 +41,14 @@ pyautogui.PAUSE = 0
 activateKeyboard = True
 
 
-googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
+gspreadObj = gpsread.authorize()
+
+
+# googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
 
 
 # googleSheetsData = myGoogleSheetsFunc.getDataWithGrid(spreadsheetIDStr, googleSheetsObj, sheetName)
 
-
-
-# # with open("output.txt", "wt") as out:
-# #     pprint(googleSheetsData, stream=out)
 
 
 # for dict in googleSheetsData["sheets"]:
