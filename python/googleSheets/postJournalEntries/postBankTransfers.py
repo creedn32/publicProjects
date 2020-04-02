@@ -3,12 +3,11 @@ pathToThisPythonFile = Path(__file__).resolve()
 import sys
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
 import _myPyFunc
+sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
+import _myGoogleSheetsLibrary
+
 
 startTime = _myPyFunc.printElapsedTime(False, "Starting code")
-
-
-
-# from myPyLib import _myPyFunc, myGoogleSheetsFunc
 
 
 import time, importlib
@@ -17,7 +16,6 @@ from pprint import pprint as pp
 
 
 
-#
 # class moduleNameClass:
 #     pass
 #
@@ -42,8 +40,9 @@ pyautogui.PAUSE = 0
 activateKeyboard = True
 
 
-# pathToGoogleCredentials = pathlib.Path.cwd().parents[3]/"privateData/python/googleCredentials"
-# googleSheetsObj = myGoogleSheetsFunc.authFunc(pathToGoogleCredentials)
+googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
+
+
 # googleSheetsData = myGoogleSheetsFunc.getDataWithGrid(spreadsheetIDStr, googleSheetsObj, sheetName)
 
 

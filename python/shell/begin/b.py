@@ -5,7 +5,7 @@ sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
 import _myPyFunc
 
 import subprocess, psutil
-from runpy import run_path as runPath
+from runpy import run_path
 from pprint import pprint as pp
 
 
@@ -63,7 +63,7 @@ def processIsRunning(processToStart, pathToSaveProcesses):
 
 pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
 pathToThisPythonFileDirectoryPrivate = _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData')
-currentMachine = runPath(str(pathToThisPythonFileDirectoryPrivate) + '\\' + sys.argv[1] + '.py')
+currentMachine = run_path(str(pathToThisPythonFileDirectoryPrivate) + '\\' + sys.argv[1] + '.py')
 
 
 for processData in currentMachine.get('processesToStart'):
