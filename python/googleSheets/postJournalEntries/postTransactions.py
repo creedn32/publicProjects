@@ -1,22 +1,18 @@
 
 
-def postTrans(sheetName, pathToPublicProjectsPython):
+def postTransactionsFunction(sheetName, pathToPublicProjectsPython):
 
 
-    import sys, pathlib
+    pass
 
-    from myPyLib import myPyFunc, myGoogleSheetsFunc
-
-    splitTime = myPyFunc.printElapsedTime(False, "Starting code")
+    splitTime = _myPyFunc.printElapsedTime(False, "Starting code")
 
     import datetime, pynput.mouse, win32api, win32con, pyautogui
     from pprint import pprint as pp
 
 
-    
-    pathToGoogleCredentials = pathToPublicProjectsPython.parents[1]/"privateData/python/googleCredentials"
-    # pathToGoogleCredentials = pathlib.Path.cwd()/"privateData/python/googleCredentials"
-    # pp(pathToGoogleCredentials)
+  
+
 
 
     # class moduleNameClass:
@@ -35,9 +31,8 @@ def postTrans(sheetName, pathToPublicProjectsPython):
     # myGoogleSheetsPythonLibrary = moduleNameObj
 
 
-    # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
     spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"  # ID of private Google Sheet
-    # spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
+
 
     changeCellColor = False
     numLockChanged = False
@@ -45,11 +40,8 @@ def postTrans(sheetName, pathToPublicProjectsPython):
     activateKeyboard = True
 
 
-
-    googleSheetsAPIObj = myGoogleSheetsFunc.authFunc(pathToGoogleCredentials)
-    googleSheetsData = googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
-
-
+    googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
+    googleSheetsData = _myGoogleSheetsLibrary.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)
 
 
     for dict in googleSheetsData["sheets"]:
@@ -59,30 +51,30 @@ def postTrans(sheetName, pathToPublicProjectsPython):
 
 
 
-    requestDictionary = {}
-    requestDictionary["requests"] = []
-    requestDictionary["requests"].append({})
-    requestDictionary["requests"][0]["repeatCell"] = {}
-    requestDictionary["requests"][0]["repeatCell"]["range"] = {}
-    requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = currentSheetIDStr
-    requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
-    requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 0
-    requestDictionary["requests"][0]["repeatCell"]["cell"] = {}
-    requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"] = {}
-    requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"] = {}
-    requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["red"] = 208 /255
-    requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 224 /255
-    requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 227 /255
-    requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
+    # requestDictionary = {}
+    # requestDictionary["requests"] = []
+    # requestDictionary["requests"].append({})
+    # requestDictionary["requests"][0]["repeatCell"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["range"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = currentSheetIDStr
+    # requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
+    # requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 0
+    # requestDictionary["requests"][0]["repeatCell"]["cell"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["red"] = 208 /255
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 224 /255
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 227 /255
+    # requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
 
 
 
-    splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
+    splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
 
 
     if activateKeyboard:
 
-        with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
+        with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
             print("Click on 'Clear' to begin posting...")
             listenerObj.join()
 
@@ -92,7 +84,7 @@ def postTrans(sheetName, pathToPublicProjectsPython):
     for row in currentSheetData[1:]:
 
 
-        if myGoogleSheetsFunc.isWhite(row["values"][0]) and myGoogleSheetsFunc.hasFormattedValue(row["values"][0]):
+        if _myGoogleSheetsLibrary.isWhite(row["values"][0]) and _myGoogleSheetsLibrary.hasFormattedValue(row["values"][0]):
 
 
             if row["values"][0]["formattedValue"] != "Enter/Edit" and activateKeyboard:
@@ -129,9 +121,9 @@ def postTrans(sheetName, pathToPublicProjectsPython):
                         if string == "Cash":
                             pyautogui.press("down")
                         elif string == "Increase Adjustment":
-                            myPyFunc.repetitiveKeyPress(2, "down")
+                            _myPyFunc.repetitiveKeyPress(2, "down")
                         elif string == "Decrease Adjustment":
-                            myPyFunc.repetitiveKeyPress(3, "down")
+                            _myPyFunc.repetitiveKeyPress(3, "down")
 
 
                     elif col == 2:
@@ -179,12 +171,34 @@ def postTrans(sheetName, pathToPublicProjectsPython):
                             else:
                                 pyautogui.press(letter)
 
-                    myPyFunc.repetitiveKeyPress(numberTabs, "tab")
+                    _myPyFunc.repetitiveKeyPress(numberTabs, "tab")
 
                 if win32api.GetKeyState(win32con.VK_NUMLOCK) == 0:
                     pyautogui.press("numlock")
 
-                with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
+                with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
                     print("Click on 'Post' or 'Clear' to continue with this entry...")
                     listenerObj.join()
+
+
+
+
+from pathlib import Path
+pathToThisPythonFile = Path(__file__).resolve()
+import sys
+sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
+sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
+import _myGoogleSheetsLibrary
+
+from pprint import pprint as p
+
+
+pathToPublicProjectsPython = _myPyFunc.getParentalDirectory(pathToThisPythonFile, 'python')
+
+p(sys.argv[1])
+postTransactionsFunction(sys.argv[1], pathToPublicProjectsPython)
+
+
+
 
