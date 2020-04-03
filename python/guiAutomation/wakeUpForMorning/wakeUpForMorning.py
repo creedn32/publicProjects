@@ -1,18 +1,30 @@
 import webbrowser, pyautogui, time
 
 
-for i in range(0, 50):
-    pyautogui.press('volumedown')
-
-for i in range(0, 25):
-    pyautogui.press('volumeup')
 
 
+def setSystemVolume():
 
-time.sleep(10)
-webbrowser.open('https://www.youtube.com/embed/NvZtkt9973A?start=1&fs=1&autoplay=1')
-time.sleep(4)
-webbrowser.open('https://www.youtube.com/embed/Xf5QTs2NLRc?start=1&fs=1&autoplay=1')
+    for i in range(0, 50):
+        pyautogui.press('volumedown')
+
+    for i in range(0, 25):
+        pyautogui.press('volumeup')
+
+    time.sleep(3)
+
+
+def playYouTubeMovies():
+    webbrowser.open('https://www.youtube.com/embed/NvZtkt9973A?start=1&fs=1&autoplay=1')
+    time.sleep(4)
+    webbrowser.open('https://www.youtube.com/embed/Xf5QTs2NLRc?start=1&fs=1&autoplay=1')
+
+
+# setSystemVolume()
+playYouTubeMovies()
+
+
+
 
 
 
