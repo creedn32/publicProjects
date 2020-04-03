@@ -79,3 +79,9 @@ def hasFormattedValue(cell):
             return True
 
     return False
+
+
+
+def getDataWithGridForRange(spreadsheetIDStr, googleSheetsObj, rangesArgument):
+    return googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True, ranges=rangesArgument).execute()
+
