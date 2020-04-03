@@ -3,8 +3,8 @@ pathToThisPythonFile = Path(__file__).resolve()
 import sys
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
 import _myPyFunc
-sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
-import _myGoogleSheetsLibrary
+# sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
+# import _myGoogleSheetsLibrary
 
 
 startTime = _myPyFunc.printElapsedTime(False, "Starting code")
@@ -13,7 +13,7 @@ startTime = _myPyFunc.printElapsedTime(False, "Starting code")
 import time, importlib
 import datetime, pynput.mouse, win32api, win32con, pyautogui
 from pprint import pprint as pp
-import gspread
+
 
 
 
@@ -41,7 +41,10 @@ pyautogui.PAUSE = 0
 activateKeyboard = True
 
 
-gspreadObj = gpsread.authorize()
+
+import ezsheets
+
+# ezsheets.Spreadsheet(spreadsheetIDStr)
 
 
 # googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
