@@ -36,19 +36,20 @@ choco uninstall vscode
 
 
 #packages
-javaruntime
-vscode
-cmder
-python
-driverbooster
-zoom
-autohotkey
 adobereader
-synologydrive, a.k.a. synology drive client
+autohotkey
 avastfreeantivirus
-revo-uninstaller
-googlechrome
+cmder
+driverbooster
 everything
+googlechrome
+javaruntime
+pixie
+python
+revo-uninstaller
+synologydrive, a.k.a. synology drive client
+vscode
+zoom
 
 
 
@@ -84,9 +85,9 @@ megasync, checksum doesn't work
 
 #packages
 adobereader
+autohotkey
 everything
 revo-uninstaller
-autohotkey
 vscode
 
 
