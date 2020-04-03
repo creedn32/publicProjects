@@ -1,9 +1,29 @@
-import webbrowser, pyautogui, scheduler, time
+import webbrowser, pyautogui, time
 
 
-pyautogui.moveTo(100, 200)
+for i in range(0, 50):
+    pyautogui.press('volumedown')
+
+for i in range(0, 25):
+    pyautogui.press('volumeup')
+
+
+
+time.sleep(10)
 webbrowser.open('https://www.youtube.com/embed/NvZtkt9973A?start=1&fs=1&autoplay=1')
+time.sleep(4)
 webbrowser.open('https://www.youtube.com/embed/Xf5QTs2NLRc?start=1&fs=1&autoplay=1')
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20,6 +40,7 @@ webbrowser.open('https://www.youtube.com/embed/Xf5QTs2NLRc?start=1&fs=1&autoplay
 # document.getElementsByClassName('video-stream html5-main-video')[0].volume = 0
 
 
+# import scheduler, time
 
 # # Set up scheduler
 # s = sched.scheduler(time.localtime, time.sleep)
