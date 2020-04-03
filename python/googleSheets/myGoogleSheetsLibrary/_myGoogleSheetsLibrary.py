@@ -1,3 +1,5 @@
+
+
 def getGoogleSheetsAPIObj(partialPathArray):
 
     from pathlib import Path
@@ -54,3 +56,26 @@ def getGoogleSheetsAPIObj(partialPathArray):
                 pickle.dump(credentialsObj, pickleFileObj)
 
     return googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
+
+
+
+
+
+def isWhite(cell):
+
+    try:
+        if cell["userEnteredFormat"]["backgroundColor"]["red"] + cell["userEnteredFormat"]["backgroundColor"]["green"] + cell["userEnteredFormat"]["backgroundColor"]["blue"] == 3:
+            return True
+    except KeyError:
+        return True
+
+    return False
+
+
+def hasFormattedValue(cell):
+
+    for item in cell:
+        if "formattedValue" in item:
+            return True
+
+    return False

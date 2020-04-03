@@ -3,8 +3,8 @@ pathToThisPythonFile = Path(__file__).resolve()
 import sys
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
 import _myPyFunc
-# sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
-# import _myGoogleSheetsLibrary
+sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
+import _myGoogleSheetsLibrary
 
 
 startTime = _myPyFunc.printElapsedTime(False, "Starting code")
@@ -41,16 +41,10 @@ pyautogui.PAUSE = 0
 activateKeyboard = True
 
 
-
-import ezsheets
-
-# ezsheets.Spreadsheet(spreadsheetIDStr)
+googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
 
 
-# googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
-
-
-# googleSheetsData = myGoogleSheetsFunc.getDataWithGrid(spreadsheetIDStr, googleSheetsObj, sheetName)
+# googleSheetsData = _myGoogleSheetsFunc.getDataWithGrid(spreadsheetIDStr, googleSheetsObj, sheetName)
 
 
 

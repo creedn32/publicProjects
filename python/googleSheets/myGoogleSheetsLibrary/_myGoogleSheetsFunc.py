@@ -2,13 +2,7 @@ from myPyLib import myPyFunc
 from pprint import pprint as pp
 
 
-def hasFormattedValue(cell):
 
-    for item in cell:
-        if "formattedValue" in item:
-            return True
-
-    return False
 
 
 
@@ -21,6 +15,18 @@ def isWhite(cell):
         return True
 
     return False
+
+
+def hasFormattedValue(cell):
+
+    for item in cell:
+        if "formattedValue" in item:
+            return True
+
+    return False
+
+
+
 
 
 
