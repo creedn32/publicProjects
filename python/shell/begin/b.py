@@ -6,7 +6,7 @@ import _myPyFunc
 
 import subprocess, psutil
 from runpy import run_path
-from pprint import pprint as pp
+from pprint import pprint as p
 
 
 
@@ -63,20 +63,23 @@ def processIsRunning(processToStart, pathToSaveProcesses):
 
 pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
 pathToThisPythonFileDirectoryPrivate = _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData')
-currentMachine = run_path(str(pathToThisPythonFileDirectoryPrivate) + '\\' + sys.argv[1] + '.py')
+pathToProcessesToStartData = Path(pathToThisPythonFileDirectoryPrivate, 'processesToStartData.py')
+processesToStartData = run_path(str(pathToProcessesToStartData))
 
 
-for processData in currentMachine.get('processesToStart'):
-    
-    processToStart = processData[0]
+arrayOfProcessesToStart = processesToStartData.get(sys.argv[1])
+
+for processToStartData in arrayOfProcessesToStart:
+
+    processToStart = processToStartData[0]
 
     if not processIsRunning(processToStart, pathToThisPythonFileDirectoryPrivate):
-        pp('The process ' + processToStart + ' is not running and will be started.')
+        p('The process ' + processToStart + ' is not running and will be started.')
         
-        if len(processData) > 1:
-            processToStart = processData[1] + ' ' + processData[0]
+        if len(processToStartData) > 1:
+            processToStart = processToStartData[1] + ' ' + processToStartData[0]
 
         subprocess.Popen(processToStart)
     else:
-        pp('The process ' + processToStart + ' is already running and will not be started.')
+        p('The process ' + processToStart + ' is already running and will not be started.')
 
