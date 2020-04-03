@@ -1,5 +1,3 @@
-#breadth-first search
-
 from pathlib import Path
 from pprint import pprint as pp
 import os
