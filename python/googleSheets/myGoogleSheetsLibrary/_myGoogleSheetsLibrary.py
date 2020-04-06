@@ -82,6 +82,6 @@ def hasFormattedValue(cell):
 
 
 
-def getDataWithGridForRange(spreadsheetIDStr, googleSheetsObj, rangesArgument):
-    return googleSheetsObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True, ranges=rangesArgument).execute()
+def getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, rangesArgument):
+    return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True, ranges=rangesArgument).execute()
 

@@ -200,9 +200,8 @@ def postTransfersFunction():
 
 
     googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
-
-
     googleSheetsData = _myGoogleSheetsLibrary.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)
+    _myPyFunc.saveToFile(googleSheetsData, 'googleSheetsData', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
 
 
 
@@ -324,7 +323,7 @@ from pprint import pprint as p
 import datetime, pynput.mouse, win32api, win32con, pyautogui
 
 
-
+pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
 
 
 if sys.argv[1] == 'Bank Transfers':

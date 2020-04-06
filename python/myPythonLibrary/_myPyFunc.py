@@ -728,6 +728,29 @@ def replacePartOfPath(pathToConvert, partToBeReplaced, partToReplace):
 
 
 
+def saveToFile(dataObj, nameOfDataObj, fileExtensionToSave, pathToSaveFileTo):
+    
+    from pathlib import Path
+    import json
+
+    fullPathToSaveFileTo = Path(pathToSaveFileTo, nameOfDataObj + '.' + fileExtensionToSave)
+
+    if fileExtensionToSave == 'json':
+        with open(fullPathToSaveFileTo, 'w+') as fileObj:
+            json.dump(dataObj, fileObj)
+    else:
+        fileObj = open(fullPathToSaveFileTo, 'w+')
+        fileObj.write(nameOfDataObj + ' = ' + str(dataObj))
+        fileObj.close()
+    
+
+    
+
+
+
+   
+
+
 
 
 # createRow(listToProcess[rowIndex], colToTotal, listToProcess[rowIndex - 1][colToTotal])

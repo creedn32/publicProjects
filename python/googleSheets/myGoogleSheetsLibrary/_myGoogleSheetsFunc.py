@@ -460,5 +460,3 @@ def authFunc(pathToGoogleCredentials):
 
 
     return googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
-
-
