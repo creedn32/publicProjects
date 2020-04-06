@@ -85,3 +85,55 @@ def hasFormattedValue(cell):
 def getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, rangesArgument):
     return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True, ranges=rangesArgument).execute()
 
+
+
+
+
+def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, *optionalArguments):
+    
+    fieldMask = optionalArguments[0]
+
+    if fieldMask:
+        return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, fields=fieldMask).execute()
+    else:
+        return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr).execute()
+
+
+
+
+def getJSONForSheet(googleSpreadsheetDataInJSONFormat, sheetName):
+
+    for sheet in googleSpreadsheetDataInJSONFormat['sheets']:
+        sheetNameFromJSON = sheet['properties']['title']
+
+        if sheetName == sheetNameFromJSON:
+
+            return sheet
+           
+
+
+def getArrayFromJSONData(googleSpreadsheetDataInJSONFormat):
+
+    arrayToReturn = []
+
+    sheetDataAsObjects = googleSpreadsheetDataInJSONFormat['data']
+
+    for sheetDataObj in sheetDataAsObjects:
+        
+        dataObjToRetrieve = 'rowData'
+            
+        if dataObjToRetrieve in sheetDataObj:
+                            
+            for rowObject in sheetDataObj[dataObjToRetrieve]:
+
+                rowArray = []
+
+                for cellDataObj in rowObject['values']:
+                    
+                    rowArray.append(cellDataObj['formattedValue'])
+
+                arrayToReturn.append(rowArray)
+
+    return arrayToReturn
+
+    

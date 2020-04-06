@@ -171,6 +171,9 @@ def postTransactionsFunction(sheetName):
 
 
 
+
+
+
 def postTransfersFunction():
    
     startTime = _myPyFunc.printElapsedTime(False, "Starting code")
@@ -200,10 +203,16 @@ def postTransfersFunction():
 
 
     googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
+    fieldMask = 'sheets/properties/title,sheets/data/rowData/values/formattedValue'
+
+
+    googleSpreadsheetDataInJSONFormat = _myGoogleSheetsLibrary.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask)
+    # _myPyFunc.saveToFile(googleSpreadsheetDataInJSONFormat, 'googleSpreadsheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
+    googleSheetDataInJSONFormat = _myGoogleSheetsLibrary.getJSONForSheet(googleSpreadsheetDataInJSONFormat, 'Bank Transfers')
+    googleSheetDataInArray = _myGoogleSheetsLibrary.getArrayFromJSONData(googleSheetDataInJSONFormat)
+
+
     googleSheetsData = _myGoogleSheetsLibrary.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)
-    _myPyFunc.saveToFile(googleSheetsData, 'googleSheetsData', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
-
-
 
     for dict in googleSheetsData["sheets"]:
         if dict["properties"]["title"] == sheetName:
@@ -211,21 +220,21 @@ def postTransfersFunction():
             currentSheetData = dict["data"][0]["rowData"]
 
 
-    # requestDictionary = {}
-    # requestDictionary["requests"] = []
-    # requestDictionary["requests"].append({})
-    # requestDictionary["requests"][0]["repeatCell"] = {}
-    # requestDictionary["requests"][0]["repeatCell"]["range"] = {}
-    # requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = currentSheetIDStr
-    # requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
-    # requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 0
-    # requestDictionary["requests"][0]["repeatCell"]["cell"] = {}
-    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"] = {}
-    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"] = {}
-    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["red"] = 208/255
-    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 224/255
-    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 227/255
-    # requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
+    # # requestDictionary = {}
+    # # requestDictionary["requests"] = []
+    # # requestDictionary["requests"].append({})
+    # # requestDictionary["requests"][0]["repeatCell"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["range"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = currentSheetIDStr
+    # # requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
+    # # requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 0
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["red"] = 208/255
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 224/255
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 227/255
+    # # requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
 
 
     splitTime = _myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
