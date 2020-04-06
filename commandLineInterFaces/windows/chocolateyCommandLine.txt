@@ -93,7 +93,7 @@ vscode
 
 
 #list
-microsoft-office-deployment /64bit
+office365proplus
 
 
 
