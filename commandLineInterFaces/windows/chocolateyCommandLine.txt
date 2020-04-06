@@ -96,7 +96,10 @@ vscode
 microsoft-office-deployment /64bit
 
 
---try removing from Revo, Programs and Features, and Apps & Features
+
+
+
+
 
 
 
