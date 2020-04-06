@@ -1,8 +1,10 @@
-import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPyLib import myPyFunc, myGoogleSheetsFunc
+import pathlib
+pathToThisPythonFile = pathlib.Path(__file__).resolve()
+import sys
+sys.path.append(str(pathlib.Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
 
-startTime = myPyFunc.printElapsedTime(False, "Starting code")
+startTime = _myPyFunc.printElapsedTime(False, "Starting code")
 
 import win32com.client
 
@@ -34,7 +36,7 @@ excelBankTableSearchSheet = excelWb.Worksheets("Bank Table Search")
 excelBankTableSearchSheet.UsedRange.Clear()
 
 
-splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
+splitTime = _myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
 
 
 firstCell = excelBankTableSheet.Cells(1, 1)
@@ -47,4 +49,4 @@ excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
-myPyFunc.printElapsedTime(startTime, "Total time to run code")
+_myPyFunc.printElapsedTime(startTime, "Total time to run code")

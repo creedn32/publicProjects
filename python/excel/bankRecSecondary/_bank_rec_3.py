@@ -1,10 +1,12 @@
 #on comparison sheet, could write only the necessary columns
 
-import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPyLib import myPyFunc, myGoogleSheetsFunc
+import pathlib
+pathToThisPythonFile = pathlib.Path(__file__).resolve()
+import sys
+sys.path.append(str(pathlib.Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
 
-startTime = myPyFunc.printElapsedTime(False, "Starting code")
+startTime = _myPyFunc.printElapsedTime(False, "Starting code")
 
 from pprint import pprint as pp
 import win32com.client
@@ -45,7 +47,7 @@ gpSearchValueCol = 6
 
 
 
-splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
+splitTime = _myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
 
 
 excelBankTableSearchSheet.Range(excelBankTableSearchSheet.Cells(1, 1), excelBankTableSearchSheet.Cells(1, bankColumns)).Copy(excelCompSheet.Cells(1, 1))
@@ -105,4 +107,4 @@ excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
 
-myPyFunc.printElapsedTime(startTime, "Total time to run code")
+_myPyFunc.printElapsedTime(startTime, "Total time to run code")
