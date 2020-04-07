@@ -44,7 +44,8 @@ F13 & m::
 return
 
 F13 & t::
-    SendInput ^!{t}
+    ;SendInput {Blind}^{`}
+    SendInput {Blind}^!{t}
 return
 
 F13 & u::
