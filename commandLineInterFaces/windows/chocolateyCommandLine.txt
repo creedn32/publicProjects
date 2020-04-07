@@ -44,6 +44,7 @@ driverbooster
 everything
 googlechrome
 javaruntime
+office365proplus
 pixie
 python
 revo-uninstaller
@@ -54,13 +55,9 @@ zoom
 
 
 
-#consider
+#don't need right now
 totalcommander
 duplicatecleaner
-
-
-
-#others
 adobedigitaleditions
 adobeair
 adobe-creative-cloud (this one is failing tests)
@@ -71,9 +68,6 @@ flashplayerppapi
 #not for chocolatey
 onenote, part of windows
 megasync, checksum doesn't work
-
-
-
 
 
 
@@ -94,15 +88,6 @@ vscode
 
 #list
 office365proplus
-
-
-
-
-
-
-
-
-
 synologydrive, a.k.a. synology drive client
 googlechrome
 firefox
@@ -110,10 +95,8 @@ maybe box
 
 
 
-#others
+#don't need right now
 sharpkeys
-
-
 
 
 
