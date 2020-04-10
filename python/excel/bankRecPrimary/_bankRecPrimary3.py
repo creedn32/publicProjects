@@ -3,20 +3,23 @@
 #Copy the comparison sheet into it's own workbook
 
 
-import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPyLib import myPyFunc
+import pathlib
+pathToThisPythonFile = pathlib.Path(__file__).resolve()
+import sys
+sys.path.append(str(pathlib.Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
 
-splitTime = myPyFunc.printElapsedTime(False, "Starting code")
+
+splitTime = _myPyFunc.printElapsedTime(False, "Starting code")
+from pprint import pprint as pp
 
 import win32com.client
-from pprint import pprint as pp
 
 
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = True
 excelApp.DisplayAlerts = False
-filePath = str(pathlib.Path.cwd().parents[3]) + "\\privateData\\python\\excel\\bankRecPrimary"
+filePath = str(_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'))
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 
@@ -49,7 +52,7 @@ gpTrxTypeCol = 12
 gpTrxNumCol = 13
 
 
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
+splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
 
 #copy column names to Comparison
 
@@ -144,4 +147,4 @@ excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished bank_rec_3")
+splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished bank_rec_3")

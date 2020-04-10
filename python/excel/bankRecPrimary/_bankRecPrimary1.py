@@ -1,14 +1,12 @@
-import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPyLib import myPyFunc
+import pathlib
+pathToThisPythonFile = pathlib.Path(__file__).resolve()
+import sys
+sys.path.append(str(pathlib.Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
 
-splitTime = myPyFunc.printElapsedTime(False, "Starting code")
 
-
+splitTime = _myPyFunc.printElapsedTime(False, "Starting code")
 from pprint import pprint as pp
-
-# pp(sys.path)
-# pp(str(pathlib.Path.cwd().parents[0]))
 
 import win32com.client
 
@@ -16,10 +14,9 @@ import win32com.client
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = False
 excelApp.DisplayAlerts = False
-filePath = str(pathlib.Path.cwd().parents[3]) + "\\privateData\\python\\excel\\bankRecPrimary"
+filePath = str(_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'))
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
-
 
 excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
@@ -54,7 +51,7 @@ gpTransferCol = 17
 gpAmountCol = 6
 gpTrxTypeCol = 12
 
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
+splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
 
 
 excelBankTableSheet.Cells(1, bankColumns + 1).Value = "B Date C"
@@ -75,9 +72,9 @@ while excelBankTableSheet.Cells(bankTableSheetRow, 1).Value:
        excelBankTableSheet.Rows(bankTableSheetRow).EntireRow.Delete()
        bankTableSheetRow = bankTableSheetRow - 1
     else:
-        excelBankTableSheet.Cells(bankTableSheetRow, bankDateCol).Value = myPyFunc.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-8] + "/" + myPyFunc.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-6][-2:] + "/" + myPyFunc.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-2][-4:]
+        excelBankTableSheet.Cells(bankTableSheetRow, bankDateCol).Value = _myPyFunc.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-8] + "/" + _myPyFunc.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-6][-2:] + "/" + _myPyFunc.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankOrigDateCol).Value)[:-2][-4:]
 
-        myStr = myPyFunc.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
+        myStr = _myPyFunc.convertNothingToEmptyStr(excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value).replace("\n", " ")
         myStr = " ".join(myStr.split())[0:200]
         excelBankTableSheet.Cells(bankTableSheetRow, bankDescCol).Value = myStr
 
@@ -148,4 +145,4 @@ excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished bank_rec_1")
+splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished bank_rec_1")

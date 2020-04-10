@@ -1,8 +1,12 @@
-import sys, pathlib
-sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPyLib import myPyFunc
+import pathlib
+pathToThisPythonFile = pathlib.Path(__file__).resolve()
+import sys
+sys.path.append(str(pathlib.Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
 
-splitTime = myPyFunc.printElapsedTime(False, "Starting code")
+
+splitTime = _myPyFunc.printElapsedTime(False, "Starting code")
+from pprint import pprint as pp
 
 import win32com.client
 
@@ -10,7 +14,7 @@ import win32com.client
 excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = False
 excelApp.DisplayAlerts = False
-filePath = str(pathlib.Path.cwd().parents[3]) + "\\privateData\\python\\excel\\bankRecPrimary"
+filePath = str(_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'))
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 
@@ -33,7 +37,7 @@ excelBankTableSearchSheet = excelWb.Worksheets("Bank Table Search")
 excelBankTableSearchSheet.UsedRange.Clear()
 
 
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
+splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
 
 firstCell = excelBankTableSheet.Cells(1, 1)
 
@@ -46,4 +50,4 @@ excelApp.DisplayAlerts = True
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelWb.Save()
 excelApp.Visible = True
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished bank_rec_2")
+splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished bank_rec_2")
