@@ -13,6 +13,43 @@ import os
 
 
 
+def compute_checksums(dirname, suffix):
+    """Computes checksums for all files with the given suffix.
+
+    dirname: string name of directory to search
+    suffix: string suffix to match
+
+    Returns: map from checksum to list of files with that checksum
+    """
+
+    from pprint import pprint as p
+
+    names = walk(dirname)
+    # p(names)
+
+    d = {}
+    for name in names:
+        if name.endswith(suffix):
+            # print(compute_checksum(name)[0])
+            # print(compute_checksum(name)[1])
+            res, stat = compute_checksum(name)
+            # print(res)
+            checksum = res.split(' ', 1)[0]
+            _ = res.split(' ', 1)[1]
+            # print(_)
+
+            if checksum in d:
+                d[checksum].append(name)
+            else:
+                d[checksum] = [name]
+
+    # p(d)
+    return d
+
+
+
+
+
 def walk(dirname):
     """Finds the names of all files in dirname and its subdirectories.
 
@@ -44,17 +81,6 @@ def compute_checksum(filename):
 
 
 
-def check_diff(name1, name2):
-    """Computes the difference between the contents of two files.
-
-    name1, name2: string filenames
-    """
-    cmd = 'diff %s %s' % (name1, name2)
-    return pipe(cmd)
-
-
-
-
 def pipe(cmd):
     """Runs a command in a subprocess.
 
@@ -70,39 +96,25 @@ def pipe(cmd):
 
 
 
+def print_duplicates(d):
+    """Checks for duplicate files.
 
-def compute_checksums(dirname, suffix):
-    """Computes checksums for all files with the given suffix.
+    Reports any files with the same checksum and checks whether they
+    are, in fact, identical.
 
-    dirname: string name of directory to search
-    suffix: string suffix to match
-
-    Returns: map from checksum to list of files with that checksum
+    d: map from checksum to list of files with that checksum
     """
+    for key, names in d.items():
+        # print(names)
+        if len(names) > 1:
+            # print('The following files have the same checksum:')
+            # for name in names:
+                # print(name)
 
-    from pprint import pprint as p
-
-    names = walk(dirname)
-    # p(names)
-
-    d = {}
-    for name in names:
-        if name.endswith(suffix):
-            # print(compute_checksum(name)[0])
-            # print(compute_checksum(name)[1])
-            res, stat = compute_checksum(name)
-            # print(res)
-            checksum = res.split(' ', 1)[0]
-            _ = res.split(' ', 1)[1]
-
-            if checksum in d:
-                d[checksum].append(name)
-            else:
-                d[checksum] = [name]
-
-    # p(d)
-    return d
-
+            if check_pairs(names):
+                print('The following files are identical: ')
+                for name in names:
+                    print(name)
 
 
 
@@ -122,25 +134,14 @@ def check_pairs(names):
 
 
 
-def print_duplicates(d):
-    """Checks for duplicate files.
 
-    Reports any files with the same checksum and checks whether they
-    are, in fact, identical.
+def check_diff(name1, name2):
+    """Computes the difference between the contents of two files.
 
-    d: map from checksum to list of files with that checksum
+    name1, name2: string filenames
     """
-    for key, names in d.items():
-        if len(names) > 1:
-            # print('The following files have the same checksum:')
-            # for name in names:
-                # print(name)
-
-            if check_pairs(names):
-                print('The following files are identical: ')
-                for name in names:
-                    print(name)
-
+    cmd = 'diff %s %s' % (name1, name2)
+    return pipe(cmd)
             
 
 
@@ -148,9 +149,11 @@ def print_duplicates(d):
 
 if __name__ == '__main__':
 
+    from pprint import pprint as p
     import pathlib
     pathToThisPythonFile = pathlib.Path(__file__).resolve()
 
     # d = compute_checksums(dirname='.', suffix='.py')
-    d = compute_checksums(dirname=str(pathlib.Path(pathToThisPythonFile.parents[1])), suffix='')
+    d = compute_checksums(dirname=str(pathlib.Path(pathToThisPythonFile.parents[1], 'guiAutomation')), suffix='')
+    p(d)
     print_duplicates(d)
