@@ -165,7 +165,9 @@ def remove_files(fileList):
     for fileToRemove in fileList:
         if os.path.exists(fileToRemove):
             print('This file will be removed: ' + fileToRemove)
-            print()
+            removeFilePythonCode = 'os.unlink(fileToRemove)'
+            print(removeFilePythonCode)
+            # exec(removeFilePythonCode)
 
 
 
