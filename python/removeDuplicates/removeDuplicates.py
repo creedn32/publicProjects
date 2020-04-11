@@ -34,8 +34,11 @@ def compute_checksums(dirname, suffix):
             # print(compute_checksum(name)[1])
             res, stat = compute_checksum(name)
             # print(res)
-            checksum = res.split(' ', 1)[0]
-            _ = res.split(' ', 1)[1]
+
+            numberOfSplits = 1
+            checksum = res.split(' ', numberOfSplits)[numberOfSplits - 1]
+            _ = res.split(' ', numberOfSplits)[numberOfSplits]
+
             # print(_)
 
             if checksum in d:
@@ -112,6 +115,7 @@ def print_duplicates(d):
                 # print(name)
 
             if check_pairs(names):
+                # pass
                 print('The following files are identical: ')
                 for name in names:
                     print(name)
@@ -127,6 +131,9 @@ def check_pairs(names):
         for name2 in names:
             if name1 < name2:
                 res, stat = check_diff(name1, name2)
+                # print("res " + res)
+                # print("stat " + str(stat))
+
                 if res:
                     return False
     return True
@@ -141,6 +148,7 @@ def check_diff(name1, name2):
     name1, name2: string filenames
     """
     cmd = 'diff %s %s' % (name1, name2)
+    # print(cmd)
     return pipe(cmd)
             
 
@@ -153,7 +161,9 @@ if __name__ == '__main__':
     import pathlib
     pathToThisPythonFile = pathlib.Path(__file__).resolve()
 
+    pathToWalk = pathlib.Path(pathToThisPythonFile.parents[1]) #, 'guiAutomation')
+
     # d = compute_checksums(dirname='.', suffix='.py')
-    d = compute_checksums(dirname=str(pathlib.Path(pathToThisPythonFile.parents[1], 'guiAutomation')), suffix='')
-    p(d)
+    d = compute_checksums(dirname=str(pathToWalk), suffix='')
+    # p(d)
     print_duplicates(d)
