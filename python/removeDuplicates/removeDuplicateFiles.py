@@ -13,7 +13,7 @@ import os
 
 
 
-def compute_checksums(dirname, suffix, pathLabel):
+def compute_checksums(dirname, suffix, pathLabel, checkSumObject):
     """Computes checksums for all files with the given suffix.
 
     dirname: string name of directory to search
@@ -27,7 +27,6 @@ def compute_checksums(dirname, suffix, pathLabel):
     names = walk(dirname)
     # p(names)
 
-    d = {}
     for name in names:
         if name.endswith(suffix):
             # print(compute_checksum(name)[0])
@@ -37,17 +36,16 @@ def compute_checksums(dirname, suffix, pathLabel):
 
             numberOfSplits = 1
             checksum = res.split(' ', numberOfSplits)[numberOfSplits - 1]
-            _ = res.split(' ', numberOfSplits)[numberOfSplits]
-
+            # _ = res.split(' ', numberOfSplits)[numberOfSplits]
             # print(_)
 
-            if checksum in d:
-                d[checksum].append({pathLabel: name})
+            if checksum in checkSumObject:
+                checkSumObject[checksum].append({pathLabel: name})
             else:
-                d[checksum] = [{pathLabel: name}]
+                checkSumObject[checksum] = [{pathLabel: name}]
 
     # p(d)
-    return d
+    return checkSumObject
 
 
 
@@ -163,10 +161,12 @@ if __name__ == '__main__':
     pathToThisPythonFile = pathlib.Path(__file__).resolve()
     originalPath = pathlib.Path(pathToThisPythonFile.parents[1]) #, 'guiAutomation')
 
+
+    checkSumObject = compute_checksums(str(originalPath), '', 'originalPath'. {})
+    p(checkSumObject)
+
     
-    d = compute_checksums(str(originalPath), '', 'originalPath')
-    # p(d)
-    print_duplicates(d, 'originalPath')
+    # print_duplicates(d, 'originalPath')
 
 
 
