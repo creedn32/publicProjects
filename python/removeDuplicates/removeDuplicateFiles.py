@@ -13,10 +13,10 @@ import os
 
 
 
-def compute_checksums(dirname, suffix, pathLabel, checkSumObject):
+def compute_checksums(pathsToWalk, suffix):
     """Computes checksums for all files with the given suffix.
 
-    dirname: string name of directory to search
+    originalPath: string name of directory to search
     suffix: string suffix to match
 
     Returns: map from checksum to list of files with that checksum
@@ -24,27 +24,43 @@ def compute_checksums(dirname, suffix, pathLabel, checkSumObject):
 
     from pprint import pprint as p
 
-    names = walk(dirname)
-    # p(names)
+    checkSumObject = {}
 
-    for name in names:
-        if name.endswith(suffix):
-            # print(compute_checksum(name)[0])
-            # print(compute_checksum(name)[1])
-            res, stat = compute_checksum(name)
-            # print(res)
+    for pathToWalk in pathsToWalk:
 
-            numberOfSplits = 1
-            checksum = res.split(' ', numberOfSplits)[numberOfSplits - 1]
-            # _ = res.split(' ', numberOfSplits)[numberOfSplits]
-            # print(_)
+        if pathsToWalk.index(pathToWalk) == 0:
+            pathLabel = 'originalPath'
+        elif pathsToWalk.index(pathToWalk) == 1:
+            pathLabel = 'pathToRemoveFrom'
+            
+        names = walk(pathToWalk)
+        
+        # p(names)
+        print('checksum calcated for ' + pathLabel + ':')
 
-            if checksum in checkSumObject:
-                checkSumObject[checksum].append({pathLabel: name})
-            else:
-                checkSumObject[checksum] = [{pathLabel: name}]
+        for count, name in enumerate(names):
+            if name.endswith(suffix):
+                # print(compute_checksum(name)[0])
+                # print(compute_checksum(name)[1])
+                res, stat = compute_checksum(name)
+                # print(res)
 
-    # p(d)
+                numberOfSplits = 1
+                checksum = res.split(' ', numberOfSplits)[numberOfSplits - 1]
+                # _ = res.split(' ', numberOfSplits)[numberOfSplits]
+                # print(_)
+
+
+                if checksum in checkSumObject:
+                    if pathLabel in checkSumObject[checksum]:
+                        checkSumObject[checksum][pathLabel].append(name)
+                    else:
+                        checkSumObject[checksum][pathLabel] = [name]
+                else:
+                    checkSumObject[checksum] = {pathLabel: [name]}
+
+            print(str(count + 1) + '/' + str(len(names)))
+
     return checkSumObject
 
 
@@ -97,7 +113,7 @@ def pipe(cmd):
 
 
 
-def print_duplicates(d, pathLabel):
+def get_duplicates(checkSumObject):
     """Checks for duplicate files.
 
     Reports any files with the same checksum and checks whether they
@@ -105,39 +121,31 @@ def print_duplicates(d, pathLabel):
 
     d: map from checksum to list of files with that checksum
     """
-    for key, names in d.items():
-        # print(names)
-        
-        if len(names) > 1:
-            # print('The following files have the same checksum:')
-            # for name in names:
-                # print(name)
 
-            if check_pairs(names, pathLabel):
-                # pass
-                print('The following files are identical: ')
-                for name in names:
-                    print(name[pathLabel])
+    pathsToRemove = []
 
+    for pathObject in checkSumObject.values():
 
+        lengthOfOriginalPathArray = len(pathObject.get('originalPath', []))
+        strLengthOfOriginalPathArray = str(lengthOfOriginalPathArray)
+        totalPathsInPathObject = lengthOfOriginalPathArray + len(pathObject.get('pathToRemoveFrom', []))
 
-def check_pairs(names, pathLabel):
-    """Checks whether any in a list of files differs from the others.
+        if totalPathsInPathObject > 1 and lengthOfOriginalPathArray > 0:
+ 
+            print('originalPath has ' + strLengthOfOriginalPathArray + ' file(s) with a matching checksum to files in the pathToRemove. Checked if duplicates exist: ')
 
-    names: list of string filenames
-    """
-    for name1 in names:
-        for name2 in names:
-            if name1[pathLabel] < name2[pathLabel]:
-                res, stat = check_diff(name1[pathLabel], name2[pathLabel])
-                # print("res " + res)
-                # print("stat " + str(stat))
+            for count, pathOriginal in enumerate(pathObject['originalPath']):
+                for pathToRemove in pathObject['pathToRemoveFrom']:
+                    res, stat = check_diff(pathOriginal, pathToRemove)
 
-                if res:
-                    return False
-    return True
+                    if not res:
+                        # print(pathOriginal + " is identical to " + pathToRemove)
+                        # print(pathToRemove + " will be removed")
+                        pathsToRemove.append(pathToRemove)
 
+                print(str(count + 1) + '/' + strLengthOfOriginalPathArray)
 
+    return pathsToRemove
 
 
 
@@ -152,6 +160,14 @@ def check_diff(name1, name2):
             
 
 
+def remove_files(fileList):
+
+    for fileToRemove in fileList:
+        if os.path.exists(fileToRemove):
+            print('This file will be removed: ' + fileToRemove)
+            print()
+
+
 
 
 if __name__ == '__main__':
@@ -159,14 +175,17 @@ if __name__ == '__main__':
     from pprint import pprint as p
     import pathlib
     pathToThisPythonFile = pathlib.Path(__file__).resolve()
-    originalPath = pathlib.Path(pathToThisPythonFile.parents[1]) #, 'guiAutomation')
+    originalPath = pathlib.Path(pathToThisPythonFile.parents[1], 'gui') #, 'guiAutomation')
+    pathToRemoveFrom = pathlib.Path(pathToThisPythonFile.parents[0])
 
 
-    checkSumObject = compute_checksums(str(originalPath), '', 'originalPath'. {})
-    p(checkSumObject)
+    pathsToWalk = [str(pathlib.Path(pathToThisPythonFile.parents[0])),
+                    str(pathlib.Path(pathToThisPythonFile.parents[1], 'gui'))]
 
-    
-    # print_duplicates(d, 'originalPath')
+    checkSumObject = compute_checksums(pathsToWalk, '')
+
+    # p(checkSumObject)
+    remove_files(list(dict.fromkeys(get_duplicates(checkSumObject))))
 
 
 
