@@ -65,8 +65,6 @@ def compute_checksums(pathsToWalk, suffix):
 
 
 
-
-
 def walk(dirname):
     """Finds the names of all files in dirname and its subdirectories.
 
@@ -79,7 +77,12 @@ def walk(dirname):
         if os.path.isfile(path):
             names.append(path)
         else:
-            names.extend(walk(path))
+            try:
+                names.extend(walk(path))
+            except Exception as e:
+                pass
+                # print('Error is ' + str(e))
+                # print(path)
     return names
 
 
@@ -142,6 +145,7 @@ def get_duplicates(checkSumObject):
                         # print(pathOriginal + " is identical to " + pathToRemove)
                         # print(pathToRemove + " will be removed")
                         pathsToRemove.append(pathToRemove)
+                        return pathsToRemove
 
                 print(str(count + 1) + '/' + strLengthOfOriginalPathArray)
 
@@ -167,7 +171,7 @@ def remove_files(fileList):
             print('This file will be removed: ' + fileToRemove)
             removeFilePythonCode = 'os.unlink(fileToRemove)'
             print(removeFilePythonCode)
-            exec(removeFilePythonCode)
+            # exec(removeFilePythonCode)
 
 
 
@@ -180,9 +184,10 @@ if __name__ == '__main__':
     originalPath = pathlib.Path(pathToThisPythonFile.parents[1], 'gui') #, 'guiAutomation')
     pathToRemoveFrom = pathlib.Path(pathToThisPythonFile.parents[0])
 
+    # p(pathlib.Path(pathToThisPythonFile.parents[7], '$recycle.bin'))
 
     pathsToWalk = [str(pathlib.Path(pathToThisPythonFile.parents[0])),
-                    str(pathlib.Path(pathToThisPythonFile.parents[1], 'gui'))]
+                    str(pathlib.Path(pathToThisPythonFile.parents[7], '$recycle.bin'))]
 
     checkSumObject = compute_checksums(pathsToWalk, '')
 
@@ -193,3 +198,6 @@ if __name__ == '__main__':
 
 
     # d = compute_checksums(dirname='.', suffix='.py')
+
+
+    
