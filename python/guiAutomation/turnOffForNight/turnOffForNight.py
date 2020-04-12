@@ -6,7 +6,7 @@ import _myPyFunc, subprocess, os, time
 from runpy import run_path
 
 
-pathToPowerShellScript = Path(_myPyFunc.getParentalDirectory(pathToThisPythonFile, 'publicProjects'), 'shell', 'powershell', 'turnOffMonitor.ps1')
+pathToPowerShellScript = Path(_myPyFunc.getParentalDirectory(pathToThisPythonFile, 'publicProjects'), 'commandLineInterfaces', 'powershell', 'turnOffMonitor.ps1')
 subprocess.Popen([r'C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe', str(pathToPowerShellScript)], cwd=os.getcwd())
 
 
