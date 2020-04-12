@@ -184,10 +184,10 @@ if __name__ == '__main__':
     originalPath = pathlib.Path(pathToThisPythonFile.parents[1], 'gui') #, 'guiAutomation')
     pathToRemoveFrom = pathlib.Path(pathToThisPythonFile.parents[0])
 
-    # p(pathlib.Path(pathToThisPythonFile.parents[7], '$recycle.bin'))
+
 
     pathsToWalk = [str(pathlib.Path(pathToThisPythonFile.parents[0])),
-                    str(pathlib.Path(pathToThisPythonFile.parents[7], '$recycle.bin'))]
+                    str(pathlib.Path(pathToThisPythonFile.parents[1], 'gui'))]
 
     checkSumObject = compute_checksums(pathsToWalk, '')
 
