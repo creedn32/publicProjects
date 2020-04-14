@@ -9,9 +9,10 @@ import phrase
 
 import subprocess
 
+# print(phrase.phrase)
 subprocessObj = subprocess.Popen(['runas', '/noprofile', '/user:Administrator', 'NeedsAdminPrivilege.exe'], stdin=subprocess.PIPE)
-subprocessObj.stdin.write(phrase.phrase)
-subprocessObj.communicate()
+# subprocessObj.stdin.write(phrase.phrase)
+# subprocessObj.communicate()
 
 
 # subprocess.Popen('cmder')
