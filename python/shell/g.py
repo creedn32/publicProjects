@@ -3,10 +3,12 @@ import sys
 from pathlib import Path
 from pprint import pprint as pp
 
+import datetime
+nowObj = datetime.datetime.now()
 
 thisPythonFilePath = Path(__file__).resolve()
 pathToRepos = thisPythonFilePath.parents[3]
-commitMesssage = 'latest updates, using Python to automate git'
+commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M")
 
 
 
