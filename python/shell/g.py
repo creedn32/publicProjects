@@ -8,7 +8,7 @@ nowObj = datetime.datetime.now()
 
 thisPythonFilePath = Path(__file__).resolve()
 pathToRepos = thisPythonFilePath.parents[3]
-commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M")
+commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
 
 
 
