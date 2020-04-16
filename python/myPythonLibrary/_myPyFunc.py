@@ -752,8 +752,8 @@ def addToPath(basePath, arrayOfPathParts):
 
     tempPath = basePath
 
-    for item in arrayOfPathParts:
-        tempPath = Path(tempPath, item)
+    for pathPart in arrayOfPathParts:
+        tempPath = Path(tempPath, pathPart)
 
     return tempPath
 

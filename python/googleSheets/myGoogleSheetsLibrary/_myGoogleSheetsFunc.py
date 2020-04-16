@@ -572,3 +572,25 @@ def getArrayFromJSONData(googleSpreadsheetDataInJSONFormat):
                 arrayToReturn.append(rowArray)
 
     return arrayToReturn
+
+
+
+
+def getFieldMasksStr(fieldMasksArray):
+
+    fieldMasksStr = ''
+    
+    for fieldMaskIndex, fieldMaskArray in enumerate(fieldMasksArray):
+
+        for itemIndex, item in enumerate(fieldMaskArray):
+
+            fieldMasksStr = fieldMasksStr + item
+
+            if itemIndex != len(fieldMaskArray) - 1:
+                
+                fieldMasksStr = fieldMasksStr + '/'
+
+        # if fieldMaskIndex != len(fieldMasksArray) - 1:
+        fieldMasksStr = fieldMasksStr + ','
+
+    return fieldMasksStr
