@@ -537,59 +537,72 @@ def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=None):
 
 
 
-def getJSONForSheet(googleSpreadsheetDataInJSONFormat, sheetName):
+def getJSONForSheet(googleSpreadsheetDataInJSONFormat, sheetNameStr):
 
-    for sheet in googleSpreadsheetDataInJSONFormat['sheets']:
-        sheetNameFromJSON = sheet['properties']['title']
+    sheetsArray = googleSpreadsheetDataInJSONFormat['sheets']
 
-        if sheetName == sheetNameFromJSON:
-            return sheet
+    for sheetObj in sheetsArray:
+        sheetNameFromJSON = sheetObj['properties']['title']
+
+        if sheetNameStr == sheetNameFromJSON:
+            return sheetObj
            
 
 
-def getArrayFromJSONData(googleSpreadsheetDataInJSONFormat):
+def getArrayFromJSONData(sheetDataInJSONFormat):
 
+    rowDataArray = getRowDataArray(sheetDataInJSONFormat)
+    lengthOfLongestRow = getLengthOfLongestRow(rowDataArray)
     arrayToReturn = []
 
-    sheetDataAsObjects = googleSpreadsheetDataInJSONFormat['data']
+    for rowObject in rowDataArray:
 
-    
+        valuesArray = rowObject['values']
+        rowArrayToReturn = []
 
-    for sheetDataObj in sheetDataAsObjects:
-                    
-        dataObjToRetrieve = 'rowData'
-
-        if dataObjToRetrieve in sheetDataObj:
+        for cellObj in valuesArray:
             
-            lengthOfLongestRow = getLengthOfLongestRow(sheetDataObj[dataObjToRetrieve])
+            if 'formattedValue' in cellObj:
+                valueToReturn = cellObj['formattedValue']
+            else:
+                valueToReturn = ''
+            rowArrayToReturn.append(valueToReturn)
 
-            for rowObject in sheetDataObj[dataObjToRetrieve]:
+        while len(rowArrayToReturn) < lengthOfLongestRow:
+            rowArrayToReturn.append('')
 
-                rowArray = []
-
-                for cellDataObj in rowObject['values']:
-                    
-                    if 'formattedValue' in cellDataObj:
-                        valueForArray = cellDataObj['formattedValue']
-                    else:
-                        valueForArray = ''
-                    rowArray.append(valueForArray)
-
-                while len(rowArray) < lengthOfLongestRow:
-                    rowArray.append('')
-
-
-                arrayToReturn.append(rowArray)
+        arrayToReturn.append(rowArrayToReturn)
 
     return arrayToReturn
 
 
 
-def getLengthOfLongestRow(sheetDataObjRowData):
+def getRowDataArray(sheetDataInJSONFormat):
+
+    sheetDataArray = sheetDataInJSONFormat['data']
+
+    for sheetObj in sheetDataArray:
+                    
+        if 'rowData' in sheetObj:
+
+            return sheetObj['rowData']
+            
+
+# def getCellDataObjWithRowColumn(sheetDataInJSONFormat, row, column):
+
+#     rowDataArray = getRowDataArray(sheetDataInJSONFormat)
+#     rowObject = rowDataArray[row]
+#     valuesArray = rowObject['values']
+#     return valuesArray[column]
+    
+
+
+
+def getLengthOfLongestRow(rowDataArray):
     
     maxRowLength = 0
 
-    for rowObj in sheetDataObjRowData:
+    for rowObj in rowDataArray:
 
         if len(rowObj['values']) > maxRowLength:
             maxRowLength = len(rowObj['values'])

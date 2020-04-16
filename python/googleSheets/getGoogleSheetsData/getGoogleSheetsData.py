@@ -18,8 +18,8 @@ spreadsheetIDStr = '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8'
 spreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=_myGoogleSheetsFunc.getFieldMasksStr(fieldMasksArray=fieldMasksArray))
 
 
-_myPyFunc.saveToFile(spreadsheetDataInJSONFormat, 'spreadsheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
+# _myPyFunc.saveToFile(spreadsheetDataInJSONFormat, 'spreadsheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
 sheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONForSheet(spreadsheetDataInJSONFormat, 'Sheet1')
-_myPyFunc.saveToFile(spreadsheetDataInJSONFormat, 'sheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
+# _myPyFunc.saveToFile(sheetDataInJSONFormat, 'sheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
 sheetDataInArray = _myGoogleSheetsFunc.getArrayFromJSONData(sheetDataInJSONFormat)
 p(sheetDataInArray)
