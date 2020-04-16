@@ -11,18 +11,18 @@ from pprint import pprint as p
 
 googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
 fieldMasksArray = [['sheets', 'properties', 'title'], ['sheets', 'data', 'rowData', 'values', 'formattedValue']]
-fieldMasksArray = [['sheets', 'properties', 'title'], ['sheets', 'data', 'rowData', 'values']]
+fieldMasksArray = None
 
 spreadsheetIDStr = '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8'
 
 spreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, _myGoogleSheetsFunc.getFieldMasksStr(fieldMasksArray))
-# p(spreadsheetDataInJSONFormat)
+p(spreadsheetDataInJSONFormat)
 # p('done')
 # spreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj)
 # p(spreadsheetDataInJSONFormat)
-sheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONForSheet(spreadsheetDataInJSONFormat, 'Sheet1')
+# sheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONForSheet(spreadsheetDataInJSONFormat, 'Sheet1')
 # p(sheetDataInJSONFormat)
-sheetDataInArray = _myGoogleSheetsFunc.getArrayFromJSONData(sheetDataInJSONFormat)
+# sheetDataInArray = _myGoogleSheetsFunc.getArrayFromJSONData(sheetDataInJSONFormat)
 
 
-p(sheetDataInArray)
+# p(sheetDataInArray)

@@ -533,7 +533,7 @@ def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, *optionalArguments
         fieldMask = optionalArguments[0]
         return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, fields=fieldMask).execute()        
     else:
-        return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr).execute()
+        return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
 
 
 
