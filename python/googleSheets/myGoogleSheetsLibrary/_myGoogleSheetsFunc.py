@@ -4,6 +4,14 @@ from pprint import pprint as pp
 
 
 
+def hasFormattedValue(cell):
+
+    for item in cell:
+        if "formattedValue" in item:
+            return True
+
+    return False
+
 
 
 def isWhite(cell):
@@ -15,18 +23,6 @@ def isWhite(cell):
         return True
 
     return False
-
-
-def hasFormattedValue(cell):
-
-    for item in cell:
-        if "formattedValue" in item:
-            return True
-
-    return False
-
-
-
 
 
 
@@ -431,13 +427,18 @@ def populateSheet(rowsToKeep, colsToKeep, sheetName, googleSheetsObj, spreadshee
 
 
 
-def authFunc(pathToGoogleCredentials):
+def authFunc(*optionalParameterPathToGoogleCredentials):
 
     import pickle, pathlib, googleapiclient.discovery, google_auth_oauthlib.flow, google.auth.transport.requests
     # print(pathlib.Path.cwd().parents[3])
 
-    credentialsPath = str(pathToGoogleCredentials) + "\\googleCredentials.json"
-    tokenPath = str(pathToGoogleCredentials) + "\\googleToken.pickle"
+    if optionalParameterPathToGoogleCredentials:
+        credentialsPath = str(optionalParameterPathToGoogleCredentials[0]) + "\\googleCredentials.json"
+        tokenPath = str(optionalParameterPathToGoogleCredentials[0]) + "\\googleToken.pickle"
+    else:
+        credentialsPath = str(pathlib.Path.cwd().parents[3]) + "\\privatedata\\googleCredentials\\googleCredentials.json"
+        tokenPath = str(pathlib.Path.cwd().parents[3]) + "\\privatedata\\googleCredentials\\googleToken.pickle"
+    
     googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]
     credentialsObj = None
 
