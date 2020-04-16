@@ -3,7 +3,7 @@ pathToThisPythonFile = Path(__file__).resolve()
 import sys
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
 import _myPyFunc
-sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
+sys.path.append(_myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'myGoogleSheetsLibrary'))
 import _myGoogleSheetsFunc
 
 from pprint import pprint as p
