@@ -8,21 +8,21 @@ import _myGoogleSheetsFunc
 
 from pprint import pprint as p
 
-
+pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
 googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
 fieldMasksArray = [['sheets', 'properties', 'title'], ['sheets', 'data', 'rowData', 'values', 'formattedValue']]
 fieldMasksArray = None
 
 spreadsheetIDStr = '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8'
 
-spreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, _myGoogleSheetsFunc.getFieldMasksStr(fieldMasksArray))
-p(spreadsheetDataInJSONFormat)
-# p('done')
-# spreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj)
-# p(spreadsheetDataInJSONFormat)
-# sheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONForSheet(spreadsheetDataInJSONFormat, 'Sheet1')
-# p(sheetDataInJSONFormat)
-# sheetDataInArray = _myGoogleSheetsFunc.getArrayFromJSONData(sheetDataInJSONFormat)
+spreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=_myGoogleSheetsFunc.getFieldMasksStr(fieldMasksArray=fieldMasksArray))
 
+# var = 710
+# variable_name = locals().items() # if v == 710][0] 
+# print("Your variable name is " + str(variable_name))
 
-# p(sheetDataInArray)
+_myPyFunc.saveToFile(spreadsheetDataInJSONFormat, 'spreadsheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
+sheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONForSheet(spreadsheetDataInJSONFormat, 'Sheet1')
+_myPyFunc.saveToFile(spreadsheetDataInJSONFormat, 'sheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
+sheetDataInArray = _myGoogleSheetsFunc.getArrayFromJSONData(sheetDataInJSONFormat)
+p(sheetDataInArray)

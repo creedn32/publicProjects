@@ -527,10 +527,9 @@ def getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, rangesArgument
 
 
 
-def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, *optionalArguments):
+def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=None):
     
-    if optionalArguments:
-        fieldMask = optionalArguments[0]
+    if fieldMask:
         return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, fields=fieldMask).execute()        
     else:
         return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, includeGridData=True).execute()
@@ -554,19 +553,31 @@ def getArrayFromJSONData(googleSpreadsheetDataInJSONFormat):
 
     sheetDataAsObjects = googleSpreadsheetDataInJSONFormat['data']
 
+    
+
     for sheetDataObj in sheetDataAsObjects:
-        
+                    
         dataObjToRetrieve = 'rowData'
-            
+
         if dataObjToRetrieve in sheetDataObj:
-                            
+            
+            lengthOfLongestRow = getLengthOfLongestRow(sheetDataObj[dataObjToRetrieve])
+
             for rowObject in sheetDataObj[dataObjToRetrieve]:
 
                 rowArray = []
 
                 for cellDataObj in rowObject['values']:
                     
-                    rowArray.append(cellDataObj['formattedValue'])
+                    if 'formattedValue' in cellDataObj:
+                        valueForArray = cellDataObj['formattedValue']
+                    else:
+                        valueForArray = ''
+                    rowArray.append(valueForArray)
+
+                while len(rowArray) < lengthOfLongestRow:
+                    rowArray.append('')
+
 
                 arrayToReturn.append(rowArray)
 
@@ -574,22 +585,37 @@ def getArrayFromJSONData(googleSpreadsheetDataInJSONFormat):
 
 
 
-
-def getFieldMasksStr(fieldMasksArray):
-
-    fieldMasksStr = ''
+def getLengthOfLongestRow(sheetDataObjRowData):
     
-    for fieldMaskIndex, fieldMaskArray in enumerate(fieldMasksArray):
+    maxRowLength = 0
 
-        for itemIndex, item in enumerate(fieldMaskArray):
+    for rowObj in sheetDataObjRowData:
 
-            fieldMasksStr = fieldMasksStr + item
+        if len(rowObj['values']) > maxRowLength:
+            maxRowLength = len(rowObj['values'])
 
-            if itemIndex != len(fieldMaskArray) - 1:
-                
-                fieldMasksStr = fieldMasksStr + '/'
+    return maxRowLength
 
-        # if fieldMaskIndex != len(fieldMasksArray) - 1:
-        fieldMasksStr = fieldMasksStr + ','
 
-    return fieldMasksStr
+
+def getFieldMasksStr(fieldMasksArray=None):
+
+    if not fieldMasksArray:
+        return None
+    else:
+        fieldMasksStr = ''
+        
+        for fieldMaskIndex, fieldMaskArray in enumerate(fieldMasksArray):
+
+            for itemIndex, item in enumerate(fieldMaskArray):
+
+                fieldMasksStr = fieldMasksStr + item
+
+                if itemIndex != len(fieldMaskArray) - 1:
+                    
+                    fieldMasksStr = fieldMasksStr + '/'
+
+            # if fieldMaskIndex != len(fieldMasksArray) - 1:
+            fieldMasksStr = fieldMasksStr + ','
+
+        return fieldMasksStr
