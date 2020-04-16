@@ -469,6 +469,8 @@ def authFunc(*optionalParameterPathToGoogleCredentials):
 
 
 
+#######################################################################################################
+
 
 def getGoogleSheetsAPIObj(partialPathArray):
 
