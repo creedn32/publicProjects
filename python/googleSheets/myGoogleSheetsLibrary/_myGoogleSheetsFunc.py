@@ -529,10 +529,9 @@ def getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, rangesArgument
 
 def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, *optionalArguments):
     
-    fieldMask = optionalArguments[0]
-
-    if fieldMask:
-        return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, fields=fieldMask).execute()
+    if optionalArguments:
+        fieldMask = optionalArguments[0]
+        return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, fields=fieldMask).execute()        
     else:
         return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr).execute()
 
