@@ -17,9 +17,6 @@ spreadsheetIDStr = '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8'
 
 spreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=_myGoogleSheetsFunc.getFieldMasksStr(fieldMasksArray=fieldMasksArray))
 
-# var = 710
-# variable_name = locals().items() # if v == 710][0] 
-# print("Your variable name is " + str(variable_name))
 
 _myPyFunc.saveToFile(spreadsheetDataInJSONFormat, 'spreadsheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
 sheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONForSheet(spreadsheetDataInJSONFormat, 'Sheet1')

@@ -758,7 +758,9 @@ def addToPath(basePath, arrayOfPathParts):
     return tempPath
 
 
+def getVariableNameStr(dictionaryOfVariables, variableToFind):
 
+    return [k for k, v in dictionaryOfVariables if v == variableToFind][0]
    
 
 
