@@ -29,8 +29,8 @@ def postTransactionsFunction(sheetName):
     activateKeyboard = True
 
 
-    googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
-    googleSheetsData = _myGoogleSheetsLibrary.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)
+    googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
+    googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)
 
 
     for dict in googleSheetsData["sheets"]:
@@ -73,7 +73,7 @@ def postTransactionsFunction(sheetName):
     for row in currentSheetData[1:]:
 
 
-        if _myGoogleSheetsLibrary.isWhite(row["values"][0]) and _myGoogleSheetsLibrary.hasFormattedValue(row["values"][0]):
+        if _myGoogleSheetsFunc.isWhite(row["values"][0]) and _myGoogleSheetsFunc.hasFormattedValue(row["values"][0]):
 
 
             if row["values"][0]["formattedValue"] != "Enter/Edit" and activateKeyboard:
@@ -181,7 +181,7 @@ def postTransfersFunction():
     # class moduleNameClass:
     #     pass
     #
-    # moduleName = "_myGoogleSheetsLibrary"
+    # moduleName = "_myGoogleSheetsFunc"
     # moduleNameObj = moduleNameClass()
     #
     # for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
@@ -189,7 +189,7 @@ def postTransfersFunction():
     #         importedModuleObj = importlib.import_module(moduleName + "." + filePath.stem)
     #         setattr(moduleNameObj, filePath.stem, importedModuleObj)
     #
-    # _myGoogleSheetsLibrary = moduleNameObj
+    # _myGoogleSheetsFunc = moduleNameObj
 
 
 
@@ -202,17 +202,17 @@ def postTransfersFunction():
     activateKeyboard = True
 
 
-    googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
+    googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
     fieldMask = 'sheets/properties/title,sheets/data/rowData/values/formattedValue'
 
 
-    googleSpreadsheetDataInJSONFormat = _myGoogleSheetsLibrary.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask)
+    googleSpreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask)
     # _myPyFunc.saveToFile(googleSpreadsheetDataInJSONFormat, 'googleSpreadsheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
-    googleSheetDataInJSONFormat = _myGoogleSheetsLibrary.getJSONForSheet(googleSpreadsheetDataInJSONFormat, 'Bank Transfers')
-    googleSheetDataInArray = _myGoogleSheetsLibrary.getArrayFromJSONData(googleSheetDataInJSONFormat)
+    googleSheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONForSheet(googleSpreadsheetDataInJSONFormat, 'Bank Transfers')
+    googleSheetDataInArray = _myGoogleSheetsFunc.getArrayFromJSONData(googleSheetDataInJSONFormat)
 
 
-    googleSheetsData = _myGoogleSheetsLibrary.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)
+    googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)
 
     for dict in googleSheetsData["sheets"]:
         if dict["properties"]["title"] == sheetName:
@@ -251,7 +251,7 @@ def postTransfersFunction():
     for row in currentSheetData[1:]:
 
 
-        if _myGoogleSheetsLibrary.isWhite(row["values"][0]) and _myGoogleSheetsLibrary.hasFormattedValue(row["values"][0]):
+        if _myGoogleSheetsFunc.isWhite(row["values"][0]) and _myGoogleSheetsFunc.hasFormattedValue(row["values"][0]):
 
             if activateKeyboard:
 
@@ -326,7 +326,7 @@ import sys
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
 import _myPyFunc
 sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
-import _myGoogleSheetsLibrary
+import _myGoogleSheetsFunc
 
 from pprint import pprint as p
 import datetime, pynput.mouse, win32api, win32con, pyautogui
