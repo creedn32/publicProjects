@@ -704,7 +704,7 @@ def getShortenedPathLib(pathToShorten, lastDirectoryToInclude):
 
 
 
-def getParentalDirectory(pathToClimb, lastDirectory):
+def getPathUpFolderTree(pathToClimb, lastDirectory):
 
     # from pathlib import Path
     
@@ -744,7 +744,18 @@ def saveToFile(dataObj, nameOfDataObj, fileExtensionToSave, pathToSaveFileTo):
         fileObj.close()
     
 
-    
+
+
+def addToPath(basePath, arrayOfPathParts):
+
+    from pathlib import Path
+
+    tempPath = basePath
+
+    for item in arrayOfPathParts:
+        tempPath = Path(tempPath, item)
+
+    return tempPath
 
 
 

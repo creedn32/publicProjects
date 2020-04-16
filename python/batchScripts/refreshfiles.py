@@ -11,8 +11,8 @@ import shutil, os
 
 thisPythonFilePath = Path(__file__).resolve()
 thisPythonFileStem = thisPythonFilePath.stem
-pathToPublicProjectsPython = _myPyFunc.getParentalDirectory(thisPythonFilePath, 'python')
-batchFilesFolderPath = Path(_myPyFunc.getParentalDirectory(thisPythonFilePath, 'batchScripts'), 'scripts')
+pathToPublicProjectsPython = _myPyFunc.getPathUpFolderTree(thisPythonFilePath, 'python')
+batchFilesFolderPath = Path(_myPyFunc.getPathUpFolderTree(thisPythonFilePath, 'batchScripts'), 'scripts')
 templateBatchFilePath = Path(batchFilesFolderPath, thisPythonFileStem + '.bat')
 
 

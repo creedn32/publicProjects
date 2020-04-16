@@ -472,7 +472,7 @@ def authFunc(*optionalParameterPathToGoogleCredentials):
 #######################################################################################################
 
 
-def getGoogleSheetsAPIObj(partialPathArray):
+def getGoogleSheetsAPIObj(arrayOfPathParts):
 
     from pathlib import Path
     pathToThisPythonFile = Path(__file__).resolve()
@@ -484,23 +484,11 @@ def getGoogleSheetsAPIObj(partialPathArray):
     from pprint import pprint as pp
 
 
-    pathToRepos = _myPyFunc.getParentalDirectory(pathToThisPythonFile, 'repos')
+    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    pathToJSONForCredentialsRetrieval = pathToRepos
 
-    for pathPart in partialPathArray:
-        pathToJSONForCredentialsRetrieval = Path(pathToJSONForCredentialsRetrieval, pathPart)
-    
-    pathToJSONForCredentialsRetrieval = Path(pathToJSONForCredentialsRetrieval, 'jsonForCredentialsRetrieval.json')
- 
- 
-    pathToPickleFileWithCredentials = pathToRepos
-
-    for pathPart in partialPathArray:
-        pathToPickleFileWithCredentials = Path(pathToPickleFileWithCredentials, pathPart)
-    
-    pathToPickleFileWithCredentials = Path(pathToPickleFileWithCredentials, 'pickleFileWithCredentials.pickle')
-
+    pathToJSONForCredentialsRetrieval = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['jsonForCredentialsRetrieval.json'])
+    pathToPickleFileWithCredentials = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['pickleFileWithCredentials.pickle'])
 
     googleSheetsAPIScopes = ["https://www.googleapis.com/auth/spreadsheets"]
     credentialsObj = None
@@ -510,7 +498,6 @@ def getGoogleSheetsAPIObj(partialPathArray):
     #if the credentials object can't be refreshed, then get them
 
     if Path.exists(pathToPickleFileWithCredentials):
-        
         with open(pathToPickleFileWithCredentials, "rb") as pickleFileObj:
             credentialsObj = pickle.load(pickleFileObj)
     else:
@@ -558,7 +545,6 @@ def getJSONForSheet(googleSpreadsheetDataInJSONFormat, sheetName):
         sheetNameFromJSON = sheet['properties']['title']
 
         if sheetName == sheetNameFromJSON:
-
             return sheet
            
 
