@@ -8,19 +8,15 @@ import _myGoogleSheetsFunc
 
 from pprint import pprint as p
 
-pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
-arrayOfPathParts = ['privateData', 'python', 'googleCredentials']
-googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(arrayOfPathParts)
+
+pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
+pathToCredentialsDirectory = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath)
+
+googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsDirectory=pathToCredentialsDirectory)
+
+
 fieldMasksArray = [['sheets', 'properties', 'title'], ['sheets', 'data', 'rowData', 'values', 'formattedValue']]
 fieldMasksArray = None
 
-spreadsheetIDStr = '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8'
-
-spreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=_myGoogleSheetsFunc.getFieldMasksStr(fieldMasksArray=fieldMasksArray))
-# _myPyFunc.saveToFile(spreadsheetDataInJSONFormat, 'spreadsheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
-sheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONForSheet(spreadsheetDataInJSONFormat, 'Sheet1')
-# _myPyFunc.saveToFile(sheetDataInJSONFormat, 'sheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
-sheetDataInArray = _myGoogleSheetsFunc.getArrayFromJSONData(sheetDataInJSONFormat)
-p(sheetDataInArray)
-
-
+p(_myGoogleSheetsFunc.getArrayFromGoogleSheets(googleSheetsAPIObj, '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', 'Sheet1', fieldMasksArray))

@@ -472,7 +472,7 @@ def authFunc(*optionalParameterPathToGoogleCredentials):
 #######################################################################################################
 
 
-def getGoogleSheetsAPIObj(arrayOfPathParts):
+def getGoogleSheetsAPIObj(arrayOfPathParts=None, pathToCredentialsDirectory=None):
 
     from pathlib import Path
     pathToThisPythonFile = Path(__file__).resolve()
@@ -484,11 +484,18 @@ def getGoogleSheetsAPIObj(arrayOfPathParts):
     from pprint import pprint as pp
 
 
-    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
 
-    pathToJSONForCredentialsRetrieval = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['jsonForCredentialsRetrieval.json'])
-    pathToPickleFileWithCredentials = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['pickleFileWithCredentials.pickle'])
+    if pathToCredentialsDirectory:
+        pathToJSONForCredentialsRetrieval = Path(pathToCredentialsDirectory, 'jsonForCredentialsRetrieval.json')
+        pathToPickleFileWithCredentials = Path(pathToCredentialsDirectory, 'pickleFileWithCredentials.pickle')
+    else:
+        pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+        pathToJSONForCredentialsRetrieval = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['jsonForCredentialsRetrieval.json'])
+        pathToPickleFileWithCredentials = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['pickleFileWithCredentials.pickle'])
+
+
+
 
     googleSheetsAPIScopes = ["https://www.googleapis.com/auth/spreadsheets"]
     credentialsObj = None
@@ -529,9 +536,6 @@ def getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, rangesArgument
 
 def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=None):
     
-    
-
-
     if fieldMask:
         return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, fields=fieldMask).execute()        
     else:
@@ -636,3 +640,20 @@ def getFieldMasksStr(fieldMasksArray=None):
             fieldMasksStr = fieldMasksStr + ','
 
         return fieldMasksStr
+
+
+
+def getArrayFromGoogleSheets(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, fieldMasksArray):
+
+    from pathlib import Path
+    pathToThisPythonFile = Path(__file__).resolve()
+
+
+    fieldMasksStr = getFieldMasksStr(fieldMasksArray=fieldMasksArray)
+
+    spreadsheetDataInJSONFormat = getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=fieldMasksStr)
+    # _myPyFunc.saveToFile(spreadsheetDataInJSONFormat, 'spreadsheetDataInJSONFormat', 'json', pathPassedIn)
+    sheetDataInJSONFormat = getJSONForSheet(spreadsheetDataInJSONFormat, sheetNameStr)
+    # _myPyFunc.saveToFile(sheetDataInJSONFormat, 'sheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
+    return getArrayFromJSONData(sheetDataInJSONFormat)    
+
