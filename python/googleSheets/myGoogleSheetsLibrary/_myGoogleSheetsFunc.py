@@ -529,6 +529,9 @@ def getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, rangesArgument
 
 def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=None):
     
+    
+
+
     if fieldMask:
         return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, fields=fieldMask).execute()        
     else:
@@ -555,9 +558,10 @@ def getArrayFromJSONData(sheetDataInJSONFormat):
     lengthOfLongestRow = getLengthOfLongestRow(rowDataArray)
     arrayToReturn = []
 
-    for rowObject in rowDataArray:
-
-        valuesArray = rowObject['values']
+    for rowObj in rowDataArray:
+        
+        valuesArray = rowObj['values']
+        print(len(valuesArray))
         rowArrayToReturn = []
 
         for cellObj in valuesArray:
