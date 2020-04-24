@@ -1,4 +1,4 @@
-def postTransactionsFunction(sheetName):
+def postTransactionsFunction(sheetNameStr):
 
 
     splitTime = _myPyFunc.printElapsedTime(False, "Starting code")
@@ -30,11 +30,11 @@ def postTransactionsFunction(sheetName):
 
 
     googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
-    googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)
+    googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetNameStr)
 
 
     for dict in googleSheetsData["sheets"]:
-        if dict["properties"]["title"] == sheetName:
+        if dict["properties"]["title"] == sheetNameStr:
             currentSheetIDStr = dict["properties"]["sheetId"]
             currentSheetData = dict["data"][0]["rowData"]
 
@@ -196,7 +196,7 @@ def postTransfersFunction():
     # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
     spreadsheetIDStr = '1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg'  #ID of private Google Sheet
     # spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
-    sheetName = "Bank Transfers"
+    sheetNameStr = "Bank Transfers"
     changeCellColor = False
     pyautogui.PAUSE = 0
     activateKeyboard = True
@@ -209,13 +209,13 @@ def postTransfersFunction():
     jsonOfAllSheets = _myGoogleSheetsFunc.getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask)
     # _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
     jsonOfOneSheet = _myGoogleSheetsFunc.getJSONOfOneSheet(jsonOfAllSheets, 'Bank Transfers')
-    arrayOfOneSheet = _myGoogleSheetsFunc.getArrayFromJSONOfOneSheet(jsonOfOneSheet)
+    arrayOfOneSheet = _myGoogleSheetsFunc.getArrayFromJSONOfOneSheet(jsonOfOneSheet, googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr)
 
 
-    googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)
+    googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetNameStr)
 
     for dict in googleSheetsData["sheets"]:
-        if dict["properties"]["title"] == sheetName:
+        if dict["properties"]["title"] == sheetNameStr:
             currentSheetIDStr = dict["properties"]["sheetId"]
             currentSheetData = dict["data"][0]["rowData"]
 

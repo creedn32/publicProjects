@@ -160,7 +160,7 @@ def convertKey(key):
 
 
 
-def columnToLetter(columnNumber):
+def getColumnLetterFromNumber(columnNumber):
     letter = ""
 
     while columnNumber > 0:
@@ -168,6 +168,10 @@ def columnToLetter(columnNumber):
         letter = chr(65 + remainder) + letter
 
     return letter
+
+
+
+
 
 
 
@@ -757,6 +761,8 @@ def addToPath(basePath, arrayOfPathParts):
         tempPath = Path(tempPath, pathPart)
 
     return tempPath
+
+
 
 
 def getVariableNameStr(dictionaryOfVariables, variableToFind):

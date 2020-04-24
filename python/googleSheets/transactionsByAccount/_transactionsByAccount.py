@@ -35,7 +35,7 @@ def beginOps(currentSheet, nextSheet, firstRow):
     for sheetToSearch in [currentSheet, nextSheet]:
         for sheetWithGridInfo in sheetInfo["sheetsGridInfoObj"]["sheets"]:
             if sheetWithGridInfo["properties"]["title"] == sheetInfo[sheetToSearch]["name"]:
-                sheetInfo[sheetToSearch]["lastCell"] = creedFunctions.columnToLetter(sheetWithGridInfo["properties"]["gridProperties"]["columnCount"]) + str(sheetWithGridInfo["properties"]["gridProperties"]["rowCount"])
+                sheetInfo[sheetToSearch]["lastCell"] = creedFunctions.getColumnLetterFromNumber(sheetWithGridInfo["properties"]["gridProperties"]["columnCount"]) + str(sheetWithGridInfo["properties"]["gridProperties"]["rowCount"])
                 sheetInfo[sheetToSearch]["numberOfColumns"] = sheetWithGridInfo["properties"]["gridProperties"]["columnCount"]
 
     rangeToClear = sheetInfo[nextSheet]["name"] + "!" + sheetInfo["allSheets"]["begRange"] + ":" + sheetInfo[nextSheet]["lastCell"]

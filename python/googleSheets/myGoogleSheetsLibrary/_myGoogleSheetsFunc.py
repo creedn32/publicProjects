@@ -535,7 +535,7 @@ def getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, rangesArgument
 
 
 def getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=None):
-    
+
     if fieldMask:
         return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, fields=fieldMask).execute()        
     else:
@@ -555,22 +555,30 @@ def getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr):
             return sheetObj
 
 
-def getSheetIDOfOneSheet(jsonOfOneSheet):
+def getSheetIDOfOneSheet(jsonOfAllSheets, sheetNameStr):
 
-    return jsonOfOneSheet['properties']['sheetId']
+    sheetsArray = jsonOfAllSheets['sheets']
+
+    for sheetObj in sheetsArray:
+        sheetNameFromJSON = sheetObj['properties']['title']
+
+        if sheetNameStr == sheetNameFromJSON:
+            return sheetObj['properties']['sheetId']
+
            
 
 
-def getArrayFromJSONOfOneSheet(jsonOfOneSheet):
+def getArrayFromJSONOfOneSheet(jsonOfOneSheet, googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr):
 
     arrayOfRowData = getArrayOfRowData(jsonOfOneSheet)
     lengthOfLongestRow = getLengthOfLongestRow(arrayOfRowData)
+    
     arrayOfOneSheet = []
 
     for rowObj in arrayOfRowData:
         
         valuesArray = rowObj['values']
-        print(len(valuesArray))
+        # print(len(valuesArray))
         arrayOfOneRow = []
 
         for cellObj in valuesArray:
@@ -585,6 +593,7 @@ def getArrayFromJSONOfOneSheet(jsonOfOneSheet):
             arrayOfOneRow.append('')
 
         arrayOfOneSheet.append(arrayOfOneRow)
+
 
     return arrayOfOneSheet
 
@@ -655,15 +664,21 @@ def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, array
 
 
     strOfAllFieldMAsks = getStrOfAllFieldMasks(arrayOfAllFieldMasks=arrayOfAllFieldMasks)
-
+    
     jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
     _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
     jsonOfOneSheet = getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr)
-    
-    
-    sheetID = getSheetIDOfOneSheet(jsonOfOneSheet)
+    _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', pathToSaveFile)
+    return getArrayFromJSONOfOneSheet(jsonOfOneSheet, googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr)    
 
-    requestObj = {
+
+
+
+def addColumn(googleSheetsAPIObj, sheetNameStr, jsonOfAllSheets):
+
+    sheetID = getSheetIDOfOneSheet(jsonOfAllSheets, sheetNameStr)
+
+    requestAppendColumn = {
         "requests": [
             {
                 "appendDimension": {
@@ -675,36 +690,50 @@ def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, array
         ]   
     }
 
-    googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestObj).execute()
 
-    # bodyObj = {
-    #     'values': [
-    #         ['a', 'b', 'c']
-    #     ],
 
+    # googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestAppendColumn).execute()
+
+
+    # columnLetterOfLastColumn = _myPyFunc.getColumnLetterFromNumber(lengthOfLongestRow + 1)
+    # numberOfRows = len(arrayOfRowData)
+    # rangeToWriteTo = sheetNameStr + '!' + columnLetterOfLastColumn + '1' + ':' + columnLetterOfLastColumn + str(numberOfRows)
+    # valuesToWrite = ['Last Column' for i in range(numberOfRows)]
+
+
+    # requestWriteToCells = {
+    #     "valueInputOption": "USER_ENTERED",
+    #     "data": [
+    #         {
+    #             "range": rangeToWriteTo,
+    #             "majorDimension": "COLUMNS",
+    #             "values": [
+    #                 valuesToWrite
+    #             ]
+    #         }
+    #     ]
+    # }
+        
+  
+    # googleSheetsAPIObj.values().batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestWriteToCells).execute()
+
+
+
+    # requestDeleteColumn = {
+    #     "requests": [
+    #         {
+    #             "deleteDimension": {
+    #                 "range": {
+    #                     "sheetId": sheetID,
+    #                     "dimension": "COLUMNS",
+    #                     "startIndex": lengthOfLongestRow - 1,
+    #                     "endIndex": lengthOfLongestRow
+    #                 }
+                    
+    #             }
+    #         }
+    #     ]   
     # }
 
-    # googleSheetsAPIObj.values().append(spreadsheetId=spreadsheetIDStr, range='Sheet1', valueInputOption='RAW', body=bodyObj)
-
-    requestObj = {
-        "requests": [
-            {
-                "deleteDimension": {
-                    "range": {
-                        "sheetId": sheetID,
-                        "dimension": "COLUMNS",
-                        "length": 1
-                    }
-                    
-                }
-            }
-        ]   
-    }
-
-
-
-    _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', pathToSaveFile)
-    return getArrayFromJSONOfOneSheet(jsonOfOneSheet)    
-
-
+    # googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestDeleteColumn).execute()
 
