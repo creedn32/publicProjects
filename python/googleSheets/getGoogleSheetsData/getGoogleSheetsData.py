@@ -16,7 +16,7 @@ pathToCredentialsDirectory = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddT
 googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsDirectory=pathToCredentialsDirectory)
 
 
-fieldMasksArray = [['sheets', 'properties', 'title'], ['sheets', 'data', 'rowData', 'values', 'formattedValue']]
-fieldMasksArray = None
+arrayOfAllFieldMasks = [['sheets', 'properties', 'title'], ['sheets', 'data', 'rowData', 'values', 'formattedValue']]
+arrayOfAllFieldMasks = None
 
-p(_myGoogleSheetsFunc.getArrayFromGoogleSheets(googleSheetsAPIObj, '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', 'Sheet1', fieldMasksArray))
+p(_myGoogleSheetsFunc.getArrayOfOneSheet(googleSheetsAPIObj, '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', 'Sheet1', arrayOfAllFieldMasks))

@@ -206,10 +206,10 @@ def postTransfersFunction():
     fieldMask = 'sheets/properties/title,sheets/data/rowData/values/formattedValue'
 
 
-    googleSpreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask)
+    googleSpreadsheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask)
     # _myPyFunc.saveToFile(googleSpreadsheetDataInJSONFormat, 'googleSpreadsheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
-    googleSheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONForSheet(googleSpreadsheetDataInJSONFormat, 'Bank Transfers')
-    googleSheetDataInArray = _myGoogleSheetsFunc.getArrayFromJSONData(googleSheetDataInJSONFormat)
+    googleSheetDataInJSONFormat = _myGoogleSheetsFunc.getJSONOfOneSheet(googleSpreadsheetDataInJSONFormat, 'Bank Transfers')
+    googleSheetDataInArray = _myGoogleSheetsFunc.getArrayFromJSONOfOneSheet(googleSheetDataInJSONFormat)
 
 
     googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetName)

@@ -534,7 +534,7 @@ def getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, rangesArgument
 
 
 
-def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=None):
+def getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=None):
     
     if fieldMask:
         return googleSheetsAPIObj.get(spreadsheetId=spreadsheetIDStr, fields=fieldMask).execute()        
@@ -544,7 +544,7 @@ def getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=None):
 
 
 
-def getJSONForSheet(googleSpreadsheetDataInJSONFormat, sheetNameStr):
+def getJSONOfOneSheet(googleSpreadsheetDataInJSONFormat, sheetNameStr):
 
     sheetsArray = googleSpreadsheetDataInJSONFormat['sheets']
 
@@ -556,38 +556,38 @@ def getJSONForSheet(googleSpreadsheetDataInJSONFormat, sheetNameStr):
            
 
 
-def getArrayFromJSONData(sheetDataInJSONFormat):
+def getArrayFromJSONOfOneSheet(jsonOfOneSheet):
 
-    rowDataArray = getRowDataArray(sheetDataInJSONFormat)
-    lengthOfLongestRow = getLengthOfLongestRow(rowDataArray)
-    arrayToReturn = []
+    arrayOfRowData = getArrayOfRowData(jsonOfOneSheet)
+    lengthOfLongestRow = getLengthOfLongestRow(arrayOfRowData)
+    arrayOfOneSheet = []
 
-    for rowObj in rowDataArray:
+    for rowObj in arrayOfRowData:
         
         valuesArray = rowObj['values']
         print(len(valuesArray))
-        rowArrayToReturn = []
+        arrayOfOneRow = []
 
         for cellObj in valuesArray:
             
             if 'formattedValue' in cellObj:
-                valueToReturn = cellObj['formattedValue']
+                valueToAppend = cellObj['formattedValue']
             else:
-                valueToReturn = ''
-            rowArrayToReturn.append(valueToReturn)
+                valueToAppend = ''
+            arrayOfOneRow.append(valueToAppend)
 
-        while len(rowArrayToReturn) < lengthOfLongestRow:
-            rowArrayToReturn.append('')
+        while len(arrayOfOneRow) < lengthOfLongestRow:
+            arrayOfOneRow.append('')
 
-        arrayToReturn.append(rowArrayToReturn)
+        arrayOfOneSheet.append(arrayOfOneRow)
 
-    return arrayToReturn
+    return arrayOfOneSheet
 
 
 
-def getRowDataArray(sheetDataInJSONFormat):
+def getArrayOfRowData(jsonOfOneSheet):
 
-    sheetDataArray = sheetDataInJSONFormat['data']
+    sheetDataArray = jsonOfOneSheet['data']
 
     for sheetObj in sheetDataArray:
                     
@@ -596,21 +596,21 @@ def getRowDataArray(sheetDataInJSONFormat):
             return sheetObj['rowData']
             
 
-# def getCellDataObjWithRowColumn(sheetDataInJSONFormat, row, column):
+# def getCellDataObjWithRowColumn(jsonOfOneSheet, row, column):
 
-#     rowDataArray = getRowDataArray(sheetDataInJSONFormat)
-#     rowObject = rowDataArray[row]
+#     arrayOfRowData = getArrayOfRowData(jsonOfOneSheet)
+#     rowObject = arrayOfRowData[row]
 #     valuesArray = rowObject['values']
 #     return valuesArray[column]
     
 
 
 
-def getLengthOfLongestRow(rowDataArray):
+def getLengthOfLongestRow(arrayOfRowData):
     
     maxRowLength = 0
 
-    for rowObj in rowDataArray:
+    for rowObj in arrayOfRowData:
 
         if len(rowObj['values']) > maxRowLength:
             maxRowLength = len(rowObj['values'])
@@ -619,41 +619,41 @@ def getLengthOfLongestRow(rowDataArray):
 
 
 
-def getFieldMasksStr(fieldMasksArray=None):
+def getStrOfAllFieldMasks(arrayOfAllFieldMasks=None):
 
-    if not fieldMasksArray:
+    if not arrayOfAllFieldMasks:
         return None
     else:
-        fieldMasksStr = ''
+        strOfAllFieldMAsks = ''
         
-        for fieldMaskIndex, fieldMaskArray in enumerate(fieldMasksArray):
+        for fieldMaskIndex, fieldMaskArray in enumerate(arrayOfAllFieldMasks):
 
             for itemIndex, item in enumerate(fieldMaskArray):
 
-                fieldMasksStr = fieldMasksStr + item
+                strOfAllFieldMAsks = strOfAllFieldMAsks + item
 
                 if itemIndex != len(fieldMaskArray) - 1:
                     
-                    fieldMasksStr = fieldMasksStr + '/'
+                    strOfAllFieldMAsks = strOfAllFieldMAsks + '/'
 
-            # if fieldMaskIndex != len(fieldMasksArray) - 1:
-            fieldMasksStr = fieldMasksStr + ','
+            # if fieldMaskIndex != len(arrayOfAllFieldMasks) - 1:
+            strOfAllFieldMAsks = strOfAllFieldMAsks + ','
 
-        return fieldMasksStr
+        return strOfAllFieldMAsks
 
 
 
-def getArrayFromGoogleSheets(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, fieldMasksArray):
+def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, arrayOfAllFieldMasks):
 
     from pathlib import Path
     pathToThisPythonFile = Path(__file__).resolve()
 
 
-    fieldMasksStr = getFieldMasksStr(fieldMasksArray=fieldMasksArray)
+    strOfAllFieldMAsks = getStrOfAllFieldMasks(arrayOfAllFieldMasks=arrayOfAllFieldMasks)
 
-    spreadsheetDataInJSONFormat = getDataInJSONFormat(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=fieldMasksStr)
-    # _myPyFunc.saveToFile(spreadsheetDataInJSONFormat, 'spreadsheetDataInJSONFormat', 'json', pathPassedIn)
-    sheetDataInJSONFormat = getJSONForSheet(spreadsheetDataInJSONFormat, sheetNameStr)
-    # _myPyFunc.saveToFile(sheetDataInJSONFormat, 'sheetDataInJSONFormat', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
-    return getArrayFromJSONData(sheetDataInJSONFormat)    
+    jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
+    # _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathPassedIn)
+    jsonOfOneSheet = getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr)
+    # _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
+    return getArrayFromJSONOfOneSheet(jsonOfOneSheet)    
 
