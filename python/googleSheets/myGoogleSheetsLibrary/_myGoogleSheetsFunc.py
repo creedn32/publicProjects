@@ -675,7 +675,7 @@ def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, array
         ]   
     }
 
-    # googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestObj).execute()
+    googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestObj).execute()
 
     # bodyObj = {
     #     'values': [
