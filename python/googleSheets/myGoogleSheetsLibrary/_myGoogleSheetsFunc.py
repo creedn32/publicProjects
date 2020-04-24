@@ -652,9 +652,9 @@ def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, array
     strOfAllFieldMAsks = getStrOfAllFieldMasks(arrayOfAllFieldMasks=arrayOfAllFieldMasks)
 
     jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
-    _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
+    # _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
     jsonOfOneSheet = getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr)
-    _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', pathToSaveFile)
+    # _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', pathToSaveFile)
     return getArrayFromJSONOfOneSheet(jsonOfOneSheet)    
 
 
