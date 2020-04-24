@@ -544,15 +544,20 @@ def getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=None):
 
 
 
-def getJSONOfOneSheet(googleSpreadsheetDataInJSONFormat, sheetNameStr):
+def getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr):
 
-    sheetsArray = googleSpreadsheetDataInJSONFormat['sheets']
+    sheetsArray = jsonOfAllSheets['sheets']
 
     for sheetObj in sheetsArray:
         sheetNameFromJSON = sheetObj['properties']['title']
 
         if sheetNameStr == sheetNameFromJSON:
             return sheetObj
+
+
+def getSheetIDOfOneSheet(jsonOfOneSheet):
+
+    return jsonOfOneSheet['properties']['sheetId']
            
 
 
@@ -652,11 +657,54 @@ def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, array
     strOfAllFieldMAsks = getStrOfAllFieldMasks(arrayOfAllFieldMasks=arrayOfAllFieldMasks)
 
     jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
-    # _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
+    _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
     jsonOfOneSheet = getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr)
-    # _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', pathToSaveFile)
+    
+    
+    sheetID = getSheetIDOfOneSheet(jsonOfOneSheet)
+
+    requestObj = {
+        "requests": [
+            {
+                "appendDimension": {
+                    "sheetId": sheetID,
+                    "dimension": "COLUMNS",
+                    "length": 1
+                }
+            }
+        ]   
+    }
+
+    # googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestObj).execute()
+
+    # bodyObj = {
+    #     'values': [
+    #         ['a', 'b', 'c']
+    #     ],
+
+    # }
+
+    # googleSheetsAPIObj.values().append(spreadsheetId=spreadsheetIDStr, range='Sheet1', valueInputOption='RAW', body=bodyObj)
+
+    requestObj = {
+        "requests": [
+            {
+                "deleteDimension": {
+                    "range": {
+                        "sheetId": sheetID,
+                        "dimension": "COLUMNS",
+                        "length": 1
+                    }
+                    
+                }
+            }
+        ]   
+    }
+
+
+
+    _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', pathToSaveFile)
     return getArrayFromJSONOfOneSheet(jsonOfOneSheet)    
 
 
 
-#get worrking when no path is passed
