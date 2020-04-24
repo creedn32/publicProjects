@@ -657,18 +657,16 @@ def getStrOfAllFieldMasks(arrayOfAllFieldMasks=None):
 
 
 
-def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, arrayOfAllFieldMasks, pathToSaveFile=None):
+def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, strOfAllFieldMasks, pathToSaveFile=None):
 
     from pathlib import Path
     pathToThisPythonFile = Path(__file__).resolve()
 
 
-    strOfAllFieldMAsks = getStrOfAllFieldMasks(arrayOfAllFieldMasks=arrayOfAllFieldMasks)
-
     # jsonOfAllSheetsWithoutAddedColumn = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
     # _myPyFunc.saveToFile(jsonOfAllSheetsWithoutAddedColumn, 'jsonOfAllSheetsWithoutAddedColumn', 'json', pathToSaveFile)
     # addColumnToSheet()
-    jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
+    jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)
     _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
     jsonOfOneSheet = getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr)
     _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', pathToSaveFile)
@@ -677,66 +675,67 @@ def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, array
 
 
 
-# def addColumn(googleSheetsAPIObj, sheetNameStr, jsonOfAllSheets):
+def addColumnToOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, strOfAllFieldMasks):
 
-#     sheetID = getSheetIDOfOneSheet(jsonOfAllSheets, sheetNameStr)
+    jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)
+    jsonOfOneSheet = getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr)
+    sheetID = getSheetIDOfOneSheet(jsonOfAllSheets, sheetNameStr)
 
-#     requestAppendColumn = {
-#         "requests": [
-#             {
-#                 "appendDimension": {
-#                     "sheetId": sheetID,
-#                     "dimension": "COLUMNS",
-#                     "length": 1
-#                 }
-#             }
-#         ]   
-#     }
+    requestAppendColumn = {
+        "requests": [
+            {
+                "appendDimension": {
+                    "sheetId": sheetID,
+                    "dimension": "COLUMNS",
+                    "length": 1
+                }
+            }
+        ]   
+    }
+
+    googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestAppendColumn).execute()
+
+    arrayOfRowData = getArrayOfRowData(jsonOfOneSheet)
+    lengthOfLongestRow = getLengthOfLongestRow(arrayOfRowData)
+    columnLetterOfLastColumn = _myPyFunc.getColumnLetterFromNumber(lengthOfLongestRow + 1)
+    numberOfRows = len(arrayOfRowData)
+    rangeToWriteTo = sheetNameStr + '!' + columnLetterOfLastColumn + '1' + ':' + columnLetterOfLastColumn + str(numberOfRows)
+    valuesToWrite = ['Last Column' for i in range(numberOfRows)]
 
 
-
-    # googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestAppendColumn).execute()
-
-
-    # columnLetterOfLastColumn = _myPyFunc.getColumnLetterFromNumber(lengthOfLongestRow + 1)
-    # numberOfRows = len(arrayOfRowData)
-    # rangeToWriteTo = sheetNameStr + '!' + columnLetterOfLastColumn + '1' + ':' + columnLetterOfLastColumn + str(numberOfRows)
-    # valuesToWrite = ['Last Column' for i in range(numberOfRows)]
-
-
-    # requestWriteToCells = {
-    #     "valueInputOption": "USER_ENTERED",
-    #     "data": [
-    #         {
-    #             "range": rangeToWriteTo,
-    #             "majorDimension": "COLUMNS",
-    #             "values": [
-    #                 valuesToWrite
-    #             ]
-    #         }
-    #     ]
-    # }
+    requestToWriteToCells = {
+        "valueInputOption": "USER_ENTERED",
+        "data": [
+            {
+                "range": rangeToWriteTo,
+                "majorDimension": "COLUMNS",
+                "values": [
+                    valuesToWrite
+                ]
+            }
+        ]
+    }
         
   
-    # googleSheetsAPIObj.values().batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestWriteToCells).execute()
+    googleSheetsAPIObj.values().batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestToWriteToCells).execute()
 
 
 
-    # requestDeleteColumn = {
-    #     "requests": [
-    #         {
-    #             "deleteDimension": {
-    #                 "range": {
-    #                     "sheetId": sheetID,
-    #                     "dimension": "COLUMNS",
-    #                     "startIndex": lengthOfLongestRow - 1,
-    #                     "endIndex": lengthOfLongestRow
-    #                 }
+    requestDeleteColumn = {
+        "requests": [
+            {
+                "deleteDimension": {
+                    "range": {
+                        "sheetId": sheetID,
+                        "dimension": "COLUMNS",
+                        "startIndex": lengthOfLongestRow,
+                        "endIndex": lengthOfLongestRow + 1
+                    }
                     
-    #             }
-    #         }
-    #     ]   
-    # }
+                }
+            }
+        ]   
+    }
 
-    # googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestDeleteColumn).execute()
+    googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestDeleteColumn).execute()
 
