@@ -1,0 +1,18 @@
+{
+    "requests": [
+      {
+        "appendDimension": {
+          "sheetId": sheetId,
+          "dimension": "ROWS",
+          "length": 3
+        }
+      },
+      {
+        "appendDimension": {
+          "sheetId": sheetId,
+          "dimension": "COLUMNS",
+          "length": 1
+        }
+      }
+    ]
+  }

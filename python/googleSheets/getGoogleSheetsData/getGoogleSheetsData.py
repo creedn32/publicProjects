@@ -19,4 +19,4 @@ googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentials
 arrayOfAllFieldMasks = [['sheets', 'properties', 'title'], ['sheets', 'data', 'rowData', 'values', 'formattedValue']]
 arrayOfAllFieldMasks = None
 
-p(_myGoogleSheetsFunc.getArrayOfOneSheet(googleSheetsAPIObj, '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', 'Sheet1', arrayOfAllFieldMasks))
+p(_myGoogleSheetsFunc.getArrayOfOneSheet(googleSheetsAPIObj, '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', 'Sheet1', arrayOfAllFieldMasks, pathToSaveFile=_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')))

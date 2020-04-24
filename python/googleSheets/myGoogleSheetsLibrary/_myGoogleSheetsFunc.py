@@ -643,7 +643,7 @@ def getStrOfAllFieldMasks(arrayOfAllFieldMasks=None):
 
 
 
-def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, arrayOfAllFieldMasks):
+def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, arrayOfAllFieldMasks, pathToSaveFile=None):
 
     from pathlib import Path
     pathToThisPythonFile = Path(__file__).resolve()
@@ -652,8 +652,11 @@ def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, array
     strOfAllFieldMAsks = getStrOfAllFieldMasks(arrayOfAllFieldMasks=arrayOfAllFieldMasks)
 
     jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
-    # _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathPassedIn)
+    _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
     jsonOfOneSheet = getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr)
-    # _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
+    _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', pathToSaveFile)
     return getArrayFromJSONOfOneSheet(jsonOfOneSheet)    
 
+
+
+#get worrking when no path is passed
