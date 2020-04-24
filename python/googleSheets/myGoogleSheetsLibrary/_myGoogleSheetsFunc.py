@@ -680,6 +680,7 @@ def addColumnToOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, strO
     jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)
     jsonOfOneSheet = getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr)
     sheetID = getSheetIDOfOneSheet(jsonOfAllSheets, sheetNameStr)
+    lengthOfLongestRow = getLengthOfLongestRow(arrayOfRowData)
 
     requestAppendColumn = {
         "requests": [
@@ -695,8 +696,8 @@ def addColumnToOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, strO
 
     googleSheetsAPIObj.batchUpdate(spreadsheetId=spreadsheetIDStr, body=requestAppendColumn).execute()
 
+
     arrayOfRowData = getArrayOfRowData(jsonOfOneSheet)
-    lengthOfLongestRow = getLengthOfLongestRow(arrayOfRowData)
     columnLetterOfLastColumn = _myPyFunc.getColumnLetterFromNumber(lengthOfLongestRow + 1)
     numberOfRows = len(arrayOfRowData)
     rangeToWriteTo = sheetNameStr + '!' + columnLetterOfLastColumn + '1' + ':' + columnLetterOfLastColumn + str(numberOfRows)
