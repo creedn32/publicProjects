@@ -578,7 +578,7 @@ def getArrayFromJSONOfOneSheet(jsonOfOneSheet, googleSheetsAPIObj, spreadsheetID
     for rowObj in arrayOfRowData:
         
         valuesArray = rowObj['values']
-        # print(len(valuesArray))
+        # print(valuesArray)
         arrayOfOneRow = []
 
         for cellObj in valuesArray:
@@ -665,11 +665,10 @@ def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, array
 
     strOfAllFieldMAsks = getStrOfAllFieldMasks(arrayOfAllFieldMasks=arrayOfAllFieldMasks)
 
-    jsonOfAllSheetsWithoutAddedColumn = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
+    # jsonOfAllSheetsWithoutAddedColumn = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
+    # _myPyFunc.saveToFile(jsonOfAllSheetsWithoutAddedColumn, 'jsonOfAllSheetsWithoutAddedColumn', 'json', pathToSaveFile)
     # addColumnToSheet()
     jsonOfAllSheets = getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask=strOfAllFieldMAsks)
-    # removeColumnFromSheet()
-
     _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
     jsonOfOneSheet = getJSONOfOneSheet(jsonOfAllSheets, sheetNameStr)
     _myPyFunc.saveToFile(jsonOfOneSheet, 'jsonOfOneSheet', 'json', pathToSaveFile)
@@ -678,21 +677,21 @@ def getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, array
 
 
 
-def addColumn(googleSheetsAPIObj, sheetNameStr, jsonOfAllSheets):
+# def addColumn(googleSheetsAPIObj, sheetNameStr, jsonOfAllSheets):
 
-    sheetID = getSheetIDOfOneSheet(jsonOfAllSheets, sheetNameStr)
+#     sheetID = getSheetIDOfOneSheet(jsonOfAllSheets, sheetNameStr)
 
-    requestAppendColumn = {
-        "requests": [
-            {
-                "appendDimension": {
-                    "sheetId": sheetID,
-                    "dimension": "COLUMNS",
-                    "length": 1
-                }
-            }
-        ]   
-    }
+#     requestAppendColumn = {
+#         "requests": [
+#             {
+#                 "appendDimension": {
+#                     "sheetId": sheetID,
+#                     "dimension": "COLUMNS",
+#                     "length": 1
+#                 }
+#             }
+#         ]   
+#     }
 
 
 
