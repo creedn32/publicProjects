@@ -20,13 +20,34 @@ def playYouTubeMovies():
     webbrowser.open('https://www.youtube.com/embed/Xf5QTs2NLRc?start=1&fs=1&autoplay=1')
 
 
+def moveMouse():
+
+    time.sleep(10)
+
+    while True:
+        pyautogui.moveRel(500, 500, 1)
+        pyautogui.moveRel(-500, -500, 1)
+
+
+
+def pressKey():
+
+    pyautogui.FAILSAFE = False
+
+    time.sleep(20)
+
+    for i in range(0, 3):
+        pyautogui.press('0')
+
+    pyautogui.FAILSAFE = True
+
+
+
+
+
 # setSystemVolume()
-playYouTubeMovies()
-
-
-
-
-
+# playYouTubeMovies()
+pressKey()
 
 
 
