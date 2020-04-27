@@ -11,6 +11,10 @@ git show -s --format=%ci b6e4793f2eeb5de756ec2c7ddf1ef15efd27cc10
 git stash list
 
 
+#delete all git stashes
+git stash clear
+
+
 #see HEAD
 git rev-parse HEAD
 
