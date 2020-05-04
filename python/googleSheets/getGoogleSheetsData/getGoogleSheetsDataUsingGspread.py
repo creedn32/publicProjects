@@ -1,3 +1,7 @@
+#also use service account
+#get all spreadsheet data and look for if the data has the empty cells
+
+
 from pathlib import Path
 pathToThisPythonFile = Path(__file__).resolve()
 import sys
@@ -10,25 +14,43 @@ from pprint import pprint as p
 import gspread
 
 
+useServiceAccount = True
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
-pathToCredentialsDirectory = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath)
-p(pathToCredentialsDirectory)
+arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials', 'usingServiceAccount', 'jsonForCredentialsRetrieval.json']
+pathToCredentialsRetrievalFile = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath)
 
 
 
-gc = gspread.oauth()
+if useServiceAccount:
+    gc = gspread.service_account(filename=pathToCredentialsRetrievalFile)
+    sh = gc.open("Test")
 
-sh = gc.open("Test")
+    print(sh.sheet1.get('A1'))
 
-print(sh.sheet1.get('B1'))
-print(sh.sheet1.get_all_values())
+else:
 
-sh.sheet1.format('A1', {'textFormat': {'bold': True}})
-sh.sheet1.update_cell(1, 1, 'bingo')
+    gc = gspread.oauth()
 
-#also use service account
-#get all spreadsheet data and look for if the data has the empty cells
+    sh = gc.open("Test")
+
+    print(sh.sheet1.get('B1'))
+    print(sh.sheet1.get_all_values())
+
+    sh.sheet1.format('A1', {'textFormat': {'bold': True}})
+    sh.sheet1.update_cell(1, 1, 'bingo')
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
