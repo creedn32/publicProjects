@@ -27,7 +27,7 @@ print(sh.sheet1.get_all_values())
 sh.sheet1.format('A1', {'textFormat': {'bold': True}})
 sh.sheet1.update_cell(1, 1, 'bingo')
 
-
+#also use service account
 #get all spreadsheet data and look for if the data has the empty cells
 
 
