@@ -6,23 +6,23 @@ pathToThisPythonFile = Path(__file__).resolve()
 import sys
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
 import _myPyFunc
-# sys.path.append(str(Path(_myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'googleSheets'), 'myGoogleSheetsLibrary')))
-# import _myGoogleSheetsFunc
+sys.path.append(str(Path(_myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'googleSheets'), 'myGoogleSheetsLibrary')))
+import _myGoogleSheetsFunc
 
 from pprint import pprint as p
 import gspread
 
-
-useServiceAccount = True
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-arrayOfPartsToAddToPathServiceAccount = ['privateData', 'python', 'googleCredentials', 'usingServiceAccount', 'jsonForCredentialsRetrieval.json']
-pathToCredentialsRetrievalFile = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPathServiceAccount)
+arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
 
+
+pathToCredentialsRetrievalFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonForCredentialsRetrieval.json'])
+useServiceAccount = True
 
 
 if useServiceAccount:
 
-    gc = gspread.service_account(filename=pathToCredentialsRetrievalFile)
+    gc = gspread.service_account(filename=pathToCredentialsRetrievalFileServiceAccount)
     sh = gc.open("Test")
 
     print(sh.sheet1.get('A1'))
@@ -41,10 +41,12 @@ else:
     sh.sheet1.update_cell(1, 1, 'bingo')
 
 
+pathToCredentialsDirectoryOAuth = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingOAuth'])
+googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsDirectory=pathToCredentialsDirectoryOAuth)
+strOfAllFieldMasks = _myGoogleSheetsFunc.getStrOfAllFieldMasks(arrayOfAllFieldMasks=None)
 
-# googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsDirectory=pathToCredentialsDirectory)
-# jsonOfAllSheets = getJSONOfAllSheets('1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)
-# _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
+jsonOfAllSheets = _myGoogleSheetsFunc.getJSONOfAllSheets('1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)
+_myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'))
 
 
 
