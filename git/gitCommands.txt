@@ -1,5 +1,30 @@
+#search for commit that introduced a phrase into the repo, export to txt file
+git --no-pager log -p -S"txtToSearchFor" > log.txt
+
+
+#search for commit that introduced a phrase into the repo, export to txt file
+git --no-pager log -S"txtToSearchFor" > log.txt
+
+
+
+#search for commit that introduced a phrase into the repo, with details, without output
+git --no-pager log -p -S"import"
+
+
+#search for commit that introduced a phrase into the repo, with details
+git log -p -S"import"
+
+
 #search for commit that introduced a phrase into the repo
-git log -S'service_account' -p
+git log -S"import"
+
+
+#Log with how much each file changed
+git log --stat
+
+
+#Running record of commits
+git log
 
 
 #when "Your branch and 'origin/master' have diverged, throw away all local changes and non-pushed commits
