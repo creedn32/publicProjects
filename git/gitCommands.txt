@@ -1,22 +1,17 @@
 #search for commit that introduced a phrase into the repo, export to txt file
-git --no-pager log -p -S"txtToSearchFor" > log.txt
+git --no-pager log -p -S"http://localhost" > log.txt
 
 
-#search for commit that introduced a phrase into the repo, export to txt file
-git --no-pager log -S"txtToSearchFor" > log.txt
-
-
-
-#search for commit that introduced a phrase into the repo, with details, without output
-git --no-pager log -p -S"import"
+#search for commit that introduced a phrase into the repo, with details, all output
+git --no-pager log -p -S"http://localhost"
 
 
 #search for commit that introduced a phrase into the repo, with details
-git log -p -S"import"
+git log -p -S"http://localhost"
 
 
 #search for commit that introduced a phrase into the repo
-git log -S"import"
+git log -S"http://localhost"
 
 
 #Log with how much each file changed
