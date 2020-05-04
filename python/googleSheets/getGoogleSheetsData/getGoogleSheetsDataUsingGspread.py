@@ -1,4 +1,3 @@
-#also use service account
 #get all spreadsheet data and look for if the data has the empty cells
 
 
@@ -22,7 +21,7 @@ pathToCredentialsRetrievalFile = _myPyFunc.addToPath(pathToRepos, arrayOfPartsTo
 
 
 if useServiceAccount:
-    
+
     gc = gspread.service_account(filename=pathToCredentialsRetrievalFile)
     sh = gc.open("Test")
 
