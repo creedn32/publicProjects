@@ -27,6 +27,7 @@ if useServiceAccount:
 
     print(sh.sheet1.get('A1'))
 
+
 else:
 
     gc = gspread.oauth()
@@ -41,7 +42,9 @@ else:
 
 
 
-
+# googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsDirectory=pathToCredentialsDirectory)
+# jsonOfAllSheets = getJSONOfAllSheets('1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)
+# _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', pathToSaveFile)
 
 
 
