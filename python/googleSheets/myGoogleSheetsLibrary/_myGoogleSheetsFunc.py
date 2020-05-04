@@ -487,11 +487,11 @@ def getGoogleSheetsAPIObj(arrayOfPathParts=None, pathToCredentialsDirectory=None
 
 
     if pathToCredentialsDirectory:
-        pathToJSONForCredentialsRetrieval = Path(pathToCredentialsDirectory, 'jsonForCredentialsRetrievalUsingOAuth.json')
+        pathToJSONForCredentialsRetrieval = Path(pathToCredentialsDirectory, 'jsonForCredentialsRetrieval.json')
         pathToPickleFileWithCredentials = Path(pathToCredentialsDirectory, 'pickleFileWithCredentials.pickle')
     else:
         pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-        pathToJSONForCredentialsRetrieval = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['jsonForCredentialsRetrievalUsingOAuth.json'])
+        pathToJSONForCredentialsRetrieval = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['jsonForCredentialsRetrieval.json'])
         pathToPickleFileWithCredentials = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['pickleFileWithCredentials.pickle'])
 
 

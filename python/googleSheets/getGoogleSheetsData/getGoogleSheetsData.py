@@ -10,7 +10,7 @@ from pprint import pprint as p
 
 
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
+arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials', 'usingOAuth']
 pathToCredentialsDirectory = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath)
 
 googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsDirectory=pathToCredentialsDirectory)
