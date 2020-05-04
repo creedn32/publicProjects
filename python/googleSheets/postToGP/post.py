@@ -29,7 +29,7 @@ def postTransactionsFunction(sheetNameStr):
     activateKeyboard = True
 
 
-    googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
+    googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials', 'usingOAuth'])
     googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetNameStr)
 
 
@@ -202,7 +202,7 @@ def postTransfersFunction():
     activateKeyboard = True
 
 
-    googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials'])
+    googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials', 'usingOAuth'])
     fieldMask = 'sheets/properties/title,sheets/data/rowData/values/formattedValue'
 
 
