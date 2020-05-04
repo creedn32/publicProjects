@@ -22,6 +22,7 @@ pathToCredentialsRetrievalFile = _myPyFunc.addToPath(pathToRepos, arrayOfPartsTo
 
 
 if useServiceAccount:
+    
     gc = gspread.service_account(filename=pathToCredentialsRetrievalFile)
     sh = gc.open("Test")
 
