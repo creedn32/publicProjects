@@ -1,6 +1,3 @@
-#get all spreadsheet data and look for if the data has the empty cells
-
-
 from pathlib import Path
 pathToThisPythonFile = Path(__file__).resolve()
 import sys
@@ -25,20 +22,18 @@ if useServiceAccount:
     gc = gspread.service_account(filename=pathToCredentialsRetrievalFileServiceAccount)
     sh = gc.open("Test")
 
-    print(sh.sheet1.get('A1'))
+    print(sh.sheet1.get_all_values())
+    sh.sheet1.format('D4', {'textFormat': {'bold': True}})
 
 
 else:
 
     gc = gspread.oauth()
-
     sh = gc.open("Test")
 
-    print(sh.sheet1.get('B1'))
     print(sh.sheet1.get_all_values())
+    sh.sheet1.format('D4', {'textFormat': {'bold': True}})
 
-    sh.sheet1.format('A1', {'textFormat': {'bold': True}})
-    sh.sheet1.update_cell(1, 1, 'bingo')
 
 
 
