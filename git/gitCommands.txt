@@ -1,5 +1,6 @@
 #search for commit that introduced a phrase into the repo, export to txt file
-git --no-pager log -p -S"http://localhost" > log.txt
+git --no-pager log -p -S"http://local" > log.txt
+git --no-pager log -p -G"http://local" > log.txt #for regular expression
 
 
 #search for commit that introduced a phrase into the repo, with details, all output
