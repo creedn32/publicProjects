@@ -16,7 +16,7 @@ pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
 
 
-pathToCredentialsRetrievalFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonForCredentialsRetrieval.json'])
+pathToCredentialsRetrievalFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
 useServiceAccount = True
 
 
@@ -41,8 +41,10 @@ else:
     sh.sheet1.update_cell(1, 1, 'bingo')
 
 
+
+
 pathToCredentialsDirectoryOAuth = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingOAuth'])
-googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsDirectory=pathToCredentialsDirectoryOAuth)
+googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsFileServiceAccount=pathToCredentialsRetrievalFileServiceAccount)
 strOfAllFieldMasks = _myGoogleSheetsFunc.getStrOfAllFieldMasks(arrayOfAllFieldMasks=None)
 
 jsonOfAllSheets = _myGoogleSheetsFunc.getJSONOfAllSheets('1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)

@@ -472,7 +472,7 @@ def authFunc(*optionalParameterPathToGoogleCredentials):
 #######################################################################################################
 
 
-def getGoogleSheetsAPIObj(arrayOfPathParts=None, pathToCredentialsDirectory=None):
+def getGoogleSheetsAPIObj(arrayOfPathParts=None, pathToCredentialsDirectory=None, pathToCredentialsFileServiceAccount=None):
 
     from pathlib import Path
     pathToThisPythonFile = Path(__file__).resolve()
@@ -484,44 +484,51 @@ def getGoogleSheetsAPIObj(arrayOfPathParts=None, pathToCredentialsDirectory=None
     from pprint import pprint as pp
 
 
-
-
-    if pathToCredentialsDirectory:
-        pathToJSONForCredentialsRetrieval = Path(pathToCredentialsDirectory, 'jsonForCredentialsRetrieval.json')
-        pathToPickleFileWithCredentials = Path(pathToCredentialsDirectory, 'pickleFileWithCredentials.pickle')
-    else:
-        pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-        pathToJSONForCredentialsRetrieval = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['jsonForCredentialsRetrieval.json'])
-        pathToPickleFileWithCredentials = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['pickleFileWithCredentials.pickle'])
-
-
-
-
     googleSheetsAPIScopes = ["https://www.googleapis.com/auth/spreadsheets"]
     credentialsObj = None
 
-    #if the pickle is file is available from persistent memory, then get the credentials object from it
-    #otherwise, check if the credentials object can be refreshed and do that
-    #if the credentials object can't be refreshed, then get them
 
-    if Path.exists(pathToPickleFileWithCredentials):
-        with open(pathToPickleFileWithCredentials, "rb") as pickleFileObj:
-            credentialsObj = pickle.load(pickleFileObj)
+    if pathToCredentialsFileServiceAccount:
+
+        import google.oauth2
+        credentialsObj = google.oauth2.service_account.Credentials.from_service_account_file(pathToCredentialsFileServiceAccount)
+        return googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
+
     else:
 
-        if not credentialsObj or not credentialsObj.valid:
-            if credentialsObj and credentialsObj.expired and credentialsObj.refresh_token:
-                credentialsObj.refresh(google.auth.transport.requests.Request())
-            else:
-                flowObj = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(pathToJSONForCredentialsRetrieval, googleSheetsAPIScopes)
-                credentialsObj = flowObj.run_local_server(port=0)
-            
-            #save the credentials in persistent memeory
-            
-            with open(pathToPickleFileWithCredentials, "wb") as pickleFileObj:
-                pickle.dump(credentialsObj, pickleFileObj)
+        if pathToCredentialsDirectory:
+            pathToJSONForCredentialsRetrieval = Path(pathToCredentialsDirectory, 'jsonForCredentialsRetrieval.json')
+            pathToPickleFileWithCredentials = Path(pathToCredentialsDirectory, 'pickleFileWithCredentials.pickle')
+        else:
+            pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+            pathToJSONForCredentialsRetrieval = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['jsonForCredentialsRetrieval.json'])
+            pathToPickleFileWithCredentials = _myPyFunc.addToPath(pathToRepos, arrayOfPathParts + ['pickleFileWithCredentials.pickle'])
 
-    return googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
+
+
+
+        #if the pickle is file is available from persistent memory, then get the credentials object from it
+        #otherwise, check if the credentials object can be refreshed and do that
+        #if the credentials object can't be refreshed, then get them
+
+        if Path.exists(pathToPickleFileWithCredentials):
+            with open(pathToPickleFileWithCredentials, "rb") as pickleFileObj:
+                credentialsObj = pickle.load(pickleFileObj)
+        else:
+
+            if not credentialsObj or not credentialsObj.valid:
+                if credentialsObj and credentialsObj.expired and credentialsObj.refresh_token:
+                    credentialsObj.refresh(google.auth.transport.requests.Request())
+                else:
+                    flowObj = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(pathToJSONForCredentialsRetrieval, googleSheetsAPIScopes)
+                    credentialsObj = flowObj.run_local_server(port=0)
+                
+                #save the credentials in persistent memeory
+                
+                with open(pathToPickleFileWithCredentials, "wb") as pickleFileObj:
+                    pickle.dump(credentialsObj, pickleFileObj)
+
+        return googleapiclient.discovery.build("sheets", "v4", credentials=credentialsObj).spreadsheets()
 
 
 
