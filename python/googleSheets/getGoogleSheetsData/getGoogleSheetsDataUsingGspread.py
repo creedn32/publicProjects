@@ -15,8 +15,8 @@ import gspread
 
 useServiceAccount = True
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials', 'usingServiceAccount', 'jsonForCredentialsRetrieval.json']
-pathToCredentialsRetrievalFile = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath)
+arrayOfPartsToAddToPathServiceAccount = ['privateData', 'python', 'googleCredentials', 'usingServiceAccount', 'jsonForCredentialsRetrieval.json']
+pathToCredentialsRetrievalFile = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPathServiceAccount)
 
 
 
