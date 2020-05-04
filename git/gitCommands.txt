@@ -1,3 +1,7 @@
+#search for commit that introduced a phrase into the repo
+git log -S'service_account' -p
+
+
 #when "Your branch and 'origin/master' have diverged, throw away all local changes and non-pushed commits
 git fetch origin/master
 git reset --hard origin/master
