@@ -6,12 +6,18 @@ import _myPyFunc
 
 import pyautogui as g
 import time as t
+import json as j
 from pprint import pprint as p
+
+pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+p(pathToRepos)
+
 
 g.PAUSE = 1
 
-g.click()
-g.typewrite('1234')
-g.moveRel(170, 125, .1)
-g.click()
-g.press('enter')
+
+# g.click()
+# g.typewrite('1234')
+# g.moveRel(170, 125, .1)
+# g.click()
+# g.press('enter')
