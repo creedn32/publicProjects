@@ -7,34 +7,58 @@ sys.path.append(str(Path(_myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'go
 import _myGoogleSheetsFunc
 
 from pprint import pprint as p
-import gspread
+import gspread, random
 
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
 
 
-pathToCredentialsRetrievalFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
-saveToFile = False
+useServiceAccount = True
+
+if useServiceAccount:
+
+    pathToCredentialsRetrievalFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
+    saveToFile = False
 
 
-if saveToFile:
-    googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsFileServiceAccount=pathToCredentialsRetrievalFileServiceAccount)
-    strOfAllFieldMasks = _myGoogleSheetsFunc.getStrOfAllFieldMasks(arrayOfAllFieldMasks=None)
-    jsonOfAllSheets = _myGoogleSheetsFunc.getJSONOfAllSheets('1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)
-    _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'))
+    if saveToFile:
+        googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsFileServiceAccount=pathToCredentialsRetrievalFileServiceAccount)
+        strOfAllFieldMasks = _myGoogleSheetsFunc.getStrOfAllFieldMasks(arrayOfAllFieldMasks=None)
+        jsonOfAllSheets = _myGoogleSheetsFunc.getJSONOfAllSheets('1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)
+        _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'))
+
+
+    gspObj = gspread.service_account(filename=pathToCredentialsRetrievalFileServiceAccount)
+    gspSpreadsheet = gspObj.open("Test")
+    gspSheet1 = gspSpreadsheet.sheet1
+    # gspSheet1.format('D4', {'textFormat': {'bold': True}})
 
 
 
-gspObj = gspread.service_account(filename=pathToCredentialsRetrievalFileServiceAccount)
-gspSpreadsheet = gspObj.open("Test")
+    # randomInt = random.randint(1, 101)
 
-# p(gspSpreadsheet.sheet1.col_values(1))
-
-for row in gspSpreadsheet.sheet1.get_all_values():
-    p(row[0])
+    # for row in range(1, len(gspSheet1.get_all_values()) + 1):
+    #     p(gspSheet1.cell(row, 1).value)
+    #     gspSheet1.update_cell(row, 1, randomInt)
 
 
-# gspSpreadsheet.sheet1.format('D4', {'textFormat': {'bold': True}})
+
+    randomInt = random.randint(1, 101)
+    arrayOfSheet1 = gspSheet1.get_all_values()
+
+    for rowIndex in range(0, len(arrayOfSheet1)):
+        p(arrayOfSheet1[rowIndex][0])
+        arrayOfSheet1[rowIndex][0] = randomInt
+
+    p(arrayOfSheet1)
+    p(_myPyFunc.getColumnLetterFromNumber())
+
+
+
+        # gspSheet1.update_cell(rowIndex + 1, 1, randomInt)
+
+
+    
 
 
 
