@@ -10,14 +10,14 @@ import json as j
 from pprint import pprint as p
 
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-p(pathToRepos)
+pathToJSON = Path(pathToRepos, 'privateData', 'all', 'forImport.json')
 
+importedData = j.load(open(pathToJSON))
 
 g.PAUSE = 1
 
-
-# g.click()
-# g.typewrite('1234')
-# g.moveRel(170, 125, .1)
-# g.click()
-# g.press('enter')
+g.click()
+g.typewrite(importedData['lastFour'])
+g.moveRel(170, 125, .1)
+g.click()
+g.press('enter')
