@@ -8,13 +8,10 @@ import pyautogui as g
 import time as t
 from pprint import pprint as p
 
+g.PAUSE = 1
+
 g.click()
-t.sleep(.2)
 g.typewrite('1234')
-t.sleep(.2)
 g.moveRel(170, 125, .1)
-t.sleep(.2)
 g.click()
-t.sleep(.2)
 g.press('enter')
-# pyautogui.moveRel(80, 0, .1)
