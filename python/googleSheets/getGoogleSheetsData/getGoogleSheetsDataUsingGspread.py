@@ -34,56 +34,28 @@ if useServiceAccount:
     # gspSheet1.format('D4', {'textFormat': {'bold': True}})
 
 
-
     # randomInt = random.randint(1, 101)
 
     # for row in range(1, len(gspSheet1.get_all_values()) + 1):
     #     p(gspSheet1.cell(row, 1).value)
-    #     gspSheet1.update_cell(row, 1, randomInt)
+        # gspSheet1.update_cell(row, 1, randomInt)
 
 
+
+    arrayOfSheet1 = gspSheet1.get_all_values()
+    numberOfRows = len(arrayOfSheet1)
+    numberOfColumnsInLastRow = len(arrayOfSheet1[numberOfRows - 1])
+    upperLeftCellAddress = _myPyFunc.getColumnLetterFromNumber(1) + '1'
+    lowerRightCellAddress = _myPyFunc.getColumnLetterFromNumber(numberOfColumnsInLastRow) + str(numberOfRows)
+    rangeOfSheet1 = upperLeftCellAddress + ':' + lowerRightCellAddress
 
     randomInt = random.randint(1, 101)
-    arrayOfSheet1 = gspSheet1.get_all_values()
 
-    for rowIndex in range(0, len(arrayOfSheet1)):
-        p(arrayOfSheet1[rowIndex][0])
+    for rowIndex in range(0, numberOfRows):
+        # p(arrayOfSheet1[rowIndex][0])
         arrayOfSheet1[rowIndex][0] = randomInt
 
-    p(arrayOfSheet1)
-    p(_myPyFunc.getColumnLetterFromNumber())
+    gspSheet1.update(rangeOfSheet1, arrayOfSheet1)
 
-
-
-        # gspSheet1.update_cell(rowIndex + 1, 1, randomInt)
-
-
+ 
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsDirectory=pathToCredentialsDirectory)
-# spreadsheetIDStr = '1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8'
-# sheetNameStr = 'Sheet1'
-
-# arrayOfAllFieldMasks = [['sheets', 'properties', 'title'], ['sheets', 'data', 'rowData', 'values', 'formattedValue']]
-# arrayOfAllFieldMasks = None
-# strOfAllFieldMasks = _myGoogleSheetsFunc.getStrOfAllFieldMasks(arrayOfAllFieldMasks=arrayOfAllFieldMasks)
-
-# p(_myGoogleSheetsFunc.getArrayOfOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, strOfAllFieldMasks)) #, pathToSaveFile=_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')))
-
-# _myGoogleSheetsFunc.addColumnToOneSheet(googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr, strOfAllFieldMasks)
