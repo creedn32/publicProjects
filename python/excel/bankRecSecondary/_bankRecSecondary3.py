@@ -16,20 +16,20 @@ excelApp.Visible = True
 excelApp.DisplayAlerts = False
 
 # pp("Manual printout: " + str(pathlib.Path.cwd().parents[3]) + "\\privateData\\python\\excel\\bankRecSecondary")
-filePath = str(pathlib.Path.cwd().parents[3]) + "\\privateData\\python\\excel\\bankRecSecondary"
+filePath = _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 
 
-excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
+excelApp.Workbooks.Open(pathlib.Path(filePath, fileName + fileExtension))
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
 excelBackupWb = excelApp.Workbooks(fileName + fileExtension)
-excelBackupWb.SaveAs(Filename=filePath + "\\" + fileName + " Before Running 3" + fileExtension, FileFormat=51)
+excelBackupWb.SaveAs(Filename=str(pathlib.Path(filePath, fileName + " Before Running 2" + fileExtension)), FileFormat=51)
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelBackupWb.Close()
 
 
-excelApp.Workbooks.Open(filePath + "\\" + fileName + fileExtension)
+excelApp.Workbooks.Open(pathlib.Path(filePath, fileName + fileExtension))
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
 excelWb = excelApp.Workbooks(fileName  + fileExtension)
 
