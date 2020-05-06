@@ -17,18 +17,18 @@ useServiceAccount = True
 
 if useServiceAccount:
 
-    pathToCredentialsRetrievalFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
+    pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
     saveToFile = False
 
 
     if saveToFile:
-        googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsFileServiceAccount=pathToCredentialsRetrievalFileServiceAccount)
+        googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(pathToCredentialsFileServiceAccount=pathToCredentialsFileServiceAccount)
         strOfAllFieldMasks = _myGoogleSheetsFunc.getStrOfAllFieldMasks(arrayOfAllFieldMasks=None)
         jsonOfAllSheets = _myGoogleSheetsFunc.getJSONOfAllSheets('1z7cfqKzg4C8jbySJvE7dV-WWUDyQnoVOmNf2GtDH4B8', googleSheetsAPIObj, fieldMask=strOfAllFieldMasks)
         _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'))
 
 
-    gspObj = gspread.service_account(filename=pathToCredentialsRetrievalFileServiceAccount)
+    gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
     gspSpreadsheet = gspObj.open("Test")
     gspSheet1 = gspSpreadsheet.sheet1
     # gspSheet1.format('D4', {'textFormat': {'bold': True}})
@@ -41,21 +41,29 @@ if useServiceAccount:
         # gspSheet1.update_cell(row, 1, randomInt)
 
 
-
     arrayOfSheet1 = gspSheet1.get_all_values()
     numberOfRows = len(arrayOfSheet1)
     numberOfColumnsInLastRow = len(arrayOfSheet1[numberOfRows - 1])
-    upperLeftCellAddress = _myPyFunc.getColumnLetterFromNumber(1) + '1'
-    lowerRightCellAddress = _myPyFunc.getColumnLetterFromNumber(numberOfColumnsInLastRow) + str(numberOfRows)
-    rangeOfSheet1 = upperLeftCellAddress + ':' + lowerRightCellAddress
+    addressOfSheet1 = 'R1C1' + ':' + 'R' + str(numberOfRows) + 'C' + str(numberOfColumnsInLastRow)
+
+
+    for row in range(0, numberOfRows):
+        for column in range(0, numberOfColumnsInLastRow):
+            arrayOfSheet1[row][column] = ''
+
+    gspSheet1.update(addressOfSheet1, arrayOfSheet1)
+
+   
 
     randomInt = random.randint(1, 101)
 
     for rowIndex in range(0, numberOfRows):
-        # p(arrayOfSheet1[rowIndex][0])
         arrayOfSheet1[rowIndex][0] = randomInt
 
-    gspSheet1.update(rangeOfSheet1, arrayOfSheet1)
+    arrayOfSheet1[numberOfRows - 1][numberOfColumnsInLastRow - 1] = 't'
+    gspSheet1.update(addressOfSheet1, arrayOfSheet1)
+    
+
 
  
     
