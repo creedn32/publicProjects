@@ -17,12 +17,16 @@ def clearSheet(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfA
 
     import gspread
 
-    arrayOfSheet = clearArray(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfArray.get_all_values())
-    numberOfRowsInArrayOfSheet = len(arrayOfSheet)
-    numberOfColumnsInArrayOfSheet = len(arrayOfSheet[numberOfRowsInArrayOfSheet - 1])
+    arrayOfSheet = gspSheetOfArray.get_all_values()
 
-    startingCell = 'R1C1'
-    endingCell = 'R' + str(numberOfRowsInArrayOfSheet) + 'C' + str(numberOfColumnsInArrayOfSheet)
-    addressOfSheet = startingCell + ':' + endingCell
+    if len(arrayOfSheet) > 0:
+        
+        arrayOfSheet = clearArray(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfArray.get_all_values())
+        numberOfRowsInArrayOfSheet = len(arrayOfSheet)
+        numberOfColumnsInArrayOfSheet = len(arrayOfSheet[numberOfRowsInArrayOfSheet - 1])
 
-    gspSheetOfArray.update(addressOfSheet, arrayOfSheet)
+        startingCell = 'R1C1'
+        endingCell = 'R' + str(numberOfRowsInArrayOfSheet) + 'C' + str(numberOfColumnsInArrayOfSheet)
+        addressOfSheet = startingCell + ':' + endingCell
+
+        gspSheetOfArray.update(addressOfSheet, arrayOfSheet)
