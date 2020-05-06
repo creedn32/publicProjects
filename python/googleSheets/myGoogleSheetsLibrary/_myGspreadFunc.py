@@ -32,5 +32,7 @@ def clearSheet(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfA
         gspSheetOfArray.update(addressOfSheet, arrayOfSheet)
 
 
-def clearSheets(startingRow, endingRow, startingColumn, endingColumn, arrayOfSheetNames):
-    pass
+def clearSheets(startingRow, endingRow, startingColumn, endingColumn, arrayOfSheetObjects):
+    
+    for sheetObj in arrayOfSheetObjects:
+        clearSheet(startingRow, endingRow, startingColumn, endingColumn, sheetObj)

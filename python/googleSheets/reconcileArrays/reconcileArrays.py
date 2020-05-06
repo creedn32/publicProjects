@@ -19,10 +19,7 @@ gspSpreadsheet = gspObj.open("Reconcile Arrays")
 gspFirstArraySheet = gspSpreadsheet.worksheet('firstArray')
 gspSecondArraySheet = gspSpreadsheet.worksheet('secondArray')
 
-_myGspreadFunc.clearSheet(0, -1, 0, -1, gspFirstArraySheet)
-_myGspreadFunc.clearSheet(0, -1, 0, -1, gspSecondArraySheet)
-
-_myGspreadFunc.clearSheets(0, -1, 0, -1, []])
+_myGspreadFunc.clearSheets(0, -1, 0, -1, [gspFirstArraySheet, gspSecondArraySheet])
 
 # gspFirstArraySheet.update('D4', 'bingo')
 
