@@ -21,9 +21,13 @@ gspSecondArraySheet = gspSpreadsheet.worksheet('secondArray')
 
 _myGspreadFunc.clearSheets(0, -1, 0, -1, [gspFirstArraySheet, gspSecondArraySheet])
 
+firstArray = gspFirstArraySheet..get_all_values()
+secondArray = gspSecondArraySheet.get_all_values()
+
+
+
 # gspFirstArraySheet.update('D4', 'bingo')
 
-# _myGspreadFunc.clearSheet(0, -1, 0, -1, gspFirstArraySheet)
 
 
 
