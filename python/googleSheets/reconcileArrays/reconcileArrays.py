@@ -9,58 +9,61 @@ import _myGoogleSheetsFunc, _myGspreadFunc
 from pprint import pprint as p
 import gspread
 
-pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
 
-pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
+def main():
 
-gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
-gspSpreadsheet = gspObj.open("Reconcile Arrays")
-gspFirstArraySheet = gspSpreadsheet.worksheet('firstArray')
-gspSecondArraySheet = gspSpreadsheet.worksheet('secondArray')
-gspComparisonSheet = gspSpreadsheet.worksheet('comparison')
-gspEndingFirstArraySheet = gspSpreadsheet.worksheet('endingFirstArray')
-gspEndingSecondArraySheet = gspSpreadsheet.worksheet('endingSecondArray')
+    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+    arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
 
-firstArray = gspFirstArraySheet.get_all_values()
-secondArray = gspSecondArraySheet.get_all_values()
+    pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
 
-firstArrayColumnIndexToCompare = 8
-secondArrayColumnIndexToCompare = 5
+    gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
+    gspSpreadsheet = gspObj.open("Reconcile Arrays")
+    gspFirstArraySheet = gspSpreadsheet.worksheet('firstArray')
+    gspSecondArraySheet = gspSpreadsheet.worksheet('secondArray')
+    gspComparisonSheet = gspSpreadsheet.worksheet('comparison')
+    gspEndingFirstArraySheet = gspSpreadsheet.worksheet('endingFirstArray')
+    gspEndingSecondArraySheet = gspSpreadsheet.worksheet('endingSecondArray')
 
-comparisonArray = [[''] * len(firstArray[0]) + ['Side-By-Side'] + [''] * len(secondArray[0])]
+    firstArray = gspFirstArraySheet.get_all_values()
+    secondArray = gspSecondArraySheet.get_all_values()
 
-# p(firstArray[0:5])
-# p(secondArray[14])
+    firstArrayColumnIndexToCompare = 8
+    secondArrayColumnIndexToCompare = 5
 
-while firstArray:
+    comparisonArray = [[''] * len(firstArray[0]) + ['Side-By-Side'] + [''] * len(secondArray[0])]
 
-    currentFirstArrayRow = firstArray.pop(0)
-    # p(currentFirstArrayRow)
-    rowToAppend = currentFirstArrayRow + ['']
+    # p(firstArray[0:5])
+    # p(secondArray[14])
 
-    for secondArrayRowCount, currentSecondArrayRow in enumerate(secondArray):
+    while firstArray:
 
-        # p(currentSecondArrayRow)
+        currentFirstArrayRow = firstArray.pop(0)
+        # p(currentFirstArrayRow)
+        rowToAppend = currentFirstArrayRow + ['']
 
-        if currentFirstArrayRow[firstArrayColumnIndexToCompare] == currentSecondArrayRow[secondArrayColumnIndexToCompare]:
+        for secondArrayRowCount, currentSecondArrayRow in enumerate(secondArray):
 
-            secondArrayRowToAppend = secondArray.pop(secondArrayRowCount)
-            rowToAppend = rowToAppend + currentSecondArrayRow
+            # p(currentSecondArrayRow)
 
-    comparisonArray.append(rowToAppend)
+            if currentFirstArrayRow[firstArrayColumnIndexToCompare] == currentSecondArrayRow[secondArrayColumnIndexToCompare]:
 
+                secondArrayRowToAppend = secondArray.pop(secondArrayRowCount)
+                rowToAppend = rowToAppend + currentSecondArrayRow
 
-# p(comparisonArray[0:2])
-
-_myGspreadFunc.clearAndResizeSheets([gspComparisonSheet, gspEndingFirstArraySheet, gspEndingSecondArraySheet])
-_myGspreadFunc.updateCells(gspComparisonSheet, comparisonArray)
-_myGspreadFunc.updateCells(gspEndingFirstArraySheet, firstArray)
-_myGspreadFunc.updateCells(gspEndingSecondArraySheet, secondArray)
+        comparisonArray.append(rowToAppend)
 
 
+    # p(comparisonArray[0:2])
+
+    _myGspreadFunc.clearAndResizeSheets([gspComparisonSheet, gspEndingFirstArraySheet, gspEndingSecondArraySheet])
+    _myGspreadFunc.updateCells(gspComparisonSheet, comparisonArray)
+    _myGspreadFunc.updateCells(gspEndingFirstArraySheet, firstArray)
+    _myGspreadFunc.updateCells(gspEndingSecondArraySheet, secondArray)
 
 
+
+main()
 
 
 
