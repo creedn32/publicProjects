@@ -25,21 +25,24 @@ gspEndingSecondArraySheet = gspSpreadsheet.worksheet('endingSecondArray')
 firstArray = gspFirstArraySheet.get_all_values()
 secondArray = gspSecondArraySheet.get_all_values()
 
-columnToCompare = 0
-comparisonArray = []
+firstArrayColumnIndexToCompare = 8
+secondArrayColumnIndexToCompare = 4
+
+comparisonArray = [[''] * len(firstArray[0]) + ['Side-By-Side'] + [''] * len(secondArray[0])]
+# comparisonArray = []
 
 
 while firstArray:
 
     currentFirstArrayRow = firstArray.pop(0)
     # p(currentFirstArrayRow)
-    rowToAppend = currentFirstArrayRow
+    rowToAppend = currentFirstArrayRow + ['']
 
     for secondArrayRowCount, currentSecondArrayRow in enumerate(secondArray):
 
         # p(currentSecondArrayRow)
 
-        if currentFirstArrayRow[columnToCompare] == currentSecondArrayRow[columnToCompare]:
+        if currentFirstArrayRow[firstArrayColumnIndexToCompare] == currentSecondArrayRow[secondArrayColumnIndexToCompare]:
 
             secondArrayRowToAppend = secondArray.pop(secondArrayRowCount)
             rowToAppend = rowToAppend + currentSecondArrayRow
@@ -47,7 +50,7 @@ while firstArray:
     comparisonArray.append(rowToAppend)
 
 
-
+# p(comparisonArray[0:2])
 
 _myGspreadFunc.clearAndResizeSheets([gspComparisonSheet, gspEndingFirstArraySheet, gspEndingSecondArraySheet])
 _myGspreadFunc.updateCells(gspComparisonSheet, comparisonArray)

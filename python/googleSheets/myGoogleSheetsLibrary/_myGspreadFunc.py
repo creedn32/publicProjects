@@ -54,4 +54,5 @@ def updateCells(gspSheetOfArray, arrayOfSheet):
         endingCell = 'R' + str(numberOfRowsInArrayOfSheet) + 'C' + str(numberOfColumnsInArrayOfSheet)
         addressOfSheet = startingCell + ':' + endingCell
 
+        # print(addressOfSheet)
         gspSheetOfArray.update(addressOfSheet, arrayOfSheet)
