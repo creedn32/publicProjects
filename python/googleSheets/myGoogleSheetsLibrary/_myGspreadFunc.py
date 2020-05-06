@@ -45,8 +45,8 @@ def clearAndResizeSheets(arrayOfSheetObjects):
 
 def updateCells(gspSheetOfArray, arrayOfSheet):
 
-    if len(arrayOfSheet) > 1:
-        
+    if len(arrayOfSheet) > 0:
+
         numberOfRowsInArrayOfSheet = len(arrayOfSheet)
         numberOfColumnsInArrayOfSheet = len(arrayOfSheet[numberOfRowsInArrayOfSheet - 1])
 

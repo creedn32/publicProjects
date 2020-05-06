@@ -32,9 +32,12 @@ comparisonArray = []
 while firstArray:
 
     currentFirstArrayRow = firstArray.pop(0)
+    # p(currentFirstArrayRow)
     rowToAppend = currentFirstArrayRow
 
     for secondArrayRowCount, currentSecondArrayRow in enumerate(secondArray):
+
+        # p(currentSecondArrayRow)
 
         if currentFirstArrayRow[columnToCompare] == currentSecondArrayRow[columnToCompare]:
 
@@ -42,6 +45,8 @@ while firstArray:
             rowToAppend = rowToAppend + currentSecondArrayRow
 
     comparisonArray.append(rowToAppend)
+
+
 
 
 _myGspreadFunc.clearAndResizeSheets([gspComparisonSheet, gspEndingFirstArraySheet, gspEndingSecondArraySheet])
