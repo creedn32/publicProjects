@@ -1,5 +1,5 @@
 
-def clearArray(arrayOfSheet, startingRow, endingRow, startingColumn, endingColumn):
+def clearArray(startingRow, endingRow, startingColumn, endingColumn, arrayOfSheet):
 
     if endingRow == -1:
         endingRow = len(arrayOfSheet) - 1
@@ -11,3 +11,18 @@ def clearArray(arrayOfSheet, startingRow, endingRow, startingColumn, endingColum
             arrayOfSheet[row][column] = ''
 
     return arrayOfSheet
+
+
+def clearSheet(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfArray):
+
+    import gspread
+
+    arrayOfSheet = clearArray(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfArray.get_all_values())
+    numberOfRowsInArrayOfSheet = len(arrayOfSheet)
+    numberOfColumnsInArrayOfSheet = len(arrayOfSheet[numberOfRowsInArrayOfSheet - 1])
+
+    startingCell = 'R1C1'
+    endingCell = 'R' + str(numberOfRowsInArrayOfSheet) + 'C' + str(numberOfColumnsInArrayOfSheet)
+    addressOfSheet = startingCell + ':' + endingCell
+
+    gspSheetOfArray.update(addressOfSheet, arrayOfSheet)
