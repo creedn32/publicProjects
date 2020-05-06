@@ -4,7 +4,7 @@ import sys
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
 import _myPyFunc
 sys.path.append(str(Path(_myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'googleSheets'), 'myGoogleSheetsLibrary')))
-import _myGoogleSheetsFunc
+import _myGoogleSheetsFunc, _myGspreadFunc
 
 from pprint import pprint as p
 import gspread, random
@@ -47,13 +47,9 @@ if useServiceAccount:
     addressOfSheet1 = 'R1C1' + ':' + 'R' + str(numberOfRows) + 'C' + str(numberOfColumnsInLastRow)
 
 
-    for row in range(0, numberOfRows):
-        for column in range(0, numberOfColumnsInLastRow):
-            arrayOfSheet1[row][column] = ''
-
+    arrayOfSheet1 = _myGspreadFunc.clearArray(arrayOfSheet1, 1, -1, 0, 2)
     gspSheet1.update(addressOfSheet1, arrayOfSheet1)
-
-   
+       
 
     randomInt = random.randint(1, 101)
 
