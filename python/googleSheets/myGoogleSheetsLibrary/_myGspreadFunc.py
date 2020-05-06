@@ -22,6 +22,31 @@ def clearSheet(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfA
     if len(arrayOfSheet) > 0:
 
         arrayOfSheet = clearArray(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfArray.get_all_values())
+        updateCells(gspSheetOfArray, arrayOfSheet)
+
+        
+
+
+def clearSheets(startingRow, endingRow, startingColumn, endingColumn, arrayOfSheetObjects):
+    
+    for sheetObj in arrayOfSheetObjects:
+        clearSheet(startingRow, endingRow, startingColumn, endingColumn, sheetObj)
+
+
+
+def clearAndResizeSheets(arrayOfSheetObjects):
+
+    for sheetObj in arrayOfSheetObjects:
+        sheetObj.resize(rows=1, cols=1)
+        clearSheet(0, -1, 0, -1, sheetObj)
+
+
+
+
+def updateCells(gspSheetOfArray, arrayOfSheet):
+
+    if len(arrayOfSheet) > 1:
+        
         numberOfRowsInArrayOfSheet = len(arrayOfSheet)
         numberOfColumnsInArrayOfSheet = len(arrayOfSheet[numberOfRowsInArrayOfSheet - 1])
 
@@ -30,9 +55,3 @@ def clearSheet(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfA
         addressOfSheet = startingCell + ':' + endingCell
 
         gspSheetOfArray.update(addressOfSheet, arrayOfSheet)
-
-
-def clearSheets(startingRow, endingRow, startingColumn, endingColumn, arrayOfSheetObjects):
-    
-    for sheetObj in arrayOfSheetObjects:
-        clearSheet(startingRow, endingRow, startingColumn, endingColumn, sheetObj)

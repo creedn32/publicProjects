@@ -18,15 +18,40 @@ gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
 gspSpreadsheet = gspObj.open("Reconcile Arrays")
 gspFirstArraySheet = gspSpreadsheet.worksheet('firstArray')
 gspSecondArraySheet = gspSpreadsheet.worksheet('secondArray')
+gspComparisonSheet = gspSpreadsheet.worksheet('comparison')
+gspEndingFirstArraySheet = gspSpreadsheet.worksheet('endingFirstArray')
+gspEndingSecondArraySheet = gspSpreadsheet.worksheet('endingSecondArray')
 
-_myGspreadFunc.clearSheets(0, -1, 0, -1, [gspFirstArraySheet, gspSecondArraySheet])
-
-firstArray = gspFirstArraySheet..get_all_values()
+firstArray = gspFirstArraySheet.get_all_values()
 secondArray = gspSecondArraySheet.get_all_values()
 
+columnToCompare = 0
+comparisonArray = []
 
 
-# gspFirstArraySheet.update('D4', 'bingo')
+while firstArray:
+
+    currentFirstArrayRow = firstArray.pop(0)
+    rowToAppend = currentFirstArrayRow
+
+    for secondArrayRowCount, currentSecondArrayRow in enumerate(secondArray):
+
+        if currentFirstArrayRow[columnToCompare] == currentSecondArrayRow[columnToCompare]:
+
+            secondArrayRowToAppend = secondArray.pop(secondArrayRowCount)
+            rowToAppend = rowToAppend + currentSecondArrayRow
+
+    comparisonArray.append(rowToAppend)
+
+
+_myGspreadFunc.clearAndResizeSheets([gspComparisonSheet, gspEndingFirstArraySheet, gspEndingSecondArraySheet])
+_myGspreadFunc.updateCells(gspComparisonSheet, comparisonArray)
+_myGspreadFunc.updateCells(gspEndingFirstArraySheet, firstArray)
+_myGspreadFunc.updateCells(gspEndingSecondArraySheet, secondArray)
+
+
+
+
 
 
 
