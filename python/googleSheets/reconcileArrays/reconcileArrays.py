@@ -26,11 +26,12 @@ firstArray = gspFirstArraySheet.get_all_values()
 secondArray = gspSecondArraySheet.get_all_values()
 
 firstArrayColumnIndexToCompare = 8
-secondArrayColumnIndexToCompare = 4
+secondArrayColumnIndexToCompare = 5
 
 comparisonArray = [[''] * len(firstArray[0]) + ['Side-By-Side'] + [''] * len(secondArray[0])]
-# comparisonArray = []
 
+# p(firstArray[0:5])
+# p(secondArray[14])
 
 while firstArray:
 
