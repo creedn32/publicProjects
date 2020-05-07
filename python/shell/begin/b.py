@@ -1,15 +1,20 @@
+#local application imports
 from pathlib import Path
-pathToThisPythonFile = Path(__file__).resolve()
 import sys
-sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
-import _myPyFunc
-sys.path.append(str(Path(_myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'python'), 'googleSheets', 'myGoogleSheetsLibrary')))
-import _myGoogleSheetsFunc, _myGspreadFunc
+pathToThisPythonFile = Path(__file__).resolve()
+sys.path.append(str(pathToThisPythonFile.parents[2]))
+import myPythonLibrary._myPyFunc as _myPyFunc, googleSheets.myGoogleSheetsLibrary._myGoogleSheetsFunc as _myGoogleSheetsFunc, googleSheets.myGoogleSheetsLibrary._myGspreadFunc as _myGspreadFunc
 
+#standard library imports
 from pprint import pprint as p
+import psutil
 from runpy import run_path
-import gspread, subprocess, psutil
+import subprocess
 
+#third-party imports
+import gspread
+
+# p(dir())
 
 
 def getArrayOfProcesses(pathToSaveProcesses):
@@ -98,14 +103,16 @@ def processIsRunning(processToStart, pathToSaveProcesses):
     
     return any(isValid(process) for process in getArrayOfProcesses(pathToSaveProcesses))
 
-
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
 
 pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
 
 gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
+
 gspSpreadsheet = gspObj.open("Computer Processes")
+
+gspSpreadsheet = _myGspreadFunc.getGspSpreadsheetObj()
 gspCurrentlyRunningProcessesSheet = gspSpreadsheet.worksheet('currentlyRunningProcesses')
 gspAppCollectionsToStartSheet = gspSpreadsheet.worksheet('appCollectionsToStart')
 

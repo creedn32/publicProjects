@@ -1,8 +1,8 @@
 from pathlib import Path
 pathToThisPythonFile = Path(__file__).resolve()
 import sys
-sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myPythonLibrary')))
-import _myPyFunc
+sys.path.append(str(pathToThisPythonFile.parents[2]))
+from myPythonLibrary import _myPyFunc
 
 from pprint import pprint as pp
 

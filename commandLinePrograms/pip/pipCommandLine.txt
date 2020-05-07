@@ -3,10 +3,11 @@
 #list installed packages
 python -m pip list
 
+#list installed packages, only third-party
+python -m pip freeze
 
 #upgrade pip
 python -m pip install --upgrade pip
-
 
 #upgrade package
 python -m pip install gspread --upgrade
