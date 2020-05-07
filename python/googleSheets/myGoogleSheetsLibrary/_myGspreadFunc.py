@@ -48,8 +48,13 @@ def updateCells(gspSheetOfArray, arrayOfSheet):
     if len(arrayOfSheet) > 0:
 
         numberOfRowsInArrayOfSheet = len(arrayOfSheet)
-        numberOfColumnsInArrayOfSheet = len(arrayOfSheet[numberOfRowsInArrayOfSheet - 1])
 
+        numberOfColumnsInArrayOfSheet = 0
+
+        for row in arrayOfSheet:
+            if len(row) > numberOfColumnsInArrayOfSheet:
+                numberOfColumnsInArrayOfSheet = len(row)
+        
         startingCell = 'R1C1'
         endingCell = 'R' + str(numberOfRowsInArrayOfSheet) + 'C' + str(numberOfColumnsInArrayOfSheet)
         addressOfSheet = startingCell + ':' + endingCell

@@ -3,81 +3,135 @@ pathToThisPythonFile = Path(__file__).resolve()
 import sys
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
 import _myPyFunc
+sys.path.append(str(Path(_myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'python'), 'googleSheets', 'myGoogleSheetsLibrary')))
+import _myGoogleSheetsFunc, _myGspreadFunc
 
-import subprocess, psutil
-from runpy import run_path
 from pprint import pprint as p
+from runpy import run_path
+import gspread, subprocess, psutil
 
 
 
+def getArrayOfProcesses(pathToSaveProcesses):
 
-
-
-def arrayOfProcesses(pathToSaveProcesses):
-
-    processArray = []
+    arrayOfRunningProcesses = [['Process ID', 'Execution Module', 'Current Directory', 'Name', 'Exe']]
+    arrayOfRunningProcessesForTxt = []
 
     for runningProcess in psutil.process_iter():
             
-        processArray.append('-' * 30)
-        processArray.append(f'{runningProcess.pid} (process ID)')
+        arrayOfRunningProcessesForTxt.append('-' * 30)
+
+        processToAppend = []
+        processToAppend.append(runningProcess.pid)
+
+        arrayOfRunningProcessesForTxt.append(f'{runningProcess.pid} (process ID)')
 
         try:
 
-            processArray.append(f'{runningProcess.exe()} (execution module)')
+            arrayOfRunningProcessesForTxt.append(f'{runningProcess.exe()} (execution module)')
             
             for i in range(0, len(runningProcess.cmdline())):
-                processArray.append(str(i) + ': ' + runningProcess.cmdline()[i])
+                arrayOfRunningProcessesForTxt.append(str(i) + ': ' + runningProcess.cmdline()[i])
 
-            processArray.append(f'{runningProcess.cwd()} (current directory)')
-            processArray.append(f'{runningProcess.name()} (name)')
-            processArray.append(f'{runningProcess.exe()} (exe)')
+            arrayOfRunningProcessesForTxt.append(f'{runningProcess.cwd()} (current directory)')
+            arrayOfRunningProcessesForTxt.append(f'{runningProcess.name()} (name)')
+            arrayOfRunningProcessesForTxt.append(f'{runningProcess.exe()} (exe)')
 
         except psutil.AccessDenied:
             pass
-            processArray.append('You do not have access to this process')
+            arrayOfRunningProcessesForTxt.append('You do not have access to this process')
+
+
+
+
+        try:
+            processToAppend.append(runningProcess.exe())
+        except psutil.AccessDenied:
+            processToAppend.append('')
+            
+            # for i in range(0, len(runningProcess.cmdline())):
+                # arrayOfRunningProcessesForTxt.append(str(i) + ': ' + runningProcess.cmdline()[i])
+
+        try:
+            processToAppend.append(runningProcess.cwd())
+        except psutil.AccessDenied:
+            processToAppend.append('')
+
+        try:
+            processToAppend.append(runningProcess.name())           
+        except psutil.AccessDenied:
+            processToAppend.append('')
+
+        try:
+            processToAppend.append(runningProcess.exe())
+        except psutil.AccessDenied:
+            processToAppend.append('')
+
+
+        arrayOfRunningProcesses.append(processToAppend)
   
+    # p(arrayOfRunningProcessesForTxt)
+
 
     fileObj = open(Path(pathToSaveProcesses, 'runningProcesses.txt'), 'w')
 
-    for line in processArray:
+    for line in arrayOfRunningProcessesForTxt:
         fileObj.write(line + '\n')
 
     fileObj.close()
 
 
-    return processArray
+    # p(arrayOfRunningProcesses[0:4])
+    _myGspreadFunc.updateCells(gspCurrentlyRunningProcessesSheet, arrayOfRunningProcesses)
+
+    return arrayOfRunningProcessesForTxt
 
 
 
 
 def processIsRunning(processToStart, pathToSaveProcesses):
+
     def isValid(process):
         return process[3:] == processToStart \
          or process == processToStart  \
          or process[3:] == processToStart.replace('explorer ', '')
     
-    return any(isValid(process) for process in arrayOfProcesses(pathToSaveProcesses))
+    return any(isValid(process) for process in getArrayOfProcesses(pathToSaveProcesses))
 
 
+pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
 
-pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
-pathToThisPythonFileDirectoryPrivate = _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData')
-pathToProcessesToStartData = Path(pathToThisPythonFileDirectoryPrivate, 'processesToStartData.py')
-processesToStartData = run_path(str(pathToProcessesToStartData))
+pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
+
+gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
+gspSpreadsheet = gspObj.open("Computer Processes")
+gspCurrentlyRunningProcessesSheet = gspSpreadsheet.worksheet('currentlyRunningProcesses')
+gspAppCollectionsToStartSheet = gspSpreadsheet.worksheet('appCollectionsToStart')
+
+appCollectionsToStartArrayFromSheet = gspAppCollectionsToStartSheet.get_all_values()
+_myGspreadFunc.clearAndResizeSheets([gspCurrentlyRunningProcessesSheet])
 
 
-arrayOfProcessesToStart = processesToStartData.get(sys.argv[1])
+pathToThisPythonFileDirectoryPrivate = _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')
+pathToAppCollectionsToStart = Path(pathToThisPythonFileDirectoryPrivate, 'appCollectionsToStart.py')
+appCollectionsToStart = run_path(str(pathToAppCollectionsToStart))
+argumentFromCommandLine = sys.argv[1]
 
-for processToStartData in arrayOfProcessesToStart:
+# p(processesToStartFromFile)
+appCollectionToStart = appCollectionsToStart.get(argumentFromCommandLine)
+# p(appCollectionToStart)
 
-    processToStart = processToStartData[0]
+for appToStart in appCollectionToStart:
+
+    processToStart = appToStart[0]
+    # p(processToStart)
 
     if not processIsRunning(processToStart, pathToThisPythonFileDirectoryPrivate):
         p('The process ' + processToStart + ' is not running and will be started.')
         
-        if len(processToStartData) > 1:
-            processToStart = processToStartData[1] + ' ' + processToStartData[0]
+        if len(appToStart) > 1:
+            processToStart = appToStart[1] + ' ' + processToStart
 
         subprocess.Popen(processToStart)
     else:
