@@ -66,12 +66,13 @@ def updateCells(gspSheetOfArray, arrayOfSheet):
 
 def getGspSpreadsheetObj():
     #return gspread spreadsheet object
+    print(dir())
 
-    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-    arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
+    # pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+    # arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
 
-    pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
+    # pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
 
-    gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
-    
-    return gspObj.open("Computer Processes")
+    # gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
+
+    # return gspObj.open("Computer Processes")
