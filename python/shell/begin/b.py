@@ -103,16 +103,9 @@ def processIsRunning(processToStart, pathToSaveProcesses):
     
     return any(isValid(process) for process in getArrayOfProcesses(pathToSaveProcesses))
 
-pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
 
-pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
+gspSpreadsheet = _myGspreadFunc.getGspSpreadsheetObj('Computer Processes')
 
-gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
-
-gspSpreadsheet = gspObj.open("Computer Processes")
-
-gspSpreadsheet = _myGspreadFunc.getGspSpreadsheetObj()
 gspCurrentlyRunningProcessesSheet = gspSpreadsheet.worksheet('currentlyRunningProcesses')
 gspAppCollectionsToStartSheet = gspSpreadsheet.worksheet('appCollectionsToStart')
 

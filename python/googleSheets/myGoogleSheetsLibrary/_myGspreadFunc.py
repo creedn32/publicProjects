@@ -1,3 +1,11 @@
+from pathlib import Path
+import sys
+pathToThisPythonFile = Path(__file__).resolve()
+sys.path.append(str(pathToThisPythonFile.parents[2]))
+import myPythonLibrary._myPyFunc as _myPyFunc
+
+import gspread
+
 
 def clearArray(startingRow, endingRow, startingColumn, endingColumn, arrayOfSheet):
 
@@ -13,9 +21,8 @@ def clearArray(startingRow, endingRow, startingColumn, endingColumn, arrayOfShee
     return arrayOfSheet
 
 
-def clearSheet(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfArray):
 
-    import gspread
+def clearSheet(startingRow, endingRow, startingColumn, endingColumn, gspSheetOfArray):
 
     arrayOfSheet = gspSheetOfArray.get_all_values()
 
@@ -42,7 +49,6 @@ def clearAndResizeSheets(arrayOfSheetObjects):
 
 
 
-
 def updateCells(gspSheetOfArray, arrayOfSheet):
 
     if len(arrayOfSheet) > 0:
@@ -64,15 +70,14 @@ def updateCells(gspSheetOfArray, arrayOfSheet):
 
 
 
-def getGspSpreadsheetObj():
+def getGspSpreadsheetObj(spreadsheetName):
     #return gspread spreadsheet object
-    print(dir())
 
-    # pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-    # arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials']
+    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+    arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials', 'usingServiceAccount', 'jsonWithAPIKey.json']
 
-    # pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath + ['usingServiceAccount', 'jsonWithAPIKey.json'])
+    pathToCredentialsFileServiceAccount = _myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath)
 
-    # gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
+    gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
 
-    # return gspObj.open("Computer Processes")
+    return gspObj.open(spreadsheetName)
