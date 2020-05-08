@@ -20,33 +20,11 @@ import gspread
 def getArrayOfProcesses(pathToSaveProcesses):
 
     arrayOfRunningProcesses = [['Name', 'Process ID', 'Exe', 'Current Directory', 'Execution Module', 'Command Line (0)']]
-    arrayOfRunningProcessesForTxt = []
 
     for runningProcess in psutil.process_iter():
-            
-        arrayOfRunningProcessesForTxt.append('-' * 30)
-
-        processToAppend = []
-        processToAppend.append(runningProcess.name())
-        processToAppend.append(runningProcess.pid)
            
-
-
-        arrayOfRunningProcessesForTxt.append(f'{runningProcess.pid} (process ID)')
-
-        try:
-            
-            for i in range(0, len(runningProcess.cmdline())):
-                arrayOfRunningProcessesForTxt.append(str(i) + ': ' + runningProcess.cmdline()[i])
-
-            arrayOfRunningProcessesForTxt.append(f'{runningProcess.cwd()} (current directory)')
-            arrayOfRunningProcessesForTxt.append(f'{runningProcess.name()} (name)')
-            arrayOfRunningProcessesForTxt.append(f'{runningProcess.exe()} (exe)')
-
-        except psutil.AccessDenied:
-            pass
-            arrayOfRunningProcessesForTxt.append('You do not have access to this process')
-
+        processToAppend = [runningProcess.name()]
+        processToAppend.append(runningProcess.pid)
 
         try:
             processToAppend.append(runningProcess.exe())
@@ -65,25 +43,10 @@ def getArrayOfProcesses(pathToSaveProcesses):
         except psutil.AccessDenied:
             pass
 
-
-
-
         arrayOfRunningProcesses.append(processToAppend)
   
-    # p(arrayOfRunningProcessesForTxt)
-
-
-    fileObj = open(Path(pathToSaveProcesses, 'runningProcesses.txt'), 'w')
-
-    for line in arrayOfRunningProcessesForTxt:
-        fileObj.write(line + '\n')
-
-    fileObj.close()
-
-
     
-    arrayOfArrayLengths = [len(i) for i in arrayOfRunningProcesses]
-    numberOfTotalColumns = max(arrayOfArrayLengths)
+    numberOfTotalColumns = max([len(i) for i in arrayOfRunningProcesses])
 
     for rowIndex, row in enumerate(arrayOfRunningProcesses):
 
