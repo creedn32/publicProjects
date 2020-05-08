@@ -19,7 +19,7 @@ import gspread
 
 def getArrayOfProcesses(pathToSaveProcesses):
 
-    arrayOfRunningProcesses = [['Process ID', 'Execution Module', 'Current Directory', 'Name', 'Exe']]
+    arrayOfRunningProcesses = [['Name', 'Process ID', 'Exe', 'Current Directory', 'Execution Module', 'Command Line (0)']]
     arrayOfRunningProcessesForTxt = []
 
     for runningProcess in psutil.process_iter():
@@ -27,13 +27,14 @@ def getArrayOfProcesses(pathToSaveProcesses):
         arrayOfRunningProcessesForTxt.append('-' * 30)
 
         processToAppend = []
+        processToAppend.append(runningProcess.name())
         processToAppend.append(runningProcess.pid)
+           
+
 
         arrayOfRunningProcessesForTxt.append(f'{runningProcess.pid} (process ID)')
 
         try:
-
-            arrayOfRunningProcessesForTxt.append(f'{runningProcess.exe()} (execution module)')
             
             for i in range(0, len(runningProcess.cmdline())):
                 arrayOfRunningProcessesForTxt.append(str(i) + ': ' + runningProcess.cmdline()[i])
@@ -47,15 +48,11 @@ def getArrayOfProcesses(pathToSaveProcesses):
             arrayOfRunningProcessesForTxt.append('You do not have access to this process')
 
 
-
-
         try:
             processToAppend.append(runningProcess.exe())
         except psutil.AccessDenied:
             processToAppend.append('')
-            
-            # for i in range(0, len(runningProcess.cmdline())):
-                # arrayOfRunningProcessesForTxt.append(str(i) + ': ' + runningProcess.cmdline()[i])
+
 
         try:
             processToAppend.append(runningProcess.cwd())
@@ -63,14 +60,12 @@ def getArrayOfProcesses(pathToSaveProcesses):
             processToAppend.append('')
 
         try:
-            processToAppend.append(runningProcess.name())           
+            for cmdLineOfProcess in runningProcess.cmdline():
+                processToAppend.append(cmdLineOfProcess)
         except psutil.AccessDenied:
-            processToAppend.append('')
+            pass
 
-        try:
-            processToAppend.append(runningProcess.exe())
-        except psutil.AccessDenied:
-            processToAppend.append('')
+
 
 
         arrayOfRunningProcesses.append(processToAppend)
@@ -86,31 +81,51 @@ def getArrayOfProcesses(pathToSaveProcesses):
     fileObj.close()
 
 
-    # p(arrayOfRunningProcesses[0:4])
-    _myGspreadFunc.updateCells(gspCurrentlyRunningProcessesSheet, arrayOfRunningProcesses)
+    
+    arrayOfArrayLengths = [len(i) for i in arrayOfRunningProcesses]
+    numberOfTotalColumns = max(arrayOfArrayLengths)
 
-    return arrayOfRunningProcessesForTxt
+    for rowIndex, row in enumerate(arrayOfRunningProcesses):
+
+        if len(row) < numberOfTotalColumns:
+
+            numberOfColumnsToAdd = numberOfTotalColumns - len(row)
+
+            if rowIndex == 0:
+
+                for columnNumberToAdd in range(1, numberOfColumnsToAdd):
+                    row.append('Command Line (' + str(columnNumberToAdd) + ')')
+
+            else:
+                row.extend([''] * numberOfColumnsToAdd)
+
+
+    _myGspreadFunc.updateCells(objOfSheets['appCollectionsToStart']['sheetObj'], arrayOfRunningProcesses)
+
+    return arrayOfRunningProcesses
 
 
 
 
 def processIsRunning(processToStart, pathToSaveProcesses):
 
-    def isValid(process):
-        return process[3:] == processToStart \
-         or process == processToStart  \
-         or process[3:] == processToStart.replace('explorer ', '')
-    
-    return any(isValid(process) for process in getArrayOfProcesses(pathToSaveProcesses))
+    for process in getArrayOfProcesses(pathToSaveProcesses):
+        if processToStart in process:
+            return True
+    return False
 
 
-gspSpreadsheet = _myGspreadFunc.getGspSpreadsheetObj('Computer Processes')
 
-gspCurrentlyRunningProcessesSheet = gspSpreadsheet.worksheet('currentlyRunningProcesses')
-gspAppCollectionsToStartSheet = gspSpreadsheet.worksheet('appCollectionsToStart')
+objOfSheets = _myGspreadFunc.getObjOfSheets('Computer Processes')
 
-appCollectionsToStartArrayFromSheet = gspAppCollectionsToStartSheet.get_all_values()
-_myGspreadFunc.clearAndResizeSheets([gspCurrentlyRunningProcessesSheet])
+clearAndResizeParameters = [{
+    'sheetObj': objOfSheets['appCollectionsToStart']['sheetObj'],
+    'resizeRows': 2,
+    'resizeColumns': 6,
+    'startingRowIndexToClear': 1
+}]
+
+_myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
 
 
 pathToThisPythonFileDirectoryPrivate = _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')
