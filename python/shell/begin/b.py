@@ -63,7 +63,7 @@ def getArrayOfProcesses(pathToSaveProcesses):
                 row.extend([''] * numberOfColumnsToAdd)
 
 
-    _myGspreadFunc.updateCells(objOfSheets['appCollectionsToStart']['sheetObj'], arrayOfRunningProcesses)
+    _myGspreadFunc.updateCells(objOfSheets['currentlyRunningProcesses']['sheetObj'], arrayOfRunningProcesses)
 
     return arrayOfRunningProcesses
 
@@ -82,7 +82,7 @@ def processIsRunning(processToStart, pathToSaveProcesses):
 objOfSheets = _myGspreadFunc.getObjOfSheets('Computer Processes')
 
 clearAndResizeParameters = [{
-    'sheetObj': objOfSheets['appCollectionsToStart']['sheetObj'],
+    'sheetObj': objOfSheets['currentlyRunningProcesses']['sheetObj'],
     'resizeRows': 2,
     'resizeColumns': 6,
     'startingRowIndexToClear': 1
