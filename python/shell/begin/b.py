@@ -48,6 +48,7 @@ def getArrayOfProcesses(pathToSaveProcesses):
     
     numberOfTotalColumns = max([len(i) for i in arrayOfRunningProcesses])
 
+
     for rowIndex, row in enumerate(arrayOfRunningProcesses):
 
         if len(row) < numberOfTotalColumns:
@@ -56,11 +57,24 @@ def getArrayOfProcesses(pathToSaveProcesses):
 
             if rowIndex == 0:
 
-                for columnNumberToAdd in range(1, numberOfColumnsToAdd):
+                for columnNumberToAdd in range(1, numberOfColumnsToAdd + 1):
                     row.append('Command Line (' + str(columnNumberToAdd) + ')')
+                    # p('Command Line (' + str(columnNumberToAdd) + ')')
 
             else:
                 row.extend([''] * numberOfColumnsToAdd)
+
+
+    # arrayToPrint = []
+
+    # for row in arrayOfRunningProcesses:
+    #     try:
+    #         arrayToPrint.append(row[33])
+    #     except:
+    #         p("can't add to array")
+
+    # print(arrayToPrint)
+
 
 
     _myGspreadFunc.updateCells(objOfSheets['currentlyRunningProcesses']['sheetObj'], arrayOfRunningProcesses)
