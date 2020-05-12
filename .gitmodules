@@ -1,0 +1,3 @@
+[submodule "node/herokuHelloNode"]
+	path = node/herokuHelloNode
+	url = https://github.com/creednaylor/herokuHelloNode.git
