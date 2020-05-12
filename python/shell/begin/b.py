@@ -79,7 +79,7 @@ def processIsRunning(processToStart, pathToSaveProcesses):
 
 
 
-objOfSheets = _myGspreadFunc.getObjOfSheets('Computer Processes')
+objOfSheets = _myGspreadFunc.getObjOfSheets('App Data')
 
 clearAndResizeParameters = [{
     'sheetObj': objOfSheets['currentlyRunningProcesses']['sheetObj'],
