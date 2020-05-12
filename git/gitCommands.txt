@@ -103,7 +103,7 @@ git config --global core.autocrlf true
 
 
 #change remote URL
-git remote set-url origin https://github.com/creednaylor/herokuHello.git
+git remote set-url origin newurl
 
 #see the remote URL
 git config --get remote.origin.url
