@@ -1,0 +1,5 @@
+#open app
+heroku open
+
+
+#check logs
