@@ -1,1 +1,4 @@
 
+[submodule "javascript/herokuHelloJavascript"]
+	path = javascript/herokuHelloJavascript
+	url = https://github.com/creednaylor/herokuHelloJavascript.git
