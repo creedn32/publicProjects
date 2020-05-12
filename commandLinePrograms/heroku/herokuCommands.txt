@@ -13,3 +13,6 @@ heroku info
 #restart
 heroku restart
 
+
+#rename app
+heroku apps:rename herokuhellojavascript
