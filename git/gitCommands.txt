@@ -87,8 +87,7 @@ git config --global user.email "16467643+creednaylor@users.noreply.github.com"
 git config --global core.editor "vim"
 
 
-#see remote URL
-git remote -v
+
 
 
 #see all git settings
@@ -103,16 +102,22 @@ git config --list --show-origin
 git config --global core.autocrlf true
 
 
+#change remote URL
+git remote set-url origin https://github.com/creednaylor/herokuHello.git
+
 #see the remote URL
 git config --get remote.origin.url
 
+#see remote URL
+git remote -v
 
 #see the remote URL details
 git remote show origin
 
-
 #understand output from git diff
 https://www.git-tower.com/learn/git/ebook/en/command-line/advanced-topics/diffs
+
+
 
 
 #create an alias
