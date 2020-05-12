@@ -25,7 +25,6 @@ def postTransactionsFunction(sheetNameStr):
 
     changeCellColor = False
     numLockChanged = False
-    pyautogui.PAUSE = 0
     activateKeyboard = True
 
 
@@ -198,7 +197,6 @@ def postTransfersFunction():
     # spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
     sheetNameStr = "Bank Transfers"
     changeCellColor = False
-    pyautogui.PAUSE = 0
     activateKeyboard = True
 
 
@@ -296,11 +294,12 @@ def postTransfersFunction():
                                 list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
                             range(40, 44)) + list(range(33, 39))):
 
+                            currentPauseDelay = pyautogui.PAUSE
                             pyautogui.PAUSE = .0000000000001
                             pyautogui.keyDown("shift")
                             pyautogui.press(letter)
                             pyautogui.keyUp("shift")
-                            pyautogui.PAUSE = 0
+                            pyautogui.PAUSE = currentPauseDelay
 
                         else:
                             pyautogui.press(letter)
@@ -331,7 +330,7 @@ import _myGoogleSheetsFunc
 from pprint import pprint as p
 import datetime, pynput.mouse, win32api, win32con, pyautogui
 
-
+pyautogui.PAUSE = .06
 pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
 
 
