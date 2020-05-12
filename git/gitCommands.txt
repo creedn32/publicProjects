@@ -1,3 +1,7 @@
+#ignore line endings in git
+git config --global core.autocrlf false
+
+
 #search for commit that introduced a phrase into the repo, export to txt file
 git --no-pager log -p -S"http://local" > log.txt
 git --no-pager log -p -G"http://local" > log.txt #for regular expression
@@ -97,9 +101,6 @@ git config --list --show-origin
 #see all git settings with config file details
 git config --list --show-origin
 
-
-#ignore line endings in git
-git config --global core.autocrlf true
 
 
 #change remote URL
