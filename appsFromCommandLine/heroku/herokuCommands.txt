@@ -16,3 +16,7 @@ heroku restart
 
 #rename app
 heroku apps:rename herokuhellojavascript
+
+
+#add a heroku remote to an existing local repository
+heroku git:remote -a herokuhellojavascript
