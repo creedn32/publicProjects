@@ -25,13 +25,13 @@ commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Py
 
 # p(pathToRepos)
 
-for individualRepoFolder in pathToRepos.glob('*'):
+for objInReposFolder in pathToRepos.glob('*'):
 
-    for folderInIndividualRepoFolder in individualRepoFolder.glob('*'):
+    for objInIndividualRepoFolder in objInReposFolder.glob('*'):
 
-        if folderInIndividualRepoFolder.name == '.git':
+        if objInIndividualRepoFolder.name == '.git':
 
-            individualRepoFolderWithGit = folderInIndividualRepoFolder.parents[0]
+            individualRepoFolderWithGit = objInIndividualRepoFolder.parents[0]
             p(str(individualRepoFolderWithGit))
 
             def getArrayOfChildrenFolders(folderPath):
@@ -64,18 +64,21 @@ for individualRepoFolder in pathToRepos.glob('*'):
                     p('this folder is a git folder')
                     p(currentFolder)
 
+                if currentFolder.name == 'herokuHelloJavascript':
+                    p('heroku')
+
 
 
 
             if sys.argv[1] == 'acp':
                 subprocess.run(
-                    'git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' add .')
+                    'git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' add .')
                 subprocess.run(
-                    'git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' commit -m \"' + commitMesssage + '\"')
+                    'git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' commit -m \"' + commitMesssage + '\"')
                 subprocess.run(
-                    'git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' push')
-                # subprocess.run('git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' status')
+                    'git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' push')
+                # subprocess.run('git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' status')
             else:
                 subprocess.run(
-                    'git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' ' + sys.argv[1])
+                    'git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' ' + sys.argv[1])
 
