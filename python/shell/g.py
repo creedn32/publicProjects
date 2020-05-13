@@ -1,24 +1,38 @@
-import subprocess
-import sys
+#local application imports
 from pathlib import Path
-from pprint import pprint as pp
+import sys
+pathToThisPythonFile = Path(__file__).resolve()
+sys.path.append(str(pathToThisPythonFile.parents[1]))
+import myPythonLibrary._myPyFunc as _myPyFunc
 
+#standard library imports
 import datetime
+from pprint import pprint as p
+import psutil
+from runpy import run_path
+import subprocess
+
+#third-party imports
+import gspread
+
+
 nowObj = datetime.datetime.now()
 
-thisPythonFilePath = Path(__file__).resolve()
-pathToRepos = thisPythonFilePath.parents[3]
+pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
 
 
 
-# pp(pathToRepos)
+# p(pathToRepos)
 
 for nodeInRepos in pathToRepos.glob('*'):
 
     for nodeInEachRepo in nodeInRepos.glob('*'):
+
+        # p(nodeInEachRepo)
+
         if nodeInEachRepo.name == '.git':
-            pp(str(nodeInEachRepo.parents[0]))
+            p(str(nodeInEachRepo.parents[0]))
 
             if sys.argv[1] == 'acp':
                 subprocess.run(
