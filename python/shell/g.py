@@ -34,22 +34,22 @@ for objInReposFolder in pathToRepos.glob('*'):
             gitObjInIndividualRepoFolder = objInIndividualRepoFolder.parents[0]
             p(str(gitObjInIndividualRepoFolder))
 
-            def getArrayOfChildrenFolders(folderPath):
+            def getArrayOfChildrenObjects(folderPath):
 
-                arrayOfChildrenFolders = []
+                arrayOfChildrenObjects = []
  
-                for fileOrFolder in folderPath.iterdir():
+                for obj in folderPath.iterdir():
 
-                    def isFolder(fileOrFolder):
-                        if fileOrFolder.is_file():
+                    def isFolder(obj):
+                        if obj.is_file():
                             return False
                         else:
                             return True
                 
-                    if isFolder(fileOrFolder):
-                        arrayOfChildrenFolders.append(fileOrFolder)
+                    if isFolder(obj):
+                        arrayOfChildrenObjects.append(obj)
 
-                return arrayOfChildrenFolders
+                return arrayOfChildrenObjects
 
             
             arrayOfFolders = [gitObjInIndividualRepoFolder]
@@ -57,7 +57,7 @@ for objInReposFolder in pathToRepos.glob('*'):
             while arrayOfFolders:
 
                 currentFolder = arrayOfFolders.pop(0)
-                arrayOfFolders.extend(getArrayOfChildrenFolders(currentFolder))               
+                arrayOfFolders.extend(getArrayOfChildrenObjects(currentFolder))               
 
                 if currentFolder.name == '.git':
                     pass
