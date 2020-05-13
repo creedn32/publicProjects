@@ -40,31 +40,32 @@ for objInReposFolder in pathToRepos.glob('*'):
  
                 for obj in folderPath.iterdir():
 
-                    def isFolder(obj):
-                        if obj.is_file():
-                            return False
-                        else:
-                            return True
-                
-                    if isFolder(obj):
-                        arrayOfChildrenObjects.append(obj)
+                    arrayOfChildrenObjects.append(obj)
 
                 return arrayOfChildrenObjects
 
             
-            arrayOfFolders = [gitObjInIndividualRepoFolder]
+            arrayOfObjects = [gitObjInIndividualRepoFolder]
 
-            while arrayOfFolders:
+            while arrayOfObjects:
 
-                currentFolder = arrayOfFolders.pop(0)
-                arrayOfFolders.extend(getArrayOfChildrenObjects(currentFolder))               
+                def isFolder(obj):
+                    if obj.is_file():
+                        return False
+                    else:
+                        return True    
 
-                if currentFolder.name == '.git':
+                currentObject = arrayOfObjects.pop(0)
+
+                if isFolder(currentObject):
+                    arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
+
+                if currentObject.name == '.git':
                     pass
                     p('this folder is a git folder')
-                    p(currentFolder)
+                    p(currentObject)
 
-                if currentFolder.name == 'herokuHelloJavascript':
+                if currentObject.name == 'herokuHelloJavascript':
                     p('heroku')
 
 
