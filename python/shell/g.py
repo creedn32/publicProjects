@@ -64,8 +64,8 @@ for objInReposFolder in pathToRepos.glob('*'):
 
                 if currentObject.name == '.git':
                     pass
-                    # p('this is a git object')
-                    # p(currentObject)
+                    p('this is a git object')
+                    p(currentObject)
 
 
 
