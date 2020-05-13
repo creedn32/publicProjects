@@ -74,8 +74,8 @@ for objInReposFolder in pathToRepos.glob('*'):
                     arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
 
                 if currentObject.name == '.git' and currentObject != gitObjInIndividualRepoFolder:
-                    p('this is likely a submodule')
-                    p(currentObject.parents[0])
+                    # p('this is likely a submodule')
+                    # p(currentObject.parents[0])
                     runGitProcesses(currentObject.parents[0])
 
 
