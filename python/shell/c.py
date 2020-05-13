@@ -28,15 +28,15 @@ remainingArgumentsArray = remainingFirstArgumentArray + sys.argv[2:]
 
 
 # moduleToImportRelativePath = "math"
-importedModule = __import__(moduleToImportRelativePath)
-method_to_call = getattr(importedModule, moduleToImport)
-result = method_to_call()
+# importedModule = __import__(moduleToImportRelativePath)
+# method_to_call = getattr(importedModule, moduleToImport)
+# result = method_to_call()
 
-p(result)
-p(importedModule.customgit.thisconstant)
+# p(result)
+# p(importedModule.customgit.thisconstant)
 # importedModule.main(remainingArgumentsArray)
 
-
+from scriptsForCustom import customgit
 
 
 
