@@ -23,7 +23,7 @@ commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Py
 
 def runGitProcesses(gitFolder):
 
-    p(strgitFolder)
+    p(str(gitFolder))
     
     if sys.argv[1] == 'acp':
         subprocess.run('git -C ' + str(gitFolder) + ' add .')
@@ -81,4 +81,4 @@ for objInReposFolder in pathToRepos.glob('*'):
 
 
             runGitProcesses(gitIndividualRepoFolder)
-
+
