@@ -25,32 +25,32 @@ commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Py
 
 # p(pathToRepos)
 
-for nodeInRepos in pathToRepos.glob('*'):
+for individualRepoFolder in pathToRepos.glob('*'):
 
-    for nodeInEachRepo in nodeInRepos.glob('*'):
+    for folderInIndividualRepoFolder in individualRepoFolder.glob('*'):
 
-        # p(nodeInEachRepo)
+        # p(folderInIndividualRepoFolder)
 
-        if nodeInEachRepo.name == '.git':
-            p(str(nodeInEachRepo.parents[0]))
+        if folderInIndividualRepoFolder.name == '.git':
+            p(str(folderInIndividualRepoFolder.parents[0]))
 
 
             # def listOfSubFolders(folderPath):
-            #     subFolderArray = []
+            #     subarrayOfFolders = []
  
             #     for node in folderPath.iterdir():
             #         if not node.is_file():
-            #             subFolderArray.append(node)
+            #             subarrayOfFolders.append(node)
 
-            #     return subFolderArray
+            #     return subarrayOfFolders
 
 
-            folderArray = [nodeInEachRepo.parents[0]]
+            arrayOfFolders = [folderInIndividualRepoFolder.parents[0]]
 
-            while folderArray:
+            while arrayOfFolders:
 
-                currentFolder = folderArray.pop(0)
-                # folderArray.extend(listOfSubFolders(currentFolder))
+                currentFolder = arrayOfFolders.pop(0)
+                # arrayOfFolders.extend(listOfSubFolders(currentFolder))
                 
                 # for node in currentFolder.iterdir():
 
@@ -72,13 +72,13 @@ for nodeInRepos in pathToRepos.glob('*'):
 
             if sys.argv[1] == 'acp':
                 subprocess.run(
-                    'git -C ' + str(nodeInEachRepo.parents[0]) + ' add .')
+                    'git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' add .')
                 subprocess.run(
-                    'git -C ' + str(nodeInEachRepo.parents[0]) + ' commit -m \"' + commitMesssage + '\"')
+                    'git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' commit -m \"' + commitMesssage + '\"')
                 subprocess.run(
-                    'git -C ' + str(nodeInEachRepo.parents[0]) + ' push')
-                # subprocess.run('git -C ' + str(nodeInEachRepo.parents[0]) + ' status')
+                    'git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' push')
+                # subprocess.run('git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' status')
             else:
                 subprocess.run(
-                    'git -C ' + str(nodeInEachRepo.parents[0]) + ' ' + sys.argv[1])
+                    'git -C ' + str(folderInIndividualRepoFolder.parents[0]) + ' ' + sys.argv[1])
 
