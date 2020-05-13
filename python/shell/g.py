@@ -45,27 +45,27 @@ for nodeInRepos in pathToRepos.glob('*'):
             #     return subFolderArray
 
 
-            # folderArray = [nodeInEachRepo.parents[0]]
+            folderArray = [nodeInEachRepo.parents[0]]
 
-            # while folderArray:
+            while folderArray:
 
-            #     currentFolder = folderArray.pop(0)
-            #     folderArray.extend(listOfSubFolders(currentFolder))
+                currentFolder = folderArray.pop(0)
+                # folderArray.extend(listOfSubFolders(currentFolder))
                 
-            #     for node in currentFolder.iterdir():
+                # for node in currentFolder.iterdir():
 
-            #         if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and node.stem[:1] != '_':
+                #     if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and node.stem[:1] != '_':
                     
-            #             additionalPath = ''
+                #         additionalPath = ''
 
-            #             for part in node.parts[len(pathToPublicProjectsPython.parts):]:
-            #                 additionalPath = additionalPath + '/' + part
+                #         for part in node.parts[len(pathToPublicProjectsPython.parts):]:
+                #             additionalPath = additionalPath + '/' + part
 
-            #             newBatchFilePath = Path(batchFilesFolderPath, node.stem + '.bat')
-            #             newBatchFileObj = open(newBatchFilePath, 'w+')
+                #         newBatchFilePath = Path(batchFilesFolderPath, node.stem + '.bat')
+                #         newBatchFileObj = open(newBatchFilePath, 'w+')
 
-            #             newBatchFileObj.write('@echo off \npython %~dp0/../..' + additionalPath + ' %*')
-            #             newBatchFileObj.close()
+                #         newBatchFileObj.write('@echo off \npython %~dp0/../..' + additionalPath + ' %*')
+                #         newBatchFileObj.close()
 
 
 
