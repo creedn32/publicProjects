@@ -34,6 +34,42 @@ for nodeInRepos in pathToRepos.glob('*'):
         if nodeInEachRepo.name == '.git':
             p(str(nodeInEachRepo.parents[0]))
 
+
+            # def listOfSubFolders(folderPath):
+            #     subFolderArray = []
+ 
+            #     for node in folderPath.iterdir():
+            #         if not node.is_file():
+            #             subFolderArray.append(node)
+
+            #     return subFolderArray
+
+
+            # folderArray = [nodeInEachRepo.parents[0]]
+
+            # while folderArray:
+
+            #     currentFolder = folderArray.pop(0)
+            #     folderArray.extend(listOfSubFolders(currentFolder))
+                
+            #     for node in currentFolder.iterdir():
+
+            #         if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and node.stem[:1] != '_':
+                    
+            #             additionalPath = ''
+
+            #             for part in node.parts[len(pathToPublicProjectsPython.parts):]:
+            #                 additionalPath = additionalPath + '/' + part
+
+            #             newBatchFilePath = Path(batchFilesFolderPath, node.stem + '.bat')
+            #             newBatchFileObj = open(newBatchFilePath, 'w+')
+
+            #             newBatchFileObj.write('@echo off \npython %~dp0/../..' + additionalPath + ' %*')
+            #             newBatchFileObj.close()
+
+
+
+
             if sys.argv[1] == 'acp':
                 subprocess.run(
                     'git -C ' + str(nodeInEachRepo.parents[0]) + ' add .')
