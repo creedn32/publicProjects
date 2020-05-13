@@ -21,7 +21,7 @@ nowObj = datetime.datetime.now()
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
 
-def runGitProcess(gitFolder):
+def runGitProcesses(gitFolder):
     
     if sys.argv[1] == 'acp':
         subprocess.run('git -C ' + str(gitFolder) + ' add .')
@@ -74,8 +74,9 @@ for objInReposFolder in pathToRepos.glob('*'):
                 if currentObject.name == '.git' and currentObject != gitObjInIndividualRepoFolder:
                     p('this is likely a submodule')
                     p(currentObject.parents[0])
+                    runGitProcesses(currentObject.parents[0])
 
 
 
-            runGitProcess(gitIndividualRepoFolder)
+            runGitProcesses(gitIndividualRepoFolder)
 
