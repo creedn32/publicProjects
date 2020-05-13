@@ -35,6 +35,9 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 
 def main(arrayOfArguments):
 
+    if arrayOfArguments[0] == 'all':
+        p(1)
+
     pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
     for objInReposFolder in pathToRepos.glob('*'):
