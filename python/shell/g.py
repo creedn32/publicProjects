@@ -33,8 +33,8 @@ for objInReposFolder in pathToRepos.glob('*'):
 
             gitObjInIndividualRepoFolder = objInIndividualRepoFolder
             gitIndividualRepoFolder = gitObjInIndividualRepoFolder.parents[0]
-            p(1)
-            p(str(gitObjInIndividualRepoFolder))
+            p(str(gitIndividualRepoFolder))
+            # p(str(gitObjInIndividualRepoFolder))
 
             def getArrayOfChildrenObjects(folderPath):
 
