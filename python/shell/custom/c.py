@@ -19,14 +19,14 @@ firstArgumentStr = sys.argv[1]
 functionToCall = firstArgumentStr[:firstArgumentStr.index('.')]
 remainingFirstArgumentStr = firstArgumentStr[firstArgumentStr.index('.') + 1:]
 remainingFirstArgumentArray = remainingFirstArgumentStr.split('.')
-p(remainingFirstArgumentArray)
+remainingArguments = remainingFirstArgumentArray + sys.argv[2:]
 
 
-# remainingArguments = remainingStr.replace('.', ' ')
+pythonFilesObj = {
+    "git": "asdf"
+}
 
-# for argument in sys.argv[2:]:
-#     remainingArguments = remainingArguments + ' ' + argument
-
+p(pythonFilesObj[functionToCall])
 
 
 
