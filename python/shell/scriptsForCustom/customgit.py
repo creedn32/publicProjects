@@ -36,53 +36,52 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 def main(arrayOfArguments):
 
     if arrayOfArguments[0] == 'all':
-        p(1)
 
-    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+        pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    for objInReposFolder in pathToRepos.glob('*'):
+        for objInReposFolder in pathToRepos.glob('*'):
 
-        for objInIndividualRepoFolder in objInReposFolder.glob('*'):
+            for objInIndividualRepoFolder in objInReposFolder.glob('*'):
 
-            if objInIndividualRepoFolder.name == '.git':
+                if objInIndividualRepoFolder.name == '.git':
 
-                gitObjInIndividualRepoFolder = objInIndividualRepoFolder
-                gitIndividualRepoFolder = gitObjInIndividualRepoFolder.parents[0]
+                    gitObjInIndividualRepoFolder = objInIndividualRepoFolder
+                    gitIndividualRepoFolder = gitObjInIndividualRepoFolder.parents[0]
 
-                # p(str(gitObjInIndividualRepoFolder))
+                    # p(str(gitObjInIndividualRepoFolder))
 
-                def getArrayOfChildrenObjects(folderPath):
+                    def getArrayOfChildrenObjects(folderPath):
 
-                    arrayOfChildrenObjects = []
-    
-                    for obj in folderPath.iterdir():
+                        arrayOfChildrenObjects = []
+        
+                        for obj in folderPath.iterdir():
 
-                        arrayOfChildrenObjects.append(obj)
+                            arrayOfChildrenObjects.append(obj)
 
-                    return arrayOfChildrenObjects
+                        return arrayOfChildrenObjects
 
-                
-                arrayOfObjects = [gitIndividualRepoFolder]
+                    
+                    arrayOfObjects = [gitIndividualRepoFolder]
 
-                while arrayOfObjects:
+                    while arrayOfObjects:
 
-                    def isFolder(obj):
-                        if obj.is_file():
-                            return False
-                        else:
-                            return True    
+                        def isFolder(obj):
+                            if obj.is_file():
+                                return False
+                            else:
+                                return True    
 
-                    currentObject = arrayOfObjects.pop(0)
+                        currentObject = arrayOfObjects.pop(0)
 
-                    if isFolder(currentObject):
-                        arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
+                        if isFolder(currentObject):
+                            arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
 
-                    if currentObject.name == '.git' and currentObject != gitObjInIndividualRepoFolder:
-                        # p('this is likely a submodule')
-                        # p(currentObject.parents[0])
-                        runGitProcesses(currentObject.parents[0], arrayOfArguments)
+                        if currentObject.name == '.git' and currentObject != gitObjInIndividualRepoFolder:
+                            # p('this is likely a submodule')
+                            # p(currentObject.parents[0])
+                            runGitProcesses(currentObject.parents[0], arrayOfArguments)
 
-                runGitProcesses(gitIndividualRepoFolder, arrayOfArguments)
+                    runGitProcesses(gitIndividualRepoFolder, arrayOfArguments)
 
 
 if __name__ == "__main__":
