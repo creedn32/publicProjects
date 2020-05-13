@@ -29,11 +29,10 @@ for individualRepoFolder in pathToRepos.glob('*'):
 
     for folderInIndividualRepoFolder in individualRepoFolder.glob('*'):
 
-        # p(folderInIndividualRepoFolder)
-
         if folderInIndividualRepoFolder.name == '.git':
-            p(str(folderInIndividualRepoFolder.parents[0]))
 
+            individualRepoFolderWithGit = folderInIndividualRepoFolder.parents[0]
+            p(str(individualRepoFolderWithGit))
 
             def getArrayOfChildrenFolders(folderPath):
 
@@ -52,32 +51,18 @@ for individualRepoFolder in pathToRepos.glob('*'):
 
                 return arrayOfChildrenFolders
 
-
-            arrayOfFolders = [folderInIndividualRepoFolder.parents[0]]
+            
+            arrayOfFolders = [individualRepoFolderWithGit]
 
             while arrayOfFolders:
 
                 currentFolder = arrayOfFolders.pop(0)
-                arrayOfFolders.extend(getArrayOfChildrenFolders(currentFolder))
-                
+                arrayOfFolders.extend(getArrayOfChildrenFolders(currentFolder))               
 
-                #do what you want with node
-
-
-                # for node in currentFolder.iterdir():
-
-                #     if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and node.stem[:1] != '_':
-                    
-                #         additionalPath = ''
-
-                #         for part in node.parts[len(pathToPublicProjectsPython.parts):]:
-                #             additionalPath = additionalPath + '/' + part
-
-                #         newBatchFilePath = Path(batchFilesFolderPath, node.stem + '.bat')
-                #         newBatchFileObj = open(newBatchFilePath, 'w+')
-
-                #         newBatchFileObj.write('@echo off \npython %~dp0/../..' + additionalPath + ' %*')
-                #         newBatchFileObj.close()
+                if currentFolder.name == '.git':
+                    pass
+                    p('this folder is a git folder')
+                    p(currentFolder)
 
 
 
