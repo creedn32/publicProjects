@@ -19,10 +19,10 @@ firstArgumentStr = sys.argv[1]
 moduleToImport = 'scriptsForCustom.' + firstArgumentStr[:firstArgumentStr.index('.')]
 remainingFirstArgumentStr = firstArgumentStr[firstArgumentStr.index('.') + 1:]
 remainingFirstArgumentArray = remainingFirstArgumentStr.split('.')
-remainingArguments = remainingFirstArgumentArray + sys.argv[2:]
+remainingArgumentsArray = remainingFirstArgumentArray + sys.argv[2:]
 
 importedModule = __import__(moduleToImport)
-
+importedModule.main(remainingArgumentsArray)
 
 
 
