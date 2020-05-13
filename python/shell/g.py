@@ -65,10 +65,6 @@ for objInReposFolder in pathToRepos.glob('*'):
                     p('this is a git object')
                     p(currentObject)
 
-                if currentObject.name == 'herokuHelloJavascript':
-                    p('heroku')
-
-
 
 
             if sys.argv[1] == 'acp':
