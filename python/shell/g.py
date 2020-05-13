@@ -63,9 +63,8 @@ for objInReposFolder in pathToRepos.glob('*'):
                     arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
 
                 if currentObject.name == '.git' and currentObject != gitObjInIndividualRepoFolder:
-                    pass
-                    p('this is a git object')
-                    p(currentObject)
+                    p('this is likely a submodule')
+                    p(currentObject.parents[0])
 
 
 
