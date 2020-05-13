@@ -62,7 +62,7 @@ for objInReposFolder in pathToRepos.glob('*'):
 
                 if currentObject.name == '.git':
                     pass
-                    p('this folder is a git folder')
+                    p('this is a git object')
                     p(currentObject)
 
                 if currentObject.name == 'herokuHelloJavascript':
