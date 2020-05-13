@@ -21,6 +21,15 @@ nowObj = datetime.datetime.now()
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
 
+def runGitProcess(gitFolder):
+    
+    if sys.argv[1] == 'acp':
+        subprocess.run('git -C ' + str(gitFolder) + ' add .')
+        subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMesssage + '\"')
+        subprocess.run('git -C ' + str(gitFolder) + ' push')
+        # subprocess.run('git -C ' + str(gitFolder) + ' status')
+    else:
+        subprocess.run('git -C ' + str(gitFolder) + ' ' + sys.argv[1])
 
 
 # p(pathToRepos)
@@ -68,15 +77,5 @@ for objInReposFolder in pathToRepos.glob('*'):
 
 
 
-            if sys.argv[1] == 'acp':
-                subprocess.run(
-                    'git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' add .')
-                subprocess.run(
-                    'git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' commit -m \"' + commitMesssage + '\"')
-                subprocess.run(
-                    'git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' push')
-                # subprocess.run('git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' status')
-            else:
-                subprocess.run(
-                    'git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' ' + sys.argv[1])
+            runGitProcess(gitIndividualRepoFolder)
 
