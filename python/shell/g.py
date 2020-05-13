@@ -31,7 +31,8 @@ for objInReposFolder in pathToRepos.glob('*'):
 
         if objInIndividualRepoFolder.name == '.git':
 
-            gitIndividualRepoFolder = objInIndividualRepoFolder.parents[0]
+            gitObjInIndividualRepoFolder = objInIndividualRepoFolder
+            gitIndividualRepoFolder = gitObjInIndividualRepoFolder.parents[0]
             p(1)
             p(str(gitIndividualRepoFolder))
 
@@ -70,13 +71,13 @@ for objInReposFolder in pathToRepos.glob('*'):
 
             if sys.argv[1] == 'acp':
                 subprocess.run(
-                    'git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' add .')
+                    'git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' add .')
                 subprocess.run(
-                    'git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' commit -m \"' + commitMesssage + '\"')
+                    'git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' commit -m \"' + commitMesssage + '\"')
                 subprocess.run(
-                    'git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' push')
-                # subprocess.run('git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' status')
+                    'git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' push')
+                # subprocess.run('git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' status')
             else:
                 subprocess.run(
-                    'git -C ' + str(objInIndividualRepoFolder.parents[0]) + ' ' + sys.argv[1])
+                    'git -C ' + str(gitObjInIndividualRepoFolder.parents[0]) + ' ' + sys.argv[1])
 
