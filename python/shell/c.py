@@ -16,13 +16,25 @@ from pprint import pprint as p
 # import gspread
 
 firstArgumentStr = sys.argv[1]
-moduleToImport = 'scriptsForCustom.' + firstArgumentStr[:firstArgumentStr.index('.')]
+moduleToImport = firstArgumentStr[:firstArgumentStr.index('.')]
+moduleToImportRelativePath = 'scriptsForCustom.' + moduleToImport
 remainingFirstArgumentStr = firstArgumentStr[firstArgumentStr.index('.') + 1:]
 remainingFirstArgumentArray = remainingFirstArgumentStr.split('.')
 remainingArgumentsArray = remainingFirstArgumentArray + sys.argv[2:]
 
-importedModule = __import__(moduleToImport)
-importedModule.main(remainingArgumentsArray)
+# is equivalent to: from os import path as imported
+# importedModule = getattr(__import__(moduleToImportRelativePath, fromlist=[moduleToImport]), moduleToImport)
+
+
+
+# moduleToImportRelativePath = "math"
+importedModule = __import__(moduleToImportRelativePath)
+method_to_call = getattr(importedModule, moduleToImport)
+result = method_to_call()
+
+p(result)
+p(importedModule.customgit.thisconstant)
+# importedModule.main(remainingArgumentsArray)
 
 
 
