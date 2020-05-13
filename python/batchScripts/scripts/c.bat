@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../shell/custom/c.py %*
+python %~dp0/../../shell/c.py %*

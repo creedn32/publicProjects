@@ -16,67 +16,72 @@ import subprocess
 import gspread
 
 
-nowObj = datetime.datetime.now()
 
-pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
 
 def runGitProcesses(gitFolder):
+
+    nowObj = datetime.datetime.now()
+    commitMessage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
 
     p(str(gitFolder))
     
     if sys.argv[1] == 'acp':
         subprocess.run('git -C ' + str(gitFolder) + ' add .')
-        subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMesssage + '\"')
+        subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMessage + '\"')
         subprocess.run('git -C ' + str(gitFolder) + ' push')
         # subprocess.run('git -C ' + str(gitFolder) + ' status')
     else:
         subprocess.run('git -C ' + str(gitFolder) + ' ' + sys.argv[1])
 
 
-# p(pathToRepos)
+def main():
 
-for objInReposFolder in pathToRepos.glob('*'):
+    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    for objInIndividualRepoFolder in objInReposFolder.glob('*'):
+    for objInReposFolder in pathToRepos.glob('*'):
 
-        if objInIndividualRepoFolder.name == '.git':
+        for objInIndividualRepoFolder in objInReposFolder.glob('*'):
 
-            gitObjInIndividualRepoFolder = objInIndividualRepoFolder
-            gitIndividualRepoFolder = gitObjInIndividualRepoFolder.parents[0]
+            if objInIndividualRepoFolder.name == '.git':
 
-            # p(str(gitObjInIndividualRepoFolder))
+                gitObjInIndividualRepoFolder = objInIndividualRepoFolder
+                gitIndividualRepoFolder = gitObjInIndividualRepoFolder.parents[0]
 
-            def getArrayOfChildrenObjects(folderPath):
+                # p(str(gitObjInIndividualRepoFolder))
 
-                arrayOfChildrenObjects = []
- 
-                for obj in folderPath.iterdir():
+                def getArrayOfChildrenObjects(folderPath):
 
-                    arrayOfChildrenObjects.append(obj)
+                    arrayOfChildrenObjects = []
+    
+                    for obj in folderPath.iterdir():
 
-                return arrayOfChildrenObjects
+                        arrayOfChildrenObjects.append(obj)
 
-            
-            arrayOfObjects = [gitIndividualRepoFolder]
+                    return arrayOfChildrenObjects
 
-            while arrayOfObjects:
+                
+                arrayOfObjects = [gitIndividualRepoFolder]
 
-                def isFolder(obj):
-                    if obj.is_file():
-                        return False
-                    else:
-                        return True    
+                while arrayOfObjects:
 
-                currentObject = arrayOfObjects.pop(0)
+                    def isFolder(obj):
+                        if obj.is_file():
+                            return False
+                        else:
+                            return True    
 
-                if isFolder(currentObject):
-                    arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
+                    currentObject = arrayOfObjects.pop(0)
 
-                if currentObject.name == '.git' and currentObject != gitObjInIndividualRepoFolder:
-                    # p('this is likely a submodule')
-                    # p(currentObject.parents[0])
-                    runGitProcesses(currentObject.parents[0])
+                    if isFolder(currentObject):
+                        arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
 
-            runGitProcesses(gitIndividualRepoFolder)
+                    if currentObject.name == '.git' and currentObject != gitObjInIndividualRepoFolder:
+                        # p('this is likely a submodule')
+                        # p(currentObject.parents[0])
+                        runGitProcesses(currentObject.parents[0])
+
+                runGitProcesses(gitIndividualRepoFolder)
+
+
+main()
 

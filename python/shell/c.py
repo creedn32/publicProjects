@@ -16,17 +16,15 @@ from pprint import pprint as p
 # import gspread
 
 firstArgumentStr = sys.argv[1]
-functionToCall = firstArgumentStr[:firstArgumentStr.index('.')]
+moduleToImport = 'scriptsForCustom.' + firstArgumentStr[:firstArgumentStr.index('.')]
 remainingFirstArgumentStr = firstArgumentStr[firstArgumentStr.index('.') + 1:]
 remainingFirstArgumentArray = remainingFirstArgumentStr.split('.')
 remainingArguments = remainingFirstArgumentArray + sys.argv[2:]
 
+importedModule = __import__(moduleToImport)
 
-pythonFilesObj = {
-    "git": "asdf"
-}
 
-p(pythonFilesObj[functionToCall])
+
 
 
 
