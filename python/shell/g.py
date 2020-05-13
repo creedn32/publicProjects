@@ -35,14 +35,22 @@ for individualRepoFolder in pathToRepos.glob('*'):
             p(str(folderInIndividualRepoFolder.parents[0]))
 
 
-            # def listOfSubFolders(folderPath):
-            #     subarrayOfFolders = []
- 
-            #     for node in folderPath.iterdir():
-            #         if not node.is_file():
-            #             subarrayOfFolders.append(node)
+            def getArrayOfChildrenFolders(folderPath):
 
-            #     return subarrayOfFolders
+                arrayOfChildrenFolders = []
+ 
+                for fileOrFolder in folderPath.iterdir():
+
+                    def isFolder(fileOrFolder):
+                        if fileOrFolder.is_file():
+                            return False
+                        else:
+                            return True
+                
+                    if isFolder(fileOrFolder):
+                        arrayOfChildrenFolders.append(fileOrFolder)
+
+                return arrayOfChildrenFolders
 
 
             arrayOfFolders = [folderInIndividualRepoFolder.parents[0]]
@@ -50,8 +58,12 @@ for individualRepoFolder in pathToRepos.glob('*'):
             while arrayOfFolders:
 
                 currentFolder = arrayOfFolders.pop(0)
-                # arrayOfFolders.extend(listOfSubFolders(currentFolder))
+                arrayOfFolders.extend(getArrayOfChildrenFolders(currentFolder))
                 
+
+                #do what you want with node
+
+
                 # for node in currentFolder.iterdir():
 
                 #     if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and node.stem[:1] != '_':
