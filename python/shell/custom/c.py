@@ -17,11 +17,15 @@ from pprint import pprint as p
 
 firstArgumentStr = sys.argv[1]
 functionToCall = firstArgumentStr[:firstArgumentStr.index('.')]
-remainingStr = firstArgumentStr[firstArgumentStr.index('.') + 1:]
-remainingArguments = remainingStr.replace('.', ' ')
+remainingFirstArgumentStr = firstArgumentStr[firstArgumentStr.index('.') + 1:]
+remainingFirstArgumentArray = remainingFirstArgumentStr.split('.')
+p(remainingFirstArgumentArray)
 
-for argument in sys.argv[2:]:
-    remainingArguments = remainingArguments + ' ' + argument
+
+# remainingArguments = remainingStr.replace('.', ' ')
+
+# for argument in sys.argv[2:]:
+#     remainingArguments = remainingArguments + ' ' + argument
 
 
 
