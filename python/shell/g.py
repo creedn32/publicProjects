@@ -78,7 +78,5 @@ for objInReposFolder in pathToRepos.glob('*'):
                     # p(currentObject.parents[0])
                     runGitProcesses(currentObject.parents[0])
 
-
-
             runGitProcesses(gitIndividualRepoFolder)
 
