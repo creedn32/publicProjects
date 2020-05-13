@@ -22,6 +22,8 @@ pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 commitMesssage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
 
 def runGitProcesses(gitFolder):
+
+    p(strgitFolder)
     
     if sys.argv[1] == 'acp':
         subprocess.run('git -C ' + str(gitFolder) + ' add .')
@@ -42,7 +44,7 @@ for objInReposFolder in pathToRepos.glob('*'):
 
             gitObjInIndividualRepoFolder = objInIndividualRepoFolder
             gitIndividualRepoFolder = gitObjInIndividualRepoFolder.parents[0]
-            p(str(gitIndividualRepoFolder))
+
             # p(str(gitObjInIndividualRepoFolder))
 
             def getArrayOfChildrenObjects(folderPath):
@@ -79,4 +81,4 @@ for objInReposFolder in pathToRepos.glob('*'):
 
 
             runGitProcesses(gitIndividualRepoFolder)
-
+
