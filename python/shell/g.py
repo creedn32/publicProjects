@@ -62,7 +62,7 @@ for objInReposFolder in pathToRepos.glob('*'):
                 if isFolder(currentObject):
                     arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
 
-                if currentObject.name == '.git':
+                if currentObject.name == '.git' and currentObject != gitObjInIndividualRepoFolder:
                     pass
                     p('this is a git object')
                     p(currentObject)
