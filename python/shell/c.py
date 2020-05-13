@@ -17,27 +17,14 @@ from pprint import pprint as p
 
 firstArgumentStr = sys.argv[1]
 moduleToImport = firstArgumentStr[:firstArgumentStr.index('.')]
-moduleToImportRelativePath = 'scriptsForCustom.' + moduleToImport
 remainingFirstArgumentStr = firstArgumentStr[firstArgumentStr.index('.') + 1:]
 remainingFirstArgumentArray = remainingFirstArgumentStr.split('.')
 remainingArgumentsArray = remainingFirstArgumentArray + sys.argv[2:]
 
 # is equivalent to: from os import path as imported
-# importedModule = getattr(__import__(moduleToImportRelativePath, fromlist=[moduleToImport]), moduleToImport)
+importedModule = getattr(__import__('scriptsForCustom', fromlist=[moduleToImport]), moduleToImport)
 
-
-
-# moduleToImportRelativePath = "math"
-# importedModule = __import__(moduleToImportRelativePath)
-# method_to_call = getattr(importedModule, moduleToImport)
-# result = method_to_call()
-
-# p(result)
-# p(importedModule.customgit.thisconstant)
-# importedModule.main(remainingArgumentsArray)
-
-from scriptsForCustom import customgit
-
+importedModule.main(remainingArgumentsArray)
 
 
 
