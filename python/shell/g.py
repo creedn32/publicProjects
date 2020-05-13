@@ -31,8 +31,8 @@ for objInReposFolder in pathToRepos.glob('*'):
 
         if objInIndividualRepoFolder.name == '.git':
 
-            individualRepoFolderWithGit = objInIndividualRepoFolder.parents[0]
-            p(str(individualRepoFolderWithGit))
+            gitObjInIndividualRepoFolder = objInIndividualRepoFolder.parents[0]
+            p(str(gitObjInIndividualRepoFolder))
 
             def getArrayOfChildrenFolders(folderPath):
 
@@ -52,7 +52,7 @@ for objInReposFolder in pathToRepos.glob('*'):
                 return arrayOfChildrenFolders
 
             
-            arrayOfFolders = [individualRepoFolderWithGit]
+            arrayOfFolders = [gitObjInIndividualRepoFolder]
 
             while arrayOfFolders:
 
