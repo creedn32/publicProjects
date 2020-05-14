@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../commandLineCustom/other/cmder/cmder.admin.py %*
+python %~dp0/../../commandLineCustomApps/other/cmder/cmder.admin.py %*
