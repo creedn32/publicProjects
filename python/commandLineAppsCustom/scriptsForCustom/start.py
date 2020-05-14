@@ -18,6 +18,7 @@ def mainFunction(arrayOfArguments):
     pathToProcessCollectionsToStart = Path(_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'), 'start', 'processCollectionsToStart.py')
     importedProcessCollectionsToStart = run_path(str(pathToProcessCollectionsToStart))
     processCollectionsToStartObj = importedProcessCollectionsToStart.get('processCollectionsToStartObj')
+    pathToRoot = importedProcessCollectionsToStart.get('pathToRoot')[arrayOfArguments[1]]
     processCollectionToStart = processCollectionsToStartObj[arrayOfArguments[0]][arrayOfArguments[1]]
 
     arrayOfArguments[0] = '{}.{}'.format(arrayOfArguments[0], arrayOfArguments[1])
@@ -25,13 +26,15 @@ def mainFunction(arrayOfArguments):
     if len(arrayOfArguments) < 3:
         arrayOfArguments.append('dontOutputToGoogleSheets')
 
+
     for processToStart in processCollectionToStart:
 
-        arrayOfArguments[1] = processToStart
+        replacedProcessToStart = processToStart.replace('!root!', pathToRoot)
+        arrayOfArguments[1] = replacedProcessToStart
 
         if processIsNotRunning.mainFunction(arrayOfArguments):
             p('Starting the process...')
-            subprocess.Popen(processToStart)
+            subprocess.Popen(replacedProcessToStart)
 
 
 if __name__ == "__main__":
