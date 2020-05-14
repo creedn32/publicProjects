@@ -12,9 +12,6 @@ from runpy import run_path
 import subprocess
 
 
-#try from commandline as well
-#delete b.py
-
 
 def mainFunction(arrayOfArguments):
 
