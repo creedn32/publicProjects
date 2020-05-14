@@ -1,0 +1,22 @@
+#open app
+heroku open
+
+
+#check logs
+heroku logs --tail
+
+
+#get url of app
+heroku info
+
+
+#restart
+heroku restart
+
+
+#rename app
+heroku apps:rename herokuhellojavascript
+
+
+#add a heroku remote to an existing local repository
+heroku git:remote -a herokuhellojavascript

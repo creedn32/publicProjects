@@ -1,0 +1,137 @@
+#ignore line endings in git
+git config --global core.autocrlf false
+
+
+#search for commit that introduced a phrase into the repo, export to txt file
+git --no-pager log -p -S"http://local" > log.txt
+git --no-pager log -p -G"http://local" > log.txt #for regular expression
+
+
+#search for commit that introduced a phrase into the repo, with details, all output
+git --no-pager log -p -S"http://localhost"
+
+
+#search for commit that introduced a phrase into the repo, with details
+git log -p -S"http://localhost"
+
+
+#search for commit that introduced a phrase into the repo
+git log -S"http://localhost"
+
+
+#Log with how much each file changed
+git log --stat
+
+
+#Running record of commits
+git log
+
+
+#when "Your branch and 'origin/master' have diverged, throw away all local changes and non-pushed commits
+git fetch origin/master
+git reset --hard origin/master
+
+
+#see date of commit
+git show -s --format=%ci b6e4793f2eeb5de756ec2c7ddf1ef15efd27cc10
+
+
+#see stashes
+git stash list
+
+
+#delete all git stashes
+git stash clear
+
+
+#see HEAD
+git rev-parse HEAD
+
+
+#interactive rebasing
+git rebase -i 7c32d14925d5111c28010e05e9693df5174f56d8
+
+
+#see changes between two commits
+git diff 7c32d14925d5111c28010e05e9693df5174f56d8 62ab2d94e58b860dcfb140c3580cb41d71e88a88 > gitDifferences.patch
+
+
+
+#update git version
+git update-git-for-windows
+
+
+#see git version
+git --version
+
+
+#see information of local commit (that hasn't been pushed yet)
+git diff origin/master..HEAD
+
+
+#unset user settings
+git config --global --unset user.name
+git config --global --unset user.email
+git config --global --unset credential.helper
+
+
+#see user.name
+git config user.name
+
+
+#set user.name (does not need to match GitHub username)
+git config --global user.name "Creed Naylor"
+
+
+#set user.email
+git config --global user.email "16467643+creednaylor@users.noreply.github.com"
+
+
+#set editor
+git config --global core.editor "vim"
+
+
+
+
+
+#see all git settings
+git config --list --show-origin
+
+
+#see all git settings with config file details
+git config --list --show-origin
+
+
+
+#change remote URL
+git remote set-url origin newurl
+
+#see the remote URL
+git config --get remote.origin.url
+
+#see remote URL
+git remote -v
+
+#see the remote URL details
+git remote show origin
+
+#understand output from git diff
+https://www.git-tower.com/learn/git/ebook/en/command-line/advanced-topics/diffs
+
+
+
+
+#create an alias
+git config --global alias.acp "!git add . && git commit -m 'latest updates' && git push"
+
+
+#use an alias
+git acp
+
+
+#unset an alias
+git config --global --unset alias.ac
+
+
+#see alias
+git config --global --list
