@@ -5,20 +5,22 @@ pathToThisPythonFile = Path(__file__).resolve()
 sys.path.append(str(pathToThisPythonFile.parents[2]))
 import myPythonLibrary._myPyFunc as _myPyFunc
 
-#standard library imports
-import datetime
+# #standard library imports
+# import datetime
 from pprint import pprint as p
-import psutil
-from runpy import run_path
-import subprocess
+# import psutil
+# from runpy import run_path
+# import subprocess
 
-#third-party imports
-import gspread
+# #third-party imports
+# import gspread
 
 
 
 
 def main(arrayOfArguments):
+    pathToAppCollectionsToStart = _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')  
+    p(pathToAppCollectionsToStart)
     p(arrayOfArguments)
 
 
