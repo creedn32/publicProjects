@@ -11,7 +11,8 @@ import sys
 pathToThisPythonFile = Path(__file__).resolve()
 sys.path.append(str(pathToThisPythonFile.parents[2]))
 import myPythonLibrary._myPyFunc as _myPyFunc
-import googleSheets.myGoogleSheetsLibrary._myGoogleSheetsFunc as _myGoogleSheetsFunc, googleSheets.myGoogleSheetsLibrary._myGspreadFunc as _myGspreadFunc
+import googleSheets.myGoogleSheetsLibrary._myGoogleSheetsFunc as _myGoogleSheetsFunc
+import googleSheets.myGoogleSheetsLibrary._myGspreadFunc as _myGspreadFunc
 
 #standard library imports
 from pprint import pprint as p

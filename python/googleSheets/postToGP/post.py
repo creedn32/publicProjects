@@ -9,8 +9,6 @@ import _myGoogleSheetsFunc
 from pprint import pprint as p
 import datetime, pynput.mouse, win32api, win32con, pyautogui, time
 
-pyautogui.PAUSE = .1
-pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
 
 
 
@@ -93,7 +91,7 @@ def postTransactionsFunction(sheetNameStr):
 
             if row["values"][0]["formattedValue"] != "Enter/Edit" and activateKeyboard:
 
-                time.sleep(.08)
+                time.sleep(.1)
                 # pprint(row)
                 print("Row " + str("") + " will be populated into the Great Plains entry window.")
 
@@ -102,6 +100,8 @@ def postTransactionsFunction(sheetNameStr):
 
 
                 for col in range(0, 9):
+
+                    time.sleep(.1)
 
                     numberTabs = 1
 
@@ -327,6 +327,13 @@ def postTransfersFunction():
                 with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
                     print("Click on 'Post' or 'Clear' to continue with this entry...")
                     listenerObj.join()
+
+
+
+
+pyautogui.PAUSE = .1
+pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
+
 
 
 
