@@ -1,3 +1,19 @@
+from pathlib import Path
+pathToThisPythonFile = Path(__file__).resolve()
+import sys
+sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
+sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
+import _myGoogleSheetsFunc
+
+from pprint import pprint as p
+import datetime, pynput.mouse, win32api, win32con, pyautogui, time
+
+pyautogui.PAUSE = .1
+pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
+
+
+
 def postTransactionsFunction(sheetNameStr):
 
 
@@ -77,6 +93,7 @@ def postTransactionsFunction(sheetNameStr):
 
             if row["values"][0]["formattedValue"] != "Enter/Edit" and activateKeyboard:
 
+                time.sleep(.08)
                 # pprint(row)
                 print("Row " + str("") + " will be populated into the Great Plains entry window.")
 
@@ -313,31 +330,7 @@ def postTransfersFunction():
 
 
 
-
-
-
-
-
-
-from pathlib import Path
-pathToThisPythonFile = Path(__file__).resolve()
-import sys
-sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
-import _myPyFunc
-sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
-import _myGoogleSheetsFunc
-
-from pprint import pprint as p
-import datetime, pynput.mouse, win32api, win32con, pyautogui
-
-pyautogui.PAUSE = .06
-pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
-
-
 if sys.argv[1] == 'Bank Transfers':
     postTransfersFunction()
 else:
     postTransactionsFunction(sys.argv[1])
-
-
-
