@@ -33,7 +33,7 @@ def runGitProcesses(gitFolder, arrayOfArguments):
         subprocess.run('git -C ' + str(gitFolder) + ' ' + arrayOfArguments[1])
 
 
-def main(arrayOfArguments):
+def mainFunction(arrayOfArguments):
 
     if arrayOfArguments[0] == 'all':
 
@@ -85,5 +85,5 @@ def main(arrayOfArguments):
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    mainFunction(sys.argv)
 

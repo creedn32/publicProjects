@@ -4,6 +4,7 @@ import sys
 pathToThisPythonFile = Path(__file__).resolve()
 sys.path.append(str(pathToThisPythonFile.parents[2]))
 import myPythonLibrary._myPyFunc as _myPyFunc
+import googleSheets.processIsNotRunning.processIsNotRunning as processIsNotRunning
 
 # #standard library imports
 # import datetime
@@ -19,19 +20,20 @@ from runpy import run_path
 
 
 
-def main(arrayOfArguments):
+def mainFunction(arrayOfArguments):
     pathToAppCollectionsToStart = Path(_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'), 'start', 'appCollectionsToStart.py')
     importedAppCollectionsToStart = run_path(str(pathToAppCollectionsToStart))
     appCollectionsToStartObj = importedAppCollectionsToStart.get('appCollectionsToStartObj')
     appCollectionToStart = appCollectionsToStartObj[arrayOfArguments[0]][arrayOfArguments[1]]
 
-    p(appCollectionToStart)
+    for appToStart in appCollectionToStart:
+        p(processIsNotRunning.mainFunction(appToStart))
 
     # p(pathToAppCollectionsToStart)
-    p(arrayOfArguments)
+    # p(arrayOfArguments)
 
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    mainFunction(sys.argv)
 

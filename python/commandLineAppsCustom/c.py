@@ -24,7 +24,7 @@ remainingArgumentsArray = remainingFirstArgumentArray + sys.argv[2:]
 # is equivalent to: from os import path as imported
 importedModule = getattr(__import__('scriptsForCustom', fromlist=[moduleToImport]), moduleToImport)
 
-importedModule.main(remainingArgumentsArray)
+importedModule.mainFunction(remainingArgumentsArray)
 
 
 
