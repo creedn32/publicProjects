@@ -5,7 +5,7 @@ sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myPythonLibrary')))
 import _myPyFunc
 
 
-from pprint import pprint as pp
+from pprint import pprint as p
 import shutil, os
 
 
@@ -42,7 +42,10 @@ while folderArray:
     
     for node in currentFolder.iterdir():
 
-        if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and node.stem[:1] != '_':
+        if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and node.stem[:1] != '_' and node.parents[0].stem != 'scriptsForCustom':
+
+            # p('parent stem: ' + node.parents[0].stem)
+            # p('stem: ' + node.stem)
            
             additionalPath = ''
 
