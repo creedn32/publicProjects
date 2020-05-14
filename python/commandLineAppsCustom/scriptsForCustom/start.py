@@ -8,6 +8,7 @@ import myPythonLibrary._myPyFunc as _myPyFunc
 # #standard library imports
 # import datetime
 from pprint import pprint as p
+from runpy import run_path
 # import psutil
 # from runpy import run_path
 # import subprocess
@@ -19,8 +20,14 @@ from pprint import pprint as p
 
 
 def main(arrayOfArguments):
-    pathToAppCollectionsToStart = _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')  
-    p(pathToAppCollectionsToStart)
+    pathToAppCollectionsToStart = Path(_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'), 'start', 'appCollectionsToStart.py')
+    importedAppCollectionsToStart = run_path(str(pathToAppCollectionsToStart))
+    appCollectionsToStartObj = importedAppCollectionsToStart.get('appCollectionsToStartObj')
+    appCollectionToStart = appCollectionsToStartObj[arrayOfArguments[0]][arrayOfArguments[1]]
+
+    p(appCollectionToStart)
+
+    # p(pathToAppCollectionsToStart)
     p(arrayOfArguments)
 
 
