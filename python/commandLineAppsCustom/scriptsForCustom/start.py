@@ -19,21 +19,14 @@ def mainFunction(arrayOfArguments):
     importedProcessCollectionsToStart = run_path(str(pathToProcessCollectionsToStart))
     processCollectionsToStartObj = importedProcessCollectionsToStart.get('processCollectionsToStartObj')
     processCollectionToStart = processCollectionsToStartObj[arrayOfArguments[0]]
-    pathToHome = importedProcessCollectionsToStart.get('pathToRoot')['home']
 
-    # arrayOfArguments[0] = '{}.{}'.format(arrayOfArguments[0], arrayOfArguments[1])
-
-    currentMachineIsHome = str(pathToThisPythonFile).split('repos')[0] == pathToHome
-
-    if currentMachineIsHome:
-        pathToRoot = pathToHome
-    else:
-        pathToRoot = importedProcessCollectionsToStart.get('pathToRoot')['work']
-
+    for machineLocation, pathToRoot in importedProcessCollectionsToStart.get('pathToRoot').items():
+        if pathToRoot in str(pathToThisPythonFile):
+            pathToRootOnThisMachine = pathToRoot
 
     for processToStart in processCollectionToStart:
 
-        replacedProcessToStart = processToStart.replace('!root!', pathToRoot)
+        replacedProcessToStart = processToStart.replace('!root!', pathToRootOnThisMachine)
         arrayOfArguments.insert(1, replacedProcessToStart)
 
         if len(arrayOfArguments) < 3:
