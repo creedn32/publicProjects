@@ -80,10 +80,10 @@ def getArrayOfProcesses(saveToGoogleSheetsBoolean):
 
 
 
-def processIsNotRunning(processFromCommandLineArgument, saveToGoogleSheetsBoolean):
+def processIsNotRunning(processFromInput, saveToGoogleSheetsBoolean):
     
     for runningProcess in getArrayOfProcesses(saveToGoogleSheetsBoolean):
-        if processFromCommandLineArgument in runningProcess:
+        if processFromInput in runningProcess:
             return False
     
     return True
@@ -109,14 +109,18 @@ def saveToGoogleSheets(arrayToOutput):
 
 def mainFunction(arrayOfArguments):
 
-    processFromCommandLineArgument = arrayOfArguments[1].lstrip('explorer ')
-    saveToGoogleSheetsCommandLineArgument = arrayOfArguments[2]
+    processFromInput = arrayOfArguments[1].lstrip('explorer ')
+    
+    saveToGoogleSheetsFromInput = False
+    
+    if arrayOfArguments[2] == 'outputToGoogleSheets':
+        saveToGoogleSheetsFromInput = True
 
-    if processIsNotRunning(processFromCommandLineArgument, saveToGoogleSheetsCommandLineArgument):
-        p("Process '{}' is not running".format(processFromCommandLineArgument))
+    if processIsNotRunning(processFromInput, saveToGoogleSheetsFromInput):
+        p("Process '{}' is not running".format(processFromInput))
         return True
     else:
-        p("Process '{}' is running".format(processFromCommandLineArgument))
+        p("Process '{}' is already running".format(processFromInput))
         return False
 
 
