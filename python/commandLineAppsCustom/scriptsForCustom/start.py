@@ -18,20 +18,28 @@ def mainFunction(arrayOfArguments):
     pathToProcessCollectionsToStart = Path(_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'), 'start', 'processCollectionsToStart.py')
     importedProcessCollectionsToStart = run_path(str(pathToProcessCollectionsToStart))
     processCollectionsToStartObj = importedProcessCollectionsToStart.get('processCollectionsToStartObj')
-    pathToRoot = importedProcessCollectionsToStart.get('pathToRoot')[arrayOfArguments[1]]
-    processCollectionToStart = processCollectionsToStartObj[arrayOfArguments[0]][arrayOfArguments[1]]
+    processCollectionToStart = processCollectionsToStartObj[arrayOfArguments[0]]
+    pathToHomeRoot = importedProcessCollectionsToStart.get('pathToRoot')['home']
 
-    arrayOfArguments[0] = '{}.{}'.format(arrayOfArguments[0], arrayOfArguments[1])
+    # arrayOfArguments[0] = '{}.{}'.format(arrayOfArguments[0], arrayOfArguments[1])
 
-    if len(arrayOfArguments) < 3:
-        arrayOfArguments.append('dontOutputToGoogleSheets')
+
+    if str(pathToThisPythonFile).split('repos')[0] == pathToHomeRoot:
+        pathToRoot = pathToHomeRoot
+    else:
+        pathToRoot = importedProcessCollectionsToStart.get('pathToRoot')['work']
 
 
     for processToStart in processCollectionToStart:
 
         replacedProcessToStart = processToStart.replace('!root!', pathToRoot)
-        arrayOfArguments[1] = replacedProcessToStart
+        arrayOfArguments.insert(1, replacedProcessToStart)
 
+        if len(arrayOfArguments) < 3:
+            arrayOfArguments.append('dontOutputToGoogleSheets')
+
+        # p(arrayOfArguments)
+        
         if processIsNotRunning.mainFunction(arrayOfArguments):
             p('Starting the process...')
             subprocess.Popen(replacedProcessToStart)
