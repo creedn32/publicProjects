@@ -19,13 +19,14 @@ def mainFunction(arrayOfArguments):
     importedProcessCollectionsToStart = run_path(str(pathToProcessCollectionsToStart))
     processCollectionsToStartObj = importedProcessCollectionsToStart.get('processCollectionsToStartObj')
     processCollectionToStart = processCollectionsToStartObj[arrayOfArguments[0]]
-    pathToHomeRoot = importedProcessCollectionsToStart.get('pathToRoot')['home']
+    pathToHome = importedProcessCollectionsToStart.get('pathToRoot')['home']
 
     # arrayOfArguments[0] = '{}.{}'.format(arrayOfArguments[0], arrayOfArguments[1])
 
+    currentMachineIsHome = str(pathToThisPythonFile).split('repos')[0] == pathToHome
 
-    if str(pathToThisPythonFile).split('repos')[0] == pathToHomeRoot:
-        pathToRoot = pathToHomeRoot
+    if currentMachineIsHome:
+        pathToRoot = pathToHome
     else:
         pathToRoot = importedProcessCollectionsToStart.get('pathToRoot')['work']
 
