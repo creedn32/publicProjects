@@ -1,149 +1,343 @@
-#local application imports
-#local application imports
 from pathlib import Path
-import sys
 pathToThisPythonFile = Path(__file__).resolve()
-sys.path.append(str(pathToThisPythonFile.parents[2]))
-import myPythonLibrary._myPyFunc as _myPyFunc
-import googleSheets.myGoogleSheetsLibrary._myGoogleSheetsFunc as _myGoogleSheetsFunc
-import googleSheets.myGoogleSheetsLibrary._myGspreadFunc as _myGspreadFunc
+import sys
+sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
+import _myPyFunc
+sys.path.append(str(Path(pathToThisPythonFile.parents[1], 'myGoogleSheetsLibrary')))
+import _myGoogleSheetsFunc
 
-
-#standard library imports
 from pprint import pprint as p
 import datetime, pynput.mouse, win32api, win32con, pyautogui, time
 
-#third-party imports
-import gspread
-
-
-#standard library imports
-import datetime
-from pprint import pprint as p
-import pyautogui, pynput.mouse, time, win32api, win32con, time
 
 
 
-#third-party imports
-import gspread
+def postTransactionsFunction(sheetNameStr):
 
 
-def numLockIsOff():
-    if win32api.GetKeyState(win32con.VK_NUMLOCK) == 1:
-        return True
-    else:
-        return False  
+    splitTime = _myPyFunc.printElapsedTime(False, "Starting code")
 
 
-def mainFunction(arrayOfArguments):
-    objOfSheets = _myGspreadFunc.getObjOfSheets('Transactions To Post')
-
-    columnNameToIndexObj = {}
-
-    for columnIndexNumber, columnName in enumerate(objOfSheets[sys.argv[1]]['array'][0]):
-        columnNameToIndexObj[columnName] = columnIndexNumber
-
-    columnIndexToNumberOfTabsObj = {}
-    
-    columnIndexToNumberOfTabsObj[columnNameToIndexObj['Checkbook ID']] = 2
-    columnIndexToNumberOfTabsObj[columnNameToIndexObj['Amount']] = 6
-
-    optionIndexNumber = columnNameToIndexObj['Option']
-    typeIndexNumber = columnNameToIndexObj['Type']
-    amountIndexNumber = columnNameToIndexObj['Amount']
-    arrayOfKeysResetDropDown = ['down', 'up', 'up', 'up']
-    # p(columnNameToIndexObj)
-
-    with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
-        print("Click on 'Clear' to begin posting...")
-        listenerObj.join()
+    # class moduleNameClass:
+    #     pass
+    #
+    # moduleName = "myGoogleSheetsPythonLibrary"
+    # moduleNameObj = moduleNameClass()
+    #
+    #
+    #
+    #
+    # for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
+    #     if filePath.stem not in ["__init__", "__pycache__"]:
+    #         importedModuleObj = importlib.import_module(moduleName + "." + filePath.stem)
+    #         setattr(moduleNameObj, filePath.stem, importedModuleObj)
+    # myGoogleSheetsPythonLibrary = moduleNameObj
 
 
-
-    for row in objOfSheets[sys.argv[1]]['array'][1:]:
-
-        optionData = row[optionIndexNumber]
-
-        if row[columnNameToIndexObj['Status']] == '' and optionData != 'Enter/Edit':
-
-            if optionData != 'Enter Transaction' or  (optionData == 'Enter Transaction' and row[typeIndexNumber] not in ['Check', 'Decrease Adjustment']):
-                columnIndexToNumberOfTabsObj[columnNameToIndexObj['Account']] = 2
-            else:
-                columnIndexToNumberOfTabsObj[columnNameToIndexObj['Account']] = 1
-
-           
-            if numLockIsOff():
-                pyautogui.press('numlock')
-            
-            for columnIndexNumber, columnData in enumerate(row):
-
-                if columnIndexNumber in [optionIndexNumber, typeIndexNumber]:
-                    
-                    pyautogui.press(arrayOfKeysResetDropDown)
-
-                    numberOfDownKeyPresses = 0
-
-                    if columnData in ['Enter Receipt', 'Cash']:
-                        numberOfDownKeyPresses = 1
-                    if columnData == 'Increase Adjustment':
-                        numberOfDownKeyPresses = 2
-                    if columnData == 'Decrease Adjustment':
-                        numberOfDownKeyPresses = 3
-
-                    _myPyFunc.repetitiveKeyPress(numberOfDownKeyPresses, 'down')
+    spreadsheetIDStr = "1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg"  # ID of private Google Sheet
 
 
-                if columnIndexNumber == columnNameToIndexObj['Transaction Date']:
-    
-                    # p(columnData)
-                    dateObj = datetime.datetime.strptime(columnData, '%m/%d/%Y')
-                    columnData = dateObj.strftime('%m%d%Y')
+    changeCellColor = False
+    numLockChanged = False
+    activateKeyboard = True
 
 
-                if columnIndexNumber == columnNameToIndexObj['Account']:
-                    columnData = columnData.replace('-', '')
+    googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials', 'usingOAuth'])
+    googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetNameStr)
 
 
-                if columnIndexNumber in [amountIndexNumber, columnNameToIndexObj['Amount2']]:
-                    columnData = columnData.lstrip('$').replace('.', '').replace(',', '')
+    for dict in googleSheetsData["sheets"]:
+        if dict["properties"]["title"] == sheetNameStr:
+            currentSheetIDStr = dict["properties"]["sheetId"]
+            currentSheetData = dict["data"][0]["rowData"]
 
-                if columnIndexNumber not in [optionIndexNumber, typeIndexNumber]:
 
-                    for characterToType in columnData:
 
-                        characterNeedingShift = (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(range(40, 44)) + list(range(33, 39)))
-                        
-                        if ord(characterToType) in characterNeedingShift:
+    # requestDictionary = {}
+    # requestDictionary["requests"] = []
+    # requestDictionary["requests"].append({})
+    # requestDictionary["requests"][0]["repeatCell"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["range"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = currentSheetIDStr
+    # requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
+    # requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 0
+    # requestDictionary["requests"][0]["repeatCell"]["cell"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"] = {}
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["red"] = 208 /255
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 224 /255
+    # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 227 /255
+    # requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
 
-                            priorPyAutoGuiPause = pyautogui.PAUSE
+
+
+    splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished importing modules and intializing variables")
+
+
+    if activateKeyboard:
+
+        with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
+            print("Click on 'Clear' to begin posting...")
+            listenerObj.join()
+
+
+
+
+    for row in currentSheetData[1:]:
+
+
+        if _myGoogleSheetsFunc.isWhite(row["values"][0]) and _myGoogleSheetsFunc.hasFormattedValue(row["values"][0]):
+
+
+            if row["values"][0]["formattedValue"] != "Enter/Edit" and activateKeyboard:
+
+                time.sleep(.1)
+                # pprint(row)
+                print("Row " + str("") + " will be populated into the Great Plains entry window.")
+
+                if win32api.GetKeyState(win32con.VK_NUMLOCK) == 1:
+                    pyautogui.press("numlock")
+
+
+                for col in range(0, 9):
+
+                    time.sleep(.1)
+
+                    numberTabs = 1
+
+                    try:
+                        string = str(row["values"][col]["formattedValue"])
+                    except:
+                        string = ""
+
+
+                    if col == 0:
+
+                        pyautogui.press(["down", "up", "up", "up"])
+
+                        if string == "Enter Receipt":
+                            pyautogui.press("down")
+
+
+                    elif col == 1:
+
+                        pyautogui.press(["down", "up", "up", "up"])
+
+                        if string == "Cash":
+                            pyautogui.press("down")
+                        elif string == "Increase Adjustment":
+                            _myPyFunc.repetitiveKeyPress(2, "down")
+                        elif string == "Decrease Adjustment":
+                            _myPyFunc.repetitiveKeyPress(3, "down")
+
+
+                    elif col == 2:
+
+                        # string = row["values"][col]["formattedValue"]
+                        dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
+                        # print(datetime.ParseExact(string, "yyMMdd", CultureInfo.InvariantCulture))
+                        string = dateObj.strftime("%m%d%Y")
+
+
+                    elif col == 3:
+                        numberTabs = 2
+
+                    elif col == 6:
+                        numberTabs = 6
+
+
+                    elif col == 7:
+                        string = string.replace("-", "")
+
+                        if row["values"][0]["formattedValue"] != "Enter Transaction" or \
+                                (row["values"][0]["formattedValue"] == "Enter Transaction" and row["values"][1][
+                            "formattedValue"] not in ["Check", "Decrease Adjustment"]):
+                            numberTabs = 2
+
+                    if col in [6, 8]:
+                        # if len(string.split(".")) == 1:
+                        # string = string + "00"
+                        string = string.lstrip("$").replace(".", "").replace(",", "")
+
+                    if col not in [0, 1]:
+
+                        for letter in string:
+
+                            if ord(letter) in (
+                                    list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
+                                    range(40, 44)) + list(range(33, 39))):
+
+                                pyautogui.PAUSE = .0000000000001
+                                pyautogui.keyDown("shift")
+                                pyautogui.press(letter)
+                                pyautogui.keyUp("shift")
+                                pyautogui.PAUSE = 0
+
+                            else:
+                                pyautogui.press(letter)
+
+                    _myPyFunc.repetitiveKeyPress(numberTabs, "tab")
+
+                if win32api.GetKeyState(win32con.VK_NUMLOCK) == 0:
+                    pyautogui.press("numlock")
+
+                with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
+                    print("Click on 'Post' or 'Clear' to continue with this entry...")
+                    listenerObj.join()
+
+
+
+
+
+
+def postTransfersFunction():
+   
+    startTime = _myPyFunc.printElapsedTime(False, "Starting code")
+
+    # class moduleNameClass:
+    #     pass
+    #
+    # moduleName = "_myGoogleSheetsFunc"
+    # moduleNameObj = moduleNameClass()
+    #
+    # for filePath in pathlib.Path(pathlib.Path.cwd().parents[0]/moduleName).iterdir():
+    #     if filePath.stem not in ["__init__", "__pycache__"]:
+    #         importedModuleObj = importlib.import_module(moduleName + "." + filePath.stem)
+    #         setattr(moduleNameObj, filePath.stem, importedModuleObj)
+    #
+    # _myGoogleSheetsFunc = moduleNameObj
+
+
+
+    # spreadsheetIDStr = "1uQezYVWkLZEvXzbprJPLRyDdyn04MdO-k6yaiyZPOx8"   #ID of public Google Sheet
+    spreadsheetIDStr = '1nR8wJISZjeJh6DCBf1OTpiG6rdY5DyyUtDI763axGhg'  #ID of private Google Sheet
+    # spreadsheetIDStr = "1kCI36ash9JI2AO0mCjbIUndRo93oiWgx2KWgeeJeP28"  #ID of simple Google Sheet
+    sheetNameStr = "Bank Transfers"
+    changeCellColor = False
+    activateKeyboard = True
+
+
+    googleSheetsAPIObj = _myGoogleSheetsFunc.getGoogleSheetsAPIObj(['privateData', 'python', 'googleCredentials', 'usingOAuth'])
+    fieldMask = 'sheets/properties/title,sheets/data/rowData/values/formattedValue'
+
+
+    jsonOfAllSheets = _myGoogleSheetsFunc.getJSONOfAllSheets(spreadsheetIDStr, googleSheetsAPIObj, fieldMask)
+    # _myPyFunc.saveToFile(jsonOfAllSheets, 'jsonOfAllSheets', 'json', _myPyFunc.replacePartOfPath(pathToThisPythonFileDirectory, 'publicProjects', 'privateData'))
+    jsonOfOneSheet = _myGoogleSheetsFunc.getJSONOfOneSheet(jsonOfAllSheets, 'Bank Transfers')
+    arrayOfOneSheet = _myGoogleSheetsFunc.getArrayFromJSONOfOneSheet(jsonOfOneSheet, googleSheetsAPIObj, spreadsheetIDStr, sheetNameStr)
+
+
+    googleSheetsData = _myGoogleSheetsFunc.getDataWithGridForRange(spreadsheetIDStr, googleSheetsAPIObj, sheetNameStr)
+
+    for dict in googleSheetsData["sheets"]:
+        if dict["properties"]["title"] == sheetNameStr:
+            currentSheetIDStr = dict["properties"]["sheetId"]
+            currentSheetData = dict["data"][0]["rowData"]
+
+
+    # # requestDictionary = {}
+    # # requestDictionary["requests"] = []
+    # # requestDictionary["requests"].append({})
+    # # requestDictionary["requests"][0]["repeatCell"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["range"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["range"]["sheetId"] = currentSheetIDStr
+    # # requestDictionary["requests"][0]["repeatCell"]["range"]["startRowIndex"] = 0
+    # # requestDictionary["requests"][0]["repeatCell"]["range"]["endRowIndex"] = 0
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"] = {}
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["red"] = 208/255
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["green"] = 224/255
+    # # requestDictionary["requests"][0]["repeatCell"]["cell"]["userEnteredFormat"]["backgroundColor"]["blue"] = 227/255
+    # # requestDictionary["requests"][0]["repeatCell"]["fields"] = "userEnteredFormat(backgroundColor)"
+
+
+    splitTime = _myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
+
+
+    if activateKeyboard:
+
+        with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
+            print("Click on 'Clear' to begin posting...")
+            listenerObj.join()
+
+
+
+    for row in currentSheetData[1:]:
+
+
+        if _myGoogleSheetsFunc.isWhite(row["values"][0]) and _myGoogleSheetsFunc.hasFormattedValue(row["values"][0]):
+
+            if activateKeyboard:
+
+                # pprint(row)
+
+                print("Row " + str("") + " will be populated into the Great Plains entry window.")
+
+                _myPyFunc.repetitiveKeyPress(2, "tab")
+
+                for col in range(0, 5):
+
+
+                    numberTabs = 1
+
+                    try:
+                        string = str(row["values"][col]["formattedValue"])
+                    except:
+                        string = ""
+
+                    if col == 0:
+
+                        # string = row["values"][col]["formattedValue"]
+                        dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
+                        # print(datetime.ParseExact(string, "yyMMdd", CultureInfo.InvariantCulture))
+                        string = dateObj.strftime("%m%d%Y")
+
+
+
+                    elif col == 2:
+                        numberTabs = 2
+
+                    elif col == 3:
+
+                        # if len(string.split(".")) == 1:
+                        #     string = string + "00"
+
+                        string = string.lstrip("$").replace(".", "").replace(",", "")
+
+                    for letter in string:
+
+                        if ord(letter) in (
+                                list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
+                            range(40, 44)) + list(range(33, 39))):
+
+                            currentPauseDelay = pyautogui.PAUSE
                             pyautogui.PAUSE = .0000000000001
-                            pyautogui.keyDown('shift')
-                            pyautogui.press(characterToType)
-                            pyautogui.keyUp('shift')
-                            pyautogui.PAUSE = priorPyAutoGuiPause
+                            pyautogui.keyDown("shift")
+                            pyautogui.press(letter)
+                            pyautogui.keyUp("shift")
+                            pyautogui.PAUSE = currentPauseDelay
 
                         else:
-                            pyautogui.press(characterToType)
+                            pyautogui.press(letter)
+
+                    _myPyFunc.repetitiveKeyPress(numberTabs, "tab")
 
 
-                if columnIndexNumber in columnIndexToNumberOfTabsObj:
-                    _myPyFunc.repetitiveKeyPress(columnIndexToNumberOfTabsObj[columnIndexNumber], 'tab')
-                else:
-                    _myPyFunc.repetitiveKeyPress(1, 'tab')
-
-
-            if not numLockIsOff():
-                pyautogui.press('numlock')
-
-
-            with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
-                print("Click on 'Post' or 'Clear' to continue with this entry...")
-                listenerObj.join()
+                with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
+                    print("Click on 'Post' or 'Clear' to continue with this entry...")
+                    listenerObj.join()
 
 
 
-if __name__ == '__main__':
-    mainFunction(sys.argv)
+
+pyautogui.PAUSE = .1
+pathToThisPythonFileDirectory = pathToThisPythonFile.parents[0]
 
 
 
+
+if sys.argv[1] == 'Bank Transfers':
+    postTransfersFunction()
+else:
+    postTransactionsFunction(sys.argv[1])
