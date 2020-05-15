@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../removeDuplicates/removeDuplicateFiles.py %*
+python %~dp0/../../../removeDuplicates/removeDuplicateFiles.py %*

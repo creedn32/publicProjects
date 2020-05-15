@@ -13,7 +13,7 @@ import shutil
 
 
 def mainFunction(arrayOfArguments):
-    thisPythonFilePath = Path(__file__).resolve()
+    pathToThisPythonFile = Path(__file__).resolve()
     p(1)
 
 
@@ -23,50 +23,52 @@ if __name__ == "__main__":
 
 
 
-# thisPythonFileStem = thisPythonFilePath.stem
-# pathToPublicProjectsPython = _myPyFunc.getPathUpFolderTree(thisPythonFilePath, 'python')
-# batchFilesFolderPath = Path(_myPyFunc.getPathUpFolderTree(thisPythonFilePath, 'batchScripts'), 'scripts')
-# templateBatchFilePath = Path(batchFilesFolderPath, thisPythonFileStem + '.bat')
+# thisPythonFileStem = pathToThisPythonFile.stem
+p(pathToThisPythonFile.stem)
+pathToPublicProjectsPython = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'python')
+pathToBatchScriptsFolder = Path(pathToPublicProjectsPython, 'commandLineAppsCustom', 'batchScripts', 'scripts')
+# templateBatchFilePath = Path(pathToBatchScriptsFolder, thisPythonFileStem + '.bat')
 
 
-# def listOfSubFolders(folderPath):
-#     subFolderArray = []
+def listOfSubFolders(folderPath):
+    subFolderArray = []
  
-#     for node in folderPath.iterdir():
-#         if not node.is_file():
-#             subFolderArray.append(node)
+    for fileObj in folderPath.iterdir():
+        if not fileObj.is_file():
+            subFolderArray.append(fileObj)
 
-#     return subFolderArray
-
-
-
-# for batchFile in os.listdir(batchFilesFolderPath):
-#     if batchFile != thisPythonFileStem + '.bat':
-#         shutil.move(Path(batchFilesFolderPath, batchFile), Path(batchFilesFolderPath.parents[0], "scriptsTrashed", batchFile))
-
-
-# folderArray = [pathToPublicProjectsPython]
+    return subFolderArray
 
 
 
-# while folderArray:
-#     currentFolder = folderArray.pop(0)
-#     folderArray.extend(listOfSubFolders(currentFolder))
+for batchFile in os.listdir(pathToBatchScriptsFolder):
+    pass
+    shutil.move(Path(pathToBatchScriptsFolder, batchFile), Path(pathToBatchScriptsFolder.parents[0], "scriptsTrashed", batchFile))
+
+folderArray = [pathToPublicProjectsPython]
+
+while folderArray:
+
+    currentFolder = folderArray.pop(0)
+    folderArray.extend(listOfSubFolders(currentFolder))
     
-#     for node in currentFolder.iterdir():
+    if currentFolder != 'scriptsForCustom':
 
-#         if node.is_file() and node.suffix == '.py' and node.stem != thisPythonFileStem and node.stem[:1] != '_' and node.parents[0].stem != 'scriptsForCustom':
+        for fileObj in currentFolder.iterdir():
 
-#             # p('parent stem: ' + node.parents[0].stem)
-#             # p('stem: ' + node.stem)
-           
-#             additionalPath = ''
+            if fileObj.is_file() and fileObj.suffix == '.py' and fileObj.stem[:1] != '_':
+            
+                additionalPath = ''
 
-#             for part in node.parts[len(pathToPublicProjectsPython.parts):]:
-#                 additionalPath = additionalPath + '/' + part
+                # p(fileObj.parts)
 
-#             newBatchFilePath = Path(batchFilesFolderPath, node.stem + '.bat')
-#             newBatchFileObj = open(newBatchFilePath, 'w+')
+                for part in fileObj.parts[len(pathToPublicProjectsPython.parts):]:
+                    additionalPath = additionalPath + '/' + part
 
-#             newBatchFileObj.write('@echo off \npython %~dp0/../..' + additionalPath + ' %*')
-#             newBatchFileObj.close()
+                p(additionalPath)
+
+                newBatchFilePath = Path(pathToBatchScriptsFolder, fileObj.stem + '.bat')
+                newBatchFileObj = open(newBatchFilePath, 'w+')
+
+                newBatchFileObj.write('@echo off \npython %~dp0/../../..' + additionalPath + ' %*')
+                newBatchFileObj.close()

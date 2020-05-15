@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../googleSheets/reconcileArrays/reconcileArrays.py %*
+python %~dp0/../../../googleSheets/reconcileArrays/reconcileArrays.py %*
