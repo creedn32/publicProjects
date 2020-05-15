@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../../lessons/isPrime.py %*
+python %~dp0/../../../fundamentals/isPrime/isPrime.py %*

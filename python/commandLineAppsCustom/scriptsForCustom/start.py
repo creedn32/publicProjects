@@ -38,6 +38,6 @@ def mainFunction(arrayOfArguments):
             subprocess.Popen(replacedProcessToStart)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     mainFunction(sys.argv)
 

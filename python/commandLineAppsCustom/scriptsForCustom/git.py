@@ -88,6 +88,6 @@ def mainFunction(arrayOfArguments):
                     runGitProcesses(gitIndividualRepoFolder, arrayOfArguments)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     mainFunction(sys.argv)
 
