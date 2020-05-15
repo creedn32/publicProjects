@@ -12,7 +12,17 @@ from pprint import pprint as p
 import shutil
 
 
-thisPythonFilePath = Path(__file__).resolve()
+def mainFunction(arrayOfArguments):
+    thisPythonFilePath = Path(__file__).resolve()
+    p(1)
+
+
+if __name__ == "__main__":
+    mainFunction(sys.argv)
+
+
+
+
 # thisPythonFileStem = thisPythonFilePath.stem
 # pathToPublicProjectsPython = _myPyFunc.getPathUpFolderTree(thisPythonFilePath, 'python')
 # batchFilesFolderPath = Path(_myPyFunc.getPathUpFolderTree(thisPythonFilePath, 'batchScripts'), 'scripts')

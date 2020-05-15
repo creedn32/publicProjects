@@ -16,7 +16,13 @@ from pprint import pprint as p
 # import gspread
 
 firstArgumentStr = sys.argv[1]
-moduleToImport = firstArgumentStr[:firstArgumentStr.index('.')]
+
+if '.' in firstArgumentStr:
+    endingChar = firstArgumentStr.index('.')
+else:
+    endingChar = len(firstArgumentStr)
+
+moduleToImport = firstArgumentStr[:endingChar]
 # is equivalent to: from os import path as imported
 importedModule = getattr(__import__('scriptsForCustom', fromlist=[moduleToImport]), moduleToImport)
 
