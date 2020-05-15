@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../excel/bankRecPrimary/bankRecPrimary.py %*
+python %~dp0/../../../excel/bankRecPrimary/bankRecPrimary.py %*
