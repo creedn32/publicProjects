@@ -92,7 +92,7 @@ def processIsNotRunning(processFromInput, saveToGoogleSheetsBoolean):
 
 def saveToGoogleSheets(arrayToOutput):
     
-    objOfSheets = _myGspreadFunc.getObjOfSheets('App Data')
+    objOfSheets = _myGspreadFunc.getObjOfSheets('Data For Apps')
 
     clearAndResizeParameters = [{
         'sheetObj': objOfSheets['currentlyRunningProcesses']['sheetObj'],
