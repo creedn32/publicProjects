@@ -29,7 +29,7 @@ if useServiceAccount:
 
 
     gspObj = gspread.service_account(filename=pathToCredentialsFileServiceAccount)
-    gspSpreadsheet = gspObj.open("Test")
+    gspSpreadsheet = gspObj.open('Get Google Sheets Data')
     gspSheet1 = gspSpreadsheet.sheet1
     # gspSheet1.format('D4', {'textFormat': {'bold': True}})
 
