@@ -1,34 +1,30 @@
-#local application imports
-# from pathlib import Path
-import sys
-# pathToThisPythonFile = Path(__file__).resolve()
-# sys.path.append(str(pathToThisPythonFile.parents[1]))
-# import myPythonLibrary._myPyFunc as _myPyFunc
-
 #standard library imports
-# import datetime
 from pprint import pprint as p
-# import psutil
-# from runpy import run_path
-# import subprocess
+import sys
 
-#third-party imports
-# import gspread
 
-firstArgumentStr = sys.argv[1]
 
-if '.' in firstArgumentStr:
-    endingChar = firstArgumentStr.index('.')
-else:
-    endingChar = len(firstArgumentStr)
+def mainFunction():
 
-moduleToImport = firstArgumentStr[:endingChar]
-# is equivalent to: from os import path as imported
-importedModule = getattr(__import__('scriptsForCustom', fromlist=[moduleToImport]), moduleToImport)
+    firstArgumentStr = sys.argv[1]
 
-argumentsArray = sys.argv[1].split('.') + sys.argv[2:]
+    if '.' in firstArgumentStr:
+        endingChar = firstArgumentStr.index('.')
+    else:
+        endingChar = len(firstArgumentStr)
 
-importedModule.mainFunction(argumentsArray)
+    moduleToImport = firstArgumentStr[:endingChar]
+    # is equivalent to: from os import path as imported
+    importedModule = getattr(__import__('scriptsForCustom', fromlist=[moduleToImport]), moduleToImport)
+
+    argumentsArray = sys.argv[1].split('.') + sys.argv[2:]
+
+    importedModule.mainFunction(argumentsArray)
+
+
+if __name__ == '__main__':
+    mainFunction()
+
 
 
 
