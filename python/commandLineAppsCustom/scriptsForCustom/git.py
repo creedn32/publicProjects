@@ -25,7 +25,7 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 
     p(str(gitFolder))
     
-    if arrayOfArguments[1] == 'acp':
+    if arrayOfArguments[2] == 'acp':
         subprocess.run('git -C ' + str(gitFolder) + ' add .')
         subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMessage + '\"')
         subprocess.run('git -C ' + str(gitFolder) + ' push')
@@ -35,7 +35,7 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 
 def mainFunction(arrayOfArguments):
 
-    if arrayOfArguments[0] == 'all':
+    if arrayOfArguments[1] == 'all':
 
         pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 

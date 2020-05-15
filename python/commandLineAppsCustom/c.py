@@ -17,14 +17,12 @@ from pprint import pprint as p
 
 firstArgumentStr = sys.argv[1]
 moduleToImport = firstArgumentStr[:firstArgumentStr.index('.')]
-remainingFirstArgumentStr = firstArgumentStr[firstArgumentStr.index('.') + 1:]
-remainingFirstArgumentArray = remainingFirstArgumentStr.split('.')
-remainingArgumentsArray = remainingFirstArgumentArray + sys.argv[2:]
-
 # is equivalent to: from os import path as imported
 importedModule = getattr(__import__('scriptsForCustom', fromlist=[moduleToImport]), moduleToImport)
 
-importedModule.mainFunction(remainingArgumentsArray)
+argumentsArray = sys.argv[1].split('.') + sys.argv[2:]
+
+importedModule.mainFunction(argumentsArray)
 
 
 
