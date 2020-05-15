@@ -25,15 +25,19 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 
     p(str(gitFolder))
     
-    if arrayOfArguments[2] == 'acp':
+    gitProcessToRun = arrayOfArguments[2]
+
+    if gitProcessToRun == 'acp':
         subprocess.run('git -C ' + str(gitFolder) + ' add .')
         subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMessage + '\"')
         subprocess.run('git -C ' + str(gitFolder) + ' push')
     else:
-        subprocess.run('git -C ' + str(gitFolder) + ' ' + arrayOfArguments[1])
+        subprocess.run('git -C ' + str(gitFolder) + ' ' + gitProcessToRun)
 
 
 def mainFunction(arrayOfArguments):
+
+    # p(arrayOfArguments)
 
     if arrayOfArguments[1] == 'all':
 
