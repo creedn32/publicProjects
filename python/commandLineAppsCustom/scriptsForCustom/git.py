@@ -31,6 +31,10 @@ def runGitProcesses(gitFolder, arrayOfArguments):
         subprocess.run('git -C ' + str(gitFolder) + ' add .')
         subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMessage + '\"')
         subprocess.run('git -C ' + str(gitFolder) + ' push')
+        subprocess.run('git -C ' + str(gitFolder) + ' push')
+
+        # p(gitFolder)
+
     else:
         subprocess.run('git -C ' + str(gitFolder) + ' ' + gitProcessToRun)
 
