@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../../fundamentals/webAppFlask/backend/startServer.py %*
+python %~dp0/../../../fundamentals/webAppFlask/startServer.py %*
