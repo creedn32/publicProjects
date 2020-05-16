@@ -2,3 +2,6 @@
 [submodule "javascript/herokuHelloJavascript"]
 	path = javascript/herokuHelloJavascript
 	url = https://github.com/creednaylor/herokuHelloJavascript.git
+[submodule "python/herokuHelloPython"]
+	path = python/herokuHelloPython
+	url = https://github.com/creednaylor/herokuHelloPython.git
