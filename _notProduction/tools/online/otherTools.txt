@@ -1,0 +1,3 @@
+#convert a list to single line
+
+https://delim.co/#

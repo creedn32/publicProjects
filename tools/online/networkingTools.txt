@@ -1,8 +1,0 @@
-#get router internal and external IP address
-http://whatsmyrouterip.com/
-
-
-
-#lookup vendor using a MAC address
-https://www.wireshark.org/tools/oui-lookup.html
-
