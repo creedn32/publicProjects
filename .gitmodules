@@ -4,3 +4,6 @@
 [submodule "python/herokuHelloPython"]
 	path = python/herokuHelloPython
 	url = https://github.com/creednaylor/herokuHelloPython.git
+[submodule "herokuGorilla"]
+	path = herokuGorilla
+	url = https://github.com/creednaylor/herokuGorilla.git
