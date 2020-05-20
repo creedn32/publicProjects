@@ -25,9 +25,14 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 
     p(str(gitFolder))
     
-    if len(arrayOfArguments) > 2 and arrayOfArguments[2] == 'heroku':
+
+    if len(arrayOfArguments) > 2 and arrayOfArguments[2] == 'includeheroku':
         runGitProcessOnHerokuRepos = True
+    else:
+        runGitProcessOnHerokuRepos = False
+
     gitProcessToRun = arrayOfArguments[1]
+
 
     if gitProcessToRun in ['acp', 'addcommitpush']:
         subprocess.run('git -C ' + str(gitFolder) + ' add .')
