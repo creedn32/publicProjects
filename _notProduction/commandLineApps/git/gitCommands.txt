@@ -9,6 +9,17 @@
 # Delete the now untracked submodule files rm -rf path_to_submodule
 
 
+#update git version
+git update-git-for-windows
+
+
+#see git version
+git --version
+
+
+#see where git.exe is located
+git --exec-path
+
 
 #ignore line endings in git
 git config --global core.autocrlf false
@@ -66,15 +77,6 @@ git rebase -i 7c32d14925d5111c28010e05e9693df5174f56d8
 
 #see changes between two commits
 git diff 7c32d14925d5111c28010e05e9693df5174f56d8 62ab2d94e58b860dcfb140c3580cb41d71e88a88 > gitDifferences.patch
-
-
-
-#update git version
-git update-git-for-windows
-
-
-#see git version
-git --version
 
 
 #see information of local commit (that hasn't been pushed yet)
