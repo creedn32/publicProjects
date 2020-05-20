@@ -25,7 +25,8 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 
     p(str(gitFolder))
     
-    
+    if len(arrayOfArguments) > 2 and arrayOfArguments[2] == 'heroku':
+        runGitProcessOnHerokuRepos = True
     gitProcessToRun = arrayOfArguments[1]
 
     if gitProcessToRun in ['acp', 'addcommitpush']:
@@ -33,7 +34,7 @@ def runGitProcesses(gitFolder, arrayOfArguments):
         subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMessage + '\"')
         subprocess.run('git -C ' + str(gitFolder) + ' push')
         
-        if gitFolder.name[:6] == 'heroku':
+        if gitFolder.name[:6] == 'heroku' and runGitProcessOnHerokuRepos:
             subprocess.run('git -C ' + str(gitFolder) + ' push heroku master')
 
     else:
