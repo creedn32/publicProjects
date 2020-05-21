@@ -25,7 +25,7 @@ def mainFunction(arrayOfArguments):
     pathToThisPythonFile = Path(__file__).resolve()
 
     pathToPublicProjectsPython = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'python')
-    pathToBatchScriptsFolder = Path(pathToPublicProjectsPython, 'commandLineAppsCustom', 'batchScripts', 'scripts')
+    pathToBatchScriptsFolder = Path(pathToPublicProjectsPython, 'customCommandLineApps', 'batchScripts', 'scripts')
 
     def arrayOfSubFolders(pathToFolder):
         

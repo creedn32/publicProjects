@@ -15,7 +15,7 @@ def mainFunction():
 
     moduleToImport = firstArgumentStr[:endingChar]
     # is equivalent to: from os import path as imported
-    importedModule = getattr(__import__('scriptsForCustom', fromlist=[moduleToImport]), moduleToImport)
+    importedModule = getattr(__import__('pythonScripts', fromlist=[moduleToImport]), moduleToImport)
 
     argumentsArray = sys.argv[1].split('.') + sys.argv[2:]
 
