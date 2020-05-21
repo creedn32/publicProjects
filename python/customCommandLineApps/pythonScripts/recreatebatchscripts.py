@@ -67,11 +67,11 @@ def mainFunction(arrayOfArguments):
 
                     # p(additionalPathStr)
 
-                    newBatchFilePath = Path(pathToBatchScriptsFolder, fileObj.stem + '.bat')
-                    newBatchFileObj = open(newBatchFilePath, 'w+')
+                    pathOfBatchFileToWriteTo = Path(pathToBatchScriptsFolder, fileObj.stem + '.bat')
+                    objOfBatchFileToWriteTo = open(pathOfBatchFileToWriteTo, 'w+')
 
-                    newBatchFileObj.write('@echo off \npython %~dp0/../../..' + additionalPathStr + ' %*')
-                    newBatchFileObj.close()
+                    objOfBatchFileToWriteTo.write('@echo off \npython %~dp0/../../..' + additionalPathStr + ' %*')
+                    objOfBatchFileToWriteTo.close()
 
 
 if __name__ == '__main__':
