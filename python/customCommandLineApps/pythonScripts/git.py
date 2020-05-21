@@ -20,9 +20,6 @@ import gspread
 
 def runGitProcesses(gitFolder, arrayOfArguments):
 
-    nowObj = datetime.datetime.now()
-    commitMessage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
-
     p(str(gitFolder))
     
 
@@ -30,6 +27,13 @@ def runGitProcesses(gitFolder, arrayOfArguments):
         runGitProcessOnHerokuRepos = True
     else:
         runGitProcessOnHerokuRepos = False
+
+    if len(arrayOfArguments) > 3:
+        commitMessage = arrayOfArguments[3]    
+    else:
+        nowObj = datetime.datetime.now()
+        commitMessage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
+    
 
     gitProcessToRun = arrayOfArguments[1]
 
