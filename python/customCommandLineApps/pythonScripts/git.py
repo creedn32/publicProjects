@@ -23,7 +23,7 @@ def runGitProcesses(gitFolder, arrayOfArguments):
     p(str(gitFolder))
     
 
-    if len(arrayOfArguments) > 2 and arrayOfArguments[2] == 'includeheroku':
+    if len(arrayOfArguments) > 2 and arrayOfArguments[2] in ['includeheroku', 'h']:
         runGitProcessOnHerokuRepos = True
     else:
         runGitProcessOnHerokuRepos = False
