@@ -1,5 +1,5 @@
 [submodule "javascript/herokuHelloJavascript"]
-	path = javascript/herokuHelloJavascript
+	path = javascript/herokuHelloNode
 	url = https://github.com/creednaylor/herokuHelloJavascript.git
 [submodule "python/herokuHelloPython"]
 	path = python/herokuHelloPython
