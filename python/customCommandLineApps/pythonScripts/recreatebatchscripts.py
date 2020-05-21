@@ -58,19 +58,19 @@ def mainFunction(arrayOfArguments):
 
                 if fileObj.is_file() and fileObj.suffix == '.py' and fileObj.stem[:1] != '_':
                 
-                    additionalPathStr = ''
+                    pathOfPythonFileToRun = ''
 
                     # p(fileObj.parts)
 
                     for partOfPathToFileObj in fileObj.parts[len(pathToPublicProjectsPython.parts):]:
-                        additionalPathStr = additionalPathStr + '/' + partOfPathToFileObj
+                        pathOfPythonFileToRun = pathOfPythonFileToRun + '/' + partOfPathToFileObj
 
-                    # p(additionalPathStr)
+                    # p(pathOfPythonFileToRun)
 
                     pathOfBatchFileToWriteTo = Path(pathToBatchScriptsFolder, fileObj.stem + '.bat')
                     objOfBatchFileToWriteTo = open(pathOfBatchFileToWriteTo, 'w+')
 
-                    objOfBatchFileToWriteTo.write('@echo off \npython %~dp0/../../..' + additionalPathStr + ' %*')
+                    objOfBatchFileToWriteTo.write('@echo off \npython %~dp0/../../..' + pathOfPythonFileToRun + ' %*')
                     objOfBatchFileToWriteTo.close()
 
 
