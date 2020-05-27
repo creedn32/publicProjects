@@ -1,3 +1,4 @@
-from fileWithFunctions import functionExample
+import fileWithFunctions
+import examplePackage
 
-functionExample()
+fileWithFunctions.functionExample()
