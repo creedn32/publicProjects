@@ -8,14 +8,17 @@ import _myPyFunc
 from cryptography.fernet import Fernet
 from pprint import pprint as p
 
-def generateKey():
+
+
+def generateKey(pathToStoreKeyFile):
     """
     Generates a key and save it into a file
     """
     generatedKey = Fernet.generate_key()
 
-    with open('keyFile.key', 'wb') as keyFileObj:
+    with open(pathToStoreKeyFile, 'wb') as keyFileObj:
         keyFileObj.write(generatedKey)
+
 
 
 def openSavedKey(pathToKeyFile):
@@ -24,6 +27,7 @@ def openSavedKey(pathToKeyFile):
     """
 
     return open(pathToKeyFile, 'rb').read()
+
 
 
 def encryptFile(pathOfFileToProcess, savedKey):
@@ -44,6 +48,7 @@ def encryptFile(pathOfFileToProcess, savedKey):
     # write the encrypted file
     with open(pathOfFileToProcess, "wb") as fileObj:
         fileObj.write(encryptedFileData)
+
 
 
 def decryptFile(pathOfFileToProcess, savedKey):
@@ -68,23 +73,24 @@ def decryptFile(pathOfFileToProcess, savedKey):
 
 
 
-
-
-# generateKey()
-
 pathToKeyFileDirectory = _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')
-savedKey = openSavedKey(Path(pathToKeyFileDirectory, 'keyForEncryption.key'))
+keyFileName = 'keyForEncryption.key'
+pathToStoreKeyFile = Path(pathToKeyFileDirectory, keyFileName)
+# generateKey(pathToStoreKeyFile)
+
+savedKey = openSavedKey(Path(pathToKeyFileDirectory, keyFileName))
 # savedKey = "asdfs"
-pathOfFileToProcess = Path(pathToThisPythonFile.parents[0], 'textFile.txt')
+
+pathOfFileToProcess = Path(pathToThisPythonFile.parents[0], 'fileToProcess.txt')
 
 # encryptFile(pathOfFileToProcess, savedKey)
 
-decryptFile(pathOfFileToProcess, savedKey)
+# decryptFile(pathOfFileToProcess, savedKey)
 
 
 
 
-
+# encrypt a string
 
 # unencryptedMessage = 'secret message'.encode()
 # fernetObjUsingKey = Fernet(savedKey)
