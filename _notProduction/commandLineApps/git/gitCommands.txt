@@ -1,7 +1,13 @@
+#delete a branch
+git branch -d scotts--branch
+
+
+#list branches
+git branch -a
+
 # Rename a submodule
 
 # rename .git file on GitHub
-
 # Update .gitmodules
 # mv oldpath newpath
 # git rm oldpath
