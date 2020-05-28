@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 pathToThisPythonFile = Path(__file__).resolve()
 sys.path.append(str(Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'python')))
-import horseStable.clydesdale as clydesdale
+import myPythonLibrary._myPyFunc as _myPyFunc
 import googleSheets.processIsNotRunning.processIsNotRunning as processIsNotRunning
 
 #standard library imports
@@ -24,7 +24,7 @@ def mainFunction(arrayOfArguments):
 
     pathToThisPythonFile = Path(__file__).resolve()
 
-    pathToPublicProjectsPython = clydesdale.getPathUpFolderTree(pathToThisPythonFile, 'python')
+    pathToPublicProjectsPython = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'python')
     pathToBatchScriptsFolder = Path(pathToPublicProjectsPython, 'customCommandLineApps', 'batchScripts', 'scripts')
 
     def arrayOfSubFolders(pathToFolder):

@@ -24,7 +24,7 @@ googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData'
 
 
 
-# with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
+# with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
 #     print("Click the mouse to begin...")
 #     listenerObj.join()
 
@@ -51,11 +51,11 @@ googleSheetsAPIObj = _myGoogleSheetsLibrary.getGoogleSheetsAPIObj(['privateData'
 #             pyautogui.press(character)
 
 
-#     myPyFunc.repetitiveKeyPress(1, "tab")
+#     _myPyFunc.repetitiveKeyPress(1, "tab")
 
 
 
-#     with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
+#     with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
 #         print("Click the mouse to continue...")
 #         listenerObj.join()
 

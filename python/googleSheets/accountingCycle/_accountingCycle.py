@@ -1,24 +1,24 @@
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPyLib import myPyFunc, myGoogleSheetsFunc
+from myPyLib import _myPyFunc, myGoogleSheetsFunc
 
 
-startTime = myPyFunc.printElapsedTime(False, "Starting script")
+startTime = _myPyFunc.printElapsedTime(False, "Starting script")
 from pprint import pprint as pp
 
 spreadsheetID = "1jbV5jjW-iWlCoBgwB0mmywbfTRcMK7XaOF-u79mLVv8"
-sqlObj = myPyFunc.createDatabase("accountingCycle.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"accountingCycle"))
+sqlObj = _myPyFunc.createDatabase("accountingCycle.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"accountingCycle"))
 sqlCursor = sqlObj["sqlCursor"]
 googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 
-splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
+splitTime = _myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
 
 toDownload = ["Journal"]
 journalDownloadedWithGrid = myGoogleSheetsFunc.getDataWithGrid(spreadsheetID, googleSheetsAPIObj, toDownload)
 journalList = myGoogleSheetsFunc.extractValues(journalDownloadedWithGrid, toDownload, "Journal")
 
 
-colTblJournal = myPyFunc.createColumnsDict([
+colTblJournal = _myPyFunc.createColumnsDict([
     {"`Date`": "date"},
     {"`Account`": "varchar(255)"},
     {"Debit": "varchar(255)"},
@@ -26,8 +26,8 @@ colTblJournal = myPyFunc.createColumnsDict([
 ])
 
 
-myPyFunc.createAndPopulateTable("tblJournal", colTblJournal, sqlCursor, journalList, [0])
-uniqueAccountList = myPyFunc.getQueryResult("select distinct `Account` from tblJournal", sqlCursor, False)
+_myPyFunc.createAndPopulateTable("tblJournal", colTblJournal, sqlCursor, journalList, [0])
+uniqueAccountList = _myPyFunc.getQueryResult("select distinct `Account` from tblJournal", sqlCursor, False)
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1, "tblJournalAccounts", googleSheetsAPIObj, spreadsheetID, uniqueAccountList, True, writeToSheet=False, splitTimeArg=splitTime, columnRow=False)
 
 
@@ -37,7 +37,7 @@ for account in uniqueAccountList:
     accountName = account[0]
     ledgerData[accountName] = [[accountName, ""]]
     sqlCommand = "select * from tblJournal where `Account` = '" + accountName + "'"
-    accountTransactionList = myPyFunc.getQueryResult(sqlCommand, sqlCursor, False)
+    accountTransactionList = _myPyFunc.getQueryResult(sqlCommand, sqlCursor, False)
     for transaction in accountTransactionList:
         ledgerData[accountName].append(transaction[-2:])
 

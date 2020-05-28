@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 pathToThisPythonFile = Path(__file__).resolve()
 sys.path.append(str(Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'python')))
-import horseStable.clydesdale as clydesdale
+import myPythonLibrary._myPyFunc as _myPyFunc
 
 #standard library imports
 import datetime
@@ -54,7 +54,7 @@ def mainFunction(arrayOfArguments):
 
     # p(arrayOfArguments)
     
-    pathToRepos = clydesdale.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
     for objInReposFolder in pathToRepos.glob('*'):
 

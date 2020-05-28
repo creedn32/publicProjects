@@ -1,9 +1,9 @@
 import sys, pathlib
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPyLib import myPyFunc, myGoogleSheetsFunc
+from myPyLib import _myPyFunc, myGoogleSheetsFunc
 
 
-startTime = myPyFunc.printElapsedTime(False, "Starting code")
+startTime = _myPyFunc.printElapsedTime(False, "Starting code")
 
 import datetime
 # from collections import OrderedDict
@@ -11,11 +11,11 @@ from pprint import pprint as pp
 
 resultsSpreadsheetID = "1pjhFRIoB9mnbiMOj_hsFwsGth91l1oX_4kmeYrsT5mc"
 multiplyFactor = .2
-sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"))
+sqlObj = _myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"))
 sqlCursor = sqlObj["sqlCursor"]
 googleSheetsAPIObj = myGoogleSheetsFunc.authFunc()
 
-splitTime = myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
+splitTime = _myPyFunc.printElapsedTime(startTime, "Finished importing modules and intializing variables")
 
 
 resultsToDownload = ["Ticker Map", "Raw Data - Robinhood", "Transactions To Add - Robinhood", "Transactions - Motif", "Chart of Accounts"]
@@ -46,7 +46,7 @@ resultsTranScrubList = myGoogleSheetsFunc.extractValues(resultsDownloadedWithGri
 chartOfAccountsDict = myGoogleSheetsFunc.createDictMapFromSheet(resultsDownloadedWithGrid, resultsToDownload, "Chart of Accounts")
 
 
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished downloading and extracting data")
+splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished downloading and extracting data")
 
 
 #create data
@@ -116,7 +116,7 @@ leftStrMap = {
 rightStrMap = {" Market Buy": {"tranType": "Purchase", "debitAccount": "Investment Asset", "creditAccount": "Cash"}}
 
 
-lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31)))    # lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2018, 10, 31)))
+lastDate = int(_myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31)))    # lastDate = int(_myPyFunc.convertDateToSerialDate(datetime.datetime(2018, 10, 31)))
 
 
 for line in newTransRobList:
@@ -151,15 +151,15 @@ for line in newTransRobList:
         if "lotInfo" in mappedTransactionData:
             lot = mappedTransactionData["lotInfo"]
         elif mappedTransactionData["tranType"] in ["Purchase", "Purchase - Stock Gift", "Purchase - Stock From Merger"]:
-            lot = myPyFunc.convertSerialDateToDateWithoutDashes(line[newTransRobListDateColIndex])
+            lot = _myPyFunc.convertSerialDateToDateWithoutDashes(line[newTransRobListDateColIndex])
         else:
 
             filterForLots = [{1: "Investment Asset", 3: "Purchase", 4: stockName},
                              {1: "Investment Asset", 3: "Purchase - Stock From Merger", 4: stockName}]
-            filteredList = myPyFunc.filterListOfLists(tranRobDoubleEntryList, filterForLots)
+            filteredList = _myPyFunc.filterListOfLists(tranRobDoubleEntryList, filterForLots)
 
             if len(filteredList) == 1:
-                lot = myPyFunc.convertSerialDateToDateWithoutDashes(filteredList[0][0])
+                lot = _myPyFunc.convertSerialDateToDateWithoutDashes(filteredList[0][0])
 
 
         if "shares" in mappedTransactionData:
@@ -177,7 +177,7 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Robinhood 
 
 
 
-colTblRobinhood = myPyFunc.createColumnsDict([
+colTblRobinhood = _myPyFunc.createColumnsDict([
     {"`Date`": "date"},
     {"`Account`": "varchar(255)"},
     {"`Amount+-`": "float"},
@@ -192,14 +192,14 @@ colTblRobinhood = myPyFunc.createColumnsDict([
 
 
 sqlCommand = "select `Stock Name`, Lot, sum(`Amount+-`), sum(Shares) from tblRobinhood where `Account` = 'Investment Asset' group by `Stock Name`, Lot having sum(Shares) > 0;"
-unsoldStockValuesList = myPyFunc.createPopulateSelect("tblRobinhood", colTblRobinhood, sqlCursor, tranRobDoubleEntryList, [0], sqlCommand, False)
+unsoldStockValuesList = _myPyFunc.createPopulateSelect("tblRobinhood", colTblRobinhood, sqlCursor, tranRobDoubleEntryList, [0], sqlCommand, False)
 splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Robinhood - Unsold Stock", googleSheetsAPIObj, resultsSpreadsheetID, unsoldStockValuesList, True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
 doubleEntryUnsoldStockList = []
 tranType = "Sale - Hypothetical"
-priceDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime.now()))
+priceDate = int(_myPyFunc.convertDateToSerialDate(datetime.datetime.now()))
 gainLossAccount = "=if(" + myGoogleSheetsFunc.cellOff(0, 1) + "<0, \"Gain On Sale - Hypothetical\", \"Loss On Sale - Hypothetical\")"
 
 
@@ -213,7 +213,7 @@ for line in unsoldStockValuesList:
         lotFromLotList = line[1]
         lotShares = line[3]
 
-        tickerSymbol = myPyFunc.mapData(tickerMapUniqueExtractedValues, lotStockName, 2, 1)
+        tickerSymbol = _myPyFunc.mapData(tickerMapUniqueExtractedValues, lotStockName, 2, 1)
 
         lotCurrentAmount = "googlefinance(" + myGoogleSheetsFunc.cellOff(0, 6) + ")*" + myGoogleSheetsFunc.cellOff(0, 5)
 
@@ -268,14 +268,14 @@ for resultsTranScrubIndexOfRow in range(0, resultsTranScrubRowTotal):
         resultsTranScrubList[resultsTranScrubIndexOfRow].append("Year")
         resultsTranScrubList[resultsTranScrubIndexOfRow].append("Month")
     else:
-        convertedYear = myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex])
-        convertedMonth = str(myPyFunc.convertSerialDateToMonth(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex])).zfill(2)
+        convertedYear = _myPyFunc.convertSerialDateToYear(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex])
+        convertedMonth = str(_myPyFunc.convertSerialDateToMonth(resultsTranScrubList[resultsTranScrubIndexOfRow][tranDateColIndex])).zfill(2)
         resultsTranScrubList[resultsTranScrubIndexOfRow].append(convertedYear)
         resultsTranScrubList[resultsTranScrubIndexOfRow].append(convertedYear + convertedMonth)
         resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] = resultsTranScrubList[resultsTranScrubIndexOfRow][tranAmountColIndex] * multiplyFactor
 
     if resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] == "":
-        resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] = myPyFunc.mapData(tickerMapUniqueExtractedValues, resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockNameColIndex], 2, 1)
+        resultsTranScrubList[resultsTranScrubIndexOfRow][tranTickerColIndex] = _myPyFunc.mapData(tickerMapUniqueExtractedValues, resultsTranScrubList[resultsTranScrubIndexOfRow][tranStockNameColIndex], 2, 1)
 
 
 # pp(resultsTranScrubList)
@@ -292,7 +292,7 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Transactions - Scrubbed",
 
 
 
-colTblScrubbed = myPyFunc.createColumnsDict([
+colTblScrubbed = _myPyFunc.createColumnsDict([
     {"`Date`": "date"},
     {"`Account`": "varchar(255)"},
     {"`Amount+-`": "float"},
@@ -310,12 +310,12 @@ colTblScrubbed = myPyFunc.createColumnsDict([
 ])
 
 
-myPyFunc.createAndPopulateTable("tblScrubbed", colTblScrubbed, sqlCursor, resultsTranScrubList, [0])
+_myPyFunc.createAndPopulateTable("tblScrubbed", colTblScrubbed, sqlCursor, resultsTranScrubList, [0])
 
-# myPyFunc.createTable("tblScrubbed", colTblScrubbed, sqlCursor)
+# _myPyFunc.createTable("tblScrubbed", colTblScrubbed, sqlCursor)
 # pp(resultsTranScrubList)
 
-# myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
+# _myPyFunc.populateTable(resultsTranScrubRowTotal, resultsTranScrubColTotal, "tblScrubbed", resultsTranScrubList, sqlCursor, [0])
 
 
 
@@ -327,21 +327,21 @@ sqlConvertedDate = "ltrim(strftime('%m', `Date`), '0') || '/' || ltrim(strftime(
 
 sqlCommand = f"select {fieldStr}, {sqlConvertedDate} as 'Purchase Date', -sum(`Amount+-`) as 'Capital Invested' from tblScrubbed where Account = 'Cash' and `Transaction Type` like '%Purchase%' and `Transaction Type` not like '%Group Shares%' group by {fieldStr}, `Date` order by {fieldStr};"
 # pp(sqlCommand)
-myPyFunc.createTableAs("tblPurchase", sqlCursor, sqlCommand)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblPurchase", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblPurchase", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
+_myPyFunc.createTableAs("tblPurchase", sqlCursor, sqlCommand)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblPurchase", googleSheetsAPIObj, resultsSpreadsheetID, _myPyFunc.getQueryResult("select * from tblPurchase", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
 sqlCommand = f"select {fieldStr}, sum(Shares) as 'Shares' from tblScrubbed where Account = 'Investment Asset' and `Transaction Type` like '%Purchase%' and `Transaction Type` not like '%Group Shares%' group by {fieldStr}  order by {fieldStr};"
 # pp(sqlCommand)
-myPyFunc.createTableAs("tblShares", sqlCursor, sqlCommand)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblShares", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblShares", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
+_myPyFunc.createTableAs("tblShares", sqlCursor, sqlCommand)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblShares", googleSheetsAPIObj, resultsSpreadsheetID, _myPyFunc.getQueryResult("select * from tblShares", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 sqlCommand = f"select {fieldStr}, `Transaction Type`, case when `Transaction Type` != 'Sale - Hypothetical' then {sqlConvertedDate} end as 'Sale Date', sum(`Amount+-`) as 'Last Value' from tblScrubbed where Account = 'Cash' and `Transaction Type` like '%Sale%' and `Transaction Type` not like '%Group Shares%' group by {fieldStr}, `Transaction Type` order by {fieldStr};"
 # pp(sqlCommand)
-myPyFunc.createTableAs("tblSale", sqlCursor, sqlCommand)
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblSale", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
+_myPyFunc.createTableAs("tblSale", sqlCursor, sqlCommand)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPIObj, resultsSpreadsheetID, _myPyFunc.getQueryResult("select * from tblSale", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
@@ -349,21 +349,21 @@ splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblSale", googleSheetsAPI
 #get list of values to put as the pivot columns
 
 
-pivotColDict = myPyFunc.createPivotColDict("Year", "Amount+-", resultsTranScrubList)
+pivotColDict = _myPyFunc.createPivotColDict("Year", "Amount+-", resultsTranScrubList)
 pivotColStr = pivotColDict["pivotColStr"]
 
 
 # pp(pivotColStr)
 
-myPyFunc.createTableAs("tblDividends", sqlCursor, f"select {fieldStr}, {pivotColStr} from tblScrubbed where `Account` = 'Cash' and `Transaction Type` like '%Dividend%' group by {fieldStr};")
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblDividends", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblDividends", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
+_myPyFunc.createTableAs("tblDividends", sqlCursor, f"select {fieldStr}, {pivotColStr} from tblScrubbed where `Account` = 'Cash' and `Transaction Type` like '%Dividend%' group by {fieldStr};")
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblDividends", googleSheetsAPIObj, resultsSpreadsheetID, _myPyFunc.getQueryResult("select * from tblDividends", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
 
 
-myPyFunc.createTableAs("tblAllLots", sqlCursor, f"select {fieldStr} from tblPurchase union select {fieldStr} from tblSale union select {fieldStr} from tblDividends;")
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblAllLots", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblAllLots", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
+_myPyFunc.createTableAs("tblAllLots", sqlCursor, f"select {fieldStr} from tblPurchase union select {fieldStr} from tblSale union select {fieldStr} from tblDividends;")
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblAllLots", googleSheetsAPIObj, resultsSpreadsheetID, _myPyFunc.getQueryResult("select * from tblAllLots", sqlCursor, True), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
 
@@ -380,7 +380,7 @@ colDict =   {
             }
 
 
-colListStr = myPyFunc.listToStr(myPyFunc.getAllColumns(colDict, sqlCursor))
+colListStr = _myPyFunc.listToStr(_myPyFunc.getAllColumns(colDict, sqlCursor))
 # pp(colListStr)
 
 
@@ -459,7 +459,7 @@ sqlCommand = "select " + colListStr + ", " + \
 #              "" #"left outer join tblPurchase on tblAllLots.Broker = tblPurchase.Broker and tblAllLots.\"Stock Name\" = tblPurchase.\"Stock Name\" and tblAllLots.Lot = tblPurchase.Lot "
 
 
-myPyFunc.createTableAs("tblStockSummary", sqlCursor, sqlCommand)
+_myPyFunc.createTableAs("tblStockSummary", sqlCursor, sqlCommand)
 
 
 
@@ -468,34 +468,34 @@ myPyFunc.createTableAs("tblStockSummary", sqlCursor, sqlCommand)
 
 
 sqlCommand = ["update tblStockSummary set `Last Value` = '=googlefinance(" + myGoogleSheetsFunc.cellOff(0, -6) + ")*" + myGoogleSheetsFunc.cellOff(0, -3) + "*" + str(multiplyFactor) + "' where `Sale Date` is null;"] #and 'Transaction Type' not like '%Manual%'
-myPyFunc.executeSQLStatements(sqlCommand, sqlCursor)
+_myPyFunc.executeSQLStatements(sqlCommand, sqlCursor)
 
 sqlCommand = "select * from tblStockSummary"
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Summary", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "Summary", googleSheetsAPIObj, resultsSpreadsheetID, _myPyFunc.getQueryResult(sqlCommand, sqlCursor, True), True, writeToSheet=True, splitTimeArg=splitTime)
 
 
 
 
-uniquePeriods = myPyFunc.getQueryResult("select distinct `Month` from tblScrubbed", sqlCursor, False)
-myPyFunc.createTableAs("tblBalanceSheetNoMonth", sqlCursor, "select * from tblScrubbed")
-myPyFunc.createTableAs("tblScrubBalanceSheet", sqlCursor, "select * from tblScrubbed limit 1")
-myPyFunc.executeSQLStatements(["alter table tblScrubBalanceSheet add column `Balance Sheet Period` int", "delete from tblScrubBalanceSheet"], sqlCursor)
+uniquePeriods = _myPyFunc.getQueryResult("select distinct `Month` from tblScrubbed", sqlCursor, False)
+_myPyFunc.createTableAs("tblBalanceSheetNoMonth", sqlCursor, "select * from tblScrubbed")
+_myPyFunc.createTableAs("tblScrubBalanceSheet", sqlCursor, "select * from tblScrubbed limit 1")
+_myPyFunc.executeSQLStatements(["alter table tblScrubBalanceSheet add column `Balance Sheet Period` int", "delete from tblScrubBalanceSheet"], sqlCursor)
 
 
 for uniquePeriod in uniquePeriods:
 
     sqlList = ["insert into tblScrubBalanceSheet select *, '" + str(uniquePeriod[0]) + "' from tblBalanceSheetNoMonth where `Month` <= " + str(uniquePeriod[0])]
-    myPyFunc.executeSQLStatements(sqlList, sqlCursor)
+    _myPyFunc.executeSQLStatements(sqlList, sqlCursor)
 
 
-myPyFunc.executeSQLStatements(["update tblScrubBalanceSheet set `Balance Sheet Period` = substr(`Balance Sheet Period`, 1, 4) || ' - ' || substr(`Balance Sheet Period`, -2, 2)"], sqlCursor)
+_myPyFunc.executeSQLStatements(["update tblScrubBalanceSheet set `Balance Sheet Period` = substr(`Balance Sheet Period`, 1, 4) || ' - ' || substr(`Balance Sheet Period`, -2, 2)"], sqlCursor)
 
 
 
 
 def createBalanceSheet(sCursor, firstColumnList):
 
-    scrubBalanceSheetList = myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sCursor, True)
+    scrubBalanceSheetList = _myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sCursor, True)
 
 
     # def prettyMonth(colName):
@@ -504,7 +504,7 @@ def createBalanceSheet(sCursor, firstColumnList):
 
 
 
-    pivotColDict = myPyFunc.createPivotColDict("Balance Sheet Period", "Amount+-", scrubBalanceSheetList)
+    pivotColDict = _myPyFunc.createPivotColDict("Balance Sheet Period", "Amount+-", scrubBalanceSheetList)
     pivotColStr = pivotColDict["pivotColStr"]
     # pp(pivotColStr)
 
@@ -531,7 +531,7 @@ def createBalanceSheet(sCursor, firstColumnList):
 
     sqlCommand = "select " + firstColumnListStr + f", {pivotColStr} from tblScrubBalanceSheet group by " + firstColumnListStr
     # pp(sqlCommand)
-    myPyFunc.createTableAs("tblBalanceSheet", sCursor, sqlCommand)
+    _myPyFunc.createTableAs("tblBalanceSheet", sCursor, sqlCommand)
 
 
     colDict =   {
@@ -541,7 +541,7 @@ def createBalanceSheet(sCursor, firstColumnList):
 
 
 
-    colList = myPyFunc.getAllColumns(colDict, sCursor)
+    colList = _myPyFunc.getAllColumns(colDict, sCursor)
     sqlCommand = "select `Account Type`, " + firstColBlankStr
     # pp(sqlCommand)
 
@@ -550,26 +550,26 @@ def createBalanceSheet(sCursor, firstColumnList):
 
 
     sqlCommand = sqlCommand + " from tblBalanceSheet group by `Account Type`"
-    myPyFunc.createTableAs("tblBalanceSheetTotals", sCursor, sqlCommand)
-    myPyFunc.executeSQLStatements(["update tblBalanceSheetTotals set `Account Type` = 'Total ' || `Account Type`"], sCursor)
-    balanceSheetTotalsList = myPyFunc.getQueryResult("select * from tblBalanceSheetTotals", sCursor, False)
+    _myPyFunc.createTableAs("tblBalanceSheetTotals", sCursor, sqlCommand)
+    _myPyFunc.executeSQLStatements(["update tblBalanceSheetTotals set `Account Type` = 'Total ' || `Account Type`"], sCursor)
+    balanceSheetTotalsList = _myPyFunc.getQueryResult("select * from tblBalanceSheetTotals", sCursor, False)
 
-    queryResult = myPyFunc.getQueryResult("select * from tblBalanceSheet", sCursor, True)
-    return myPyFunc.removeRepeatedDataFromList(myPyFunc.addTotal(queryResult, 0, balanceSheetTotalsList))
-
-
+    queryResult = _myPyFunc.getQueryResult("select * from tblBalanceSheet", sCursor, True)
+    return _myPyFunc.removeRepeatedDataFromList(_myPyFunc.addTotal(queryResult, 0, balanceSheetTotalsList))
 
 
-# pp(myPyFunc.getQueryResult("select count(*) from tblScrubBalanceSheet", sqlCursor, False))
+
+
+# pp(_myPyFunc.getQueryResult("select count(*) from tblScrubBalanceSheet", sqlCursor, False))
 
 
 splitTime = myGoogleSheetsFunc.populateSheet(41, 1000, "Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, createBalanceSheet(sqlCursor, ["Account Type", "Account Category", "Account", "Broker"]), True, writeToSheet=False, splitTimeArg=splitTime)
 splitTime = myGoogleSheetsFunc.populateSheet(27, 1000, "Simple Balance Sheet", googleSheetsAPIObj, resultsSpreadsheetID, createBalanceSheet(sqlCursor, ["Account Type", "Account Category", "Account"]), True, writeToSheet=False, splitTimeArg=splitTime)
 
 
-splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sqlCursor, True), False, writeToSheet=True, splitTimeArg=splitTime)
+splitTime = myGoogleSheetsFunc.populateSheet(2, 1000, "tblScrubBalanceSheet", googleSheetsAPIObj, resultsSpreadsheetID, _myPyFunc.getQueryResult("select * from tblScrubBalanceSheet", sqlCursor, True), False, writeToSheet=True, splitTimeArg=splitTime)
 
 
-myPyFunc.closeDatabase(sqlObj["sqlConnection"])
-splitTime = myPyFunc.printElapsedTime(splitTime, "Finished with database")
-myPyFunc.printElapsedTime(startTime, "Total time to run code")
+_myPyFunc.closeDatabase(sqlObj["sqlConnection"])
+splitTime = _myPyFunc.printElapsedTime(splitTime, "Finished with database")
+_myPyFunc.printElapsedTime(startTime, "Total time to run code")
