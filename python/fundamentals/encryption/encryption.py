@@ -1,6 +1,14 @@
-from cryptography.fernet import Fernet
+from pathlib import Path
+pathToThisPythonFile = Path(__file__).resolve()
+import sys
 
-def writeKey():
+sys.path.append(str(Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'python', 'myPythonLibrary')))
+import _myPyFunc
+
+from cryptography.fernet import Fernet
+from pprint import pprint as p
+
+def generateKey():
     """
     Generates a key and save it into a file
     """
@@ -10,22 +18,22 @@ def writeKey():
         keyFileObj.write(generatedKey)
 
 
-def openSavedKey():
+def openSavedKey(pathToKeyFile):
     """
     Loads the key from the current directory named `keyFile.key`
     """
 
-    return open('keyFile.key', 'rb').read()
+    return open(pathToKeyFile, 'rb').read()
 
 
-def encryptFile(fileName, savedKey):
+def encryptFile(pathOfFileToProcess, savedKey):
     """
-    Given a fileName (str) and key (bytes), it encrypts the file and write it
+    Given a pathOfFileToProcess (str) and key (bytes), it encrypts the file and write it
     """
 
     fernetObjUsingKey = Fernet(savedKey)
 
-    with open(fileName, "rb") as fileObj:
+    with open(pathOfFileToProcess, "rb") as fileObj:
         # read all file data
         fileData = fileObj.read()
 
@@ -34,18 +42,18 @@ def encryptFile(fileName, savedKey):
     encryptedFileData = fernetObjUsingKey.encrypt(fileData)
 
     # write the encrypted file
-    with open(fileName, "wb") as fileObj:
+    with open(pathOfFileToProcess, "wb") as fileObj:
         fileObj.write(encryptedFileData)
 
 
-def decryptFile(fileName, savedKey):
+def decryptFile(pathOfFileToProcess, savedKey):
     """
-    Given a fileName (str) and key (bytes), it decrypts the file and write it
+    Given a pathOfFileToProcess (str) and key (bytes), it decrypts the file and write it
     """
 
     fernetObjUsingKey = Fernet(savedKey)
 
-    with open(fileName, "rb") as fileObj:
+    with open(pathOfFileToProcess, "rb") as fileObj:
         # read the encrypted data
         encryptedFileData = fileObj.read()
 
@@ -53,20 +61,25 @@ def decryptFile(fileName, savedKey):
     decryptedFileData = fernetObjUsingKey.decrypt(encryptedFileData)
 
     # write the original file
-    with open(fileName, "wb") as fileObj:
+    with open(pathOfFileToProcess, "wb") as fileObj:
         fileObj.write(decryptedFileData)
 
 
 
 
 
-# writeKey()
-savedKey = openSavedKey()
 
-fileName = "textFile.txt"
 
-# encryptFile(fileName, savedKey)
-decryptFile(fileName, savedKey)
+# generateKey()
+
+pathToKeyFileDirectory = _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')
+savedKey = openSavedKey(Path(pathToKeyFileDirectory, 'keyForEncryption.key'))
+# savedKey = "asdfs"
+pathOfFileToProcess = Path(pathToThisPythonFile.parents[0], 'textFile.txt')
+
+# encryptFile(pathOfFileToProcess, savedKey)
+
+decryptFile(pathOfFileToProcess, savedKey)
 
 
 
