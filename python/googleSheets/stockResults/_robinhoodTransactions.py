@@ -1,6 +1,6 @@
 import sys, pathlib, time
 sys.path.append(str(pathlib.Path.cwd().parents[1])) #for myPyLib
-from myPyLib import myPyFunc, myGoogleSheetsFunc
+from myPyLib import _myPyFunc, myGoogleSheetsFunc
 
 startTime = time.time()
 print("Comment: Importing modules and setting up variables...")
@@ -103,8 +103,8 @@ leftStrMap = {"Dividend from ": {"transactionType": "Dividend", "debitAccount": 
 
 rightStrMap = {" Market Buy": {"transactionType": "Purchase", "debitAccount": "Investment Asset", "creditAccount": "Cash"}}
 
-# lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2018, 10, 31)))
-lastDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31)))
+# lastDate = int(_myPyFunc.convertDateToSerialDate(datetime.datetime(2018, 10, 31)))
+lastDate = int(_myPyFunc.convertDateToSerialDate(datetime.datetime(2013, 10, 31)))
 
 
 for transaction in transactionList:
@@ -139,14 +139,14 @@ for transaction in transactionList:
         if "lotInfo" in mappedTransactionData:
             lot = mappedTransactionData["lotInfo"]
         elif mappedTransactionData["transactionType"] in ["Purchase", "Purchase - Stock Gift", "Purchase - Stock From Merger"]:
-            lot = myPyFunc.convertSerialDateToDateWithoutDashes(transaction[1])
+            lot = _myPyFunc.convertSerialDateToDateWithoutDashes(transaction[1])
         else:
             filterForLots = [{1: "Investment Asset", 3: "Purchase", 4: stockName},
                              {1: "Investment Asset", 3: "Purchase - Stock From Merger", 4: stockName}]
-            filteredList = myPyFunc.filterListOfLists(doubleEntryTransactionList, filterForLots)
+            filteredList = _myPyFunc.filterListOfLists(doubleEntryTransactionList, filterForLots)
 
             if len(filteredList) == 1:
-                lot = myPyFunc.convertSerialDateToDateWithoutDashes(filteredList[0][0])
+                lot = _myPyFunc.convertSerialDateToDateWithoutDashes(filteredList[0][0])
 
 
         if "shares" in mappedTransactionData:
@@ -174,8 +174,8 @@ columnsObj["lot"] = "varchar(255)"
 columnsObj["shares"] = "float"
 
 
-sqlObj = myPyFunc.createDatabase("stockResultsRobinhood.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
-myPyFunc.populateTable(len(doubleEntryTransactionList), len(doubleEntryTransactionList[0]), tblMainName, doubleEntryTransactionList, sqlObj["sqlCursor"], [0])
+sqlObj = _myPyFunc.createDatabase("stockResultsRobinhood.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
+_myPyFunc.populateTable(len(doubleEntryTransactionList), len(doubleEntryTransactionList[0]), tblMainName, doubleEntryTransactionList, sqlObj["sqlCursor"], [0])
 
 
 tickerColumnsObj = OrderedDict()
@@ -183,21 +183,21 @@ tickerColumnsObj["rowNumber"] = "int"
 tickerColumnsObj["Ticker"] = "varchar(255)"
 tickerColumnsObj["stockName"] = "varchar(255)"
 
-myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlObj["sqlCursor"])
-myPyFunc.populateTable(len(tickerUniqueMapListData), len(tickerUniqueMapListData[0]), "tblTickerMap", tickerUniqueMapListData, sqlObj["sqlCursor"], [])
-# pp(myPyFunc.getQueryResult("select * from tblTickerMap", "tblTickerMap", sqlObj["sqlCursor"], False))
+_myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlObj["sqlCursor"])
+_myPyFunc.populateTable(len(tickerUniqueMapListData), len(tickerUniqueMapListData[0]), "tblTickerMap", tickerUniqueMapListData, sqlObj["sqlCursor"], [])
+# pp(_myPyFunc.getQueryResult("select * from tblTickerMap", "tblTickerMap", sqlObj["sqlCursor"], False))
 
 
 
-myPyFunc.createTableAs("tblLots", sqlObj["sqlCursor"], f"select stockName, lot, sum(amount), sum(shares) from {tblMainName} where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
+_myPyFunc.createTableAs("tblLots", sqlObj["sqlCursor"], f"select stockName, lot, sum(amount), sum(shares) from {tblMainName} where accountName = 'Investment Asset' and broker = 'Robinhood' group by stockName, lot having sum(shares) > 0;")
 
 sqlCommand = f"select tblLots.*, tblTickerMap.ticker, '=googlefinance(indirect(\"E\"&row()))*indirect(\"D\"&row())' as googleFin, '=indirect(\"F\"&row())-indirect(\"C\"&row())' as gainLoss from tblLots left outer join tblTickerMap on tblLots.stockName = tblTickerMap.stockName;"
-myGoogleSheetsFunc.populateSheet(3, 1, "Unsold Stock Values - Robinhood", googleSheetsObj, robinhoodSpreadsheetID, myPyFunc.getQueryResult(sqlCommand, tblMainName, sqlObj["sqlCursor"], False), True)
-myPyFunc.closeDatabase(sqlObj["sqlConnection"])
+myGoogleSheetsFunc.populateSheet(3, 1, "Unsold Stock Values - Robinhood", googleSheetsObj, robinhoodSpreadsheetID, _myPyFunc.getQueryResult(sqlCommand, tblMainName, sqlObj["sqlCursor"], False), True)
+_myPyFunc.closeDatabase(sqlObj["sqlConnection"])
 
 
 tranType = "Sale - Hypothetical"
-priceDate = int(myPyFunc.convertDateToSerialDate(datetime.datetime.now()))
+priceDate = int(_myPyFunc.convertDateToSerialDate(datetime.datetime.now()))
 unsoldStockValuesDataWithGrid = myGoogleSheetsFunc.getDataWithGrid(robinhoodSpreadsheetID, googleSheetsObj, ["Unsold Stock Values - Robinhood"])
 unsoldStockValuesList = myGoogleSheetsFunc.extractValues(myGoogleSheetsFunc.countRows(unsoldStockValuesDataWithGrid, 0), myGoogleSheetsFunc.countColumns(unsoldStockValuesDataWithGrid, 0), unsoldStockValuesDataWithGrid, 0)
 doubleEntryUnsoldStockList = [] #["Date", "Account", "Amount+-", "Transaction Type", "Stock Name", "Broker", "Lot", "Shares"]]

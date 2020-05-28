@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 pathToThisPythonFile = Path(__file__).resolve()
 sys.path.append(str(Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'python')))
-import horseStable.clydesdale as clydesdale
+import myPythonLibrary._myPyFunc as _myPyFunc
 import googleSheets.processIsNotRunning.processIsNotRunning as processIsNotRunning
 
 #standard library imports
@@ -15,7 +15,7 @@ import subprocess
 
 def mainFunction(arrayOfArguments):
 
-    pathToProcessCollectionsToStart = Path(clydesdale.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'), 'start', 'processCollectionsToStart.py')
+    pathToProcessCollectionsToStart = Path(_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'), 'start', 'processCollectionsToStart.py')
     importedProcessCollectionsToStart = run_path(str(pathToProcessCollectionsToStart))
     processCollectionsToStartObj = importedProcessCollectionsToStart.get('processCollectionsToStartObj')
     processCollectionToStart = processCollectionsToStartObj[arrayOfArguments[1]]

@@ -1,11 +1,11 @@
 import sys, pathlib
 pathToAdd = str(pathlib.Path.cwd().parents[1])
 sys.path.append(str(pathlib.Path.cwd().parents[1]))
-from myPyLib import myPyFunc
+from myPyLib import _myPyFunc
 
 
-splitTime = myPyFunc.printElapsedTime(False, "Starting code")
-splitTime = myPyFunc.printElapsedTime(False, "A path was added that can now be imported from. Here is the path: " + pathToAdd)
+splitTime = _myPyFunc.printElapsedTime(False, "Starting code")
+splitTime = _myPyFunc.printElapsedTime(False, "A path was added that can now be imported from. Here is the path: " + pathToAdd)
 
 import pyautogui, pynput.mouse, time
 from pprint import pprint as pp
@@ -27,7 +27,7 @@ class mouseUpPositionClass:
 mouseUpPositionObj = mouseUpPositionClass
 
 
-splitTime = myPyFunc.printElapsedTime(False, "Finished importing modules and setting up functions, classes, and objects")
+splitTime = _myPyFunc.printElapsedTime(False, "Finished importing modules and setting up functions, classes, and objects")
 
 
 
@@ -43,4 +43,4 @@ for clickCount in range(0, 50):
 
 
 
-splitTime = myPyFunc.printElapsedTime(False, "Code finished")
+splitTime = _myPyFunc.printElapsedTime(False, "Code finished")

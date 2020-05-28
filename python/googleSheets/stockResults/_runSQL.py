@@ -1,6 +1,6 @@
 import sys, pathlib, time
 sys.path.append(str(pathlib.Path.cwd().parents[1])) #for myPyLib
-from myPyLib import myPyFunc, myGoogleSheetsFunc
+from myPyLib import _myPyFunc, myGoogleSheetsFunc
 
 startTime = time.time()
 print("Comment: Importing modules and setting up variables...")
@@ -83,8 +83,8 @@ columnsObj["shares"] = "float"
 columnsObj["dateYear"] = "int"
 
 
-sqlObj = myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
-myPyFunc.populateTable(tranScrubRowTotal, tranScrubColTotal, tblMainName, tranScrubDataList, sqlObj["sqlCursor"], [0])
+sqlObj = _myPyFunc.createDatabase("stockResults.db", str(pathlib.Path.cwd().parents[3]/"privateData"/"stockResults"), tblMainName, columnsObj)
+_myPyFunc.populateTable(tranScrubRowTotal, tranScrubColTotal, tblMainName, tranScrubDataList, sqlObj["sqlCursor"], [0])
 
 
 tickerColumnsObj = OrderedDict()
@@ -92,32 +92,32 @@ tickerColumnsObj["rowNumber"] = "int"
 tickerColumnsObj["Ticker"] = "varchar(255)"
 tickerColumnsObj["stockName"] = "varchar(255)"
 
-myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlObj["sqlCursor"])
-myPyFunc.populateTable(len(tickerUniqueMapListData), len(tickerUniqueMapListData[0]), "tblTickerMap", tickerUniqueMapListData, sqlObj["sqlCursor"], [])
+_myPyFunc.createTable("tblTickerMap", tickerColumnsObj, sqlObj["sqlCursor"])
+_myPyFunc.populateTable(len(tickerUniqueMapListData), len(tickerUniqueMapListData[0]), "tblTickerMap", tickerUniqueMapListData, sqlObj["sqlCursor"], [])
 
 
 
-fieldAliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, True)
-fieldStr = myPyFunc.fieldsDictToStr(firstFieldsDict, True, False)
-aliasStr = myPyFunc.fieldsDictToStr(firstFieldsDict, False, True)
+fieldAliasStr = _myPyFunc.fieldsDictToStr(firstFieldsDict, True, True)
+fieldStr = _myPyFunc.fieldsDictToStr(firstFieldsDict, True, False)
+aliasStr = _myPyFunc.fieldsDictToStr(firstFieldsDict, False, True)
 
-myPyFunc.createTableAs("tblPurchase", sqlObj["sqlCursor"], f"select {fieldAliasStr}, ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
-myPyFunc.createTableAs("tblShares", sqlObj["sqlCursor"], f"select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
-myPyFunc.createTableAs("tblSale", sqlObj["sqlCursor"], f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) end as 'Sale Date', sum(amount) as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+_myPyFunc.createTableAs("tblPurchase", sqlObj["sqlCursor"], f"select {fieldAliasStr}, ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) as 'Purchase Date', -sum(amount) as 'Capital Invested' from {tblMainName} where account = 'Cash' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
+_myPyFunc.createTableAs("tblShares", sqlObj["sqlCursor"], f"select {fieldAliasStr}, sum(shares) as Shares from {tblMainName} where account = 'Investment Asset' and tranType like '%Purchase%' and tranType not like '%Group Shares%' group by {fieldStr};")
+_myPyFunc.createTableAs("tblSale", sqlObj["sqlCursor"], f"select {fieldAliasStr}, case when tranType != 'Sale - Hypothetical' then ltrim(strftime('%m', tranDate), '0') || '/' || ltrim(strftime('%d', tranDate), '0') || '/' || substr(strftime('%Y', tranDate), 3, 2) end as 'Sale Date', sum(amount) as 'Last Value', '' as 'To Sell', '=indirect(\"I\"&row())-indirect(\"F\"&row())' as 'Gain (Loss)', '=iferror(indirect(\"J\"&row())/indirect(\"F\"&row()),\"\")' as '% Gain (Loss)' from {tblMainName} where account = 'Cash' and tranType like '%Sale%' and tranType not like '%Group Shares%' group by {fieldStr}, tranDate;")
 
 # strftime('%m/%d', tranDate) + '/' +
 #get list of values to put as the pivot columns
 
 
-pivotColDict = myPyFunc.createPivotColDict("dateYear", 10, "amount", 1, tranScrubDataList)
+pivotColDict = _myPyFunc.createPivotColDict("dateYear", 10, "amount", 1, tranScrubDataList)
 pivotColStr = pivotColDict["pivotColStr"]
 # pp(pivotColStr)
 
-myPyFunc.createTableAs("tblDividends", sqlObj["sqlCursor"], f"select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
-myPyFunc.createTableAs("tblResults", sqlObj["sqlCursor"], f"select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
+_myPyFunc.createTableAs("tblDividends", sqlObj["sqlCursor"], f"select {fieldAliasStr}, {pivotColStr} from {tblMainName} where account = 'Cash' and tranType like '%Dividend%' group by {fieldStr};")
+_myPyFunc.createTableAs("tblResults", sqlObj["sqlCursor"], f"select {aliasStr} from tblPurchase union select {aliasStr} from tblSale union select {aliasStr} from tblDividends;")
 
 
-colListStr = myPyFunc.getAllColumns(colDict, sqlObj["sqlCursor"])
+colListStr = _myPyFunc.getAllColumns(colDict, sqlObj["sqlCursor"])
 # pp(colListStr)
 
 
@@ -156,14 +156,14 @@ sqlCommand = f"select " + colListStr + ", " + divColStr + ", '', " + percentColS
 # pp("Blank line")
 # pp(sqlCommand)
 
-myPyFunc.createTableAs("tblResultsJoined", sqlObj["sqlCursor"], sqlCommand)
+_myPyFunc.createTableAs("tblResultsJoined", sqlObj["sqlCursor"], sqlCommand)
 
 sqlList = ["update tblResultsJoined set 'Last Value' = '=googlefinance(indirect(\"D\"&row()))*indirect(\"G\"&row())' where tblResultsJoined.'Sale Date' is null;"]
-myPyFunc.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
+_myPyFunc.executeSQLStatements(sqlList, sqlObj["sqlCursor"])
 
 
-myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsObj, spreadsheetID, myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
-myPyFunc.closeDatabase(sqlObj["sqlConnection"])
+myGoogleSheetsFunc.populateSheet(2, 1000, "SQL Query Result - Table", googleSheetsObj, spreadsheetID, _myPyFunc.getQueryResult("select * from tblResultsJoined order by Broker, Stock, Lot", "tblResultsJoined", sqlObj["sqlCursor"], True), True)
+_myPyFunc.closeDatabase(sqlObj["sqlConnection"])
 
 
 
