@@ -11,15 +11,15 @@ from pprint import pprint as p
 
 
 pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-pathToKeyFile = Path(pathToRepos, 'privateData', 'python', 'googleCredentials', 'keyForEncryption.key')
+pathToKeyFile = Path(pathToRepos, 'privateData', 'python', 'encryption', 'savedEncryptionKey.key')
 # _myPyFunc.generateKey(pathToKeyFile)
 
 savedKey = _myPyFunc.openSavedKey(pathToKeyFile)
 # savedKey = "asdfs"
 
-pathOfFileToProcess = Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'jsonWithAPIKey.json')
+# pathOfFileToProcess = Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'encryption', 'jsonWithAPIKey.json')
 
-_myPyFunc.encryptFile(pathOfFileToProcess, savedKey)
+# _myPyFunc.encryptFile(pathOfFileToProcess, savedKey)
 
 # _myPyFunc.decryptFile(pathOfFileToProcess, savedKey)
 
