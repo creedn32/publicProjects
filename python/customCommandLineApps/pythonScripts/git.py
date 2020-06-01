@@ -16,6 +16,30 @@ import subprocess
 import gspread
 
 
+def noGitIgnoreFileFound(gitFolder):
+
+    for obj in gitFolder.glob('*'):
+
+        if obj.name == '.gitignore':
+
+            fileObj = open(obj, 'r+')
+
+            for line in fileObj:
+
+                p(line)
+
+                if '__pycache__' in line:
+                
+                    return False
+                                
+            fileObj.write('\n__pycache__')
+            fileObj.close()
+
+            return False
+
+    return True
+
+
 
 
 def runGitProcesses(gitFolder, arrayOfArguments):
@@ -23,19 +47,11 @@ def runGitProcesses(gitFolder, arrayOfArguments):
     p(str(gitFolder))
 
 
-
-    for obj in gitFolder.glob('*'):
-        if obj.name == '.gitignore':
-            return False
-    return True
-
-
-
     if noGitIgnoreFileFound(gitFolder):
-        # p('create a gitignore')
         fileObj = open(Path(gitFolder, '.gitignore'), 'w')
         fileObj.write('__pycache__')
         fileObj.close()
+
 
 
 
