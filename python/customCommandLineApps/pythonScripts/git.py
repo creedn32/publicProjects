@@ -23,18 +23,19 @@ def runGitProcesses(gitFolder, arrayOfArguments):
     p(str(gitFolder))
 
 
-    def noGitIgnoreFileFound(gitFolder):
 
-        for obj in gitFolder.glob('*'):
-            if obj.name == '.gitignore':
-                return False
-        return True
+    for obj in gitFolder.glob('*'):
+        if obj.name == '.gitignore':
+            return False
+    return True
 
 
 
     if noGitIgnoreFileFound(gitFolder):
-        p('create a gitignore')
-        # fileObj = open('.gitignore', 'w')
+        # p('create a gitignore')
+        fileObj = open(Path(gitFolder, '.gitignore'), 'w')
+        fileObj.write('__pycache__')
+        fileObj.close()
 
 
 
