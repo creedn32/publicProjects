@@ -1,10 +1,11 @@
 #on comparison sheet, could write only the necessary columns
 
-import pathlib
-pathToThisPythonFile = pathlib.Path(__file__).resolve()
+#local application imports
+from pathlib import Path
 import sys
-sys.path.append(str(pathlib.Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
-import _myPyFunc
+pathToThisPythonFile = Path(__file__).resolve()
+sys.path.append(str(pathToThisPythonFile.parents[3]))
+import herokuGorilla.backend.python.myPythonLibrary._myPyFunc as _myPyFunc
 
 startTime = _myPyFunc.printElapsedTime(False, "Starting code")
 
@@ -15,21 +16,21 @@ excelApp = win32com.client.gencache.EnsureDispatch('Excel.Application')
 excelApp.Visible = True
 excelApp.DisplayAlerts = False
 
-# pp("Manual printout: " + str(pathlib.Path.cwd().parents[3]) + "\\privateData\\python\\excel\\bankRecSecondary")
+# pp("Manual printout: " + str(Path.cwd().parents[3]) + "\\privateData\\python\\excel\\bankRecSecondary")
 filePath = _myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData')
 fileName = "Bank Rec"
 fileExtension = ".xlsx"
 
 
-excelApp.Workbooks.Open(pathlib.Path(filePath, fileName + fileExtension))
+excelApp.Workbooks.Open(Path(filePath, fileName + fileExtension))
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
 excelBackupWb = excelApp.Workbooks(fileName + fileExtension)
-excelBackupWb.SaveAs(Filename=str(pathlib.Path(filePath, fileName + " Before Running 2" + fileExtension)), FileFormat=51)
+excelBackupWb.SaveAs(Filename=str(Path(filePath, fileName + " Before Running 2" + fileExtension)), FileFormat=51)
 excelApp.Calculation = win32com.client.constants.xlCalculationAutomatic
 excelBackupWb.Close()
 
 
-excelApp.Workbooks.Open(pathlib.Path(filePath, fileName + fileExtension))
+excelApp.Workbooks.Open(Path(filePath, fileName + fileExtension))
 excelApp.Calculation = win32com.client.constants.xlCalculationManual
 excelWb = excelApp.Workbooks(fileName  + fileExtension)
 
