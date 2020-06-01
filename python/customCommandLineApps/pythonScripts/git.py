@@ -26,11 +26,8 @@ def runGitProcesses(gitFolder, arrayOfArguments):
     def noGitIgnoreFileFound(gitFolder):
 
         for obj in gitFolder.glob('*'):
-        
             if obj.name == '.gitignore':
-        
                 return False
-        
         return True
 
 
