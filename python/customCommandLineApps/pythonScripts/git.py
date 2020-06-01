@@ -21,7 +21,26 @@ import gspread
 def runGitProcesses(gitFolder, arrayOfArguments):
 
     p(str(gitFolder))
-    
+
+
+    def noGitIgnoreFileFound(gitFolder):
+
+        for obj in gitFolder.glob('*'):
+        
+            if obj.name == '.gitignore':
+        
+                return False
+        
+        return True
+
+
+
+    if noGitIgnoreFileFound(gitFolder):
+        p('create a gitignore')
+        # fileObj = open('.gitignore', 'w')
+
+
+
 
     if len(arrayOfArguments) > 2 and arrayOfArguments[2] in ['includeheroku', 'h']:
         runGitProcessOnHerokuRepos = True
@@ -62,10 +81,10 @@ def mainFunction(arrayOfArguments):
 
             if objInIndividualRepoFolder.name == '.git':
 
-                gitObjInIndividualRepoFolder = objInIndividualRepoFolder
-                gitIndividualRepoFolder = gitObjInIndividualRepoFolder.parents[0]
+                gitFolderInIndividualRepoFolder = objInIndividualRepoFolder
+                gitIndividualRepoFolder = gitFolderInIndividualRepoFolder.parents[0]
 
-                # p(str(gitObjInIndividualRepoFolder))
+                # p(str(gitFolderInIndividualRepoFolder))
 
                 def getArrayOfChildrenObjects(folderPath):
 
@@ -93,7 +112,7 @@ def mainFunction(arrayOfArguments):
                     if isFolder(currentObject):
                         arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
 
-                    if currentObject.name == '.git' and currentObject != gitObjInIndividualRepoFolder:
+                    if currentObject.name == '.git' and currentObject != gitFolderInIndividualRepoFolder:
                         # p('this is likely a submodule')
                         # p(currentObject.parents[0])
                         runGitProcesses(currentObject.parents[0], arrayOfArguments)
