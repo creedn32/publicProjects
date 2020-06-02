@@ -26,7 +26,7 @@ def noGitIgnoreFileFound(gitFolder):
 
             for line in fileObj:
 
-                p(line)
+                # p(line)
 
                 if '__pycache__' in line:
                 
