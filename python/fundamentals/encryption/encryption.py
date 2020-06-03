@@ -17,9 +17,9 @@ pathToKeyFile = Path(pathToRepos, 'privateData', 'python', 'encryption', 'savedE
 savedKey = _myPyFunc.openSavedKey(pathToKeyFile)
 # savedKey = "asdfs"
 
-# pathOfFileToProcess = Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'encryption', 'jsonWithAPIKey.json')
+pathOfFileToProcess = Path(pathToThisPythonFile.parents[4], 'privateData', 'python', 'googleCredentials', 'usingOAuthGspread', 'authorizedUserFile.json')
 
-# _myPyFunc.encryptFile(pathOfFileToProcess, savedKey)
+_myPyFunc.encryptFile(pathOfFileToProcess, savedKey, pathToSaveEncryptedFile=Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'configData', 'encryptedAuthorizedUserFile.json'))
 
 # _myPyFunc.decryptFile(pathOfFileToProcess, savedKey)
 
