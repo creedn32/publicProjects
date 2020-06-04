@@ -1,5 +1,22 @@
 #remove files already committed that you have added to .gitignore and you don't want tracked
-git rm -r --cached backend/__pycache__
+git rm -r --cached ./* --dry-run OR git rm -r --cached * --dry-run
+git rm -r --cached *.txt --dry-run  
+git rm -r --cached ./*/reconcileArrays.html --dry-run
+git rm -r --cached ./*/reconcilePublic.html --dry-run
+git rm -r --cached ./frontend/* --dry-run OR git rm -r --cached frontend/ --dry-run OR git rm -r --cached frontend --dry-run
+git rm -r --cached ./frontend/htmlTemplates/* --dry-run OR git rm -r --cached ./frontend/htmlTemplates --dry-run OR git rm -r --cached frontend/htmlTemplates --dry-run
+git rm -r --cached ./frontend/htmlTemplates/* --dry-run
+git rm -r --cached ./*/htmlTemplates/* --dry-run
+
+
+#remove folders already committed that you have added to .gitignore and you don't want tracked
+#run both commands
+git rm -r --cached ./*/__pycache__/* --dry-run
+git rm -r --cached ./__pycache__/* --dry-run
+
+
+
+
 
 
 #show list of files currently being tracked by git
