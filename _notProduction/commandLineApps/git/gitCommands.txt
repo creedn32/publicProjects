@@ -1,3 +1,13 @@
+#remove files already committed that you have added to .gitignore and you don't want tracked
+git rm -r --cached backend/__pycache__
+
+
+#show list of files currently being tracked by git
+git ls-tree -r master --name-only
+
+
+
+
 #delete a branch
 git branch -d scotts--branch
 
