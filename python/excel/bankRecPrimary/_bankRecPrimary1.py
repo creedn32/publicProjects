@@ -1,8 +1,9 @@
-import pathlib
-pathToThisPythonFile = pathlib.Path(__file__).resolve()
+#local application imports
+from pathlib import Path
 import sys
-sys.path.append(str(pathlib.Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
-import _myPyFunc
+pathToThisPythonFile = Path(__file__).resolve()
+sys.path.append(str(pathToThisPythonFile.parents[3]))
+import herokuGorilla.backend.python.myPythonLibrary._myPyFunc as _myPyFunc
 
 
 splitTime = _myPyFunc.printElapsedTime(False, "Starting code")

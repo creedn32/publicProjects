@@ -3,11 +3,12 @@
 #Copy the comparison sheet into it's own workbook
 
 
-import pathlib
-pathToThisPythonFile = pathlib.Path(__file__).resolve()
+#local application imports
+from pathlib import Path
 import sys
-sys.path.append(str(pathlib.Path(pathToThisPythonFile.parents[2], 'myPythonLibrary')))
-import _myPyFunc
+pathToThisPythonFile = Path(__file__).resolve()
+sys.path.append(str(pathToThisPythonFile.parents[3]))
+import herokuGorilla.backend.python.myPythonLibrary._myPyFunc as _myPyFunc
 
 
 splitTime = _myPyFunc.printElapsedTime(False, "Starting code")
@@ -119,7 +120,6 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
                     excelBankTableSearchSheet.Cells(foundRange.Row, 1).EntireRow.Delete()
                     break
                 
-           
                 
             rowsToCheck.append(foundRange.Row)
             startingSearchRow = foundRange.Row + 1
@@ -139,7 +139,7 @@ while excelGPTableSheet.Cells(gpRow, 1).Value:
     elif len(rowsToCheck) > 1:
         if excelGPTableSheet.Cells(gpRow, gpTrxTypeCol).Value == "Check" and len(stringOfGPTrxNumCol) in (5, 6, 7):
             for rowToCheck in rowsToCheck:
-               if excelBankTableSearchSheet.Cells(rowToCheck, bankTrxTypeCol).Value == "Check(s) Paid":
+                if excelBankTableSearchSheet.Cells(rowToCheck, bankTrxTypeCol).Value == "Check(s) Paid":
 
                     #review this logic
 
