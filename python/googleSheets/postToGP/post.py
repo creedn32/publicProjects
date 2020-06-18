@@ -112,7 +112,7 @@ def mainFunction(arrayOfArguments):
 
 
                     if columnIndexNumber == columnNameToIndexObj['Transaction Date']:
-        
+
                         # p(columnData)
                         dateObj = datetime.datetime.strptime(columnData, '%m/%d/%Y')
                         columnData = dateObj.strftime('%m%d%Y')
@@ -157,14 +157,14 @@ def mainFunction(arrayOfArguments):
                     print("Click on 'Post' or 'Clear' to continue with this entry...")
                     listenerObj.join()
 
-                    
+
 
     elif arrayOfArguments[1] == 'Bank Transfers':
 
         # p(columnNameToIndexObj)
 
         columnIndexToNumberOfTabsObj[columnNameToIndexObj['Transfer From Checkbook ID']] = 2
-        
+
         for row in toPostFromArray[1:]:
 
             if row[columnNameToIndexObj['Status']] == '':
@@ -182,7 +182,7 @@ def mainFunction(arrayOfArguments):
                     # p(columnData)
 
                     if columnIndexNumber == columnNameToIndexObj['Transfer Date']:
-            
+
                         dateObj = datetime.datetime.strptime(columnData, '%m/%d/%Y')
                         columnData = dateObj.strftime('%m%d%Y')
 
@@ -221,70 +221,6 @@ def mainFunction(arrayOfArguments):
                 with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
                     print("Click on 'Post' or 'Clear' to continue with this entry...")
                     listenerObj.join()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                #     numberTabs = 1
-
-                #     try:
-                #         string = str(row["values"][col]["formattedValue"])
-                #     except:
-                #         string = ""
-
-                #     if col == 0:
-
-                #         # string = row["values"][col]["formattedValue"]
-                #         dateObj = datetime.datetime.strptime(string, "%m/%d/%Y")
-                #         # print(datetime.ParseExact(string, "yyMMdd", CultureInfo.InvariantCulture))
-                #         string = dateObj.strftime("%m%d%Y")
-
-
-
-                #     elif col == 2:
-                #         numberTabs = 2
-
-                #     elif col == 3:
-
-                #         # if len(string.split(".")) == 1:
-                #         #     string = string + "00"
-
-                #         string = string.lstrip("$").replace(".", "").replace(",", "")
-
-                #     for letter in string:
-
-                #         if ord(letter) in (
-                #                 list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(
-                #             range(40, 44)) + list(range(33, 39))):
-
-                #             currentPauseDelay = pyautogui.PAUSE
-                #             pyautogui.PAUSE = .0000000000001
-                #             pyautogui.keyDown("shift")
-                #             pyautogui.press(letter)
-                #             pyautogui.keyUp("shift")
-                #             pyautogui.PAUSE = currentPauseDelay
-
-                #         else:
-                #             pyautogui.press(letter)
-
-                #     _myPyFunc.repetitiveKeyPress(numberTabs, "tab")
-
-
-                # with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
-                #     print("Click on 'Post' or 'Clear' to continue with this entry...")
-                #     listenerObj.join()
 
 
 if __name__ == '__main__':
