@@ -36,7 +36,7 @@ def numLockIsOff():
 
 def mainFunction(arrayOfArguments):
 
-    pyautogui.PAUSE = .01
+    pyautogui.PAUSE = 0
     sendingKeystrokes = True
 
     pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
@@ -56,7 +56,7 @@ def mainFunction(arrayOfArguments):
     for columnIndexNumber, columnName in enumerate(toPostFromArray[0]):
         columnNameToIndexObj[columnName] = columnIndexNumber
 
-    columnIndexToNumberOfTabsObj = {}
+    columnNameToNumberOfTabsObj = {}
 
 
     if sendingKeystrokes:
@@ -68,85 +68,92 @@ def mainFunction(arrayOfArguments):
 
     if 'Bank Transactions' in arrayOfArguments[1]:
 
-        columnIndexToNumberOfTabsObj[columnNameToIndexObj['Checkbook ID']] = 2
-        columnIndexToNumberOfTabsObj[columnNameToIndexObj['Amount']] = 6
+        columnNameToNumberOfTabsObj['Checkbook ID'] = 2
+        columnNameToNumberOfTabsObj['Amount'] = 6
 
-        optionIndexNumber = columnNameToIndexObj['Option']
-        typeIndexNumber = columnNameToIndexObj['Type']
-        amountIndexNumber = columnNameToIndexObj['Amount']
         arrayOfKeysResetDropDown = ['down', 'up', 'up', 'up']
         # p(columnNameToIndexObj)
 
 
-        for row in toPostFromArray[1:]:
+        for row in toPostFromArray[1:]:   #toPostFromArray[1728:1729]: #
 
-            optionData = row[optionIndexNumber]
+            optionData = row[columnNameToIndexObj['Option']]
 
             if row[columnNameToIndexObj['Status']] == '' and optionData != 'Enter/Edit':
 
-                if optionData != 'Enter Transaction' or (optionData == 'Enter Transaction' and row[typeIndexNumber] not in ['Check', 'Decrease Adjustment']):
-                    columnIndexToNumberOfTabsObj[columnNameToIndexObj['Account']] = 2
+                if optionData != 'Enter Transaction' or (optionData == 'Enter Transaction' and row[columnNameToIndexObj['Type']] not in ['Check', 'Decrease Adjustment']):
+                    columnNameToNumberOfTabsObj['Account'] = 2
                 else:
-                    columnIndexToNumberOfTabsObj[columnNameToIndexObj['Account']] = 1
+                    columnNameToNumberOfTabsObj['Account'] = 1
 
 
                 if numLockIsOff():
                     pyautogui.press('numlock')
-                
+
+                # p(columnNameToNumberOfTabsObj)
+                # p(columnNameToIndexObj)
+
                 for columnIndexNumber, columnData in enumerate(row):
 
-                    if columnIndexNumber in [optionIndexNumber, typeIndexNumber]:
-                        
-                        pyautogui.press(arrayOfKeysResetDropDown)
+                    for columnIndexNumberFromObj, columnNameFromObj in enumerate(columnNameToIndexObj):
+                            if columnIndexNumberFromObj == columnIndexNumber:
+                                currentColumnName = columnNameFromObj
 
-                        numberOfDownKeyPresses = 0
+                    if currentColumnName not in ['Status', 'Person', 'Notes1', 'Notes2']:  #< 9: # 
 
-                        if columnData in ['Enter Receipt', 'Cash']:
-                            numberOfDownKeyPresses = 1
-                        if columnData == 'Increase Adjustment':
-                            numberOfDownKeyPresses = 2
-                        if columnData == 'Decrease Adjustment':
-                            numberOfDownKeyPresses = 3
+                        # p(currentColumnName) 
 
-                        _myPyFunc.repetitiveKeyPress(numberOfDownKeyPresses, 'down')
+                        if currentColumnName in ['Option', 'Type']:
+                            
+                            pyautogui.press(arrayOfKeysResetDropDown)
 
+                            numberOfDownKeyPresses = 0
 
-                    if columnIndexNumber == columnNameToIndexObj['Transaction Date']:
+                            if columnData in ['Enter Receipt', 'Cash']:
+                                numberOfDownKeyPresses = 1  
+                            if columnData == 'Increase Adjustment':
+                                numberOfDownKeyPresses = 2
+                            if columnData == 'Decrease Adjustment':
+                                numberOfDownKeyPresses = 3
 
-                        # p(columnData)
-                        dateObj = datetime.datetime.strptime(columnData, '%m/%d/%Y')
-                        columnData = dateObj.strftime('%m%d%Y')
-
-
-                    if columnIndexNumber == columnNameToIndexObj['Account']:
-                        columnData = columnData.replace('-', '')
+                            _myPyFunc.repetitiveKeyPress(numberOfDownKeyPresses, 'down')
 
 
-                    if columnIndexNumber in [amountIndexNumber, columnNameToIndexObj['Amount2']]:
-                        columnData = columnData.lstrip('$').replace('.', '').replace(',', '')
+                        if currentColumnName == 'Transaction Date':
 
-                    if columnIndexNumber not in [optionIndexNumber, typeIndexNumber]:
-
-                        for characterToType in columnData:
-
-                            if ord(characterToType) in charactersNeedingShift:
-
-                                priorPyAutoGuiPause = pyautogui.PAUSE
-                                # pyautogui.PAUSE = .0000000000001
-                                # pyautogui.hotkey('shift', characterToType)
-                                pyautogui.keyDown('shift')
-                                pyautogui.press(characterToType)
-                                pyautogui.keyUp('shift')
-                                pyautogui.PAUSE = priorPyAutoGuiPause
-
-                            else:
-                                pyautogui.press(characterToType)
+                            # p(columnData)
+                            dateObj = datetime.datetime.strptime(columnData, '%m/%d/%Y')
+                            columnData = dateObj.strftime('%m%d%Y')
 
 
-                    if columnIndexNumber in columnIndexToNumberOfTabsObj:
-                        _myPyFunc.repetitiveKeyPress(columnIndexToNumberOfTabsObj[columnIndexNumber], 'tab')
-                    else:
-                        _myPyFunc.repetitiveKeyPress(1, 'tab')
+                        if currentColumnName == 'Account':
+                            columnData = columnData.replace('-', '')
+
+
+                        if currentColumnName in ['Amount', 'Amount2']:
+                            columnData = columnData.lstrip('$').replace('.', '').replace(',', '')
+
+                        if currentColumnName not in ['Option', 'Type']:
+
+                            for characterToType in columnData:
+
+                                if ord(characterToType) in charactersNeedingShift:
+
+                                    priorPyAutoGuiPause = pyautogui.PAUSE
+                                    pyautogui.PAUSE = .0000000000001
+                                    # pyautogui.hotkey('shift', characterToType)
+                                    pyautogui.keyDown('shift')
+                                    pyautogui.press(characterToType)
+                                    pyautogui.keyUp('shift')
+                                    pyautogui.PAUSE = priorPyAutoGuiPause
+
+                                else:
+                                    pyautogui.press(characterToType)
+
+                        if currentColumnName in columnNameToNumberOfTabsObj:
+                            _myPyFunc.repetitiveKeyPress(columnNameToNumberOfTabsObj[currentColumnName], 'tab')
+                        else:
+                            _myPyFunc.repetitiveKeyPress(1, 'tab')
 
 
                 if not numLockIsOff():
@@ -163,7 +170,7 @@ def mainFunction(arrayOfArguments):
 
         # p(columnNameToIndexObj)
 
-        columnIndexToNumberOfTabsObj[columnNameToIndexObj['Transfer From Checkbook ID']] = 2
+        columnNameToNumberOfTabsObj[columnNameToIndexObj['Transfer From Checkbook ID']] = 2
 
         for row in toPostFromArray[1:]:
 
@@ -206,9 +213,9 @@ def mainFunction(arrayOfArguments):
                             pyautogui.press(characterToType)
 
 
-                    if columnIndexNumber in columnIndexToNumberOfTabsObj:
+                    if columnIndexNumber in columnNameToNumberOfTabsObj:
                         pass
-                        _myPyFunc.repetitiveKeyPress(columnIndexToNumberOfTabsObj[columnIndexNumber], 'tab')
+                        _myPyFunc.repetitiveKeyPress(columnNameToNumberOfTabsObj[columnIndexNumber], 'tab')
                     else:
                         pass
                         _myPyFunc.repetitiveKeyPress(1, 'tab')
