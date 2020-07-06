@@ -182,7 +182,9 @@ def mainFunction(arrayOfArguments):
 
                 _myPyFunc.repetitiveKeyPress(2, "tab")
 
-                rowToEnumerate = row[:]
+                rowToEnumerate = row[0:5]
+
+                # p(rowToEnumerate)
 
                 for columnIndexNumber, columnData in enumerate(rowToEnumerate):
 
@@ -203,7 +205,7 @@ def mainFunction(arrayOfArguments):
                         if ord(characterToType) in charactersNeedingShift:
 
                             priorPyAutoGuiPause = pyautogui.PAUSE
-                            # pyautogui.PAUSE = .0000000000001
+                            pyautogui.PAUSE = .0000000000001
                             pyautogui.keyDown('shift')
                             pyautogui.press(characterToType)
                             pyautogui.keyUp('shift')
