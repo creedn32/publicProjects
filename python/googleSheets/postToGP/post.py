@@ -140,7 +140,7 @@ def mainFunction(arrayOfArguments):
                                 if ord(characterToType) in charactersNeedingShift:
 
                                     priorPyAutoGuiPause = pyautogui.PAUSE
-                                    pyautogui.PAUSE = .0000000000001
+                                    pyautogui.PAUSE = .000000000001
                                     # pyautogui.hotkey('shift', characterToType)
                                     pyautogui.keyDown('shift')
                                     pyautogui.press(characterToType)
@@ -205,7 +205,7 @@ def mainFunction(arrayOfArguments):
                         if ord(characterToType) in charactersNeedingShift:
 
                             priorPyAutoGuiPause = pyautogui.PAUSE
-                            pyautogui.PAUSE = .0000000000001
+                            pyautogui.PAUSE = .000000000001
                             pyautogui.keyDown('shift')
                             pyautogui.press(characterToType)
                             pyautogui.keyUp('shift')
