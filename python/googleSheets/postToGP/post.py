@@ -36,7 +36,7 @@ def numLockIsOff():
 
 def mainFunction(arrayOfArguments):
 
-    pyautogui.PAUSE = 0
+    pyautogui.PAUSE = 0.01
     sendingKeystrokes = True
 
     pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
