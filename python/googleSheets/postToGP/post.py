@@ -8,30 +8,36 @@ import herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary._myGoogle
 import herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary._myGspreadFunc as _myGspreadFunc
 
 
-#standard library imports
-from pprint import pprint as p
-import datetime, pynput.mouse, win32api, win32con, pyautogui, time
-
 #third-party imports
 import gspread
 
 
 #standard library imports
-import datetime
 from pprint import pprint as p
-import pyautogui, pynput.mouse, time, win32api, win32con, time
+import datetime, pyautogui, pynput.mouse
 
 
 
 #third-party imports
 import gspread
+
+
+def getKeyState(keyCode):
+
+    import ctypes
+    obj = ctypes.WinDLL("User32.dll")
+
+    if (obj.GetKeyState(keyCode) & 0xffff) != 0:
+        return True
+    return False
 
 
 def numLockIsOff():
-    if win32api.GetKeyState(win32con.VK_NUMLOCK) == 1:
-        return True
-    else:
-        return False  
+
+    VK_NUMLOCK = 0x90
+    VK_CAPITAL = 0x14
+
+    return getKeyState(VK_NUMLOCK)
 
 
 def mainFunction(arrayOfArguments):
