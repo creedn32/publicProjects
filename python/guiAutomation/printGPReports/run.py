@@ -12,7 +12,7 @@ import pynput
 
 startTime = time.time()
 
-pandasDateRange = pd.date_range('7/31/20', '8/9/20')
+pandasDateRange = pd.date_range('8/2/20', '8/9/20')
 
 
 if _myPyFunc.numLockIsOff():
