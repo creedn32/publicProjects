@@ -22,22 +22,7 @@ import datetime, pyautogui, pynput.mouse
 import gspread
 
 
-def getKeyState(keyCode):
 
-    import ctypes
-    obj = ctypes.WinDLL("User32.dll")
-
-    if (obj.GetKeyState(keyCode) & 0xffff) != 0:
-        return True
-    return False
-
-
-def numLockIsOff():
-
-    VK_NUMLOCK = 0x90
-    VK_CAPITAL = 0x14
-
-    return getKeyState(VK_NUMLOCK)
 
 
 def mainFunction(arrayOfArguments):
@@ -53,7 +38,7 @@ def mainFunction(arrayOfArguments):
     gspToPostFromSheet = gspSpreadsheet.worksheet(arrayOfArguments[1])
     toPostFromArray = gspToPostFromSheet.get_all_values()
 
-    charactersNeedingShift = (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(range(40, 44)) + list(range(33, 39)))
+    # charactersNeedingShift = (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(range(40, 44)) + list(range(33, 39)))
     # p(charactersNeedingShift)
 
 
@@ -93,7 +78,7 @@ def mainFunction(arrayOfArguments):
                     columnNameToNumberOfTabsObj['Account'] = 1
 
 
-                if numLockIsOff():
+                if _myPyFunc.numLockIsOff():
                     pyautogui.press('numlock')
 
                 # p(columnNameToNumberOfTabsObj)
@@ -141,20 +126,7 @@ def mainFunction(arrayOfArguments):
 
                         if currentColumnName not in ['Option', 'Type']:
 
-                            for characterToType in columnData:
-
-                                if ord(characterToType) in charactersNeedingShift:
-
-                                    priorPyAutoGuiPause = pyautogui.PAUSE
-                                    pyautogui.PAUSE = .000000000001
-                                    # pyautogui.hotkey('shift', characterToType)
-                                    pyautogui.keyDown('shift')
-                                    pyautogui.press(characterToType)
-                                    pyautogui.keyUp('shift')
-                                    pyautogui.PAUSE = priorPyAutoGuiPause
-
-                                else:
-                                    pyautogui.press(characterToType)
+                            _myPyFunc.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
 
                         if currentColumnName in columnNameToNumberOfTabsObj:
                             _myPyFunc.repetitiveKeyPress(columnNameToNumberOfTabsObj[currentColumnName], 'tab')
@@ -162,7 +134,7 @@ def mainFunction(arrayOfArguments):
                             _myPyFunc.repetitiveKeyPress(1, 'tab')
 
 
-                if not numLockIsOff():
+                if not _myPyFunc.numLockIsOff():
                     pyautogui.press('numlock')
 
 
@@ -182,7 +154,7 @@ def mainFunction(arrayOfArguments):
 
             if row[columnNameToIndexObj['Status']] == '':
 
-                if numLockIsOff():
+                if _myPyFunc.numLockIsOff():
                     pyautogui.press('numlock')
 
 
@@ -206,19 +178,21 @@ def mainFunction(arrayOfArguments):
                         columnData = columnData.lstrip('$').replace('.', '').replace(',', '')
 
 
-                    for characterToType in columnData:
+                    _myPyFunc.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
 
-                        if ord(characterToType) in charactersNeedingShift:
+                    # for characterToType in columnData:
 
-                            priorPyAutoGuiPause = pyautogui.PAUSE
-                            pyautogui.PAUSE = .000000000001
-                            pyautogui.keyDown('shift')
-                            pyautogui.press(characterToType)
-                            pyautogui.keyUp('shift')
-                            pyautogui.PAUSE = priorPyAutoGuiPause
+                    #     if ord(characterToType) in charactersNeedingShift:
 
-                        else:
-                            pyautogui.press(characterToType)
+                    #         priorPyAutoGuiPause = pyautogui.PAUSE
+                    #         pyautogui.PAUSE = .000000000001
+                    #         pyautogui.keyDown('shift')
+                    #         pyautogui.press(characterToType)
+                    #         pyautogui.keyUp('shift')
+                    #         pyautogui.PAUSE = priorPyAutoGuiPause
+
+                    #     else:
+                    #         pyautogui.press(characterToType)
 
 
                     if columnIndexNumber in columnNameToNumberOfTabsObj:
@@ -229,7 +203,7 @@ def mainFunction(arrayOfArguments):
                         _myPyFunc.repetitiveKeyPress(1, 'tab')
 
 
-                if not numLockIsOff():
+                if not _myPyFunc.numLockIsOff():
                     pyautogui.press('numlock')
 
 
