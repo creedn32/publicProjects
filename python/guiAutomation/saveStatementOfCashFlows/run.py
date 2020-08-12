@@ -7,9 +7,9 @@ import sys
 import pyautogui as g
 from pprint import pprint as p
 import time
-import pywin32
+# import pywin32
 
-for year in range(2010, 2011):
+for year in range(1969, 2021):
 
     locatedBoxFrom = g.locateOnScreen('quickBooksFrom.png')
     g.moveTo(locatedBoxFrom.left + 40, locatedBoxFrom.top + 10)
@@ -33,5 +33,5 @@ for year in range(2010, 2011):
         time.sleep(1)
         g.hotkey('alt', 'x')
         time.sleep(5)
-        g.press['alt', 'f', exce]
+        # g.press['alt', 'f', exce]
 
