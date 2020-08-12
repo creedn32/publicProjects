@@ -10,8 +10,9 @@ import time
 import pandas as pd
 import pynput
 
+startTime = time.time()
 
-pandasDateRange = pd.date_range('7/28/20', '8/9/20')
+pandasDateRange = pd.date_range('7/30/20', '8/9/20')
 p(type(pandasDateRange))
 
 if _myPyFunc.numLockIsOff():
@@ -61,10 +62,13 @@ for singleDate in pandasDateRange:
     _myPyFunc.typeCharactersOnRemoteDesktop('Y:\\GL Reconciliations\\GP Reports - Historical Aged Trial Balance\\' + singleDate.strftime('%Y%m%d'), g.PAUSE
     )
 
-    # g.press('enter')
-    # g.hotkey('alt', 'f4')
+    g.press('enter')
+    g.hotkey('alt', 'f4')
 
+    _myPyFunc.printElapsedTime(startTime, 'Saved Historical Aged Trial Balance dated ' + singleDate.strftime('%m/%d/%Y') + '.')
     break
 
 if not _myPyFunc.numLockIsOff():
     g.press('numlock')
+
+
