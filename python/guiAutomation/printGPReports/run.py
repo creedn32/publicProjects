@@ -13,7 +13,7 @@ import pynput
 startTime = time.time()
 
 pandasDateRange = pd.date_range('7/31/20', '8/9/20')
-p(type(pandasDateRange))
+
 
 if _myPyFunc.numLockIsOff():
     g.press('numlock')
@@ -63,9 +63,13 @@ for singleDate in pandasDateRange:
     )
 
     g.press('enter')
+
+    while g.locateOnScreen('gpSaveAs.png'):
+        pass
+
     g.hotkey('alt', 'f4')
 
-    _myPyFunc.printElapsedTime(startTime, 'Saved Historical Aged Trial Balance dated ' + singleDate.strftime('%m/%d/%Y') + '.')
+    _myPyFunc.printElapsedTime(startTime, 'Saved Historical Aged Trial Balance dated ' + singleDate.strftime('%m/%d/%Y'))
     # break
 
 if not _myPyFunc.numLockIsOff():
