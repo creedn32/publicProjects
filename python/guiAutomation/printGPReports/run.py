@@ -19,6 +19,8 @@ for single_date in daterange:
     with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
         print("Click on 'Clear' to begin...")
         listenerObj.join()
+
+    g.press(['tab']*(4))
     
     # locatedBoxFrom = g.locateOnScreen('gpHATB.png')
     # g.moveTo(locatedBoxFrom.left + 40, locatedBoxFrom.top + 10)
