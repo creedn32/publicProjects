@@ -59,8 +59,7 @@ for singleDate in pandasDateRange:
     
     g.press(['tab']*5)
 
-    _myPyFunc.typeCharactersOnRemoteDesktop('Y:\\GL Reconciliations\\GP Reports - Historical Aged Trial Balance\\' + singleDate.strftime('%Y%m%d'), g.PAUSE
-    )
+    _myPyFunc.typeCharactersOnRemoteDesktop(sys.argv[1] + singleDate.strftime('%Y%m%d'), g.PAUSE)
 
     g.press('enter')
 
