@@ -11,33 +11,6 @@ import win32com.client
 from datetime import date
 
 
-
-
-def getExcelObj():
-
-    excelObj = None
-
-    while not excelObj:
-
-        try: 
-            excelObj = win32com.client.GetActiveObject("Excel.Application")
-            # print("Running Excel instance found, returning object")
-
-        except:
-            pass
-
-    #     excel = new_Excel(visible=visible)
-    #     print("No running Excel instances, returning new instance")
-
-    # else:
-    #     if not excel.Workbooks.Count:
-    #         excel.Workbooks.Add(1)
-    #     excel.Visible = visible
-
-    return excelObj
-
-
-
 pathToTxtFile = Path(pathToThisPythonFile.parents[4], 'privateData', 'python', 'guiAutomation', 'saveStatementOfCashFlows', 'pathToSaveFile.txt')
 
 with open(pathToTxtFile, 'rt') as pathToSaveFileTxt: 
@@ -53,6 +26,7 @@ for year in range(startingYear, 2021):
     quickbooksFromCoordinates = None
 
     while not quickbooksFromCoordinates:
+        p('Looking for From field...')
         quickbooksFromCoordinates = g.locateOnScreen('quickBooksFrom.png')
 
     g.click(quickbooksFromCoordinates[0] + 45, quickbooksFromCoordinates[1] + 10)
@@ -64,10 +38,10 @@ for year in range(startingYear, 2021):
     g.write('12/31/' + str(year))
     g.press('tab')
 
-    while not g.locateOnScreen('quickBooksStatementOfCashFlowsTitle.png', grayscale=True):
-        pass
+    while not g.locateOnScreen('quickBooksStatementOfCashFlowsTitle.png', grayscale=True, confidence=.9):
+        p('Looking for title of Statement of Cash Flows...')
 
-    locatedBoxNetCashFlow = g.locateOnScreen('quickBooksNoCashFlow.png')
+    locatedBoxNetCashFlow = g.locateOnScreen('quickBooksNoCashFlow.png', grayscale=True, confidence=.9)
 
     if locatedBoxNetCashFlow:
 
@@ -78,63 +52,41 @@ for year in range(startingYear, 2021):
         p('There are cash flows in ' + str(year))
 
         g.hotkey('alt', 't')
-        g.press(['p', 'enter'])
+        g.press(['p', 'enter'], interval=.2)
 
         while not g.locateOnScreen('quickbooksSave.png'):
-            pass
+            p('Looking for Save Document As PDF window...')
 
-        g.write(str(Path(pathToSaveFile, 'Cash Flow - ' + sys.argv[1] + ' - ' + str(year) + ' - ' + date.today().strftime('%Y%m%d'))))
-    
+        pathToSaveFileWithFilename = Path(pathToSaveFile, 'Cash Flow - ' + sys.argv[1] + ' - ' + str(year) + ' - ' + date.today().strftime('%Y%m%d'))
+        g.write(str(pathToSaveFileWithFilename))
         g.press('enter')
 
+        while g.locateOnScreen('quickbooksSave.png', confidence=.9):
+            p('Waiting for Save Document As PDF window to close...')
+
+        g.hotkey('alt', 'x')
+        g.press('n', interval=.2)
+
+        while not g.locateOnScreen('quickBooksCSVMarkedHighlighted.png') and not g.locateOnScreen('quickBooksCSVMarkedUnHighlighted.png'):
+            
+            p('Looking for CSV option button...')
+
+            if g.locateOnScreen('quickBooksCSVUnMarkedHighlighted.png', confidence=.95):
+                g.press(['space', 'enter'])
+                break
+            else:
+                g.press('down')
+
+
+
+        while not g.locateOnScreen('quickbooksCreateDiskFile.png'):
+            p('Looking for Create Disk File window...')
         
-        # excelObj = getExcelObj()
-        # excelWb = None
-        
-        # while not excelWb:
+        g.write(str(pathToSaveFileWithFilename))
+        g.press('enter')
 
-        #     try:
-        #         for workbook in excelObj.Workbooks:
-        #             if workbook.Name[0:4] == 'Book':
-        #                 excelWb = workbook
+        while g.locateOnScreen('quickbooksCreateDiskFile.png'):
+            p('Wating for Create Disk File window to close...')
 
-        #     except:
-        #         pass
-
-
-        # excelSheet1 = None
-        
-        # while not excelSheet1:
-
-        #     try:
-        #         excelSheet1 = excelWb.Worksheets('Sheet1')
-        #     except:
-        #         pass
-
-
-        # # excelSheet1.Activate()
-
-        # usedRows = 0
-        
-        # while usedRows < 10:
-        #     try:
-        #         usedRange = excelSheet1.Range(excelSheet1.usedRange.Address)
-        #         usedRows = usedRange.Rows.Count
-        #         p(usedRows)
-        #     except:
-        #         pass
-
-        # # excelObj.WindowState = -4137 # set this number meaning full size
-        # # excelObj.Visible = 1
-
-        # # while 10 > excelSheet1.UsedRange.Rows.Count:
-        # #     p('Used range is ' + str(excelSheet1.UsedRange.Rows.Count) + ' rows.')
-
-        # excelObj.DisplayAlerts = False
-        # excelWb.SaveAs(Filename=str(Path(pathToSaveFile, 'Cash Flow - ' + sys.argv[1] + ' - ' + str(year) + ' - ' + date.today().strftime('%Y%m%d') + '.xlsx')))
-        # # excelObj.WindowState = -4140
-        # excelWb.Close()
-        # excelObj.DisplayAlerts = True
-        # excelObj.Quit()
 
     # break
