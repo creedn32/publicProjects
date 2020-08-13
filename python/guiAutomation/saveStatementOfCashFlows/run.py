@@ -43,10 +43,12 @@ pathToTxtFile = Path(pathToThisPythonFile.parents[4], 'privateData', 'python', '
 with open(pathToTxtFile, 'rt') as pathToSaveFileTxt: 
     pathToSaveFile = Path(pathToSaveFileTxt.read())
 
+if len(sys.argv) > 2:
+    startingYear = int(sys.argv[2])
+else:
+    startingYear = 1969 
 
-
-# for year in range(1969, 2021):
-for year in range(2016, 2021):
+for year in range(startingYear, 2021):
 
     quickbooksFromCoordinates = None
 
@@ -75,31 +77,64 @@ for year in range(2016, 2021):
 
         p('There are cash flows in ' + str(year))
 
-        g.hotkey('alt', 'x')
-        g.press(['n', 'enter'])
-    
-        excelObj = getExcelObj()
-        excelWb = None
-        
-        while not excelWb:
+        g.hotkey('alt', 't')
+        g.press(['p', 'enter'])
 
-            try:
-                for workbook in excelObj.Workbooks:
-                    if workbook.Name[0:4] == 'Book':
-                        excelWb = workbook
-
-            except:
-                pass
-
-        excelSheet1 = excelWb.Worksheets('Sheet1')
-
-        while 10 > excelSheet1.UsedRange.Rows.Count:
+        while not g.locateOnScreen('quickbooksSave.png'):
             pass
 
-        excelObj.DisplayAlerts = False
-        excelWb.SaveAs(Filename=str(Path(pathToSaveFile, 'Cash Flow - 1 - ' + str(year) + ' - ' + date.today().strftime('%Y%m%d') + '.xlsx')))
-        excelWb.Close()
-        excelObj.DisplayAlerts = True
-        excelObj.Quit()
+        g.write(str(Path(pathToSaveFile, 'Cash Flow - ' + sys.argv[1] + ' - ' + str(year) + ' - ' + date.today().strftime('%Y%m%d'))))
+    
+        g.press('enter')
 
-    break
+        
+        # excelObj = getExcelObj()
+        # excelWb = None
+        
+        # while not excelWb:
+
+        #     try:
+        #         for workbook in excelObj.Workbooks:
+        #             if workbook.Name[0:4] == 'Book':
+        #                 excelWb = workbook
+
+        #     except:
+        #         pass
+
+
+        # excelSheet1 = None
+        
+        # while not excelSheet1:
+
+        #     try:
+        #         excelSheet1 = excelWb.Worksheets('Sheet1')
+        #     except:
+        #         pass
+
+
+        # # excelSheet1.Activate()
+
+        # usedRows = 0
+        
+        # while usedRows < 10:
+        #     try:
+        #         usedRange = excelSheet1.Range(excelSheet1.usedRange.Address)
+        #         usedRows = usedRange.Rows.Count
+        #         p(usedRows)
+        #     except:
+        #         pass
+
+        # # excelObj.WindowState = -4137 # set this number meaning full size
+        # # excelObj.Visible = 1
+
+        # # while 10 > excelSheet1.UsedRange.Rows.Count:
+        # #     p('Used range is ' + str(excelSheet1.UsedRange.Rows.Count) + ' rows.')
+
+        # excelObj.DisplayAlerts = False
+        # excelWb.SaveAs(Filename=str(Path(pathToSaveFile, 'Cash Flow - ' + sys.argv[1] + ' - ' + str(year) + ' - ' + date.today().strftime('%Y%m%d') + '.xlsx')))
+        # # excelObj.WindowState = -4140
+        # excelWb.Close()
+        # excelObj.DisplayAlerts = True
+        # excelObj.Quit()
+
+    # break
