@@ -1,0 +1,15 @@
+Text: Allatoona was a town located in extreme southeastern Bartow County, Georgia.
+Regex: \w+(?=\s+County)
+Match: Bartow
+
+Text: Allatoona was a town located in extreme southeastern Bartow County, Georgia.
+Regex: \w+(?=\stown)
+Match: a
+
+Text: Allatoona was a town located in extreme southeastern Bartow County, Georgia.
+Regex: \w+(?=\s?, Georgia)
+Match: County
+
+
+
+
