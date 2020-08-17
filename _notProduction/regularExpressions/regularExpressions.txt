@@ -1,14 +1,41 @@
+Regex Tutorial: https://regexone.com/
+
+Tools:
+--https://regex101.com/
+---- /gi is global and case insensitive
+--Notepad++
+---- (?i) is case insensitive
+
+
 Text: Allatoona was a town located in extreme southeastern Bartow County, Georgia.
 Regex: \w+(?=\s+County)
+Tool: https://regex101.com/
 Match: Bartow
+
 
 Text: Allatoona was a town located in extreme southeastern Bartow County, Georgia.
 Regex: \w+(?=\stown)
+Tool: https://regex101.com/
 Match: a
+
 
 Text: Allatoona was a town located in extreme southeastern Bartow County, Georgia.
 Regex: \w+(?=\s?, Georgia)
+Tool: https://regex101.com/
 Match: County
 
-/gi is global and case insensitive
 
+Text: Allatoona was a town located in extreme southeastern Bartow Countybooks, Georgia.
+Regex: \w+(?=\s?Books)/gi
+Tool: https://regex101.com/
+Match: County
+
+
+Text: Allatoona Books was a town located in extreme southeastern Bartow Countybooks, Georgia.
+Regex: \b(?!Google|Quick|County)\w+(?=\s?Books)/gi
+Tool: https://regex101.com/
+Match: Allatoona
+
+
+Regex: (?i)\b(?!Google|Quick|audio)\w+(?=\s?books)
+Tool: Notepad++
