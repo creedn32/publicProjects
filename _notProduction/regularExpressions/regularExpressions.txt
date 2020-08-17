@@ -10,6 +10,5 @@ Text: Allatoona was a town located in extreme southeastern Bartow County, Georgi
 Regex: \w+(?=\s?, Georgia)
 Match: County
 
-
-
+/gi is global and case insensitive
 
