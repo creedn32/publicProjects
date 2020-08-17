@@ -39,3 +39,6 @@ Match: Allatoona
 
 Regex: (?i)\b(?!Google|Quick|audio)\w+(?=\s?books)
 Tool: Notepad++
+
+
+Regex: 
