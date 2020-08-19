@@ -97,6 +97,8 @@ p(len(arrayOfStartIndices))
 
 
 
-bookstores = ['Advantage Books', 'Owls Books', 'Abe Books', 'Dalton Books', 'Barnes & Noble', 'thriftbooks', 'discover-books', 'nevada books', 'world books', 'big river', 'planet']
+bookstoresFromData = ['Advantage Books', 'Owls Books', 'Abe Books', 'Dalton Books', 'Barnes & Noble', 'thriftbooks', 'discover-books', 'nevada books', 'world books', 'big river', 'planet']
+
+
 
 _myPyFunc.printElapsedTime(startTime, 'Done')
