@@ -6,18 +6,19 @@ import sys
 
 def mainFunction():
 
-    firstArgumentStr = sys.argv[1]
+    argumentsArray = sys.argv[1].split('.') + sys.argv[2:]
+    # firstArgumentStr = sys.argv[1]
 
-    if '.' in firstArgumentStr:
-        endingChar = firstArgumentStr.index('.')
-    else:
-        endingChar = len(firstArgumentStr)
+    # if '.' in firstArgumentStr:
+    #     endingChar = firstArgumentStr.index('.')
+    # else:
+    #     endingChar = len(firstArgumentStr)
 
     moduleToImport = firstArgumentStr[:endingChar]
     # is equivalent to: from os import path as imported
     importedModule = getattr(__import__('pythonScripts', fromlist=[moduleToImport]), moduleToImport)
 
-    argumentsArray = sys.argv[1].split('.') + sys.argv[2:]
+    
 
     importedModule.mainFunction(argumentsArray)
 
