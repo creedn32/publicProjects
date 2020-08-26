@@ -10,7 +10,7 @@ import time
 
 # g.PAUSE = 
 
-for repetition in range(71, 300):
+for repetition in range(72, 300):
 
     _myPyFunc.clickImageAfterWaiting('accountsSearch.png')
     _myPyFunc.getCoordinatesAfterWaiting('accountsWindow.png')
