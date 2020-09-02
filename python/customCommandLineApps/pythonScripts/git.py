@@ -11,6 +11,7 @@ from pprint import pprint as p
 import psutil
 from runpy import run_path
 import subprocess
+import os
 
 #third-party imports
 import gspread
@@ -103,10 +104,12 @@ def mainFunction(arrayOfArguments):
                 def getArrayOfChildrenObjects(folderPath):
 
                     arrayOfChildrenObjects = []
-    
-                    for obj in folderPath.iterdir():
 
-                        arrayOfChildrenObjects.append(obj)
+                    try:
+                        for obj in folderPath.iterdir():
+                            arrayOfChildrenObjects.append(obj)
+                    except:
+                        p("Couldn't get array of children objects for path: " + str(folderPath))
 
                     return arrayOfChildrenObjects
 
@@ -115,15 +118,9 @@ def mainFunction(arrayOfArguments):
 
                 while arrayOfObjects:
 
-                    def isFolder(obj):
-                        if obj.is_file():
-                            return False
-                        else:
-                            return True    
-
                     currentObject = arrayOfObjects.pop(0)
 
-                    if isFolder(currentObject):
+                    if os.path.isdir(currentObject):
                         arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
 
                     if currentObject.name == '.git' and currentObject != gitFolderInIndividualRepoFolder:
