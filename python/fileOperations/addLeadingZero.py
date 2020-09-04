@@ -11,13 +11,14 @@ import re
 
 
 for fileObj in Path(sys.argv[1]).iterdir():
+
     result = re.search('(.*-)(.*)(\..*)', fileObj.name)
     
     newFilePath = fileObj
     
     if len(result.group(2)) == 1:
         strToUse = str(fileObj.parents[0]) + '//' + result.group(1) + '0' + result.group(2) + result.group(3)
-        # newFilePath = strToUse
+        newFilePath = strToUse
         p(strToUse)
     
     # if 'ytellingStorytelling' in fileObj.name:
@@ -25,9 +26,5 @@ for fileObj in Path(sys.argv[1]).iterdir():
     #     p(strToUse)
     #     # newFilePath = str(fileObj.parents[0]) + result.group(1) + '0' + result.group(2) + result.group(3)
     #     newFilePath = strToUse
-        
+
     os.rename(str(fileObj), newFilePath)
-    
-
-
-
