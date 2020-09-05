@@ -10,11 +10,54 @@ import os
 import re
 
 
+
+
 for fileObj in Path(sys.argv[1]).iterdir():
+
+    newFilePath = fileObj
+
+    arrayToUse = fileObj.name.split(' ')
+
+    if len(arrayToUse[1]) == 1:
+        newFilePath = str(fileObj.parents[0]) + '\\' + arrayToUse[0] + ' 0' + arrayToUse[1]
+    
+
+    p(newFilePath)
+
+    
+
+    os.rename(fileObj, newFilePath)
+
+
+
+
+
+
+# for fileObj in Path(sys.argv[1]).iterdir():
+
+#     newFilePath = fileObj
+    
+#     strToUse = fileObj.name.split(' ')[0]
+
+#     if len(strToUse) == 1:
+#         newFilePath = str(fileObj.parents[0]) + '\\' + '0' + fileObj.name
+
+#     p(newFilePath)
+
+    
+
+#     os.rename(str(fileObj), newFilePath)
+
+
+
+
+
+
+# for fileObj in Path(sys.argv[1]).iterdir():
 
     # result = re.search('(.*-)(.*)(\..*)', fileObj.name)
     
-    newFilePath = fileObj
+    # newFilePath = fileObj
     
     # if len(result.group(2)) == 1:
     #     strToUse = str(fileObj.parents[0]) + '//' + result.group(1) + result.group(2) + '0' + result.group(3)
@@ -34,8 +77,8 @@ for fileObj in Path(sys.argv[1]).iterdir():
     #     # newFilePath = str(fileObj.parents[0]) + result.group(1) + '0' + result.group(2) + result.group(3)
     #     newFilePath = strToUse
 
-    strToUse = str(fileObj.parents[0]) + '\\' + 'Re - Spoken Books - ' + str(fileObj.name)
-    newFilePath = strToUse
-    p(strToUse)
+    # strToUse = str(fileObj.parents[0]) + '\\' + 'Re - Spoken Books - ' + str(fileObj.name)
+    # newFilePath = strToUse
+    # p(strToUse)
 
-    os.rename(str(fileObj), newFilePath)
+    # os.rename(str(fileObj), newFilePath)
