@@ -17,8 +17,15 @@ for fileObj in Path(sys.argv[1]).iterdir():
     newFilePath = fileObj
     
     if len(result.group(2)) == 1:
-        strToUse = str(fileObj.parents[0]) + '//' + result.group(1) + '0' + result.group(2) + result.group(3)
+        strToUse = str(fileObj.parents[0]) + '//' + result.group(1) + result.group(2) + '0' + result.group(3)
         newFilePath = strToUse
+        
+        p(strToUse)
+
+    if result.group(2) == '10':
+        strToUse = str(fileObj.parents[0]) + '//' + result.group(1) + '19' + result.group(3)
+        newFilePath = strToUse
+        
         p(strToUse)
     
     # if 'ytellingStorytelling' in fileObj.name:
