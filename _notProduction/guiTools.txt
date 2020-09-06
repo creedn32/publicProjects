@@ -1,7 +1,0 @@
-#inspection tools
-
-
-swapy64bit
-swapy32bit
-py_inspect
-WinSpy17
