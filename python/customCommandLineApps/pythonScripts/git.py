@@ -109,7 +109,7 @@ def mainFunction(arrayOfArguments):
                         for obj in folderPath.iterdir():
                             arrayOfChildrenObjects.append(obj)
                     except:
-                        p("Couldn't get array of children objects for path: " + str(folderPath))
+                        p("Couldn't get array of children objects for this path with length of {}: ".format(len(str(folderPath))) + str(folderPath))
 
                     return arrayOfChildrenObjects
 
