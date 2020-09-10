@@ -17,6 +17,7 @@ import os
 import gspread
 
 
+
 def noGitIgnoreFileFound(gitFolder):
 
     for obj in gitFolder.glob('*'):
@@ -54,9 +55,6 @@ def runGitProcesses(gitFolder, arrayOfArguments):
         fileObj.close()
 
 
-
-
-
     if len(arrayOfArguments) > 2 and arrayOfArguments[2] in ['includeheroku', 'h']:
         runGitProcessOnHerokuRepos = True
     else:
@@ -84,11 +82,18 @@ def runGitProcesses(gitFolder, arrayOfArguments):
         subprocess.run('git -C ' + str(gitFolder) + ' ' + gitProcessToRun)
 
 
+
 def mainFunction(arrayOfArguments):
 
-    # p(arrayOfArguments)
-    
     pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+
+    # for fileObj in pathToRepos.rglob("*"):
+    #     if fileObj.name == '.git':
+    #         p(fileObj.name)
+    
+
+    
+    # p(arrayOfArguments)
 
     for objInReposFolder in pathToRepos.glob('*'):
 
@@ -113,7 +118,7 @@ def mainFunction(arrayOfArguments):
 
                     return arrayOfChildrenObjects
 
-                
+
                 arrayOfObjects = [gitIndividualRepoFolder]
 
                 while arrayOfObjects:
