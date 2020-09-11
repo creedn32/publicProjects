@@ -11,20 +11,23 @@ import re
 
 
 
-
 for fileObj in Path(sys.argv[1]).iterdir():
 
     newFilePath = fileObj
 
     arrayToUse = fileObj.name.split(' ')
+    
+    if len(arrayToUse[1]) == 2:
+        trackNumber = '0' + arrayToUse[1]
+    else: 
+        trackNumber = arrayToUse[1]
 
-    if len(arrayToUse[1]) == 1:
-        newFilePath = str(fileObj.parents[0]) + '\\' + arrayToUse[0] + ' 0' + arrayToUse[1]
+    newTitle = arrayToUse[0] + ' ' + trackNumber + ' ' + ' '.join(arrayToUse[2:])
+
+    newFilePath = str(fileObj.parents[0]) + '\\' + newTitle 
     
 
     p(newFilePath)
-
-    
 
     os.rename(fileObj, newFilePath)
 
