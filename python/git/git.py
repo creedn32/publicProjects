@@ -91,10 +91,8 @@ def mainFunction(arrayOfArguments):
 
         for node in currentFolder.iterdir():
             if node.name == dataForAction[dataForActionKey]:
-                p(node)
                 runGitProcesses(node.parents[0], arrayOfArguments)
 
-        # return None
 
     _myPyFunc.operateOnAllFileObjBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.git'}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
