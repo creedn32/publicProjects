@@ -19,11 +19,11 @@ def mainFunction():
     pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
     # p(pathToRepos)
 
-    def actionToPerformOnEachFileObj(currentFolder):
+    def actionToPerformOnEachFileObj(currentFolder, moduleNameToImport):
 
         for node in currentFolder.iterdir():
             if node.is_file() and node.suffix == '.py':
-                if node.stem == 'git':
+                if node.stem == moduleNameToImport:
                     return node
         
         return None
