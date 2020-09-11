@@ -1,2 +1,2 @@
 @echo off 
-python %~dp0/../../../customCommandLineApps/c.py %*
+python %~dp0/../../../commandLineCSpace/c.py %*
