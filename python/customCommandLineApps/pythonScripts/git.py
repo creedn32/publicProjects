@@ -17,6 +17,7 @@ import os
 import gspread
 
 
+
 def noGitIgnoreFileFound(gitFolder):
 
     for obj in gitFolder.glob('*'):
@@ -80,11 +81,18 @@ def runGitProcesses(gitFolder, arrayOfArguments):
         subprocess.run('git -C ' + str(gitFolder) + ' ' + gitProcessToRun)
 
 
+
 def mainFunction(arrayOfArguments):
 
-    # p(arrayOfArguments)
-    
     pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+
+    # for fileObj in pathToRepos.rglob("*"):
+    #     if fileObj.name == '.git':
+    #         p(fileObj.name)
+    
+
+    
+    # p(arrayOfArguments)
 
     for objInReposFolder in pathToRepos.glob('*'):
 
@@ -109,7 +117,7 @@ def mainFunction(arrayOfArguments):
 
                     return arrayOfChildrenObjects
 
-                
+
                 arrayOfObjects = [gitIndividualRepoFolder]
 
                 while arrayOfObjects:
