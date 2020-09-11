@@ -19,7 +19,7 @@ def mainFunction():
     pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
     # p(pathToRepos)
 
-    def actionToPerformOnEachFileObj(currentFolder):
+    def actionToPerformOnEachFileObj(currentFolder, dataForAction):
 
         for node in currentFolder.iterdir():
             if node.is_file() and node.suffix == '.py':
@@ -28,7 +28,7 @@ def mainFunction():
         
         return None
 
-    pathToPythonFileForImport = _myPyFunc.operateOnAllFileObj(pathToRepos, actionToPerformOnEachFileObj, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    pathToPythonFileForImport = _myPyFunc.operateOnAllFileObjBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
     importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], pathToPythonFileForImport)
     importedModule = importlib.util.module_from_spec(importedModuleSpec)
