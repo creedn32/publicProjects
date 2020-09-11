@@ -136,5 +136,6 @@ def mainFunction(arrayOfArguments):
 
 
 if __name__ == '__main__':
+    p(str(pathToThisPythonFile) + ' is not being imported. It is being run directly...')
     mainFunction(sys.argv)
 
