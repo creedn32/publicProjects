@@ -92,51 +92,52 @@ def mainFunction(arrayOfArguments):
         for node in currentFolder.iterdir():
             if node.name == dataForAction[dataForActionKey]:
                 p(node)
-        
+                runGitProcesses(node.parents[0], arrayOfArguments)
+
         # return None
-    
+
     _myPyFunc.operateOnAllFileObjBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.git'}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
-    
-
-    for objInReposFolder in pathToRepos.glob('*'):
-
-        for objInIndividualRepoFolder in objInReposFolder.glob('*'):
-
-            if objInIndividualRepoFolder.name == '.git':
-
-                gitFolderInIndividualRepoFolder = objInIndividualRepoFolder
-                gitIndividualRepoFolder = gitFolderInIndividualRepoFolder.parents[0]
-
-                # p(str(gitFolderInIndividualRepoFolder))
-
-                def getArrayOfChildrenObjects(folderPath):
-
-                    arrayOfChildrenObjects = []
-
-                    try:
-                        for obj in folderPath.iterdir():
-                            arrayOfChildrenObjects.append(obj)
-                    except:
-                        p("Couldn't get array of children objects for this path with length of {}: ".format(len(str(folderPath))) + str(folderPath))
-
-                    return arrayOfChildrenObjects
 
 
-                arrayOfObjects = [gitIndividualRepoFolder]
+    # for objInReposFolder in pathToRepos.glob('*'):
 
-                while arrayOfObjects:
+    #     for objInIndividualRepoFolder in objInReposFolder.glob('*'):
 
-                    currentObject = arrayOfObjects.pop(0)
+    #         if objInIndividualRepoFolder.name == '.git':
 
-                    if os.path.isdir(currentObject):
-                        arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
+    #             gitFolderInIndividualRepoFolder = objInIndividualRepoFolder
+    #             gitIndividualRepoFolder = gitFolderInIndividualRepoFolder.parents[0]
 
-                    if currentObject.name == '.git' and currentObject != gitFolderInIndividualRepoFolder:
-                        # p('this is likely a submodule')
-                        # p(currentObject.parents[0])
-                        runGitProcesses(currentObject.parents[0], arrayOfArguments)
+    #             # p(str(gitFolderInIndividualRepoFolder))
 
-                runGitProcesses(gitIndividualRepoFolder, arrayOfArguments)
+    #             def getArrayOfChildrenObjects(folderPath):
+
+    #                 arrayOfChildrenObjects = []
+
+    #                 try:
+    #                     for obj in folderPath.iterdir():
+    #                         arrayOfChildrenObjects.append(obj)
+    #                 except:
+    #                     p("Couldn't get array of children objects for this path with length of {}: ".format(len(str(folderPath))) + str(folderPath))
+
+    #                 return arrayOfChildrenObjects
+
+
+    #             arrayOfObjects = [gitIndividualRepoFolder]
+
+    #             while arrayOfObjects:
+
+    #                 currentObject = arrayOfObjects.pop(0)
+
+    #                 if os.path.isdir(currentObject):
+    #                     arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
+
+    #                 if currentObject.name == '.git' and currentObject != gitFolderInIndividualRepoFolder:
+    #                     # p('this is likely a submodule')
+    #                     # p(currentObject.parents[0])
+    #                     runGitProcesses(currentObject.parents[0], arrayOfArguments)
+
+    #             runGitProcesses(gitIndividualRepoFolder, arrayOfArguments)
 
 
 if __name__ == '__main__':
