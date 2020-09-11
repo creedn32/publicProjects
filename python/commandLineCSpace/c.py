@@ -17,7 +17,6 @@ def mainFunction():
     # print(sys.argv)
     
     pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-    # p(pathToRepos)
     dataForActionKey = 'pythonFileToFind'
 
     def actionToPerformOnEachFileObj(currentFolder, dataForAction):
