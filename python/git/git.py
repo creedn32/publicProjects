@@ -97,47 +97,6 @@ def mainFunction(arrayOfArguments):
     _myPyFunc.operateOnAllFileObjBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.git'}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
 
-    # for objInReposFolder in pathToRepos.glob('*'):
-
-    #     for objInIndividualRepoFolder in objInReposFolder.glob('*'):
-
-    #         if objInIndividualRepoFolder.name == '.git':
-
-    #             gitFolderInIndividualRepoFolder = objInIndividualRepoFolder
-    #             gitIndividualRepoFolder = gitFolderInIndividualRepoFolder.parents[0]
-
-    #             # p(str(gitFolderInIndividualRepoFolder))
-
-    #             def getArrayOfChildrenObjects(folderPath):
-
-    #                 arrayOfChildrenObjects = []
-
-    #                 try:
-    #                     for obj in folderPath.iterdir():
-    #                         arrayOfChildrenObjects.append(obj)
-    #                 except:
-    #                     p("Couldn't get array of children objects for this path with length of {}: ".format(len(str(folderPath))) + str(folderPath))
-
-    #                 return arrayOfChildrenObjects
-
-
-    #             arrayOfObjects = [gitIndividualRepoFolder]
-
-    #             while arrayOfObjects:
-
-    #                 currentObject = arrayOfObjects.pop(0)
-
-    #                 if os.path.isdir(currentObject):
-    #                     arrayOfObjects.extend(getArrayOfChildrenObjects(currentObject))               
-
-    #                 if currentObject.name == '.git' and currentObject != gitFolderInIndividualRepoFolder:
-    #                     # p('this is likely a submodule')
-    #                     # p(currentObject.parents[0])
-    #                     runGitProcesses(currentObject.parents[0], arrayOfArguments)
-
-    #             runGitProcesses(gitIndividualRepoFolder, arrayOfArguments)
-
-
 if __name__ == '__main__':
     p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')
     mainFunction(sys.argv)
