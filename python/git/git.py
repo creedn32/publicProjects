@@ -90,7 +90,7 @@ def mainFunction(arrayOfArguments):
     def actionToPerformOnEachFileObj(currentFolder, dataForAction):
 
         for node in currentFolder.iterdir():
-            if node.suffix == dataForAction[dataForActionKey]:
+            if node.name == dataForAction[dataForActionKey]:
                 p(node)
         
         # return None
