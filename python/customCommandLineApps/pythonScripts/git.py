@@ -47,14 +47,10 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 
     p(str(gitFolder))
 
-
     if noGitIgnoreFileFound(gitFolder):
         fileObj = open(Path(gitFolder, '.gitignore'), 'w')
         fileObj.write('__pycache__')
         fileObj.close()
-
-
-
 
 
     if len(arrayOfArguments) > 2 and arrayOfArguments[2] in ['includeheroku', 'h']:
