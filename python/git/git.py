@@ -85,12 +85,12 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 def mainFunction(arrayOfArguments):
 
     pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-    dataForActionKey = 'fileSuffixToFind'
+    dataForActionKey = 'suffixToFind'
 
     def actionToPerformOnEachFileObj(currentFolder, dataForAction):
 
         for node in currentFolder.iterdir():
-            if node.is_file() and node.suffix == dataForAction[dataForActionKey]:
+            if node.suffix == dataForAction[dataForActionKey]:
                 p(node)
         
         # return None
