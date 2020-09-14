@@ -3,7 +3,7 @@ pathToThisPythonFile = Path(__file__).resolve()
 import sys
 pathToAppend = Path(pathToThisPythonFile.parents[2], 'herokuGorilla', 'backend', 'python', 'myPythonLibrary')
 sys.path.append(str(pathToAppend))
-import _myPyFunc
+import myPyFunc
 
 from pprint import pprint as p
 import importlib.util
@@ -16,7 +16,7 @@ def mainFunction():
     # argumentsArray = sys.argv[1].split('.') + sys.argv[2:]
     # print(sys.argv)
     
-    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+    pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
     dataForActionKey = 'pythonFileToFind'
 
     def actionToPerformOnEachFileObj(currentFolder, dataForAction):
@@ -28,7 +28,7 @@ def mainFunction():
         
         return None
 
-    pathToPythonFileForImport = _myPyFunc.operateOnAllFileObjBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: sys.argv[1]}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    pathToPythonFileForImport = myPyFunc.operateOnAllFileObjBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: sys.argv[1]}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
     importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], pathToPythonFileForImport)
     importedModule = importlib.util.module_from_spec(importedModuleSpec)
