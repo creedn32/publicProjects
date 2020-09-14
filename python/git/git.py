@@ -33,7 +33,7 @@ def noGitIgnoreFileFound(gitFolder):
                 if '__pycache__' in line:
                 
                     return False
-                                
+
             fileObj.write('\n__pycache__')
             fileObj.close()
 
