@@ -3,7 +3,7 @@ pathToThisPythonFile = Path(__file__).resolve()
 import sys
 pathToAppend = Path(pathToThisPythonFile.parents[2], 'herokuGorilla', 'backend', 'python', 'myPythonLibrary')
 sys.path.append(str(pathToAppend))
-import _myPyFunc
+import myPyFunc
 
 from pprint import pprint as p
 import os
@@ -13,25 +13,72 @@ import re
 
 
 
-for fileObj in Path(sys.argv[1]).iterdir():
 
-    newFilePath = fileObj
 
-    arrayToUse = fileObj.name.split(' ')
-    
-    if len(arrayToUse[1]) == 2:
-        trackNumber = '0' + arrayToUse[1]
-    else: 
-        trackNumber = arrayToUse[1]
-
-    newTitle = arrayToUse[0] + ' ' + trackNumber + ' ' + ' '.join(arrayToUse[2:])
-
-    newFilePath = str(fileObj.parents[0]) + '\\' + newTitle 
+def mainFunction(arrayOfArguments):
     
 
-    p(newFilePath)
+    startingPath = Path(arrayOfArguments[1])
+    dataForActionKey = 'suffixToFind'
+    # p(arrayOfArguments[1])
 
-    os.rename(fileObj, newFilePath)
+    def actionToPerformOnEachFileObj(currentFolder, dataForAction):
+        
+        for node in currentFolder.iterdir():
+            
+            # p(node)
+            
+            if node.suffix == dataForAction[dataForActionKey] and node.name[0] == '_':
+                
+                # p(node.parents[0])
+                p(node)
+                # os.rename(Path(node.parents[0], node.name), Path(node.parents[0], node.name[1:]))
+                # pass
+
+    myPyFunc.operateOnAllFileObjBreadthFirst(startingPath, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.py'}, pathsToExclude=[Path(startingPath, '.history'), Path(startingPath, '.vscode'), Path(startingPath, 'reposFromOthers')])
+
+
+
+
+
+    # arrayToUse = fileObj.name.split(' ')
+    
+    # if len(arrayToUse[1]) == 2:
+    #     trackNumber = '0' + arrayToUse[1]
+    # else: 
+    #     trackNumber = arrayToUse[1]
+
+    # newTitle = arrayToUse[0] + ' ' + trackNumber + ' ' + ' '.join(arrayToUse[2:])
+
+    # newFilePath = str(fileObj.parents[0]) + '\\' + newTitle 
+    
+
+    # p(newFilePath)
+
+    # os.rename(fileObj, newFilePath)
+
+
+
+
+# for fileObj in Path(sys.argv[1]).iterdir():
+
+#     newFilePath = fileObj
+
+#     arrayToUse = fileObj.name.split(' ')
+    
+#     if len(arrayToUse[1]) == 2:
+#         trackNumber = '0' + arrayToUse[1]
+#     else: 
+#         trackNumber = arrayToUse[1]
+
+#     newTitle = arrayToUse[0] + ' ' + trackNumber + ' ' + ' '.join(arrayToUse[2:])
+
+#     newFilePath = str(fileObj.parents[0]) + '\\' + newTitle 
+    
+
+#     p(newFilePath)
+
+#     os.rename(fileObj, newFilePath)
 
 
 

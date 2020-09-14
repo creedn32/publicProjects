@@ -3,9 +3,9 @@ from pathlib import Path
 import sys
 pathToThisPythonFile = Path(__file__).resolve()
 sys.path.append(str(pathToThisPythonFile.parents[3]))
-import herokuGorilla.backend.python.myPythonLibrary._myPyFunc as _myPyFunc
-import herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary._myGoogleSheetsFunc as _myGoogleSheetsFunc
-import herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary._myGspreadFunc as _myGspreadFunc
+import herokuGorilla.backend.python.myPythonLibrary.myPyFunc as myPyFunc
+import herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary.myGoogleSheetsFunc as myGoogleSheetsFunc
+import herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary.myGspreadFunc as myGspreadFunc
 
 
 #third-party imports
@@ -30,10 +30,10 @@ def mainFunction(arrayOfArguments):
     pyautogui.PAUSE = 0.01
     sendingKeystrokes = True
 
-    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+    pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
     arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials', 'usingServiceAccount', 'jsonWithAPIKey.json']
 
-    gspObj = gspread.service_account(filename=_myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath))
+    gspObj = gspread.service_account(filename=myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath))
     gspSpreadsheet = gspObj.open('Transactions To Post')
     gspToPostFromSheet = gspSpreadsheet.worksheet(arrayOfArguments[1])
     toPostFromArray = gspToPostFromSheet.get_all_values()
@@ -51,7 +51,7 @@ def mainFunction(arrayOfArguments):
 
 
     if sendingKeystrokes:
-        with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
+        with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
             print("Click on 'Clear' to begin posting...")
             listenerObj.join()
 
@@ -78,7 +78,7 @@ def mainFunction(arrayOfArguments):
                     columnNameToNumberOfTabsObj['Account'] = 1
 
 
-                if _myPyFunc.numLockIsOff():
+                if myPyFunc.numLockIsOff():
                     pyautogui.press('numlock')
 
                 # p(columnNameToNumberOfTabsObj)
@@ -107,7 +107,7 @@ def mainFunction(arrayOfArguments):
                             if columnData == 'Decrease Adjustment':
                                 numberOfDownKeyPresses = 3
 
-                            _myPyFunc.repetitiveKeyPress(numberOfDownKeyPresses, 'down')
+                            myPyFunc.repetitiveKeyPress(numberOfDownKeyPresses, 'down')
 
 
                         if currentColumnName == 'Transaction Date':
@@ -126,19 +126,19 @@ def mainFunction(arrayOfArguments):
 
                         if currentColumnName not in ['Option', 'Type']:
 
-                            _myPyFunc.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
+                            myPyFunc.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
 
                         if currentColumnName in columnNameToNumberOfTabsObj:
-                            _myPyFunc.repetitiveKeyPress(columnNameToNumberOfTabsObj[currentColumnName], 'tab')
+                            myPyFunc.repetitiveKeyPress(columnNameToNumberOfTabsObj[currentColumnName], 'tab')
                         else:
-                            _myPyFunc.repetitiveKeyPress(1, 'tab')
+                            myPyFunc.repetitiveKeyPress(1, 'tab')
 
 
-                if not _myPyFunc.numLockIsOff():
+                if not myPyFunc.numLockIsOff():
                     pyautogui.press('numlock')
 
 
-                with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
+                with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
                     print("Click on 'Post' or 'Clear' to continue with this entry...")
                     listenerObj.join()
 
@@ -154,11 +154,11 @@ def mainFunction(arrayOfArguments):
 
             if row[columnNameToIndexObj['Status']] == '':
 
-                if _myPyFunc.numLockIsOff():
+                if myPyFunc.numLockIsOff():
                     pyautogui.press('numlock')
 
 
-                _myPyFunc.repetitiveKeyPress(2, "tab")
+                myPyFunc.repetitiveKeyPress(2, "tab")
 
                 rowToEnumerate = row[0:5]
 
@@ -178,7 +178,7 @@ def mainFunction(arrayOfArguments):
                         columnData = columnData.lstrip('$').replace('.', '').replace(',', '')
 
 
-                    _myPyFunc.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
+                    myPyFunc.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
 
                     # for characterToType in columnData:
 
@@ -197,17 +197,17 @@ def mainFunction(arrayOfArguments):
 
                     if columnIndexNumber in columnNameToNumberOfTabsObj:
                         pass
-                        _myPyFunc.repetitiveKeyPress(columnNameToNumberOfTabsObj[columnIndexNumber], 'tab')
+                        myPyFunc.repetitiveKeyPress(columnNameToNumberOfTabsObj[columnIndexNumber], 'tab')
                     else:
                         pass
-                        _myPyFunc.repetitiveKeyPress(1, 'tab')
+                        myPyFunc.repetitiveKeyPress(1, 'tab')
 
 
-                if not _myPyFunc.numLockIsOff():
+                if not myPyFunc.numLockIsOff():
                     pyautogui.press('numlock')
 
 
-                with pynput.mouse.Listener(on_click=_myPyFunc.functionOnClick) as listenerObj:
+                with pynput.mouse.Listener(on_click=myPyFunc.functionOnClick) as listenerObj:
                     print("Click on 'Post' or 'Clear' to continue with this entry...")
                     listenerObj.join()
 

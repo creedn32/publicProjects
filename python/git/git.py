@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 pathToThisPythonFile = Path(__file__).resolve()
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'herokuGorilla', 'backend', 'python')))
-import myPythonLibrary._myPyFunc as _myPyFunc
+import myPythonLibrary.myPyFunc as myPyFunc
 
 #standard library imports
 import datetime
@@ -84,7 +84,7 @@ def runGitProcesses(gitFolder, arrayOfArguments):
 
 def mainFunction(arrayOfArguments):
 
-    pathToRepos = _myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+    pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
     dataForActionKey = 'suffixToFind'
 
     def actionToPerformOnEachFileObj(currentFolder, dataForAction):
@@ -94,7 +94,7 @@ def mainFunction(arrayOfArguments):
                 runGitProcesses(node.parents[0], arrayOfArguments)
 
 
-    _myPyFunc.operateOnAllFileObjBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.git'}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    myPyFunc.operateOnAllFileObjBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.git'}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
 
 if __name__ == '__main__':
