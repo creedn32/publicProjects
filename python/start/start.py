@@ -2,8 +2,9 @@
 from pathlib import Path
 import sys
 pathToThisPythonFile = Path(__file__).resolve()
-sys.path.append(str(Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'python')))
-import myPythonLibrary._myPyFunc as _myPyFunc
+# print(pathToThisPythonFile)
+sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'herokuGorilla', 'backend', 'python')))
+import myPythonLibrary.myPyFunc as myPyFunc
 import googleSheets.processIsNotRunning.processIsNotRunning as processIsNotRunning
 
 #standard library imports
@@ -15,7 +16,7 @@ import subprocess
 
 def mainFunction(arrayOfArguments):
 
-    pathToProcessCollectionsToStart = Path(_myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'), 'start', 'processCollectionsToStart.py')
+    pathToProcessCollectionsToStart = Path(myPyFunc.replacePartOfPath(pathToThisPythonFile.parents[0], 'publicProjects', 'privateData'), 'processCollectionsToStart.py')
     importedProcessCollectionsToStart = run_path(str(pathToProcessCollectionsToStart))
     processCollectionsToStartObj = importedProcessCollectionsToStart.get('processCollectionsToStartObj')
     processCollectionToStart = processCollectionsToStartObj[arrayOfArguments[1]]
@@ -39,5 +40,9 @@ def mainFunction(arrayOfArguments):
 
 
 if __name__ == '__main__':
+    p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')
     mainFunction(sys.argv)
+else:
+	p(str(pathToThisPythonFile.name) + ' is being imported. It is not being run directly...')
+
 

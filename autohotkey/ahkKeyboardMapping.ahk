@@ -48,6 +48,11 @@ F13 & t::
     SendInput {Blind}^!{t}
 return
 
+;F13 & c::
+;    SendInput {Blind}^!{c}
+;return
+
+
 F13 & u::
     SendInput {c}{d}{Space}{.}{/}{.}{.}{/}{Enter}
 return
