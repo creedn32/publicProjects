@@ -10,7 +10,7 @@ function App() {
 
   const submitButtonHandler = () => {
 
-    if (username == 'username' && password == 'Trythis1') {
+    if (username === 'username' && password === 'Trythis1') {
       setMessageToPrint(`Login successful. Username: ${username}. Password: ${password}.`);
     }
     else {
