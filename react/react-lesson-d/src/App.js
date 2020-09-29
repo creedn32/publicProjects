@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-
 
 function App() {
 
@@ -11,11 +10,11 @@ function App() {
 
   const submitButtonHandler = () => {
 
-    if (username == 'username' && password == 'a') {
+    if (username == 'username' && password == 'Trythis1') {
       setMessageToPrint(`Login successful. Username: ${username}. Password: ${password}.`);
     }
     else {
-      setMessageToPrint(`Login failed.`)
+      setMessageToPrint(`Login failed.`);
     }
 
   }
