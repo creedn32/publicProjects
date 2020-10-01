@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 // import logo from './logo.svg';
 import './App.css';
-import Header from './Header'
-
+import Header from './Header';
+import { setUserName } from '../action/actionCreators';
+import { connect } from 'react-redux';
 
 console.log("outside the function");
 
@@ -13,7 +14,7 @@ function App() {
 
   useEffect(() => {
     let newNameOfPerson = window.prompt('What is your name?', nameOfPerson);
-    setNameOfPerson(newNameOfPerson);
+    // setNameOfPerson(newNameOfPerson);
   }, []);
 
   return (
@@ -23,4 +24,8 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state, props) => {
+  
+}
+
+export default connect(mapStateToProps)(App);
