@@ -1,0 +1,2 @@
+FLASK_APP=flaskReactServer.py
+FLASK_ENV=development

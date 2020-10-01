@@ -38,7 +38,12 @@ def mainFunction():
     
 
 if __name__ == '__main__':
+    p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')
     mainFunction()
+else:
+	p(str(pathToThisPythonFile.name) + ' is being imported. It is not being run directly...')
+
+
 
 
 
