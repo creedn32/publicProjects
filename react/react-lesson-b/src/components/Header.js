@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 // import logo from './logo.svg';
 import Anchorlink from './Anchorlink';
+import { setUserName } from '../action/actionCreators' 
 
-export default function Header(props) {
+function Header(props) {
 
   const [toggleState, setToggleState] = useState(true);
   
@@ -46,12 +48,31 @@ export default function Header(props) {
       Enter your name: <input type="text" onChange={onNameChange}/>
       <div onClick={handleClick}>
         {
-          toggleState ? (<p>Hello, {props.userName}!</p>) : (<p>Welcome, {props.userName}, to this React site!</p>)
+          toggleState ? (<p>Hello, {props.username}!</p>) : (<p>Welcome, {props.username}, to this React site!</p>)
         } 
       </div>
-      <Anchorlink nameOfUser={props.userName}/>
+      <Anchorlink nameOfUser={props.username}/>
       <p>Calculate the sum of two numbers:</p>
       <input type="text" onChange={onfirstInputChange} defaultValue={firstInput}/>&nbsp;+&nbsp;<input type="text" onChange={onsecondInputChange} defaultValue={secondInput}/> = {getOutput()}
     </header>
   );
 }
+
+
+const mapStateToProps = (state, props) => {
+  return {
+    username: state.username
+  };
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    ...props, 
+    setNameOfPerson: (nameOfPerson) => {
+      const action = setUserName(nameOfPerson);
+      dispatch(action);
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

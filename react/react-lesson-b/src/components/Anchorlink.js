@@ -17,6 +17,6 @@ export default connect (mapStateToProps) (AnchorlinkMarkup);
 
 function mapStateToProps(state, props) {
     return {
-        username: state.user.username
+        username: state.username
     };
 }

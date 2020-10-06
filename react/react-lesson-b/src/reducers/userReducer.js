@@ -1,9 +1,10 @@
+const defaultState = {username: 'Harry the Henderson'};
 
-export default const userReducer = (state, action) => {
-    
+export default (state=defaultState, action) => {
+
     switch(action.type) {
         case 'SETUSERNAME':
-            return {username: 'defaultUsername', };
+            return {username: action.username, };
         default:
             return state;
     }

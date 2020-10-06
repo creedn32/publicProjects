@@ -8,24 +8,33 @@ import { connect } from 'react-redux';
 console.log("outside the function");
 
 
-function App() {
+function App(props) {
   
-  const [nameOfPerson, setNameOfPerson] = useState('Harry the Henderson');
-
   useEffect(() => {
-    let newNameOfPerson = window.prompt('What is your name?', nameOfPerson);
-    // setNameOfPerson(newNameOfPerson);
+    let newNameOfPerson = window.prompt('What is your name?', props.nameOfPerson);
+    props.setNameOfPerson(newNameOfPerson);
   }, []);
 
   return (
     <div className="App">
-      <Header userName={nameOfPerson} setNameOfPerson={setNameOfPerson}/>
+      <Header/>
     </div>
   );
 }
 
 const mapStateToProps = (state, props) => {
-  
+  return {
+    nameOfPerson: state.username
+  };
 }
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    setNameOfPerson: (nameOfPerson) => {
+      const action = setUserName(nameOfPerson);
+      dispatch(action);
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
