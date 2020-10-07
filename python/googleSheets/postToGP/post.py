@@ -4,9 +4,9 @@ import sys
 pathToThisPythonFile = Path(__file__).resolve()
 sys.path.append(str(pathToThisPythonFile.parents[3]))
 import herokuGorilla.backend.python.myPythonLibrary.myPyFunc as myPyFunc
+import herokuGorilla.backend.python.myPythonLibrary.myPyAutoGui as myPyAutoGui
 import herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary.myGoogleSheetsFunc as myGoogleSheetsFunc
 import herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary.myGspreadFunc as myGspreadFunc
-
 
 #third-party imports
 import gspread
@@ -107,7 +107,7 @@ def mainFunction(arrayOfArguments):
                             if columnData == 'Decrease Adjustment':
                                 numberOfDownKeyPresses = 3
 
-                            myPyFunc.repetitiveKeyPress(numberOfDownKeyPresses, 'down')
+                            myPyAutoGui.repetitiveKeyPress(numberOfDownKeyPresses, 'down')
 
 
                         if currentColumnName == 'Transaction Date':
@@ -126,12 +126,12 @@ def mainFunction(arrayOfArguments):
 
                         if currentColumnName not in ['Option', 'Type']:
 
-                            myPyFunc.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
+                            myPyAutoGui.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
 
                         if currentColumnName in columnNameToNumberOfTabsObj:
-                            myPyFunc.repetitiveKeyPress(columnNameToNumberOfTabsObj[currentColumnName], 'tab')
+                            myPyAutoGui.repetitiveKeyPress(columnNameToNumberOfTabsObj[currentColumnName], 'tab')
                         else:
-                            myPyFunc.repetitiveKeyPress(1, 'tab')
+                            myPyAutoGui.repetitiveKeyPress(1, 'tab')
 
 
                 if not myPyFunc.numLockIsOff():
@@ -158,7 +158,7 @@ def mainFunction(arrayOfArguments):
                     pyautogui.press('numlock')
 
 
-                myPyFunc.repetitiveKeyPress(2, "tab")
+                myPyAutoGui.repetitiveKeyPress(2, "tab")
 
                 rowToEnumerate = row[0:5]
 
@@ -178,7 +178,7 @@ def mainFunction(arrayOfArguments):
                         columnData = columnData.lstrip('$').replace('.', '').replace(',', '')
 
 
-                    myPyFunc.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
+                    myPyAutoGui.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
 
                     # for characterToType in columnData:
 
@@ -197,10 +197,10 @@ def mainFunction(arrayOfArguments):
 
                     if columnIndexNumber in columnNameToNumberOfTabsObj:
                         pass
-                        myPyFunc.repetitiveKeyPress(columnNameToNumberOfTabsObj[columnIndexNumber], 'tab')
+                        myPyAutoGui.repetitiveKeyPress(columnNameToNumberOfTabsObj[columnIndexNumber], 'tab')
                     else:
                         pass
-                        myPyFunc.repetitiveKeyPress(1, 'tab')
+                        myPyAutoGui.repetitiveKeyPress(1, 'tab')
 
 
                 if not myPyFunc.numLockIsOff():
