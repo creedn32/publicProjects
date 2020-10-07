@@ -9,7 +9,7 @@ console.log("outside the function");
 
 
 function App(props) {
-  
+
   useEffect(() => {
     let newNameOfPerson = window.prompt('What is your name?', props.nameOfPerson);
     props.setNameOfPerson(newNameOfPerson);
