@@ -1,9 +1,19 @@
+import pathlib, sys
+sys.path.append(str(pathlib.Path(__file__).resolve().parents[0]))
+from moduleToImport import functionToCall
+
+
 def mainFunction(arrayOfArguments):
-    print(1)
 
+    a = 5
 
-if __name__ == '__main__':
-    p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')
-    mainFunction(sys.argv)
-else:
-	p(str(pathToThisPythonFile.name) + ' is being imported. It is not being run directly...')
+    def printThis():
+        print(a)
+        # print(b)
+        c = 7
+
+    # print(c)
+    functionToCall(printThis)
+
+# mainFunction(sys.argv)
+
