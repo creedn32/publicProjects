@@ -5,7 +5,7 @@ pathToThisPythonFile = Path(__file__).resolve()
 # print(pathToThisPythonFile)
 sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'herokuGorilla', 'backend', 'python')))
 import myPythonLibrary.myPyFunc as myPyFunc
-import googleSheets.processIsNotRunning.processIsNotRunning as processIsNotRunning
+import googleSheetsApps.processIsNotRunning as processIsNotRunning
 
 #standard library imports
 from pprint import pprint as p
