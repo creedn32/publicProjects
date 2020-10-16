@@ -10,32 +10,49 @@ import os
 import re
 
 
-
-
-
-
-
 def mainFunction(arrayOfArguments):
     
+    directory = Path(arrayOfArguments[1])
 
-    startingPath = Path(arrayOfArguments[1])
-    dataForActionKey = 'suffixToFind'
-    # p(arrayOfArguments[1])
+    for fileObj in directory.iterdir():
+        originalPath = Path(directory, fileObj.name)
+        newPath = Path(directory, fileObj.name[2:])
 
-    def actionToPerformOnEachFileObj(currentFolder, dataForAction):
+        p('originalPath: ' + str(originalPath) + '; newPath: ' + str(newPath))
+        p('os.rename(originalPath, newPath)')
+
+
+
+if __name__ == '__main__':
+    p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')
+    mainFunction(sys.argv)
+else:
+	p(str(pathToThisPythonFile.name) + ' is being imported. It is not being run directly...')
+
+
+
+
+
+
+
+    # startingPath = Path(arrayOfArguments[1])
+    # dataForActionKey = 'suffixToFind'
+    # # p(arrayOfArguments[1])
+
+    # def actionToPerformOnEachFileObj(currentFolder, dataForAction):
         
-        for node in currentFolder.iterdir():
+    #     for node in currentFolder.iterdir():
             
-            # p(node)
+    #         # p(node)
             
-            if node.suffix == dataForAction[dataForActionKey] and node.name[0] == '_':
+    #         if node.suffix == dataForAction[dataForActionKey] and node.name[0] == '_':
                 
-                # p(node.parents[0])
-                p(node)
-                # os.rename(Path(node.parents[0], node.name), Path(node.parents[0], node.name[1:]))
-                # pass
+    #             # p(node.parents[0])
+    #             p(node)
+    #             # os.rename(Path(node.parents[0], node.name), Path(node.parents[0], node.name[1:]))
+    #             # pass
 
-    myPyFunc.operateOnAllFileObjBreadthFirst(startingPath, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.py'}, pathsToExclude=[Path(startingPath, '.history'), Path(startingPath, '.vscode'), Path(startingPath, 'reposFromOthers')])
+    # myPyFunc.operateOnAllFileObjBreadthFirst(startingPath, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.py'}, pathsToExclude=[Path(startingPath, '.history'), Path(startingPath, '.vscode'), Path(startingPath, 'reposFromOthers')])
 
 
 
