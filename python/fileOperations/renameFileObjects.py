@@ -6,20 +6,23 @@ sys.path.append(str(pathToAppend))
 import myPyFunc
 
 from pprint import pprint as p
-import os
-import re
+import os, re
+
 
 
 def mainFunction(arrayOfArguments):
     
-    directory = Path(arrayOfArguments[1])
 
-    for fileObj in directory.iterdir():
-        originalPath = Path(directory, fileObj.name)
-        newPath = Path(directory, fileObj.name[2:])
+    def actionToPerform(fileObj):
+
+        originalPath = Path(fileObj.parents[0], fileObj.name)
+        newPath = Path(fileObj.parents[0], fileObj.name[2:])
 
         p('originalPath: ' + str(originalPath) + '; newPath: ' + str(newPath))
         p('os.rename(originalPath, newPath)')
+
+    myPyFunc.operateOnAllFileObjInThisDirectory(arrayOfArguments[1], actionToPerform)
+
 
 
 
