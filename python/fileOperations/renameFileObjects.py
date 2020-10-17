@@ -16,10 +16,13 @@ def mainFunction(arrayOfArguments):
     def actionToPerform(fileObj):
 
         originalPath = Path(fileObj.parents[0], fileObj.name)
-        newPath = Path(fileObj.parents[0], fileObj.name[2:])
-
-        p('originalPath: ' + str(originalPath) + '; newPath: ' + str(newPath))
-        p('os.rename(originalPath, newPath)')
+        if fileObj.name[2:3] == ' ':
+            newPath = Path(fileObj.parents[0], fileObj.name[3:])
+            p('originalPath: ' + str(originalPath) + '; newPath: ' + str(newPath))
+            try:
+                os.rename(originalPath, newPath)
+            except:
+                pass
 
     myPyFunc.operateOnAllFileObjInThisDirectory(arrayOfArguments[1], actionToPerform)
 
