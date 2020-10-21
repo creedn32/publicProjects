@@ -34,6 +34,10 @@ def mainFunction(arrayOfArguments):
     
     p(counter)
     p('root length: ' + str(len(xmlTreeObjRoot)))
+
+    for child in xmlTreeObjRoot:
+        p(child.attrib['readable_date'])
+
     xmlTreeObj.write(arrayOfArguments[2], pretty_print=True, xml_declaration=True, encoding='utf-8')
 
 
