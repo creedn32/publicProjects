@@ -49,3 +49,18 @@ else:
 	p(str(pathToThisPythonFile.name) + ' is being imported. It is not being run directly...')
 
 
+
+
+# # Use a `set` to keep track of "visited" elements with good lookup time.
+# visited = set()
+# # The iter method does a recursive traversal
+# for el in root.iter('element'):
+#     # Since the id is what defines a duplicate for you
+#     if 'id' in el.attr:
+#         current = el.get('id')
+#         # In visited already means it's a duplicate, remove it
+#         if current in visited:
+#             el.getparent().remove(el)
+#         # Otherwise mark this ID as "visited"
+#         else:
+#             visited.add(current)
