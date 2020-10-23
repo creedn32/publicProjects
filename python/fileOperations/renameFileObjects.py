@@ -24,7 +24,7 @@ def mainFunction(arrayOfArguments):
             except:
                 pass
 
-    myPyFunc.operateOnAllFileObjInThisDirectory(arrayOfArguments[1], actionToPerform)
+    myPyFunc.onAllFileObjInDir(arrayOfArguments[1], actionToPerform)
 
 
 
