@@ -63,7 +63,7 @@ def runGitProcesses(gitFolder, arrayOfArguments):
         commitMessage = arrayOfArguments[3]    
     else:
         nowObj = datetime.datetime.now()
-        commitMessage = nowObj.strftime("%Y-%m-%d %H:%M") + ', latest updates, using Python to commit'
+        commitMessage = nowObj.strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using custom Python script'
     
 
     gitProcessToRun = arrayOfArguments[1]
