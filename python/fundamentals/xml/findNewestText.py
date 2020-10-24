@@ -47,8 +47,31 @@ def filterArray(array, test):
     return passed
 
 
-def dateGreaterThanOct13():
-    pass
+def dateGreaterThanOct13(element):
+
+    if int(element.get('date')) >= 1602639501397:
+        return True
+    
+    return False
+
+
+def getDuplicateElements(root):
+
+    elementsCheckedForDuplicates = set()
+    # The iter method does a recursive traversal
+
+    for element in root:
+        pass
+
+        # Since the id is what defines a duplicate for you
+        # if 'id' in element.attr:
+        #     current = element.get('id')
+        #     # In elementsCheckedForDuplicates already means it's a duplicate, remove it
+        #     if current in elementsCheckedForDuplicates:
+        #         element.getparent().remove(element)
+        #     # Otherwise mark this ID as "elementsCheckedForDuplicates"
+        #     else:
+        #         elementsCheckedForDuplicates.add(current)
 
 
 def mainFunction(arrayOfArguments):
@@ -71,9 +94,11 @@ def mainFunction(arrayOfArguments):
             p(newestTextElement.get('contact_name'))
             p(newestTextElement.get('address'))
             p(newestTextElement.get('body'))
-            p(newestDateInt)
+            p(newestTextDateInt)
 
-            # filterArray(xmlTreeObjRoot, dateGreaterThanOct13)
+            p(len(filterArray(xmlTreeObjRoot, dateGreaterThanOct13)))
+
+            p(getDuplicateElements(xmlTreeObjRoot))
 
 
     myPyFunc.onAllFileObjInDir(arrayOfArguments[1], performOnEachFileObj)
@@ -87,16 +112,3 @@ else:
 
 
 
-# # Use a `set` to keep track of "visited" elements with good lookup time.
-# visited = set()
-# # The iter method does a recursive traversal
-# for el in root.iter('element'):
-#     # Since the id is what defines a duplicate for you
-#     if 'id' in el.attr:
-#         current = el.get('id')
-#         # In visited already means it's a duplicate, remove it
-#         if current in visited:
-#             el.getparent().remove(el)
-#         # Otherwise mark this ID as "visited"
-#         else:
-#             visited.add(current)
