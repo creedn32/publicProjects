@@ -10,21 +10,36 @@ from datetime import datetime
 
 
 
-def countTags(xmlTreeObjRoot, tagToCount):
+def getNewestTextElementCombine(currentReduceResult, element):
+    
+    if int(currentReduceResult.get('date')) > int(element.get('date')):
+        return currentReduceResult
+        
+    return element
 
-    count = 0
 
-    for child in xmlTreeObjRoot:
-        if child.tag == tagToCount:
-            count = count + 1
+def getSMSCountCombine(currentReduceResult, element):
 
-    return count
+    if element.tag == 'sms':
+        return currentReduceResult + 1
+
+    return currentReduceResult
+
+
+
+def getMMSCountCombine(currentReduceResult, element):
+
+    if element.tag == 'mms':
+        return currentReduceResult + 1
+
+    return currentReduceResult
+
 
 
 def mainFunction(arrayOfArguments):
 
-    def actionToPerform(fileObj):
-        
+    def performOnEachFileObj(fileObj):
+
         if fileObj.stem[0:3] == 'sms':
 
             p(fileObj.stem)
@@ -32,31 +47,18 @@ def mainFunction(arrayOfArguments):
             xmlTreeObjRoot = xmlTreeObj.getroot()
 
             rootLength = len(xmlTreeObjRoot)
-            smsCount = countTags(xmlTreeObjRoot, 'sms')
-            mmsCount = countTags(xmlTreeObjRoot, 'mms')
-
-            p(rootLength)
-            p(smsCount)
-            p(mmsCount)
-            p(rootLength - smsCount - mmsCount)
-
-            newestTextTimeStamp = 0
-            newestTextElement = None
-
-            for child in xmlTreeObjRoot:
-                if int(child.attrib['date']) > newestTextTimeStamp:
-                    newestTextTimeStamp = int(child.attrib['date'])
-                    newestTextElement = child
-
-            # p(newestTextTimeStamp)
-            newestTextDateObj = myPyFunc.addTimezoneToDateObj(myPyFunc.unixMillisecondsToDateObj(newestTextTimeStamp), 'US/Mountain')
+            p(rootLength - myPyFunc.reduceArray(xmlTreeObjRoot, getSMSCountCombine, 0) - myPyFunc.reduceArray(xmlTreeObjRoot, getMMSCountCombine, 0))
+            
+            newestTextElement = myPyFunc.reduceArray(xmlTreeObjRoot, getNewestTextElementCombine, xmlTreeObjRoot[0])
+            newestTextDateInt = int(newestTextElement.get('date'))
+            newestTextDateObj = myPyFunc.addTimezoneToDateObj(myPyFunc.unixMillisecondsToDateObj(newestTextDateInt), 'US/Mountain')
             p(newestTextDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
-            # p(newestTextElement.attrib['contact_name'])
-            # p(newestTextElement.attrib['address'])
-            # p(newestTextElement.attrib['body'])
-            # p(newestTextElement.attrib['readable_date'])
+            p(newestTextElement.get('contact_name'))
+            p(newestTextElement.get('address'))
+            p(newestTextElement.get('body'))
 
-    myPyFunc.onAllFileObjInDir(arrayOfArguments[1], actionToPerform)
+
+    myPyFunc.onAllFileObjInDir(arrayOfArguments[1], performOnEachFileObj)
 
 if __name__ == '__main__':
     p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')
