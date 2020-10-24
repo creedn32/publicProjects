@@ -36,6 +36,21 @@ def getMMSCountCombine(currentReduceResult, element):
 
 
 
+def filterArray(array, test):
+
+    passed = []
+
+    for element in array:
+        if test(element):
+            passed.append(element)
+
+    return passed
+
+
+def dateGreaterThanOct13():
+    pass
+
+
 def mainFunction(arrayOfArguments):
 
     def performOnEachFileObj(fileObj):
@@ -56,6 +71,9 @@ def mainFunction(arrayOfArguments):
             p(newestTextElement.get('contact_name'))
             p(newestTextElement.get('address'))
             p(newestTextElement.get('body'))
+            p(newestDateInt)
+
+            # filterArray(xmlTreeObjRoot, dateGreaterThanOct13)
 
 
     myPyFunc.onAllFileObjInDir(arrayOfArguments[1], performOnEachFileObj)
