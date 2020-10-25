@@ -10,29 +10,29 @@ from datetime import datetime
 
 
 
-def getNewestTextElementCombine(currentReduceResult, element):
+def getNewestTextElementCombine(currentResultOfReduce, element):
     
-    if int(currentReduceResult.get('date')) > int(element.get('date')):
-        return currentReduceResult
+    if int(currentResultOfReduce.get('date')) > int(element.get('date')):
+        return currentResultOfReduce
         
     return element
 
 
-def getSMSCountCombine(currentReduceResult, element):
+def getSMSCountCombine(currentResultOfReduce, element):
 
     if element.tag == 'sms':
-        return currentReduceResult + 1
+        return currentResultOfReduce + 1
 
-    return currentReduceResult
+    return currentResultOfReduce
 
 
 
-def getMMSCountCombine(currentReduceResult, element):
+def getMMSCountCombine(currentResultOfReduce, element):
 
     if element.tag == 'mms':
-        return currentReduceResult + 1
+        return currentResultOfReduce + 1
 
-    return currentReduceResult
+    return currentResultOfReduce
 
 
 
@@ -55,23 +55,32 @@ def dateGreaterThanOct13(element):
     return False
 
 
-def getDuplicateElements(root):
+def getUniqueArray(array):
 
-    elementsCheckedForDuplicates = set()
-    # The iter method does a recursive traversal
+    checkedForDuplicatesSet = set()
+    uniqueArray = []
 
-    for element in root:
-        pass
+    for element in array:
+        if element not in checkedForDuplicatesSet:
+            uniqueArray.append(element)
+            checkedForDuplicatesSet.add(element)
+            
+    return uniqueArray
 
-        # Since the id is what defines a duplicate for you
-        # if 'id' in element.attr:
-        #     current = element.get('id')
-        #     # In elementsCheckedForDuplicates already means it's a duplicate, remove it
-        #     if current in elementsCheckedForDuplicates:
-        #         element.getparent().remove(element)
-        #     # Otherwise mark this ID as "elementsCheckedForDuplicates"
-        #     else:
-        #         elementsCheckedForDuplicates.add(current)
+
+def getArrayOfDuplicatedElements(array):
+    
+    # seen = {}
+    # dupes = []
+
+    # for x in a:
+    #     if x not in seen:
+    #         seen[x] = 1
+    #     else:
+    #         if seen[x] == 1:
+    #             dupes.append(x)
+    #         seen[x] += 1
+
 
 
 def mainFunction(arrayOfArguments):
@@ -98,7 +107,7 @@ def mainFunction(arrayOfArguments):
 
             p(len(filterArray(xmlTreeObjRoot, dateGreaterThanOct13)))
 
-            p(getDuplicateElements(xmlTreeObjRoot))
+            p(len(getUniqueArray(xmlTreeObjRoot)))
 
 
     myPyFunc.onAllFileObjInDir(arrayOfArguments[1], performOnEachFileObj)
