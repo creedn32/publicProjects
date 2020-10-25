@@ -70,16 +70,16 @@ def getUniqueArray(array):
 
 def getArrayOfDuplicatedElements(array):
     
-    # seen = {}
+    checkedForDuplicatesSet = set()
     # dupes = []
 
     # for x in a:
-    #     if x not in seen:
-    #         seen[x] = 1
+    #     if x not in checkedForDuplicatesSet:
+    #         checkedForDuplicatesSet[x] = 1
     #     else:
-    #         if seen[x] == 1:
+    #         if checkedForDuplicatesSet[x] == 1:
     #             dupes.append(x)
-    #         seen[x] += 1
+    #         checkedForDuplicatesSet[x] += 1
 
 
 
