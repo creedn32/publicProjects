@@ -66,7 +66,7 @@ def mainFunction(arrayOfArguments):
             
             if currentFileObjXMLTreeRoot.tag == 'smses':
                 addArrayToXML(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot), newMessagesXMLTreeRoot)
-                myPyFunc.getUniqueArray(newMessagesXMLTreeRoot)
+                newMessagesXMLTreeRoot = myPyFunc.getUniqueArray(newMessagesXMLTreeRoot)
             p(len(newMessagesXMLTreeRoot))
 
 
