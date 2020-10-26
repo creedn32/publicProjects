@@ -44,45 +44,56 @@ def filterDateGreaterThanOct13(element):
     return False
 
 
+def addArrayToXML(array, root):
+
+    for element in array:
+        root.append(element)
+
+
+
 
 
 def mainFunction(arrayOfArguments):
 
-    def performOnEachFileObj(currentFileObj):
-
-        if currentFileObj.stem[0:3] == 'sms':
-
-            p(currentFileObj.stem)
-            xmlTreeObj = et.parse(str(currentFileObj))
-            xmlTreeObjRoot = xmlTreeObj.getroot()
-
-            rootLength = len(xmlTreeObjRoot)
-            p(rootLength - myPyFunc.reduceArray(xmlTreeObjRoot, getSMSCountCombine, 0) - myPyFunc.reduceArray(xmlTreeObjRoot, getMMSCountCombine, 0))
-            
-            newestTextElement = myPyFunc.reduceArray(xmlTreeObjRoot, getNewestTextElementCombine, xmlTreeObjRoot[0])
-            newestTextDateInt = int(newestTextElement.get('date'))
-            newestTextDateObj = myPyFunc.addTimezoneToDateObj(myPyFunc.unixMillisecondsToDateObj(newestTextDateInt), 'US/Mountain')
-            p(newestTextDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
-            p(newestTextElement.get('contact_name'))
-            p(newestTextElement.get('address'))
-            p(newestTextElement.get('body'))
-            p(newestTextDateInt)
-
-            p(len(myPyFunc.filterArray(xmlTreeObjRoot, filterDateGreaterThanOct13)))
-            p(len(myPyFunc.getUniqueArray(xmlTreeObjRoot)))
-
-            p(myPyFunc.getArrayOfDuplicatedElements(xmlTreeObjRoot))
-
-
-
-    # myPyFunc.onAllFileObjInDir(arrayOfArguments[1], performOnEachFileObj)
-
-
     def actionToPerformOnEachFileObjInTree(currentFileObj):
-        # if currentFileObj.stem == '.xml':
-        p(currentFileObj)
+        if currentFileObj.suffix == '.xml' and currentFileObj.stem == 'sms-made-by-creed-20201010':
 
-    myPyFunc.onAllFileObjInTreeBreadthFirst(arrayOfArguments[1], actionToPerformOnEachFileObjInTree)
+            currentFileObjXMLTreeRoot = et.parse(str(currentFileObj)).getroot()
+            
+            p(currentFileObj.name)
+            p(len(currentFileObjXMLTreeRoot))
+            p(len(newMessagesXMLTreeRoot))
+            
+            if currentFileObjXMLTreeRoot.tag == 'smses':
+                addArrayToXML(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot), newMessagesXMLTreeRoot)
+                myPyFunc.getUniqueArray(newMessagesXMLTreeRoot)
+            p(len(newMessagesXMLTreeRoot))
+
+
+            
+            # p(currentFileObjXMLTreeRoot.tag)
+            # p(len(newMessagesXMLTreeRoot))
+            # p(len(newCallsXMLTreeRoot))
+            # p(rootLength - myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getSMSCountCombine, 0) - myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getMMSCountCombine, 0))
+            
+            # newestTextElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getNewestTextElementCombine, currentFileObjXMLTreeRoot[0])
+            # newestTextDateInt = int(newestTextElement.get('date'))
+            # newestTextDateObj = myPyFunc.addTimezoneToDateObj(myPyFunc.unixMillisecondsToDateObj(newestTextDateInt), 'US/Mountain')
+            # p(newestTextDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
+            # p(newestTextElement.get('contact_name'))
+            # p(newestTextElement.get('address'))
+            # p(newestTextElement.get('body'))
+            # p(newestTextDateInt)
+
+            # p(len(myPyFunc.filterArray(currentFileObjXMLTreeRoot, filterDateGreaterThanOct13)))
+            # p(len(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot)))
+
+            # p(myPyFunc.getArrayOfDuplicatedElements(currentFileObjXMLTreeRoot))
+
+
+    newMessagesXMLTreeRoot = et.parse(arrayOfArguments[2]).getroot()
+    newCallsXMLTreeRoot = et.parse(arrayOfArguments[3]).getroot()
+    myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)
 
 
 
