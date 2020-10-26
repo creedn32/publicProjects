@@ -58,7 +58,7 @@ else:
     #             # os.rename(Path(node.parents[0], node.name), Path(node.parents[0], node.name[1:]))
     #             # pass
 
-    # myPyFunc.operateOnAllFileObjBreadthFirst(startingPath, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.py'}, pathsToExclude=[Path(startingPath, '.history'), Path(startingPath, '.vscode'), Path(startingPath, 'reposFromOthers')])
+    # myPyFunc.onAllFileObjInTreeBreadthFirst(startingPath, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.py'}, pathsToExclude=[Path(startingPath, '.history'), Path(startingPath, '.vscode'), Path(startingPath, 'reposFromOthers')])
 
 
 

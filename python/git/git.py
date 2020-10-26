@@ -94,7 +94,7 @@ def mainFunction(arrayOfArguments):
                 runGitProcesses(node.parents[0], arrayOfArguments)
 
 
-    myPyFunc.operateOnAllFileObjBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.git'}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: '.git'}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
 
 if __name__ == '__main__':
