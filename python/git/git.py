@@ -86,14 +86,13 @@ def mainFunction(arrayOfArguments):
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    def actionToPerformOnEachFileObj(currentFolder, dataForAction):
+    def actionToPerformOnEachFileObj(currentFileObj):
 
-        for node in currentFolder.iterdir():
-            if node.name == '.git':
-                runGitProcesses(node.parents[0], arrayOfArguments)
+        if currentFileObj.name == '.git':
+            runGitProcesses(currentFileObj.parents[0], arrayOfArguments)
 
 
-    myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
 
 if __name__ == '__main__':

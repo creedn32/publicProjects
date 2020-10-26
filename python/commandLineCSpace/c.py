@@ -13,21 +13,17 @@ def mainFunction():
 
     p("Searching for command '{}.py' ...".format(sys.argv[1]))
 
-    # argumentsArray = sys.argv[1].split('.') + sys.argv[2:]
-    # print(sys.argv)
-    
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    def actionToPerformOnEachFileObj(currentFolder, dataForAction):
+    def actionToPerformOnEachFileObj(currentFileObj):
 
-        for node in currentFolder.iterdir():
-            if node.is_file() and node.suffix == '.py':
-                if node.stem == sys.argv[1]:
-                    return node
+        if currentFileObj.is_file() and currentFileObj.suffix == '.py':
+            if currentFileObj.stem == sys.argv[1]:
+                    return currentFileObj
         
         return None
 
-    pathToPythonFileForImport = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    pathToPythonFileForImport = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
     importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], pathToPythonFileForImport)
     importedModule = importlib.util.module_from_spec(importedModuleSpec)
