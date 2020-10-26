@@ -50,7 +50,17 @@ def addArrayToXML(array, root):
         root.append(element)
 
 
+def removeDuplicatesFromRoot(root):
+    
+    checkedForDuplicatesSet = set()
+    # arrayOfUniques = []
 
+    for element in root:
+        if element not in checkedForDuplicatesSet:
+            # element.getparent().remove(element)
+            checkedForDuplicatesSet.add(element)
+            
+    return root
 
 
 def mainFunction(arrayOfArguments):
@@ -65,8 +75,13 @@ def mainFunction(arrayOfArguments):
             p(len(newMessagesXMLTreeRoot))
             
             if currentFileObjXMLTreeRoot.tag == 'smses':
-                addArrayToXML(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot), newMessagesXMLTreeRoot)
-                newMessagesXMLTreeRoot = myPyFunc.getUniqueArray(newMessagesXMLTreeRoot)
+                newXMLTreeRoot = newMessagesXMLTreeRoot
+            elif currentFileObjXMLTreeRoot.tag == 'calls':
+                newXMLTreeRoot = newCallsXMLTreeRoot
+                
+            addArrayToXML(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot), newXMLTreeRoot)
+            removeDuplicatesFromRoot(newXMLTreeRoot)
+
             p(len(newMessagesXMLTreeRoot))
 
 
