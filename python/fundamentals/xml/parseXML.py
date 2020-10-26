@@ -36,18 +36,7 @@ def getMMSCountCombine(currentResultOfReduce, element):
 
 
 
-def filterArray(array, test):
-
-    passed = []
-
-    for element in array:
-        if test(element):
-            passed.append(element)
-
-    return passed
-
-
-def dateGreaterThanOct13(element):
+def filterDateGreaterThanOct13(element):
 
     if int(element.get('date')) >= 1602639501397:
         return True
@@ -55,31 +44,35 @@ def dateGreaterThanOct13(element):
     return False
 
 
+
+
 def getUniqueArray(array):
 
     checkedForDuplicatesSet = set()
-    uniqueArray = []
+    arrayOfUniques = []
 
     for element in array:
         if element not in checkedForDuplicatesSet:
-            uniqueArray.append(element)
+            arrayOfUniques.append(element)
             checkedForDuplicatesSet.add(element)
             
-    return uniqueArray
+    return arrayOfUniques
 
 
 def getArrayOfDuplicatedElements(array):
     
-    checkedForDuplicatesSet = set()
-    # dupes = []
+    checkedForDuplicatesSet = {}
+    arrayOfDuplicates = []
 
-    # for x in a:
-    #     if x not in checkedForDuplicatesSet:
-    #         checkedForDuplicatesSet[x] = 1
-    #     else:
-    #         if checkedForDuplicatesSet[x] == 1:
-    #             dupes.append(x)
-    #         checkedForDuplicatesSet[x] += 1
+    for element in array:
+        if element not in checkedForDuplicatesSet:
+            checkedForDuplicatesSet[element] = 1
+        else:
+            if checkedForDuplicatesSet[element] == 1:
+                arrayOfDuplicates.append(element)
+            checkedForDuplicatesSet[element] += 1
+
+    return arrayOfDuplicates
 
 
 
@@ -105,9 +98,11 @@ def mainFunction(arrayOfArguments):
             p(newestTextElement.get('body'))
             p(newestTextDateInt)
 
-            p(len(filterArray(xmlTreeObjRoot, dateGreaterThanOct13)))
-
+            p(len(myPyFunc.filterArray(xmlTreeObjRoot, filterDateGreaterThanOct13)))
             p(len(getUniqueArray(xmlTreeObjRoot)))
+
+            p(getArrayOfDuplicatedElements(xmlTreeObjRoot))
+
 
 
     myPyFunc.onAllFileObjInDir(arrayOfArguments[1], performOnEachFileObj)
