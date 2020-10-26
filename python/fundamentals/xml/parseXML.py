@@ -46,44 +46,14 @@ def filterDateGreaterThanOct13(element):
 
 
 
-def getUniqueArray(array):
-
-    checkedForDuplicatesSet = set()
-    arrayOfUniques = []
-
-    for element in array:
-        if element not in checkedForDuplicatesSet:
-            arrayOfUniques.append(element)
-            checkedForDuplicatesSet.add(element)
-            
-    return arrayOfUniques
-
-
-def getArrayOfDuplicatedElements(array):
-    
-    checkedForDuplicatesSet = {}
-    arrayOfDuplicates = []
-
-    for element in array:
-        if element not in checkedForDuplicatesSet:
-            checkedForDuplicatesSet[element] = 1
-        else:
-            if checkedForDuplicatesSet[element] == 1:
-                arrayOfDuplicates.append(element)
-            checkedForDuplicatesSet[element] += 1
-
-    return arrayOfDuplicates
-
-
-
 def mainFunction(arrayOfArguments):
 
-    def performOnEachFileObj(fileObj):
+    def performOnEachFileObj(currentFileObj):
 
-        if fileObj.stem[0:3] == 'sms':
+        if currentFileObj.stem[0:3] == 'sms':
 
-            p(fileObj.stem)
-            xmlTreeObj = et.parse(str(fileObj))
+            p(currentFileObj.stem)
+            xmlTreeObj = et.parse(str(currentFileObj))
             xmlTreeObjRoot = xmlTreeObj.getroot()
 
             rootLength = len(xmlTreeObjRoot)
@@ -99,13 +69,22 @@ def mainFunction(arrayOfArguments):
             p(newestTextDateInt)
 
             p(len(myPyFunc.filterArray(xmlTreeObjRoot, filterDateGreaterThanOct13)))
-            p(len(getUniqueArray(xmlTreeObjRoot)))
+            p(len(myPyFunc.getUniqueArray(xmlTreeObjRoot)))
 
-            p(getArrayOfDuplicatedElements(xmlTreeObjRoot))
+            p(myPyFunc.getArrayOfDuplicatedElements(xmlTreeObjRoot))
 
 
 
-    myPyFunc.onAllFileObjInDir(arrayOfArguments[1], performOnEachFileObj)
+    # myPyFunc.onAllFileObjInDir(arrayOfArguments[1], performOnEachFileObj)
+
+
+    def actionToPerformOnEachFileObjInTree(currentFileObj):
+        # if currentFileObj.stem == '.xml':
+        p(currentFileObj)
+
+    myPyFunc.onAllFileObjInTreeBreadthFirst(arrayOfArguments[1], actionToPerformOnEachFileObjInTree)
+
+
 
 if __name__ == '__main__':
     p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')

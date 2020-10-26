@@ -19,7 +19,7 @@ def mainFunction():
 
         if currentFileObj.is_file() and currentFileObj.suffix == '.py':
             if currentFileObj.stem == sys.argv[1]:
-                    return currentFileObj
+                return currentFileObj
         
         return None
 
