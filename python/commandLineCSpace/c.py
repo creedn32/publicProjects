@@ -17,18 +17,17 @@ def mainFunction():
     # print(sys.argv)
     
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-    dataForActionKey = 'pythonFileToFind'
 
     def actionToPerformOnEachFileObj(currentFolder, dataForAction):
 
         for node in currentFolder.iterdir():
             if node.is_file() and node.suffix == '.py':
-                if node.stem == dataForAction[dataForActionKey]:
+                if node.stem == sys.argv[1]:
                     return node
         
         return None
 
-    pathToPythonFileForImport = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={dataForActionKey: sys.argv[1]}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    pathToPythonFileForImport = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, dataForAction={}, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
     importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], pathToPythonFileForImport)
     importedModule = importlib.util.module_from_spec(importedModuleSpec)
