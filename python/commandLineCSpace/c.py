@@ -24,7 +24,7 @@ def mainFunction():
         
         return dataForActionObj
 
-    returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, otherDataObj={'pathsToExclude': [Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')]})
 
     importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], returnedDataObj['pathToPythonFileForImport'])
     importedModule = importlib.util.module_from_spec(importedModuleSpec)
