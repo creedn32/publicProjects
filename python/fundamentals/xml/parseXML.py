@@ -79,10 +79,11 @@ def mainFunction(arrayOfArguments):
                     dataForActionObj['newMessagesXMLTreeRoot'].extend(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot))
 
             elif currentFileObjXMLTreeRoot.tag == 'calls':
-                if 'newMessagesXMLTreeRoot' in dataForActionObj:
-                    dataForActionObj['newMessagesXMLTreeRoot'].append('<hey>')
+                if 'newCallsXMLTreeRoot' in dataForActionObj:
+                    dataForActionObj['newCallsXMLTreeRoot'].extend(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot))
                 else:
-                    dataForActionObj['newMessagesXMLTreeRoot'] = et.parse(arrayOfArguments[3]).getroot()
+                    dataForActionObj['newCallsXMLTreeRoot'] = et.parse(arrayOfArguments[3]).getroot()
+                    dataForActionObj['newCallsXMLTreeRoot'].extend(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot))
 
 
         #     p('newXMLTreeRoot: ')
