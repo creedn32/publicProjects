@@ -75,8 +75,15 @@ def mainFunction(arrayOfArguments):
 
             currentFileObjXMLTreeRoot = et.parse(str(dataForActionObj['currentFileObj'])).getroot()
             
-            p(dataForActionObj['currentFileObj'].name)
+            p(str(dataForActionObj['currentFileObj'])[-40:])
             
+            if currentFileObjXMLTreeRoot.tag == 'smses':
+                
+                total = len(currentFileObjXMLTreeRoot) - myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getSMSCountCombine, 0) - myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getMMSCountCombine, 0)
+                
+                if total != 0:
+                    p('Messages don\'t add up: ' + str(total))
+                    sys.exit()
 
 
             def buildNewRoot(dataForActionObj, root):
@@ -92,13 +99,8 @@ def mainFunction(arrayOfArguments):
 
                 xmlRootStr = 'new' + root.tag.upper() + 'XMLTreeRoot'
 
-                if root.tag == 'smses':
-                    argumentToUse = 2
-                else:
-                    argumentToUse = 3
-
                 if xmlRootStr not in dataForActionObj:
-                    dataForActionObj[xmlRootStr] = et.parse(arrayOfArguments[argumentToUse]).getroot()
+                    dataForActionObj[xmlRootStr] = et.parse(arrayOfArguments[2] + '\\' + root.tag + 'XMLEmpty.xml').getroot()
 
                 extendAndDeduplicate()
 
@@ -116,7 +118,6 @@ def mainFunction(arrayOfArguments):
             # p(currentFileObjXMLTreeRoot.tag)
             # p(len(newMessagesXMLTreeRoot))
             # p(len(newCallsXMLTreeRoot))
-            # p(rootLength - myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getSMSCountCombine, 0) - myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getMMSCountCombine, 0))
             
             # newestTextElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getNewestTextElementCombine, currentFileObjXMLTreeRoot[0])
             # newestTextDateInt = int(newestTextElement.get('date'))
