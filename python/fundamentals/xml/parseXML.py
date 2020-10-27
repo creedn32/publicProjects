@@ -52,11 +52,11 @@ def removeDuplicatesFromRoot(root):
 
     for element in root:
 
-        jsonOfElement = json.dumps(element.items(), sort_keys=True)
-
-        if element not in checkedForDuplicatesSet:
+        elementItemsTuple = tuple(element.items())
+        
+        if elementItemsTuple not in checkedForDuplicatesSet:
             arrayOfUniques.append(element)
-            checkedForDuplicatesSet.add(element)
+            checkedForDuplicatesSet.add(elementItemsTuple)
 
     for element in root:
         element.getparent().remove(element)
@@ -67,25 +67,11 @@ def removeDuplicatesFromRoot(root):
 
 
 
-
-    # for element in array:
-
-    #     jsonOfElement = json.dumps(element.items(), sort_keys=True)
-
-    #     p(jsonOfElement)
-        
-    #     if jsonOfElement not in checkedForDuplicatesSet:
-    #         arrayOfUniques.append(element)
-    #         checkedForDuplicatesSet.add(jsonOfElement)
-
-    # return arrayOfUniques
-
-
 def mainFunction(arrayOfArguments):
 
     def actionToPerformOnEachFileObjInTree(dataForActionObj):
 
-        if dataForActionObj['currentFileObj'].suffix == '.xml' and dataForActionObj['currentFileObj'].stem in ['try1']: #, 'try2']:
+        if dataForActionObj['currentFileObj'].suffix == '.xml' and dataForActionObj['currentFileObj'].stem in ['try1', 'try2']:   #['sms-made-by-creed-20201010', 'sms-made-by-creed-20201015-20201019']:    #['try1']: #, 'try2']:
 
             currentFileObjXMLTreeRoot = et.parse(str(dataForActionObj['currentFileObj'])).getroot()
             
@@ -100,7 +86,6 @@ def mainFunction(arrayOfArguments):
                     uniqueArray = myPyFunc.getUniqueArrayOfObj(root)
                     p('Length of file after being deduplicated: ' + str(len(uniqueArray)))
                     dataForActionObj[xmlRootStr].extend(uniqueArray)
-                    p(dataForActionObj[xmlRootStr].items())
                     p('Length of accumulated file: ' + str(len(dataForActionObj[xmlRootStr])))
                     dataForActionObj[xmlRootStr] = removeDuplicatesFromRoot(dataForActionObj[xmlRootStr])
                     p('Length of accumulated file after deduplication: ' + str(len(dataForActionObj[xmlRootStr])))
