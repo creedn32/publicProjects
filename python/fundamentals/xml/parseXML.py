@@ -71,7 +71,7 @@ def mainFunction(arrayOfArguments):
 
     def actionToPerformOnEachFileObjInTree(dataForActionObj):
 
-        if dataForActionObj['currentFileObj'].suffix == '.xml':   # and dataForActionObj['currentFileObj'].stem in ['try1', 'try2']:   #['sms-made-by-creed-20201010', 'sms-made-by-creed-20201015-20201019']:    #['try1']: #, 'try2']:
+        if dataForActionObj['currentFileObj'].suffix == '.xml' and dataForActionObj['currentFileObj'].stem in ['sms-made-by-creed-20201010', 'sms-made-by-creed-20201015-20201019', 'calls-20200927034234']:    #['try1']: #, 'try2']:
 
             currentFileObjXMLTreeRoot = et.parse(str(dataForActionObj['currentFileObj'])).getroot()
             
@@ -97,7 +97,7 @@ def mainFunction(arrayOfArguments):
                     dataForActionObj[xmlRootStr] = removeDuplicatesFromRoot(dataForActionObj[xmlRootStr])
                     p(root.tag + ', length of accumulated file after deduplication: ' + str(len(dataForActionObj[xmlRootStr])))
 
-                xmlRootStr = 'new' + root.tag.upper() + 'XMLTreeRoot'
+                xmlRootStr = 'new' + root.tag.capitalize() + 'XMLTreeRoot'
 
                 if xmlRootStr not in dataForActionObj:
                     dataForActionObj[xmlRootStr] = et.parse(arrayOfArguments[2] + '\\' + root.tag + 'XMLEmpty.xml').getroot()
@@ -105,6 +105,7 @@ def mainFunction(arrayOfArguments):
                 extendAndDeduplicate()
 
             buildNewRoot(dataForActionObj, currentFileObjXMLTreeRoot)
+            
 
 
 
@@ -112,6 +113,7 @@ def mainFunction(arrayOfArguments):
         #     p(len(newXMLTreeRoot))
         #     newXMLTreeRoot.extend(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot))
         #     p(len(removeDuplicatesFromRoot(newXMLTreeRoot)))
+
 
         return dataForActionObj
             
@@ -133,8 +135,14 @@ def mainFunction(arrayOfArguments):
 
             # p(myPyFunc.getArrayOfDuplicatedElements(currentFileObjXMLTreeRoot))
 
-    p(len(myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)))
+    def saveXMLFileToDisk(returnedDataObj, tag):
+        xmlTreeRootKey = 'new' + tag.capitalize() + 'XMLTreeRoot'
+        returnedDataObj[xmlTreeRootKey].getroottree().write(arrayOfArguments[2] + '\\' + tag + 'XML.xml', pretty_print=True, xml_declaration=True, encoding='utf-8')
 
+
+    returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)
+    saveXMLFileToDisk(returnedDataObj, 'smses')
+    saveXMLFileToDisk(returnedDataObj, 'calls')
 
 
 if __name__ == '__main__':
