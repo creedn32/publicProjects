@@ -71,7 +71,7 @@ def mainFunction(arrayOfArguments):
 
     def actionToPerformOnEachFileObjInTree(dataForActionObj):
 
-        if dataForActionObj['currentFileObj'].suffix == '.xml' and dataForActionObj['currentFileObj'].stem in ['try1', 'try2']:   #['sms-made-by-creed-20201010', 'sms-made-by-creed-20201015-20201019']:    #['try1']: #, 'try2']:
+        if dataForActionObj['currentFileObj'].suffix == '.xml':   # and dataForActionObj['currentFileObj'].stem in ['try1', 'try2']:   #['sms-made-by-creed-20201010', 'sms-made-by-creed-20201015-20201019']:    #['try1']: #, 'try2']:
 
             currentFileObjXMLTreeRoot = et.parse(str(dataForActionObj['currentFileObj'])).getroot()
             
@@ -82,27 +82,25 @@ def mainFunction(arrayOfArguments):
             def buildNewRoot(dataForActionObj, root):
             
                 def extendAndDeduplicate():
-                    p('Length of file being added: ' + str(len(currentFileObjXMLTreeRoot)))
+                    p(root.tag + ', length of file being added: ' + str(len(currentFileObjXMLTreeRoot)))
                     uniqueArray = myPyFunc.getUniqueArrayOfObj(root)
-                    p('Length of file after being deduplicated: ' + str(len(uniqueArray)))
+                    p(root.tag + ', length of file after being deduplicated: ' + str(len(uniqueArray)))
                     dataForActionObj[xmlRootStr].extend(uniqueArray)
-                    p('Length of accumulated file: ' + str(len(dataForActionObj[xmlRootStr])))
+                    p(root.tag + ', length of accumulated file: ' + str(len(dataForActionObj[xmlRootStr])))
                     dataForActionObj[xmlRootStr] = removeDuplicatesFromRoot(dataForActionObj[xmlRootStr])
-                    p('Length of accumulated file after deduplication: ' + str(len(dataForActionObj[xmlRootStr])))
+                    p(root.tag + ', length of accumulated file after deduplication: ' + str(len(dataForActionObj[xmlRootStr])))
 
                 xmlRootStr = 'new' + root.tag.upper() + 'XMLTreeRoot'
 
-                if currentFileObjXMLTreeRoot.tag == 'smses':
+                if root.tag == 'smses':
                     argumentToUse = 2
                 else:
                     argumentToUse = 3
 
-                if xmlRootStr in dataForActionObj:
-                    extendAndDeduplicate()
-
-                else:
+                if xmlRootStr not in dataForActionObj:
                     dataForActionObj[xmlRootStr] = et.parse(arrayOfArguments[argumentToUse]).getroot()
-                    extendAndDeduplicate()
+
+                extendAndDeduplicate()
 
             buildNewRoot(dataForActionObj, currentFileObjXMLTreeRoot)
 
@@ -134,7 +132,7 @@ def mainFunction(arrayOfArguments):
 
             # p(myPyFunc.getArrayOfDuplicatedElements(currentFileObjXMLTreeRoot))
 
-    p(len(myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)['newSMSESXMLTreeRoot']))
+    p(len(myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)))
 
 
 
