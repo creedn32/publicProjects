@@ -44,47 +44,53 @@ def filterDateGreaterThanOct13(element):
     return False
 
 
-def addArrayToXML(array, root):
-
-    for element in array:
-        root.append(element)
-
-
 def removeDuplicatesFromRoot(root):
     
     checkedForDuplicatesSet = set()
-    # arrayOfUniques = []
+    arrayOfUniques = []
 
     for element in root:
         if element not in checkedForDuplicatesSet:
-            # element.getparent().remove(element)
+            arrayOfUniques.append(element)
             checkedForDuplicatesSet.add(element)
-            
-    return root
 
+    for element in root:
+        element.getparent().remove(element)
+
+    root.extend(arrayOfUniques)
+    return root
 
 def mainFunction(arrayOfArguments):
 
-    def actionToPerformOnEachFileObjInTree(currentFileObj):
-        if currentFileObj.suffix == '.xml' and currentFileObj.stem == 'sms-made-by-creed-20201010':
+    def actionToPerformOnEachFileObjInTree(dataForActionObj):
 
-            currentFileObjXMLTreeRoot = et.parse(str(currentFileObj)).getroot()
+        if dataForActionObj['currentFileObj'].suffix == '.xml' and dataForActionObj['currentFileObj'].stem in ['sms-made-by-creed-20201010', 'sms-made-by-creed-20201015-20201019']:
+
+            currentFileObjXMLTreeRoot = et.parse(str(dataForActionObj['currentFileObj'])).getroot()
             
-            p(currentFileObj.name)
+            p(dataForActionObj['currentFileObj'].name)
             p(len(currentFileObjXMLTreeRoot))
-            p(len(newMessagesXMLTreeRoot))
             
             if currentFileObjXMLTreeRoot.tag == 'smses':
-                newXMLTreeRoot = newMessagesXMLTreeRoot
+                if 'newMessagesXMLTreeRoot' in dataForActionObj:
+                    dataForActionObj['newMessagesXMLTreeRoot'].extend(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot))
+                else:
+                    dataForActionObj['newMessagesXMLTreeRoot'] = et.parse(arrayOfArguments[2]).getroot()
+                    dataForActionObj['newMessagesXMLTreeRoot'].extend(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot))
+
             elif currentFileObjXMLTreeRoot.tag == 'calls':
-                newXMLTreeRoot = newCallsXMLTreeRoot
-                
-            addArrayToXML(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot), newXMLTreeRoot)
-            removeDuplicatesFromRoot(newXMLTreeRoot)
-
-            p(len(newMessagesXMLTreeRoot))
+                if 'newMessagesXMLTreeRoot' in dataForActionObj:
+                    dataForActionObj['newMessagesXMLTreeRoot'].append('<hey>')
+                else:
+                    dataForActionObj['newMessagesXMLTreeRoot'] = et.parse(arrayOfArguments[3]).getroot()
 
 
+        #     p('newXMLTreeRoot: ')
+        #     p(len(newXMLTreeRoot))
+        #     newXMLTreeRoot.extend(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot))
+        #     p(len(removeDuplicatesFromRoot(newXMLTreeRoot)))
+
+        return dataForActionObj
             
             # p(currentFileObjXMLTreeRoot.tag)
             # p(len(newMessagesXMLTreeRoot))
@@ -105,10 +111,7 @@ def mainFunction(arrayOfArguments):
 
             # p(myPyFunc.getArrayOfDuplicatedElements(currentFileObjXMLTreeRoot))
 
-
-    newMessagesXMLTreeRoot = et.parse(arrayOfArguments[2]).getroot()
-    newCallsXMLTreeRoot = et.parse(arrayOfArguments[3]).getroot()
-    myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)
+    p(len(myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)['newMessagesXMLTreeRoot']))
 
 
 

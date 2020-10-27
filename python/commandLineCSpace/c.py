@@ -15,17 +15,18 @@ def mainFunction():
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    def actionToPerformOnEachFileObj(currentFileObj):
+    def actionToPerformOnEachFileObj(dataForActionObj):
 
-        if currentFileObj.is_file() and currentFileObj.suffix == '.py':
-            if currentFileObj.stem == sys.argv[1]:
-                return currentFileObj
+        if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.py':
+            if dataForActionObj['currentFileObj'].stem == sys.argv[1]:
+                dataForActionObj['pathToPythonFileForImport'] = dataForActionObj['currentFileObj']
+                return dataForActionObj
         
-        return None
+        return dataForActionObj
 
-    pathToPythonFileForImport = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
-    importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], pathToPythonFileForImport)
+    importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], returnedDataObj['pathToPythonFileForImport'])
     importedModule = importlib.util.module_from_spec(importedModuleSpec)
     importedModuleSpec.loader.exec_module(importedModule)
     importedModule.mainFunction(sys.argv[1:])
