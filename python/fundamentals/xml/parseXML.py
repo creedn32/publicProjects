@@ -7,8 +7,7 @@ from herokuGorilla.backend.python.myPythonLibrary import myPyFunc
 from pprint import pprint as p
 import lxml.etree as et
 from datetime import datetime
-import json
-
+import os
 
 
 def getNewestTextElementCombine(currentResultOfReduce, element):
@@ -27,14 +26,12 @@ def getSMSCountCombine(currentResultOfReduce, element):
     return currentResultOfReduce
 
 
-
 def getMMSCountCombine(currentResultOfReduce, element):
 
     if element.tag == 'mms':
         return currentResultOfReduce + 1
 
     return currentResultOfReduce
-
 
 
 def filterDateGreaterThanOct13(element):
@@ -64,7 +61,6 @@ def removeDuplicatesFromRoot(root):
     root.extend(arrayOfUniques)
 
     return root
-
 
 
 def mainFunction(arrayOfArguments):
@@ -107,20 +103,9 @@ def mainFunction(arrayOfArguments):
             buildNewRoot(dataForActionObj, currentFileObjXMLTreeRoot)
             
 
-
-
-        #     p('newXMLTreeRoot: ')
-        #     p(len(newXMLTreeRoot))
-        #     newXMLTreeRoot.extend(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot))
-        #     p(len(removeDuplicatesFromRoot(newXMLTreeRoot)))
-
-
         return dataForActionObj
-            
-            # p(currentFileObjXMLTreeRoot.tag)
-            # p(len(newMessagesXMLTreeRoot))
-            # p(len(newCallsXMLTreeRoot))
-            
+
+
             # newestTextElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getNewestTextElementCombine, currentFileObjXMLTreeRoot[0])
             # newestTextDateInt = int(newestTextElement.get('date'))
             # newestTextDateObj = myPyFunc.addTimezoneToDateObj(myPyFunc.unixMillisecondsToDateObj(newestTextDateInt), 'US/Mountain')
@@ -131,18 +116,27 @@ def mainFunction(arrayOfArguments):
             # p(newestTextDateInt)
 
             # p(len(myPyFunc.filterArray(currentFileObjXMLTreeRoot, filterDateGreaterThanOct13)))
-            # p(len(myPyFunc.getUniqueArray(currentFileObjXMLTreeRoot)))
 
-            # p(myPyFunc.getArrayOfDuplicatedElements(currentFileObjXMLTreeRoot))
 
-    def saveXMLFileToDisk(returnedDataObj, tag):
+    def createXMLFile(returnedDataObj, tag):
+
         xmlTreeRootKey = 'new' + tag.capitalize() + 'XMLTreeRoot'
-        returnedDataObj[xmlTreeRootKey].getroottree().write(arrayOfArguments[2] + '\\' + tag + 'XML.xml', pretty_print=True, xml_declaration=True, encoding='utf-8')
+        fileToCreate = arrayOfArguments[2] + '\\' + tag + 'XML.xml'
+        
+        try:
+            os.remove(fileToCreate)
+        except OSError:
+            pass
+
+        returnedDataObj[xmlTreeRootKey].getroottree().write(fileToCreate, pretty_print=True, xml_declaration=True, encoding='utf-8')
+        p('Created file: ' + fileToCreate + ' with length: ' + str(len(returnedDataObj[xmlTreeRootKey])))
 
 
     returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)
-    saveXMLFileToDisk(returnedDataObj, 'smses')
-    saveXMLFileToDisk(returnedDataObj, 'calls')
+    
+    for tag in ['smses', 'calls']:
+        createXMLFile(returnedDataObj, tag)
+
 
 
 if __name__ == '__main__':
