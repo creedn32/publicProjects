@@ -81,6 +81,17 @@ def mainFunction(arrayOfArguments):
                     p('Messages don\'t add up: ' + str(total))
                     sys.exit()
 
+            newestTextElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getNewestTextElementCombine, currentFileObjXMLTreeRoot[0])
+            newestTextDateInt = int(newestTextElement.get('date'))
+            newestTextDateObj = myPyFunc.addTimezoneToDateObj(myPyFunc.unixMillisecondsToDateObj(newestTextDateInt), 'US/Mountain')
+            p(newestTextDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
+            p(newestTextElement.get('contact_name'))
+            p(newestTextElement.get('address'))
+            p(newestTextElement.get('body'))
+            p(newestTextDateInt)
+            
+            p(len(myPyFunc.filterArray(currentFileObjXMLTreeRoot, filterDateGreaterThanOct13)))
+
 
             def buildNewRoot(dataForActionObj, root):
             
@@ -101,21 +112,10 @@ def mainFunction(arrayOfArguments):
                 extendAndDeduplicate()
 
             buildNewRoot(dataForActionObj, currentFileObjXMLTreeRoot)
-            
+
 
         return dataForActionObj
 
-
-            # newestTextElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getNewestTextElementCombine, currentFileObjXMLTreeRoot[0])
-            # newestTextDateInt = int(newestTextElement.get('date'))
-            # newestTextDateObj = myPyFunc.addTimezoneToDateObj(myPyFunc.unixMillisecondsToDateObj(newestTextDateInt), 'US/Mountain')
-            # p(newestTextDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
-            # p(newestTextElement.get('contact_name'))
-            # p(newestTextElement.get('address'))
-            # p(newestTextElement.get('body'))
-            # p(newestTextDateInt)
-
-            # p(len(myPyFunc.filterArray(currentFileObjXMLTreeRoot, filterDateGreaterThanOct13)))
 
 
     def createXMLFile(returnedDataObj, tag):
