@@ -71,7 +71,7 @@ def mainFunction(arrayOfArguments):
 
     def actionToPerformOnEachFileObjInTree(dataForActionObj):
 
-        if dataForActionObj['currentFileObj'].suffix == '.xml' and dataForActionObj['currentFileObj'].stem in ['sms-made-by-creed-20201010', 'sms-made-by-creed-20201015-20201019', 'calls-20200927034234']:    #['try1']: #, 'try2']:
+        if dataForActionObj['currentFileObj'].suffix == '.xml':   # and dataForActionObj['currentFileObj'].stem in ['sms-made-by-creed-20201010', 'sms-made-by-creed-20201015-20201019', 'calls-20200927034234']:    #['try1']: #, 'try2']:
 
             currentFileObjXMLTreeRoot = et.parse(str(dataForActionObj['currentFileObj'])).getroot()
             
