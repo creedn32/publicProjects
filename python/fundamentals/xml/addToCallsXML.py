@@ -8,11 +8,39 @@ from pprint import pprint as p
 import lxml.etree as et
 from datetime import datetime
 import os
+import csv
+
+
+
+def csvRowMatchesElement(currentCSVRow, element):
+    for currentCSVColumnNum, currentCSVColumn in enumerate(currentCSVRow):
+        if currentCSVColumn != element[currentCSVColumnNum]:
+            return False
+    return True
+
+
+def csvRowNotInXML(currentCSVRow, root):
+    
+    for element in root:
+        if csvRowMatchesElement(currentCSVRow, element):
+            return False
+    
+    return True
 
 
 def mainFunction(arrayOfArguments):
 
-    currentFileObjXMLTreeRoot = et.parse(arrayOfArguments[1]).getroot()
+    currentFileObjXMLTreeRoot = [[1, 2, 3], [1, 2, 3], [1, 2, 3]]   #et.parse(arrayOfArguments[1]).getroot()
+
+    with open(arrayOfArguments[2]) as csvFile:
+        csvReader = csv.reader(csvFile, delimiter=',')
+
+        for currentCSVRowNum, currentCSVRow in enumerate(csvReader):
+            if currentCSVRowNum > 0:
+                if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
+                    p('CSV Row not in XML')
+
+
 
 if __name__ == '__main__':
     p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')
