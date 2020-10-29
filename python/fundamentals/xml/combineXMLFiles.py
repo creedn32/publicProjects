@@ -116,20 +116,13 @@ def mainFunction(arrayOfArguments):
 
         return dataForActionObj
 
-
-
     def createXMLFile(returnedDataObj, tag):
 
         xmlTreeRootKey = 'new' + tag.capitalize() + 'XMLTreeRoot'
-        fileToCreate = arrayOfArguments[2] + '\\' + tag + 'XML.xml'
+        fileToCreateStr = arrayOfArguments[2] + '\\' + tag + 'XML.xml'
+        root = returnedDataObj[xmlTreeRootKey]
         
-        try:
-            os.remove(fileToCreate)
-        except OSError:
-            pass
-
-        returnedDataObj[xmlTreeRootKey].getroottree().write(fileToCreate, pretty_print=True, xml_declaration=True, encoding='utf-8')
-        p('Created file: ' + fileToCreate + ' with length: ' + str(len(returnedDataObj[xmlTreeRootKey])))
+        myPyFunc.writeXML(fileToCreateStr, root)
 
 
     returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)

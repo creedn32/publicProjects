@@ -38,10 +38,11 @@ def mainFunction(arrayOfArguments):
         for currentCSVRowNum, currentCSVRow in enumerate(csvReader):
             if currentCSVRowNum > 0:
                 if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
-                    p('CSV Row not in XML')
+                    # p('CSV Row not in XML')
                     currentFileObjXMLTreeRoot.append(currentCSVRow)
     
-    p(currentFileObjXMLTreeRoot)
+    p(len(currentFileObjXMLTreeRoot))
+    # myPyFunc.writeXML(arrayOfArguments[1], currentFileObjXMLTreeRoot)
 
 
 
