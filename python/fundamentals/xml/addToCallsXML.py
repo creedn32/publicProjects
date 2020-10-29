@@ -39,6 +39,9 @@ def mainFunction(arrayOfArguments):
             if currentCSVRowNum > 0:
                 if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
                     p('CSV Row not in XML')
+                    currentFileObjXMLTreeRoot.append(currentCSVRow)
+    
+    p(currentFileObjXMLTreeRoot)
 
 
 
