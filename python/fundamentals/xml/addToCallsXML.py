@@ -82,6 +82,7 @@ def mainFunction(arrayOfArguments):
 
             if currentCSVRowNum > 0:
 
+                
                 csvDateObj = datetime.strptime(currentCSVRow[2], '%m/%d/%Y %H:%M')
                 csvDateObjFiveBefore = csvDateObj + timedelta(minutes=-5)
                 csvDateObjFiveAfter = csvDateObj + timedelta(minutes=5)
