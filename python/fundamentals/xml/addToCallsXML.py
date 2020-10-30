@@ -6,7 +6,7 @@ from herokuGorilla.backend.python.myPythonLibrary import myPyFunc
 
 from pprint import pprint as p
 import lxml.etree as et
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import csv
 
@@ -81,11 +81,25 @@ def mainFunction(arrayOfArguments):
         csvReader = csv.reader(csvFile, delimiter=',')
 
         for currentCSVRowNum, currentCSVRow in enumerate(csvReader):
+
             if currentCSVRowNum > 0:
 
-                if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
-                    p(currentCSVRow)
-                    p('CSV Row not in XML')
+                csvDateObj = datetime.strptime(currentCSVRow[2], '%m/%d/%Y %H:%M')
+                csvDateObjFiveBefore = csvDateObj + timedelta(minutes=-5)
+                csvDateObjFiveAfter = csvDateObj + timedelta(minutes=5)
+                timeToCompare = datetime(2014, 7, 2, 13, 8)
+
+                if timeToCompare > csvDateObjFiveBefore and timeToCompare < csvDateObjFiveAfter:
+                    p(currentCSVRow[2])
+                    p(csvDateObj)
+                    p(csvDateObjFiveBefore)
+                    p(csvDateObjFiveAfter)
+
+
+                # if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
+                #     pass
+                    # p(currentCSVRow)
+                    # p('CSV Row not in XML')
                     # currentFileObjXMLTreeRoot.append(currentCSVRow)
     
     p(len(currentFileObjXMLTreeRoot))
