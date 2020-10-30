@@ -61,14 +61,6 @@ def csvRowMatchesElement(currentCSVRow, element):
 
 
 
-
-
-    # for currentCSVColumnNum, currentCSVColumn in enumerate(currentCSVRow):
-    #     if currentCSVColumn != 1:   #element[currentCSVColumnNum]:
-    #         return False
-    # return True
-
-
 def csvRowNotInXML(currentCSVRow, root):
     
     for element in root:
@@ -90,10 +82,7 @@ def mainFunction(arrayOfArguments):
 
         for currentCSVRowNum, currentCSVRow in enumerate(csvReader):
             if currentCSVRowNum > 0:
-                
-                # if currentCSVRow[0] == 'Rob Shaw':
-                #     p(currentCSVRow)
-                
+
                 if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
                     p(currentCSVRow)
                     p('CSV Row not in XML')

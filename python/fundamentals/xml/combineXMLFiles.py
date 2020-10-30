@@ -10,7 +10,7 @@ from datetime import datetime
 import os
 
 
-def getNewestTextElementCombine(currentResultOfReduce, element):
+def getNewestSMSCombine(currentResultOfReduce, element):
     
     if int(currentResultOfReduce.get('date')) > int(element.get('date')):
         return currentResultOfReduce
@@ -84,14 +84,14 @@ def mainFunction(arrayOfArguments):
                     p('Messages don\'t add up: ' + str(total))
                     sys.exit()
 
-            newestTextElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getNewestTextElementCombine, currentFileObjXMLTreeRoot[0])
-            newestTextDateInt = int(newestTextElement.get('date'))
-            newestTextDateObj = myPyFunc.unixIntToDateObj(newestTextDateInt, 'US/Mountain')
-            p(newestTextDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
-            p(newestTextElement.get('contact_name'))
-            p(newestTextElement.get('address'))
-            p(newestTextElement.get('body'))
-            p(newestTextDateInt)
+            smsElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getNewestSMSCombine, currentFileObjXMLTreeRoot[0])
+            smsDateInt = int(smsElement.get('date'))
+            newestSMSDateObj = myPyFunc.unixIntToDateObj(smsDateInt, 'US/Mountain')
+            p(newestSMSDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
+            p(smsElement.get('contact_name'))
+            p(smsElement.get('address'))
+            p(smsElement.get('body'))
+            p(smsDateInt)
             
             p(len(myPyFunc.filterArray(currentFileObjXMLTreeRoot, filterDateGreaterThanOct13)))
 
