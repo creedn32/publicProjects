@@ -65,6 +65,9 @@ def removeDuplicatesFromRoot(root):
 
 def mainFunction(arrayOfArguments):
 
+    pathStrToTopOfFileTree = arrayOfArguments[1]
+    pathStrToNewXMLFileFolder = arrayOfArguments[2]
+
     def actionToPerformOnEachFileObjInTree(dataForActionObj):
 
         if dataForActionObj['currentFileObj'].suffix == '.xml':   # and dataForActionObj['currentFileObj'].stem in ['sms-made-by-creed-20201010', 'sms-made-by-creed-20201015-20201019', 'calls-20200927034234']:    #['try1']: #, 'try2']:
@@ -83,7 +86,7 @@ def mainFunction(arrayOfArguments):
 
             newestTextElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getNewestTextElementCombine, currentFileObjXMLTreeRoot[0])
             newestTextDateInt = int(newestTextElement.get('date'))
-            newestTextDateObj = myPyFunc.addTimezoneToDateObj(myPyFunc.unixMillisecondsToDateObj(newestTextDateInt), 'US/Mountain')
+            newestTextDateObj = myPyFunc.unixIntToDateObj(newestTextDateInt, 'US/Mountain')
             p(newestTextDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
             p(newestTextElement.get('contact_name'))
             p(newestTextElement.get('address'))
@@ -107,7 +110,7 @@ def mainFunction(arrayOfArguments):
                 xmlRootStr = 'new' + root.tag.capitalize() + 'XMLTreeRoot'
 
                 if xmlRootStr not in dataForActionObj:
-                    dataForActionObj[xmlRootStr] = et.parse(arrayOfArguments[2] + '\\' + root.tag + 'XMLEmpty.xml').getroot()
+                    dataForActionObj[xmlRootStr] = et.parse(pathStrToNewXMLFileFolder + '\\' + root.tag + 'XMLEmpty.xml').getroot()
 
                 extendAndDeduplicate()
 
@@ -119,13 +122,13 @@ def mainFunction(arrayOfArguments):
     def createXMLFile(returnedDataObj, tag):
 
         xmlTreeRootKey = 'new' + tag.capitalize() + 'XMLTreeRoot'
-        fileToCreateStr = arrayOfArguments[2] + '\\' + tag + 'XML.xml'
+        fileToCreateStr = pathStrToNewXMLFileFolder + '\\' + tag + 'XML.xml'
         root = returnedDataObj[xmlTreeRootKey]
         
         myPyFunc.writeXML(fileToCreateStr, root)
 
 
-    returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), actionToPerformOnEachFileObjInTree)
+    returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(Path(pathStrToTopOfFileTree), actionToPerformOnEachFileObjInTree)
     
     for tag in ['smses', 'calls']:
         createXMLFile(returnedDataObj, tag)

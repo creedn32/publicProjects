@@ -20,6 +20,13 @@ def cleanPhoneNumber(phoneNumberStr):
 
 def csvRowMatchesElement(currentCSVRow, element):
 
+    csvRowObj = {
+        'person': [currentCSVRow[0], cleanPhoneNumber(currentCSVRow[1])],
+        'date':  currentCSVRow[2],
+        'callType': currentCSVRow[3],
+        'duration': currentCSVRow[5]
+    }
+
     callType = element.get('type')
 
     if callType in ['1', '3', '5']:
@@ -27,30 +34,33 @@ def csvRowMatchesElement(currentCSVRow, element):
     elif callType in ['2']:
         callType = 'Outgoing'
 
-    csvRowObj = {
+    if callType not in ['Incoming', 'Outgoing']:
+        p('New Call Type Found')
+
+    elementObj = {
         'person': [element.get('name'), cleanPhoneNumber(element.get('number'))],
-        'date': element.get('date'),
+        'date': '{dt.month}/{dt.day}/{dt.year} {dt.hour}:{dt.minute}'.format(dt = myPyFunc.unixIntToDateObj(int(element.get('date')), 'US/Mountain')),
         'callType': callType,
         'duration': element.get('duration')
     }
 
-    for csvValue in csvRowObj.values():
+    # p('csvRow')
+    # p(csvRowObj)
+    # p('element')
+    # p(elementObj)
+
+    for csvKey, csvValue in csvRowObj.items():
         if isinstance(csvValue, list):
-            for element in csvValue:
-                p(element)
+            if elementObj[csvKey] not in csvValue:
+                return False
         else:
-            p(csvValue)
+            if elementObj[csvKey] != csvKey:
+                return False
+
+    return True
 
 
-    elementObj = {
-        'person': [0, 0],
-        'date': 0,
-        'callType': 0,
-        'duration': 0
-    }
 
-    if callType not in ['Incoming', 'Outgoing']:
-        p('New Call Type Found')
 
 
     # for currentCSVColumnNum, currentCSVColumn in enumerate(currentCSVRow):
@@ -69,9 +79,13 @@ def csvRowNotInXML(currentCSVRow, root):
 
 def mainFunction(arrayOfArguments):
 
-    currentFileObjXMLTreeRoot = et.parse(arrayOfArguments[1]).getroot()
+    pathStrToCallsXMLFile = arrayOfArguments[1]
+    pathStrToCSVFile = arrayOfArguments[2]
 
-    with open(arrayOfArguments[2]) as csvFile:
+
+    currentFileObjXMLTreeRoot = et.parse(pathStrToCallsXMLFile).getroot()
+
+    with open(pathStrToCSVFile) as csvFile:
         csvReader = csv.reader(csvFile, delimiter=',')
 
         for currentCSVRowNum, currentCSVRow in enumerate(csvReader):
@@ -81,12 +95,12 @@ def mainFunction(arrayOfArguments):
                 #     p(currentCSVRow)
                 
                 if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
-                    pass
-                    # p('CSV Row not in XML')
+                    p(currentCSVRow)
+                    p('CSV Row not in XML')
                     # currentFileObjXMLTreeRoot.append(currentCSVRow)
     
     p(len(currentFileObjXMLTreeRoot))
-    # myPyFunc.writeXML(arrayOfArguments[1], currentFileObjXMLTreeRoot)
+    # myPyFunc.writeXML(pathStrToCallsXMLFile, currentFileObjXMLTreeRoot)
 
 
 
