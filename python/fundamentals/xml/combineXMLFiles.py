@@ -10,33 +10,40 @@ from datetime import datetime
 import os
 
 
-def getNewestSMSCombine(currentResultOfReduce, element):
+def getNewestSMSCombine(currentResultOfReduce, elementToEvaluate):
     
-    if int(currentResultOfReduce.get('date')) > int(element.get('date')):
+    if int(currentResultOfReduce.get('date')) > int(elementToEvaluate.get('date')):
         return currentResultOfReduce
         
-    return element
+    return elementToEvaluate
+
+def getOldestSMSCombine(currentResultOfReduce, elementToEvaluate):
+    
+    if int(currentResultOfReduce.get('date')) < int(elementToEvaluate.get('date')):
+        return currentResultOfReduce
+        
+    return elementToEvaluate
 
 
-def getSMSCountCombine(currentResultOfReduce, element):
+def getSMSCountCombine(currentResultOfReduce, elementToEvaluate):
 
-    if element.tag == 'sms':
+    if elementToEvaluate.tag == 'sms':
         return currentResultOfReduce + 1
 
     return currentResultOfReduce
 
 
-def getMMSCountCombine(currentResultOfReduce, element):
+def getMMSCountCombine(currentResultOfReduce, elementToEvaluate):
 
-    if element.tag == 'mms':
+    if elementToEvaluate.tag == 'mms':
         return currentResultOfReduce + 1
 
     return currentResultOfReduce
 
 
-def filterDateGreaterThanOct13(element):
+def filterDateGreaterThanOct13(elementToEvaluate):
 
-    if int(element.get('date')) >= 1602639501397:
+    if int(elementToEvaluate.get('date')) >= 1602639501397:
         return True
     
     return False
@@ -84,7 +91,7 @@ def mainFunction(arrayOfArguments):
                     p('Messages don\'t add up: ' + str(total))
                     sys.exit()
 
-            smsElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getNewestSMSCombine, currentFileObjXMLTreeRoot[0])
+            smsElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getOldestSMSCombine, currentFileObjXMLTreeRoot[0])
             smsDateInt = int(smsElement.get('date'))
             newestSMSDateObj = myPyFunc.unixIntToDateObj(smsDateInt, 'US/Mountain')
             p(newestSMSDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
