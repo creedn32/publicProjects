@@ -26,18 +26,37 @@ def csvRowMatchesElement(currentCSVRow, element):
         callType = 'Incoming'
     elif callType in ['2']:
         callType = 'Outgoing'
-    
-    if callType not in ['Incoming', 'Outgoing'] and int(element.get('date')) > 1559073522412:
+
+    csvRowObj = {
+        'person': [element.get('name'), cleanPhoneNumber(element.get('number'))],
+        'date': element.get('date'),
+        'callType': callType,
+        'duration': element.get('duration')
+    }
+
+    for csvValue in csvRowObj.values():
+        if isinstance(csvValue, list):
+            for element in csvValue:
+                p(element)
+        else:
+            p(csvValue)
+
+
+    elementObj = {
+        'person': [0, 0],
+        'date': 0,
+        'callType': 0,
+        'duration': 0
+    }
+
+    if callType not in ['Incoming', 'Outgoing']:
         p('New Call Type Found')
 
-    
-    mappedElement = ['', cleanPhoneNumber(element.get('number')), element.get('date'), callType, '', element.get('duration')]
-    p(mappedElement)
 
-    for currentCSVColumnNum, currentCSVColumn in enumerate(currentCSVRow):
-        if currentCSVColumn != 1:   #element[currentCSVColumnNum]:
-            return False
-    return True
+    # for currentCSVColumnNum, currentCSVColumn in enumerate(currentCSVRow):
+    #     if currentCSVColumn != 1:   #element[currentCSVColumnNum]:
+    #         return False
+    # return True
 
 
 def csvRowNotInXML(currentCSVRow, root):
