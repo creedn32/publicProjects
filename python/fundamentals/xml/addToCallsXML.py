@@ -73,8 +73,6 @@ def mainFunction(arrayOfArguments):
 
     pathStrToCallsXMLFile = arrayOfArguments[1]
     pathStrToCSVFile = arrayOfArguments[2]
-
-
     currentFileObjXMLTreeRoot = et.parse(pathStrToCallsXMLFile).getroot()
 
     with open(pathStrToCSVFile) as csvFile:
