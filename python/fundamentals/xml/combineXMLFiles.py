@@ -92,13 +92,12 @@ def mainFunction(arrayOfArguments):
                     sys.exit()
 
             smsElement = myPyFunc.reduceArray(currentFileObjXMLTreeRoot, getOldestSMSCombine, currentFileObjXMLTreeRoot[0])
-            smsDateInt = int(smsElement.get('date'))
-            newestSMSDateObj = myPyFunc.unixIntToDateObj(smsDateInt, 'US/Mountain')
+            newestSMSDateObj = myPyFunc.unixStrToDateObjMST(smsElement.get('date'))
             p(newestSMSDateObj.strftime('%Y-%m-%d %I:%M:%S %p'))
             p(smsElement.get('contact_name'))
             p(smsElement.get('address'))
             p(smsElement.get('body'))
-            p(smsDateInt)
+            p(newestSMSDateObj)
             
             p(len(myPyFunc.filterArray(currentFileObjXMLTreeRoot, filterDateGreaterThanOct13)))
 
