@@ -74,6 +74,8 @@ def mainFunction(arrayOfArguments):
     pathStrToCallsXMLFile = arrayOfArguments[1]
     pathStrToCSVFile = arrayOfArguments[2]
     currentFileObjXMLTreeRoot = et.parse(pathStrToCallsXMLFile).getroot()
+    result = sorted(currentFileObjXMLTreeRoot, key=lambda x: int(x.get('date')), reverse=True)
+    p(result[0].get('date'))
 
     with open(pathStrToCSVFile) as csvFile:
         csvReader = csv.reader(csvFile, delimiter=',')
@@ -82,17 +84,19 @@ def mainFunction(arrayOfArguments):
 
             if currentCSVRowNum > 0:
 
-                
-                csvDateObj = datetime.strptime(currentCSVRow[2], '%m/%d/%Y %H:%M')
-                csvDateObjFiveBefore = csvDateObj + timedelta(minutes=-5)
-                csvDateObjFiveAfter = csvDateObj + timedelta(minutes=5)
-                timeToCompare = datetime(2014, 7, 2, 13, 8)
+                for element in currentFileObjXMLTreeRoot:
+                    
+                    csvDateObj = datetime.strptime(currentCSVRow[2], '%m/%d/%Y %H:%M')
+                    csvDateObjFiveBefore = csvDateObj + timedelta(minutes=-5)
+                    csvDateObjFiveAfter = csvDateObj + timedelta(minutes=5)
+                    timeToCompare = datetime(2014, 7, 2, 13, 8)
 
-                if timeToCompare > csvDateObjFiveBefore and timeToCompare < csvDateObjFiveAfter:
-                    p(currentCSVRow[2])
-                    p(csvDateObj)
-                    p(csvDateObjFiveBefore)
-                    p(csvDateObjFiveAfter)
+                    if timeToCompare > csvDateObjFiveBefore and timeToCompare < csvDateObjFiveAfter:
+                        pass
+                        # p(currentCSVRow[2])
+                        # p(csvDateObj)
+                        # p(csvDateObjFiveBefore)
+                        # p(csvDateObjFiveAfter)
 
 
                 # if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
