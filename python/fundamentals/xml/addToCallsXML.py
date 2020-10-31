@@ -76,7 +76,7 @@ def mainFunction(arrayOfArguments):
     currentFileObjXMLTreeRoot = et.parse(pathStrToCallsXMLFile).getroot()
     sortOrderDesc = True
     dateColumnIndexCSV = 2
-    minutesInTimeBand = 120
+    minutesInTimeBand = 4
     minutesToAdjust = round(minutesInTimeBand/2)
 
     currentFileObjXMLTreeRoot = sorted(currentFileObjXMLTreeRoot, key=lambda x: int(x.get('date')), reverse=sortOrderDesc)
@@ -87,6 +87,7 @@ def mainFunction(arrayOfArguments):
 
         for currentCSVRow in csvReader:
             currentCSVRow[dateColumnIndexCSV] = myPyFunc.addMSTToDateObj(datetime.strptime(currentCSVRow[dateColumnIndexCSV], '%m/%d/%Y %H:%M'))
+            currentCSVRow[1] = cleanPhoneNumber(currentCSVRow[1])
 
         csvReader.sort(key=lambda x: x[dateColumnIndexCSV], reverse=sortOrderDesc)
         # p(csvReader[0][2])
@@ -99,7 +100,7 @@ def mainFunction(arrayOfArguments):
                 csvDateObjAfter = currentCSVRow[dateColumnIndexCSV] + timedelta(minutes=minutesToAdjust)
                 timeToCompare = myPyFunc.unixStrToDateObjMST(currentElement.get('date'))
 
-                if timeToCompare > csvDateObjBefore and timeToCompare < csvDateObjAfter:                    
+                if timeToCompare > csvDateObjBefore and timeToCompare < csvDateObjAfter and currentCSVRow[1] == cleanPhoneNumber(currentElement.get('number')):                    
                     p(currentCSVRow)
                     p(currentElement.attrib)
 
