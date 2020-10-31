@@ -9,7 +9,7 @@ import lxml.etree as et
 from datetime import datetime, timedelta
 import os
 import csv
-
+from pytz import timezone
 
 
 def cleanPhoneNumber(phoneNumberStr):
@@ -39,7 +39,7 @@ def csvRowMatchesElement(currentCSVRow, element):
 
     elementObj = {
         'person': [element.get('name'), cleanPhoneNumber(element.get('number'))],
-        'date': '{dt.month}/{dt.day}/{dt.year} {dt.hour}:{dt.minute}'.format(dt = myPyFunc.unixIntToDateObj(int(element.get('date')), 'US/Mountain')),
+        'date': '{dt.month}/{dt.day}/{dt.year} {dt.hour}:{dt.minute}'.format(dt = myPyFunc.unixStrToDateObjMST(element.get('date'))),
         'callType': callType,
         'duration': element.get('duration')
     }
@@ -74,36 +74,41 @@ def mainFunction(arrayOfArguments):
     pathStrToCallsXMLFile = arrayOfArguments[1]
     pathStrToCSVFile = arrayOfArguments[2]
     currentFileObjXMLTreeRoot = et.parse(pathStrToCallsXMLFile).getroot()
-    result = sorted(currentFileObjXMLTreeRoot, key=lambda x: int(x.get('date')), reverse=True)
-    p(result[0].get('date'))
+    sortOrderDesc = True
+    dateColumnIndexCSV = 2
+    minutesInTimeBand = 120
+    minutesToAdjust = round(minutesInTimeBand/2)
+
+    currentFileObjXMLTreeRoot = sorted(currentFileObjXMLTreeRoot, key=lambda x: int(x.get('date')), reverse=sortOrderDesc)
+    # p(myPyFunc.unixStrToDateObjMST(currentFileObjXMLTreeRoot[0].get('date'))
 
     with open(pathStrToCSVFile) as csvFile:
-        csvReader = csv.reader(csvFile, delimiter=',')
+        csvReader = list(csv.reader(csvFile, delimiter=','))[1:]
 
-        for currentCSVRowNum, currentCSVRow in enumerate(csvReader):
+        for currentCSVRow in csvReader:
+            currentCSVRow[dateColumnIndexCSV] = myPyFunc.addMSTToDateObj(datetime.strptime(currentCSVRow[dateColumnIndexCSV], '%m/%d/%Y %H:%M'))
 
-            if currentCSVRowNum > 0:
+        csvReader.sort(key=lambda x: x[dateColumnIndexCSV], reverse=sortOrderDesc)
+        # p(csvReader[0][2])
 
-                for element in currentFileObjXMLTreeRoot:
-                    
-                    csvDateObj = datetime.strptime(currentCSVRow[2], '%m/%d/%Y %H:%M')
-                    csvDateObjFiveBefore = csvDateObj + timedelta(minutes=-5)
-                    csvDateObjFiveAfter = csvDateObj + timedelta(minutes=5)
-                    timeToCompare = datetime(2014, 7, 2, 13, 8)
+        for currentCSVRow in csvReader:
 
-                    if timeToCompare > csvDateObjFiveBefore and timeToCompare < csvDateObjFiveAfter:
-                        pass
-                        # p(currentCSVRow[2])
-                        # p(csvDateObj)
-                        # p(csvDateObjFiveBefore)
-                        # p(csvDateObjFiveAfter)
+            for currentElement in currentFileObjXMLTreeRoot:
+                
+                csvDateObjBefore = currentCSVRow[dateColumnIndexCSV] + timedelta(minutes=-minutesToAdjust)
+                csvDateObjAfter = currentCSVRow[dateColumnIndexCSV] + timedelta(minutes=minutesToAdjust)
+                timeToCompare = myPyFunc.unixStrToDateObjMST(currentElement.get('date'))
+
+                if timeToCompare > csvDateObjBefore and timeToCompare < csvDateObjAfter:                    
+                    p(currentCSVRow)
+                    p(currentElement.attrib)
 
 
-                # if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
-                #     pass
-                    # p(currentCSVRow)
-                    # p('CSV Row not in XML')
-                    # currentFileObjXMLTreeRoot.append(currentCSVRow)
+            # if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
+            #     pass
+                # p(currentCSVRow)
+                # p('CSV Row not in XML')
+                # currentFileObjXMLTreeRoot.append(currentCSVRow)
     
     p(len(currentFileObjXMLTreeRoot))
     # myPyFunc.writeXML(pathStrToCallsXMLFile, currentFileObjXMLTreeRoot)
