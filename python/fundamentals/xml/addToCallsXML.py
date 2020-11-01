@@ -13,60 +13,51 @@ from pytz import timezone
 
 
 def cleanPhoneNumber(phoneNumberStr):
-    phoneNumberStr = phoneNumberStr.replace(' ', '').replace('+', '')
+
+    for stringToReplace in [' ', '+', '(', ')', '-']:
+        phoneNumberStr = phoneNumberStr.replace(stringToReplace, '')
 
     return phoneNumberStr[1:] if phoneNumberStr.startswith('1') else phoneNumberStr
 
+def convertCallType(callTypeNumber):
 
-def csvRowMatchesElement(currentCSVRow, element):
-
-    csvRowObj = {
-        'person': [currentCSVRow[0], cleanPhoneNumber(currentCSVRow[1])],
-        'date':  currentCSVRow[2],
-        'callType': currentCSVRow[3],
-        'duration': currentCSVRow[5]
+    callTypeNumberToWord = {
+        '1': 'Incoming',
+        '2': 'Outgoing',
+        '3': 'Missed',
+        '5': 'Declined'
     }
 
-    callType = element.get('type')
+    callType = callTypeNumberToWord[callTypeNumber]
 
-    if callType in ['1', '3', '5']:
-        callType = 'Incoming'
-    elif callType in ['2']:
-        callType = 'Outgoing'
-
-    if callType not in ['Incoming', 'Outgoing']:
-        p('New Call Type Found')
-
-    elementObj = {
-        'person': [element.get('name'), cleanPhoneNumber(element.get('number'))],
-        'date': '{dt.month}/{dt.day}/{dt.year} {dt.hour}:{dt.minute}'.format(dt = myPyFunc.unixStrToDateObjMST(element.get('date'))),
-        'callType': callType,
-        'duration': element.get('duration')
-    }
-
-    # p('csvRow')
-    # p(csvRowObj)
-    # p('element')
-    # p(elementObj)
-
-    for csvKey, csvValue in csvRowObj.items():
-        if isinstance(csvValue, list):
-            if elementObj[csvKey] not in csvValue:
-                return False
-        else:
-            if elementObj[csvKey] != csvKey:
-                return False
-
-    return True
+    return callType
 
 
+def csvRowMatchesElement(currentCSVRow, currentElement):
 
-def csvRowNotInXML(currentCSVRow, root):
+    minutesInTimeBand = 4
+    minutesToAdjust = round(minutesInTimeBand/2)
+
+    currentElementDateObj = myPyFunc.unixStrToDateObjMST(currentElement.get('date')).replace(tzinfo=None)
+    csvDateObjBefore = currentCSVRow[2] + timedelta(minutes=-minutesToAdjust)
+    csvDateObjAfter = currentCSVRow[2] + timedelta(minutes=minutesToAdjust)
+
+    if currentCSVRow[1] == cleanPhoneNumber(currentElement.get('number')):
+        if currentCSVRow[5] == currentElement.get('duration'):
+            if currentCSVRow[3] == convertCallType(currentElement.get('type')):
+                if currentElementDateObj > csvDateObjBefore and currentElementDateObj < csvDateObjAfter: 
+                    return True
     
-    for element in root:
-        if csvRowMatchesElement(currentCSVRow, element):
-            return False
-    return True
+    return False
+
+
+def csvRowInXML(currentCSVRow, root):
+
+    for currentElement in root:
+        if csvRowMatchesElement(currentCSVRow, currentElement):
+            return currentElement.attrib
+
+    return None
 
 
 def mainFunction(arrayOfArguments):
@@ -76,41 +67,62 @@ def mainFunction(arrayOfArguments):
     currentFileObjXMLTreeRoot = et.parse(pathStrToCallsXMLFile).getroot()
     sortOrderDesc = True
     dateColumnIndexCSV = 2
-    minutesInTimeBand = 4
-    minutesToAdjust = round(minutesInTimeBand/2)
+    phoneNumberColumnIndexCSV = 1
+    durationColumnIndexCSV = 5
+    callTypeColumnIndexCSV = 3
+
+    callTypeWordToNumber = {
+        'Incoming': '1',
+        'Outgoing': '2',
+        'Missed': '3',
+        'Declined': '5'
+    }
+
+    treeToAdd = []
 
     currentFileObjXMLTreeRoot = sorted(currentFileObjXMLTreeRoot, key=lambda x: int(x.get('date')), reverse=sortOrderDesc)
     # p(myPyFunc.unixStrToDateObjMST(currentFileObjXMLTreeRoot[0].get('date'))
+
+    # for currentElement in currentFileObjXMLTreeRoot:
+    #     if currentElement.get('type') in ['5']:
+    #         p(currentElement.attrib)
 
     with open(pathStrToCSVFile) as csvFile:
         csvReader = list(csv.reader(csvFile, delimiter=','))[1:]
 
         for currentCSVRow in csvReader:
-            currentCSVRow[dateColumnIndexCSV] = myPyFunc.addMSTToDateObj(datetime.strptime(currentCSVRow[dateColumnIndexCSV], '%m/%d/%Y %H:%M'))
-            currentCSVRow[1] = cleanPhoneNumber(currentCSVRow[1])
-
+            currentCSVRow[dateColumnIndexCSV] = datetime.strptime(currentCSVRow[dateColumnIndexCSV], '%m/%d/%Y %H:%M')
+            currentCSVRow[phoneNumberColumnIndexCSV] = cleanPhoneNumber(currentCSVRow[phoneNumberColumnIndexCSV])
+            
         csvReader.sort(key=lambda x: x[dateColumnIndexCSV], reverse=sortOrderDesc)
-        # p(csvReader[0][2])
 
         for currentCSVRow in csvReader:
 
-            for currentElement in currentFileObjXMLTreeRoot:
-                
-                csvDateObjBefore = currentCSVRow[dateColumnIndexCSV] + timedelta(minutes=-minutesToAdjust)
-                csvDateObjAfter = currentCSVRow[dateColumnIndexCSV] + timedelta(minutes=minutesToAdjust)
-                timeToCompare = myPyFunc.unixStrToDateObjMST(currentElement.get('date'))
+            if not csvRowInXML(currentCSVRow, currentFileObjXMLTreeRoot):
+                p('CSV')
+                p('This row is not in XML')
+                p(currentCSVRow)
 
-                if timeToCompare > csvDateObjBefore and timeToCompare < csvDateObjAfter and currentCSVRow[1] == cleanPhoneNumber(currentElement.get('number')):                    
-                    p(currentCSVRow)
-                    p(currentElement.attrib)
+                elementToAppend = {
+                    'number': currentCSVRow[phoneNumberColumnIndexCSV],
+                    'type': callTypeWordToNumber[currentCSVRow[callTypeColumnIndexCSV]],
+                    'date': myPyFunc.dateObjToUnixMillisecondsStr(currentCSVRow[dateColumnIndexCSV]),
+                    'duration': currentCSVRow[durationColumnIndexCSV]
+                }
+
+                p(elementToAppend)
+                treeToAdd.append(elementToAppend)
 
 
-            # if csvRowNotInXML(currentCSVRow, currentFileObjXMLTreeRoot):
-            #     pass
-                # p(currentCSVRow)
-                # p('CSV Row not in XML')
-                # currentFileObjXMLTreeRoot.append(currentCSVRow)
-    
+            # if csvRowInXML(currentCSVRow, currentFileObjXMLTreeRoot):
+            #     p('CSV')
+            #     p('This row is in XML')
+            #     p(currentCSVRow)
+            #     p('Element')
+            #     p(csvRowInXML(currentCSVRow, currentFileObjXMLTreeRoot))
+
+
+
     p(len(currentFileObjXMLTreeRoot))
     # myPyFunc.writeXML(pathStrToCallsXMLFile, currentFileObjXMLTreeRoot)
 
