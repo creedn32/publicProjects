@@ -83,8 +83,6 @@ def mainFunction(arrayOfArguments):
         'Declined': '5'
     }
 
-    treeToAdd = []
-
     rootObj[:] = sorted(rootObj, key=lambda x: int(x.get('date')), reverse=sortOrderDesc)
 
 
@@ -97,6 +95,8 @@ def mainFunction(arrayOfArguments):
             
         csvReader.sort(key=lambda x: x[dateColumnIndexCSV], reverse=sortOrderDesc)
 
+        elementsToAppend = []
+
         for currentCSVRow in csvReader:
 
             if not csvRowInXML(currentCSVRow, rootObj):
@@ -104,17 +104,22 @@ def mainFunction(arrayOfArguments):
                 # p('This row is not in XML')
                 # p(currentCSVRow)
 
-                elementToAppend = etree.Element('call')
                 
-                # {
-                #     'number': currentCSVRow[phoneNumberColumnIndexCSV],
-                #     'type': callTypeWordToNumber[currentCSVRow[callTypeColumnIndexCSV]],
-                #     'date': myPyFunc.dateObjToUnixMillisecondsStr(currentCSVRow[dateColumnIndexCSV]),
-                #     'duration': currentCSVRow[durationColumnIndexCSV]
-                # }
+                dataForElement = {
+                    'number': currentCSVRow[phoneNumberColumnIndexCSV],
+                    'type': callTypeWordToNumber[currentCSVRow[callTypeColumnIndexCSV]],
+                    'date': myPyFunc.dateObjToUnixMillisecondsStr(currentCSVRow[dateColumnIndexCSV]),
+                    'duration': currentCSVRow[durationColumnIndexCSV]
+                }
 
-                # p(elementToAppend)
-                treeToAdd.append(elementToAppend)
+                elementToAppend = etree.Element('call')
+
+
+                for attributeKey, attributeValue in dataForElement.items():
+                    # print(attributeKey, attributeValue)
+                    elementToAppend.set(attributeKey, attributeValue)
+
+                elementsToAppend.append(elementToAppend)
 
 
             # if csvRowInXML(currentCSVRow, rootObj):
@@ -124,14 +129,15 @@ def mainFunction(arrayOfArguments):
             #     p('Element')
             #     p(csvRowInXML(currentCSVRow, rootObj))
 
-    for elementToAppend in treeToAdd:
+    # p(len(rootObj))
+
+    for elementToAppend in elementsToAppend:
         rootObj.append(elementToAppend)
 
     p(myPyFunc.getArrayOfDuplicatedElements(rootObj))
 
-    p(len(rootObj))
     myPyFunc.writeXML(pathStrToNewCallsXML, rootObj)
-    p(len(rootObj))
+    # p(len(rootObj))
 
     myPyFunc.printTimeSinceImport()
 
