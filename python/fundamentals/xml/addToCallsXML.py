@@ -100,9 +100,9 @@ def mainFunction(arrayOfArguments):
         for currentCSVRow in csvReader:
 
             if not csvRowInXML(currentCSVRow, currentFileObjXMLTreeRoot):
-                p('CSV')
-                p('This row is not in XML')
-                p(currentCSVRow)
+                # p('CSV')
+                # p('This row is not in XML')
+                # p(currentCSVRow)
 
                 elementToAppend = {
                     'number': currentCSVRow[phoneNumberColumnIndexCSV],
@@ -128,8 +128,8 @@ def mainFunction(arrayOfArguments):
         currentFileObjXMLTreeRoot.append(elementToAppend)
     p(len(currentFileObjXMLTreeRoot))
 
-    myPyFunc.writeXML(pathStrToCallsXMLFileParent + 'callsWithCallLogAnalyticsXML.xml', currentFileObjXMLTreeRoot)
-
+    # myPyFunc.writeXML(pathStrToCallsXMLFileParent + 'callsWithCallLogAnalyticsXML.xml', currentFileObjXMLTreeRoot)
+    myPyFunc.printTimeSinceImport()
 
 
 if __name__ == '__main__':
