@@ -63,6 +63,7 @@ def csvRowInXML(currentCSVRow, root):
 def mainFunction(arrayOfArguments):
 
     pathStrToCallsXMLFile = arrayOfArguments[1]
+    pathStrToCallsXMLFileParent = str(Path(arrayOfArguments[1]).parents[0])
     pathStrToCSVFile = arrayOfArguments[2]
     currentFileObjXMLTreeRoot = et.parse(pathStrToCallsXMLFile).getroot()
     sortOrderDesc = True
@@ -110,7 +111,7 @@ def mainFunction(arrayOfArguments):
                     'duration': currentCSVRow[durationColumnIndexCSV]
                 }
 
-                p(elementToAppend)
+                # p(elementToAppend)
                 treeToAdd.append(elementToAppend)
 
 
@@ -121,10 +122,13 @@ def mainFunction(arrayOfArguments):
             #     p('Element')
             #     p(csvRowInXML(currentCSVRow, currentFileObjXMLTreeRoot))
 
-
-
     p(len(currentFileObjXMLTreeRoot))
-    # myPyFunc.writeXML(pathStrToCallsXMLFile, currentFileObjXMLTreeRoot)
+
+    for elementToAppend in treeToAdd:
+        currentFileObjXMLTreeRoot.append(elementToAppend)
+    p(len(currentFileObjXMLTreeRoot))
+
+    myPyFunc.writeXML(pathStrToCallsXMLFileParent + 'callsWithCallLogAnalyticsXML.xml', currentFileObjXMLTreeRoot)
 
 
 
