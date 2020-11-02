@@ -106,7 +106,7 @@ def mainFunction(arrayOfArguments):
             
                 def extendAndDeduplicate():
                     p(root.tag + ', length of file being added: ' + str(len(currentFileObjXMLTreeRoot)))
-                    uniqueArray = myPyFunc.getUniqueArrayOfObj(root)
+                    uniqueArray = myPyFunc.getArrayOfUniqueElements(root)
                     p(root.tag + ', length of file after being deduplicated: ' + str(len(uniqueArray)))
                     dataForActionObj[xmlRootStr].extend(uniqueArray)
                     p(root.tag + ', length of accumulated file: ' + str(len(dataForActionObj[xmlRootStr])))

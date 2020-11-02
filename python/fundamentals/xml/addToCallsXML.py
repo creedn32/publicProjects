@@ -5,7 +5,7 @@ sys.path.append(str(pathToThisPythonFile.parents[3]))
 from herokuGorilla.backend.python.myPythonLibrary import myPyFunc
 
 from pprint import pprint as p
-import lxml.etree as et
+import lxml.etree as etree
 from datetime import datetime, timedelta
 import os
 import csv
@@ -62,10 +62,14 @@ def csvRowInXML(currentCSVRow, root):
 
 def mainFunction(arrayOfArguments):
 
-    pathStrToCallsXMLFile = arrayOfArguments[1]
-    pathStrToCallsXMLFileParent = str(Path(arrayOfArguments[1]).parents[0])
+    pathStrToPriorCallsFile = arrayOfArguments[1]
+    pathStrToNewCallsXML = str(Path(arrayOfArguments[1]).parents[0]) + '\callsWithCallLogAnalyticsXML.xml'
+    
     pathStrToCSVFile = arrayOfArguments[2]
-    currentFileObjXMLTreeRoot = et.parse(pathStrToCallsXMLFile).getroot()
+    eTreeObj = etree.parse(pathStrToPriorCallsFile)
+    rootObj = eTreeObj.getroot()
+
+
     sortOrderDesc = True
     dateColumnIndexCSV = 2
     phoneNumberColumnIndexCSV = 1
@@ -81,12 +85,8 @@ def mainFunction(arrayOfArguments):
 
     treeToAdd = []
 
-    currentFileObjXMLTreeRoot = sorted(currentFileObjXMLTreeRoot, key=lambda x: int(x.get('date')), reverse=sortOrderDesc)
-    # p(myPyFunc.unixStrToDateObjMST(currentFileObjXMLTreeRoot[0].get('date'))
+    rootObj[:] = sorted(rootObj, key=lambda x: int(x.get('date')), reverse=sortOrderDesc)
 
-    # for currentElement in currentFileObjXMLTreeRoot:
-    #     if currentElement.get('type') in ['5']:
-    #         p(currentElement.attrib)
 
     with open(pathStrToCSVFile) as csvFile:
         csvReader = list(csv.reader(csvFile, delimiter=','))[1:]
@@ -99,36 +99,40 @@ def mainFunction(arrayOfArguments):
 
         for currentCSVRow in csvReader:
 
-            if not csvRowInXML(currentCSVRow, currentFileObjXMLTreeRoot):
+            if not csvRowInXML(currentCSVRow, rootObj):
                 # p('CSV')
                 # p('This row is not in XML')
                 # p(currentCSVRow)
 
-                elementToAppend = {
-                    'number': currentCSVRow[phoneNumberColumnIndexCSV],
-                    'type': callTypeWordToNumber[currentCSVRow[callTypeColumnIndexCSV]],
-                    'date': myPyFunc.dateObjToUnixMillisecondsStr(currentCSVRow[dateColumnIndexCSV]),
-                    'duration': currentCSVRow[durationColumnIndexCSV]
-                }
+                elementToAppend = etree.Element('call')
+                
+                # {
+                #     'number': currentCSVRow[phoneNumberColumnIndexCSV],
+                #     'type': callTypeWordToNumber[currentCSVRow[callTypeColumnIndexCSV]],
+                #     'date': myPyFunc.dateObjToUnixMillisecondsStr(currentCSVRow[dateColumnIndexCSV]),
+                #     'duration': currentCSVRow[durationColumnIndexCSV]
+                # }
 
                 # p(elementToAppend)
                 treeToAdd.append(elementToAppend)
 
 
-            # if csvRowInXML(currentCSVRow, currentFileObjXMLTreeRoot):
+            # if csvRowInXML(currentCSVRow, rootObj):
             #     p('CSV')
             #     p('This row is in XML')
             #     p(currentCSVRow)
             #     p('Element')
-            #     p(csvRowInXML(currentCSVRow, currentFileObjXMLTreeRoot))
-
-    p(len(currentFileObjXMLTreeRoot))
+            #     p(csvRowInXML(currentCSVRow, rootObj))
 
     for elementToAppend in treeToAdd:
-        currentFileObjXMLTreeRoot.append(elementToAppend)
-    p(len(currentFileObjXMLTreeRoot))
+        rootObj.append(elementToAppend)
 
-    # myPyFunc.writeXML(pathStrToCallsXMLFileParent + 'callsWithCallLogAnalyticsXML.xml', currentFileObjXMLTreeRoot)
+    p(myPyFunc.getArrayOfDuplicatedElements(rootObj))
+
+    p(len(rootObj))
+    myPyFunc.writeXML(pathStrToNewCallsXML, rootObj)
+    p(len(rootObj))
+
     myPyFunc.printTimeSinceImport()
 
 
