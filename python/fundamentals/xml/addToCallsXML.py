@@ -63,7 +63,7 @@ def csvRowInXML(currentCSVRow, root):
 def mainFunction(arrayOfArguments):
 
     pathStrToPriorCallsFile = arrayOfArguments[1]
-    pathStrToNewCallsXML = str(Path(arrayOfArguments[1]).parents[0]) + '\callsWithCallLogAnalyticsXML.xml'
+    pathStrToNewCallsXML = str(Path(arrayOfArguments[1]).parents[0]) + '\callsWithCallLogAnalytics.xml'
     
     pathStrToCSVFile = arrayOfArguments[2]
     eTreeObj = etree.parse(pathStrToPriorCallsFile)
