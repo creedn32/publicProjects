@@ -11,7 +11,7 @@ import importlib.util
 
 def mainFunction():
 
-    p("Searching for command '{}.py' ...".format(sys.argv[1]))
+    p("Searching for command '{}.py' (created by Creed)...".format(sys.argv[1]))
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
@@ -34,10 +34,10 @@ def mainFunction():
     
 
 if __name__ == '__main__':
-    p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')
+    p(str(pathToThisPythonFile.name) + ' (created by Creed) is not being imported. It is being run directly...')
     mainFunction()
 else:
-	p(str(pathToThisPythonFile.name) + ' is being imported. It is not being run directly...')
+	p(str(pathToThisPythonFile.name) + ' (created by Creed) is being imported. It is not being run directly...')
 
 
 
