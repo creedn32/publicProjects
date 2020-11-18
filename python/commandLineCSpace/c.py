@@ -15,18 +15,32 @@ def mainFunction():
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    def actionToPerformOnEachFileObj(dataForActionObj):
+    # def actionToPerformOnEachFileObj(dataForActionObj):
 
-        if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.py':
-            if dataForActionObj['currentFileObj'].stem == sys.argv[1]:
-                dataForActionObj['pathToPythonFileForImport'] = dataForActionObj['currentFileObj']
-                return dataForActionObj
+    #     if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.py':
+    #         if dataForActionObj['currentFileObj'].stem == sys.argv[1]:
+    #             dataForActionObj['pathToPythonFileForImport'] = dataForActionObj['currentFileObj']
+    #             return dataForActionObj
         
-        return dataForActionObj
+    #     return dataForActionObj
 
-    returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, otherDataObj={'pathsToExclude': [Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')]})
+    # returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, otherDataObj={'pathsToExclude': [Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')]})
+    
+    
+    def ifCorrectFileObj(fileObj):
 
-    importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], returnedDataObj['pathToPythonFileForImport'])
+        if fileObj.is_file() and fileObj.suffix == '.py':
+            if fileObj.stem == sys.argv[1]:
+                return True
+
+        return False
+
+
+    pathToPythonFileForImport = myPyFunc.findFilePathBreadthFirst(pathToRepos, ifCorrectFileObj, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+
+
+
+    importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], pathToPythonFileForImport)
     importedModule = importlib.util.module_from_spec(importedModuleSpec)
     importedModuleSpec.loader.exec_module(importedModule)
     importedModule.mainFunction(sys.argv[1:])

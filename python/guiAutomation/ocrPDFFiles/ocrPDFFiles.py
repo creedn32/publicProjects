@@ -9,10 +9,7 @@ from herokuGorilla.backend.python.myPythonLibrary import myPyAutoGui
 
 from pprint import pprint as p
 
-
-def ocrPDFFiles(arrayOfArguments):
-
-    def addFileToOCRList(dataForActionObj):
+def addFileToOCRList(dataForActionObj):
         
         if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.pdf':
 
@@ -45,8 +42,18 @@ def ocrPDFFiles(arrayOfArguments):
 
         return dataForActionObj
 
-    myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), addFileToOCRList)
-    myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
+def ocrPDFFiles(arrayOfArguments):
+
+
+    def printPDFFilePath(dataForActionObj):
+        if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.pdf':
+            p(dataForActionObj['currentFileObj'])
+        return dataForActionObj
+
+
+    myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), printPDFFilePath)
+
+    # myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
 
 def mainFunction(arrayOfArguments):
 
