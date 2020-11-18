@@ -100,9 +100,9 @@ def mainFunction(arrayOfArguments):
     def ifAddFileObj():
 
         if 1 == 1:
-            return True
+            return 1
 
-        return False
+        return None
 
     arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, ifAddFileObj)
 
