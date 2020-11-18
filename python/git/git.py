@@ -86,15 +86,15 @@ def mainFunction(arrayOfArguments):
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    def actionToPerformOnEachFileObj(dataForActionObj):
+    # def actionToPerformOnEachFileObj(dataForActionObj):
 
-        if dataForActionObj['currentFileObj'].name == '.git':
-            runGitProcesses(dataForActionObj['currentFileObj'].parents[0], arrayOfArguments)
+    #     if dataForActionObj['currentFileObj'].name == '.git':
+    #         runGitProcesses(dataForActionObj['currentFileObj'].parents[0], arrayOfArguments)
 
-        return dataForActionObj
+    #     return dataForActionObj
 
 
-    myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, otherDataObj={'pathsToExclude': [Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')]})
+    # myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, otherDataObj={'pathsToExclude': [Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')]})
 
 
     def gitFileObjToAdd(fileObj):
@@ -104,7 +104,11 @@ def mainFunction(arrayOfArguments):
 
         return None
 
-    p(myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, gitFileObjToAdd))
+    arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, gitFileObjToAdd, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode')])
+    p(arrayOfGitFileObj)
+
+    for gitFileObj in arrayOfGitFileObj:
+        runGitProcesses(gitFileObj.parents[0], arrayOfArguments)
 
 
 
