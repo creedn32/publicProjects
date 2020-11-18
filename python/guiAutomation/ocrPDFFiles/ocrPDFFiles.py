@@ -12,7 +12,7 @@ from pprint import pprint as p
 
 def ocrPDFFiles(arrayOfArguments):
 
-    def printCurrentFile(dataForActionObj):
+    def addFileToOCRList(dataForActionObj):
         
         if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.pdf':
 
@@ -45,7 +45,7 @@ def ocrPDFFiles(arrayOfArguments):
 
         return dataForActionObj
 
-    myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), printCurrentFile)
+    myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), addFileToOCRList)
     myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
 
 def mainFunction(arrayOfArguments):
