@@ -65,7 +65,7 @@ def ocrPDFFiles(arrayOfArguments):
     
     googleSheetsFileArray = spreadsheetLevelObj.worksheet(filesSheetName).get_all_values()
 
-    groupMax = 4
+    groupMax = 3
     currentGroupCount = 0
 
     filePathColIdx = 0
