@@ -44,16 +44,18 @@ def addFileToOCRList(dataForActionObj):
 
 def ocrPDFFiles(arrayOfArguments):
 
+    def ifPDFFile(fileObj):
 
-    def printPDFFilePath(dataForActionObj):
-        if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.pdf':
-            p(dataForActionObj['currentFileObj'])
-        return dataForActionObj
+        if fileObj.is_file() and fileObj.suffix == '.pdf': return fileObj
 
+        return False
 
-    myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), printPDFFilePath)
+    arrayOfPDFFiles = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), ifPDFFile)
+    # p(arrayOfPDFFiles)
 
     # myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
+
+
 
 def mainFunction(arrayOfArguments):
 
