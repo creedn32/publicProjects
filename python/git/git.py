@@ -97,10 +97,10 @@ def mainFunction(arrayOfArguments):
     myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, otherDataObj={'pathsToExclude': [Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')]})
 
 
-    def gitFileObjToAdd():
+    def gitFileObjToAdd(fileObj):
 
-        if 1 == 1:
-            return 1
+        if fileObj.name == '.git':
+            return fileObj
 
         return None
 
