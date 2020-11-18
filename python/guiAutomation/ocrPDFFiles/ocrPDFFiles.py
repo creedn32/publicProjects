@@ -6,6 +6,7 @@ import sys
 sys.path.append(str(pathToThisPythonFile.parents[3]))
 from herokuGorilla.backend.python.myPythonLibrary import myPyFunc
 from herokuGorilla.backend.python.myPythonLibrary import myPyAutoGui
+from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGspreadFunc
 
 from pprint import pprint as p
 
@@ -52,7 +53,25 @@ def ocrPDFFiles(arrayOfArguments):
 
     arrayOfPDFFiles = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), ifPDFFile)
 
-    # p(arrayOfPDFFiles)
+    pathBelowRepos = pathToThisPythonFile
+    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[3]).open(arrayOfArguments[2])
+    filesSheetName = 'Files'
+
+    googleSheetsFileArray = spreadsheetLevelObj.worksheet(filesSheetName).get_all_values()
+    p(googleSheetsFileArray)
+    
+    clearAndResizeParameters = [
+        {
+            'sheetObj': spreadsheetLevelObj.worksheet(filesSheetName),
+            'resizeRows': 2,
+            'startingRowIndexToClear': 0,
+            'resizeColumns': 1
+        },
+    ]
+
+    myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
+    myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(filesSheetName), googleSheetsFileArray)
+    myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
 
     # myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
 
