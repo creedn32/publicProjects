@@ -10,37 +10,37 @@ from herokuGorilla.backend.python.myPythonLibrary import myPyAutoGui
 from pprint import pprint as p
 
 def addFileToOCRList(dataForActionObj):
-        
-        if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.pdf':
 
-            myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
-            p('found add files button')
+    if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.pdf':
 
-            pyautogui.press('f')
-            myPyAutoGui.getCoordinatesWhenLocalPNGAppears('addFilesDialogBox', pathToThisPythonFile.parents[0])
-            
-            pyautogui.keyDown('shift')
-            
-            while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('pathArrow', pathToThisPythonFile.parents[0]):
-                pyautogui.press('tab')
+        myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
+        p('found add files button')
+
+        pyautogui.press('f')
+        myPyAutoGui.getCoordinatesWhenLocalPNGAppears('addFilesDialogBox', pathToThisPythonFile.parents[0])
+
+        pyautogui.keyDown('shift')
+
+        while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('pathArrow', pathToThisPythonFile.parents[0]):
+            pyautogui.press('tab')
 
 
-            pyautogui.keyUp('shift')
-        
-            pyautogui.press('enter')
-            pyautogui.write(str(dataForActionObj['currentFileObj'].parents[0]))
-            pyautogui.press('enter')
+        pyautogui.keyUp('shift')
 
-            myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
+        pyautogui.press('enter')
+        pyautogui.write(str(dataForActionObj['currentFileObj'].parents[0]))
+        pyautogui.press('enter')
 
-            while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
-                pyautogui.press('tab')
+        myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
 
-            pyautogui.write(str(dataForActionObj['currentFileObj'].name))
-            pyautogui.press('enter')
-            myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
+        while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
+            pyautogui.press('tab')
 
-        return dataForActionObj
+        pyautogui.write(str(dataForActionObj['currentFileObj'].name))
+        pyautogui.press('enter')
+        myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
+
+    return dataForActionObj
 
 def ocrPDFFiles(arrayOfArguments):
 
@@ -51,6 +51,7 @@ def ocrPDFFiles(arrayOfArguments):
         return False
 
     arrayOfPDFFiles = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), ifPDFFile)
+
     # p(arrayOfPDFFiles)
 
     # myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
