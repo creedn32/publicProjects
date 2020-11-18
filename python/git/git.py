@@ -99,12 +99,16 @@ def mainFunction(arrayOfArguments):
 
     def gitFileObjToAdd(fileObj):
 
+        # p(fileObj)
+
         if fileObj.name == '.git':
+            # p(fileObj.name)
+            # p(fileObj.is_dir())
             return fileObj
 
         return None
 
-    arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, gitFileObjToAdd, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode')])
+    arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, gitFileObjToAdd, pathsToExclude=[str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')),  str(Path(pathToRepos, 'reposFromOthers')), 'node_modules'])
     p(arrayOfGitFileObj)
 
     for gitFileObj in arrayOfGitFileObj:
