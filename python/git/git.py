@@ -75,7 +75,8 @@ def runGitProcesses(gitFolder, arrayOfArguments):
         subprocess.run('git -C ' + str(gitFolder) + ' push')
         
         if gitFolder.name[:6] == 'heroku' and runGitProcessOnHerokuRepos:
-            subprocess.run('git -C ' + str(gitFolder) + ' push heroku master')
+            pass
+            # subprocess.run('git -C ' + str(gitFolder) + ' push heroku master')
 
     else:
         subprocess.run('git -C ' + str(gitFolder) + ' ' + gitProcessToRun)
