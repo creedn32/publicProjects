@@ -27,7 +27,7 @@ def mainFunction():
     # returnedDataObj = myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, otherDataObj={'pathsToExclude': [Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')]})
     
     
-    def ifCorrectFileObj(fileObj):
+    def ifPythonFileToImport(fileObj):
 
         if fileObj.is_file() and fileObj.suffix == '.py':
             if fileObj.stem == sys.argv[1]:
@@ -36,7 +36,7 @@ def mainFunction():
         return False
 
 
-    pathToPythonFileForImport = myPyFunc.findFilePathBreadthFirst(pathToRepos, ifCorrectFileObj, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
+    pathToPythonFileForImport = myPyFunc.findFilePathBreadthFirst(pathToRepos, ifPythonFileToImport, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')])
 
 
 

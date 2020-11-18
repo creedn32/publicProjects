@@ -96,6 +96,9 @@ def mainFunction(arrayOfArguments):
 
     myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, otherDataObj={'pathsToExclude': [Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')]})
 
+    arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst()
+
+
 
 if __name__ == '__main__':
     p(str(pathToThisPythonFile.name) + ' is not being imported. It is being run directly...')
