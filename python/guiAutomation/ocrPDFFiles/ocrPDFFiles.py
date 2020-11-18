@@ -28,7 +28,7 @@ def addFileToOCRList(fileObj):
     # pyautogui.keyUp('shift')
 
     # pyautogui.press('enter')
-    # pyautogui.write(str(dataForActionObj['currentFileObj'].parents[0]))
+    # pyautogui.write(str(fileObj.parents[0]))
     # pyautogui.press('enter')
 
     # myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
@@ -36,7 +36,7 @@ def addFileToOCRList(fileObj):
     # while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
     #     pyautogui.press('tab')
 
-    # pyautogui.write(str(dataForActionObj['currentFileObj'].name))
+    # pyautogui.write(str(fileObj.name))
     # pyautogui.press('enter')
     # myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
 
@@ -75,14 +75,16 @@ def ocrPDFFiles(arrayOfArguments):
 
         if rowIndex:
 
+            fileObjPath = Path(row[filePathColIdx])
+
             if row[completedColIdx] != 'Yes':
 
-                addFileToOCRList(row[filePathColIdx])
+                addFileToOCRList(fileObjPath)
                 currentGroupCount = currentGroupCount + 1
 
             if currentGroupCount == groupMax or rowIndex == len(googleSheetsFileArray) - 1:
 
-                p(row[filePathColIdx])
+                p(fileObjPath)
                 # myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
                 currentGroupCount = 0
 
