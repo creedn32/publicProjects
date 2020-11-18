@@ -69,7 +69,7 @@ def runGitProcesses(gitFolder, arrayOfArguments):
     gitProcessToRun = arrayOfArguments[1]
 
 
-    if gitProcessToRun in ['acp', 'addcommitpush']:
+    if gitProcessToRun in ['acp']:
         subprocess.run('git -C ' + str(gitFolder) + ' add .')
         subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMessage + '\"')
         subprocess.run('git -C ' + str(gitFolder) + ' push')
