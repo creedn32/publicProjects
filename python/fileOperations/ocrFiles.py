@@ -9,13 +9,13 @@ from pprint import pprint as p
 
 def ocrFiles(arrayOfArguments):
 
-    def print1(dataForActionObj):
+    def printCurrentFile(dataForActionObj):
         
         if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.pdf':
             p(str(dataForActionObj['currentFileObj']))
         return dataForActionObj
 
-    myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), print1)
+    myPyFunc.onAllFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), printCurrentFile)
 
 
 
