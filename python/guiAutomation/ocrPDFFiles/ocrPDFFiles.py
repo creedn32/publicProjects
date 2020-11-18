@@ -10,40 +10,40 @@ from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGs
 
 from pprint import pprint as p
 
-def addFileToOCRList(dataForActionObj):
+def addFileToOCRList(fileObj):
 
-    if dataForActionObj['currentFileObj'].is_file() and dataForActionObj['currentFileObj'].suffix == '.pdf':
+    pass
 
-        myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
-        p('found add files button')
+    # myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
 
-        pyautogui.press('f')
-        myPyAutoGui.getCoordinatesWhenLocalPNGAppears('addFilesDialogBox', pathToThisPythonFile.parents[0])
+    # pyautogui.press('f')
+    # myPyAutoGui.getCoordinatesWhenLocalPNGAppears('addFilesDialogBox', pathToThisPythonFile.parents[0])
 
-        pyautogui.keyDown('shift')
+    # pyautogui.keyDown('shift')
 
-        while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('pathArrow', pathToThisPythonFile.parents[0]):
-            pyautogui.press('tab')
+    # while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('pathArrow', pathToThisPythonFile.parents[0]):
+    #     pyautogui.press('tab')
 
 
-        pyautogui.keyUp('shift')
+    # pyautogui.keyUp('shift')
 
-        pyautogui.press('enter')
-        pyautogui.write(str(dataForActionObj['currentFileObj'].parents[0]))
-        pyautogui.press('enter')
+    # pyautogui.press('enter')
+    # pyautogui.write(str(dataForActionObj['currentFileObj'].parents[0]))
+    # pyautogui.press('enter')
 
-        myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
+    # myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
 
-        while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
-            pyautogui.press('tab')
+    # while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
+    #     pyautogui.press('tab')
 
-        pyautogui.write(str(dataForActionObj['currentFileObj'].name))
-        pyautogui.press('enter')
-        myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
+    # pyautogui.write(str(dataForActionObj['currentFileObj'].name))
+    # pyautogui.press('enter')
+    # myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
 
-    return dataForActionObj
 
-def ocrPDFFiles(arrayOfArguments):
+
+
+def getArrayOfPDFFiles(pathToRoot):
 
     def ifPDFFile(fileObj):
 
@@ -51,15 +51,42 @@ def ocrPDFFiles(arrayOfArguments):
 
         return False
 
-    arrayOfPDFFiles = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(arrayOfArguments[1]), ifPDFFile)
+    return myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(pathToRoot), ifPDFFile)
 
+
+
+def ocrPDFFiles(arrayOfArguments):
+
+    # arrayOfPDFFiles = getArrayOfPDFFiles(arrayOfArguments[1])
+
+    filesSheetName = 'Files'
     pathBelowRepos = pathToThisPythonFile
     spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[3]).open(arrayOfArguments[2])
-    filesSheetName = 'Files'
-
-    googleSheetsFileArray = spreadsheetLevelObj.worksheet(filesSheetName).get_all_values()
-    p(googleSheetsFileArray)
     
+    googleSheetsFileArray = spreadsheetLevelObj.worksheet(filesSheetName).get_all_values()
+
+    groupMax = 4
+    currentGroupCount = 0
+
+    filePathColIdx = 0
+    completedColIdx = 1
+
+    for rowIndex, row in enumerate(googleSheetsFileArray):
+
+        if rowIndex:
+
+            if row[completedColIdx] != 'Yes':
+
+                addFileToOCRList(row[filePathColIdx])
+                currentGroupCount = currentGroupCount + 1
+
+            if currentGroupCount == groupMax or rowIndex == len(googleSheetsFileArray) - 1:
+
+                p(row[filePathColIdx])
+                # myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
+                currentGroupCount = 0
+
+
     clearAndResizeParameters = [
         {
             'sheetObj': spreadsheetLevelObj.worksheet(filesSheetName),
@@ -73,7 +100,7 @@ def ocrPDFFiles(arrayOfArguments):
     myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(filesSheetName), googleSheetsFileArray)
     myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
 
-    # myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
+
 
 
 
