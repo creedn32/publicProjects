@@ -96,7 +96,15 @@ def mainFunction(arrayOfArguments):
 
     myPyFunc.onAllFileObjInTreeBreadthFirst(pathToRepos, actionToPerformOnEachFileObj, otherDataObj={'pathsToExclude': [Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'), Path(pathToRepos, 'reposFromOthers')]})
 
-    arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst()
+
+    def ifAddFileObj():
+
+        if 1 == 1:
+            return True
+
+        return False
+
+    arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, ifAddFileObj)
 
 
 
