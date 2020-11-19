@@ -14,31 +14,31 @@ def addFileToOCRList(fileObj):
 
     pass
 
-    # myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
+    myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
 
-    # pyautogui.press('f')
-    # myPyAutoGui.getCoordinatesWhenLocalPNGAppears('addFilesDialogBox', pathToThisPythonFile.parents[0])
+    pyautogui.press('f')
+    myPyAutoGui.getCoordinatesWhenLocalPNGAppears('addFilesDialogBox', pathToThisPythonFile.parents[0])
 
-    # pyautogui.keyDown('shift')
+    pyautogui.keyDown('shift')
 
-    # while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('pathArrow', pathToThisPythonFile.parents[0]):
-    #     pyautogui.press('tab')
+    while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('pathArrow', pathToThisPythonFile.parents[0]):
+        pyautogui.press('tab')
 
 
-    # pyautogui.keyUp('shift')
+    pyautogui.keyUp('shift')
 
-    # pyautogui.press('enter')
-    # pyautogui.write(str(fileObj.parents[0]))
-    # pyautogui.press('enter')
+    pyautogui.press('enter')
+    pyautogui.write(str(fileObj.parents[0]))
+    pyautogui.press('enter')
 
-    # myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
+    myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
 
-    # while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
-    #     pyautogui.press('tab')
+    while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
+        pyautogui.press('tab')
 
-    # pyautogui.write(str(fileObj.name))
-    # pyautogui.press('enter')
-    # myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
+    pyautogui.write(str(fileObj.name))
+    pyautogui.press('enter')
+    myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
 
 
 
@@ -65,7 +65,7 @@ def ocrPDFFiles(arrayOfArguments):
     
     googleSheetsFileArray = spreadsheetLevelObj.worksheet(filesSheetName).get_all_values()
 
-    groupMax = 3
+    groupMax = 20
     currentGroupCount = 0
 
     filePathColIdx = 0
@@ -77,30 +77,36 @@ def ocrPDFFiles(arrayOfArguments):
 
             fileObjPath = Path(row[filePathColIdx])
 
-            if row[completedColIdx] != 'Yes':
+            if row[completedColIdx] == '':
 
                 addFileToOCRList(fileObjPath)
                 currentGroupCount = currentGroupCount + 1
 
             if currentGroupCount == groupMax or rowIndex == len(googleSheetsFileArray) - 1:
 
-                p(fileObjPath)
-                # myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
+                # p(fileObjPath)
+                
+                myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
+                myPyAutoGui.clickWhenLocalPNGAppears('closeActionCompleted', pathToThisPythonFile.parents[0])
+                myPyAutoGui.waitUntilLocalPNGDisappears('closeActionCompleted', pathToThisPythonFile.parents[0])
                 currentGroupCount = 0
+                row[completedColIdx] = 'Yes'
+
+                pyautogui.press(['alt', 'f', 'w', 'down', 'down', 'enter'])
 
 
-    clearAndResizeParameters = [
-        {
-            'sheetObj': spreadsheetLevelObj.worksheet(filesSheetName),
-            'resizeRows': 2,
-            'startingRowIndexToClear': 0,
-            'resizeColumns': 1
-        },
-    ]
+                clearAndResizeParameters = [
+                    {
+                        'sheetObj': spreadsheetLevelObj.worksheet(filesSheetName),
+                        'resizeRows': 2,
+                        'startingRowIndexToClear': 0,
+                        'resizeColumns': 1
+                    },
+                ]
 
-    myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
-    myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(filesSheetName), googleSheetsFileArray)
-    myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
+                myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
+                myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(filesSheetName), googleSheetsFileArray)
+                myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
 
 
 
