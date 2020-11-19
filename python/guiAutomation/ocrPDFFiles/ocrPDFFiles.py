@@ -111,10 +111,7 @@ def ocrPDFFiles(arrayOfArguments):
 
                 myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
                 myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(filesSheetName), googleSheetsFileArray)
-                myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
-
-
-
+                # myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
 
 
 def mainFunction(arrayOfArguments):
