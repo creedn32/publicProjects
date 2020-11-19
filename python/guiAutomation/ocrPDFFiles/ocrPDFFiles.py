@@ -19,13 +19,13 @@ def addFileToOCRList(fileObj):
     pyautogui.press('f')
     myPyAutoGui.getCoordinatesWhenLocalPNGAppears('addFilesDialogBox', pathToThisPythonFile.parents[0])
 
-    pyautogui.keyDown('shift')
+    # pyautogui.keyDown('shift')
 
     while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('pathArrow', pathToThisPythonFile.parents[0]):
         pyautogui.press('tab')
 
 
-    pyautogui.keyUp('shift')
+    # pyautogui.keyUp('shift')
 
     pyautogui.press('enter')
     pyautogui.write(str(fileObj.parents[0]))
@@ -33,8 +33,12 @@ def addFileToOCRList(fileObj):
 
     myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
 
+    pyautogui.keyDown('shift')
+
     while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
         pyautogui.press('tab')
+
+    pyautogui.keyUp('shift')
 
     pyautogui.write(str(fileObj.name))
     pyautogui.press('enter')
