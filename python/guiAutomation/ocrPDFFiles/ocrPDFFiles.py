@@ -81,6 +81,7 @@ def ocrPDFFiles(arrayOfArguments):
 
                 addFileToOCRList(fileObjPath)
                 currentGroupCount = currentGroupCount + 1
+                row[completedColIdx] = 'Yes'
 
             if currentGroupCount == groupMax or rowIndex == len(googleSheetsFileArray) - 1:
 
@@ -90,7 +91,7 @@ def ocrPDFFiles(arrayOfArguments):
                 myPyAutoGui.clickWhenLocalPNGAppears('closeActionCompleted', pathToThisPythonFile.parents[0])
                 myPyAutoGui.waitUntilLocalPNGDisappears('closeActionCompleted', pathToThisPythonFile.parents[0])
                 currentGroupCount = 0
-                row[completedColIdx] = 'Yes'
+                
 
                 pyautogui.press(['alt', 'f', 'w', 'down', 'down', 'enter'])
 
