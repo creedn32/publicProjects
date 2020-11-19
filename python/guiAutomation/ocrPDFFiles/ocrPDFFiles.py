@@ -59,7 +59,7 @@ def ocrPDFFiles(arrayOfArguments):
 
     # arrayOfPDFFiles = getArrayOfPDFFiles(arrayOfArguments[1])
 
-    filesSheetName = 'Files'
+    filesSheetName = arrayOfArguments[4]
     pathBelowRepos = pathToThisPythonFile
     spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[3]).open(arrayOfArguments[2])
     
