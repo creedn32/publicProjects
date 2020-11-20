@@ -9,10 +9,9 @@ from herokuGorilla.backend.python.myPythonLibrary import myPyAutoGui
 from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGspreadFunc
 
 from pprint import pprint as p
+import datetime
 
 def addFileToOCRList(fileObj):
-
-    pass
 
     myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
 
