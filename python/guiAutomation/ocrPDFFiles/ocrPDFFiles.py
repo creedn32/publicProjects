@@ -84,7 +84,7 @@ def ocrPDFFiles(arrayOfArguments):
 
                 addFileToOCRList(fileObjPath)
                 currentGroupCount = currentGroupCount + 1
-                row[completedColIdx] = 'Yes'
+                row[completedColIdx] = 'Yes - ' + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
             if currentGroupCount == groupMax or rowIndex == len(googleSheetsFileArray) - 1:
 
