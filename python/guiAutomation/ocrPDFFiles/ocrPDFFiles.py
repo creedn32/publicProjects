@@ -44,20 +44,6 @@ def addFileToOCRList(fileObj):
     myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
 
 
-
-
-def getArrayOfPDFFiles(pathToRoot):
-
-    def ifPDFFile(fileObj):
-
-        if fileObj.is_file() and fileObj.suffix == '.pdf': return fileObj
-
-        return False
-
-    return myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(pathToRoot), ifPDFFile)
-
-
-
 def ocrPDFFiles(arrayOfArguments):
 
     # arrayOfPDFFiles = getArrayOfPDFFiles(arrayOfArguments[1])
