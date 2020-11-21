@@ -32,10 +32,10 @@ def mainFunction(arrayOfArguments):
     arrayUploadToGoogleSheets = []
 
     for filePath in arrayOfPDFFilesFromDisk:
-        arrayUploadToGoogleSheets.append([filePath])
+        arrayUploadToGoogleSheets.append([filePath, ''])
 
-    arrayUploadToGoogleSheets.insert(0, ['File Path'])
-    # p(arrayUploadToGoogleSheets)
+    arrayUploadToGoogleSheets.insert(0, ['File Path', 'Completed?'])
+
 
     clearAndResizeParameters = [
         {
