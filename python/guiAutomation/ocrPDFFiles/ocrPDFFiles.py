@@ -16,30 +16,30 @@ def addFileToOCRList(fileObj):
     myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
 
     pyautogui.press('f')
-    myPyAutoGui.getCoordinatesWhenLocalPNGAppears('addFilesDialogBox', pathToThisPythonFile.parents[0])
+    myPyAutoGui.getCoordinatesWhenLocalPNGAppears('filenameBoxReady', pathToThisPythonFile.parents[0])
 
     # pyautogui.keyDown('shift')
 
-    while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('pathArrow', pathToThisPythonFile.parents[0]):
-        pyautogui.press('tab')
+    # while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('pathArrow', pathToThisPythonFile.parents[0]):
+    #     pyautogui.press('tab')
 
+
+    # # pyautogui.keyUp('shift')
+
+    # pyautogui.press('enter')
+    # pyautogui.write(str(fileObj.parents[0]))
+    # pyautogui.press('enter')
+
+    # myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
+
+    # pyautogui.keyDown('shift')
+
+    # while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
+    #     pyautogui.press('tab')
 
     # pyautogui.keyUp('shift')
 
-    pyautogui.press('enter')
-    pyautogui.write(str(fileObj.parents[0]))
-    pyautogui.press('enter')
-
-    myPyAutoGui.getCoordinatesWhenLocalPNGAppears('folderBoxReady', pathToThisPythonFile.parents[0])
-
-    pyautogui.keyDown('shift')
-
-    while not myPyAutoGui.getCoordinatesIfLocalPNGIsShowing('filenameBoxReady', pathToThisPythonFile.parents[0], confidence=.95):
-        pyautogui.press('tab')
-
-    pyautogui.keyUp('shift')
-
-    pyautogui.write(str(fileObj.name))
+    pyautogui.write(str(fileObj))
     pyautogui.press('enter')
     myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
 
