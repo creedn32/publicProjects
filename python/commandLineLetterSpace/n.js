@@ -23,9 +23,17 @@ const findFilePathBreadthFirst = (rootDirectory, ifCorrectFileObj, pathsToExclud
 
     currentArrayOfFileObj = [rootDirectory]
 
-    // while currentArrayOfFileObj:
+    while (currentArrayOfFileObj) {
+
+        currentFileObj = currentArrayOfFileObj.shift();
+
+        c(currentFileObj);
+
+        return 1;
+
+    }
     
-    //     currentFileObj = currentArrayOfFileObj.pop(0)
+
     
     //     if currentFileObj.is_dir(): currentArrayOfFileObj.extend(getArrayOfFileObjFromDir(currentFileObj, pathsToExclude))
     
@@ -35,17 +43,26 @@ const findFilePathBreadthFirst = (rootDirectory, ifCorrectFileObj, pathsToExclud
 
 
 
-
-
-
 const mainFunction = (arrayOfArguments) => {
 
     c(`Searching for command '${arrayOfArguments[1]}.js' (created by Creed)...`);
 
-    pathToRepos = getPathUpFolderTree(pathToThisJSFile, 'repos')
+    pathToRepos = getPathUpFolderTree(pathToThisJSFile, 'repos');
 
-    // pathToJSFileForImport = findFilePathBreadthFirst(pathToRepos, rifPythonFileToImport, pathsToExclude=[str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')), str(Path(pathToRepos, 'reposFromOthers')), 'node_modules'])
+    pathToJSFileForImport = findFilePathBreadthFirst(pathToRepos, (fileObj) => {
+        
+        if (fileObj == 1 && fileObj == 2) {
+        
+            if (fileObj == arrayOfArguments[1]) return true;
+
+        }
+        
+        return false;
+    
+    }, pathsToExclude=[]);  //, pathsToExclude=[str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')), str(Path(pathToRepos, 'reposFromOthers')), 'node_modules'])
+
 }
+
 
 if (require.main === module) {
 
