@@ -1,26 +1,39 @@
 var path = require('path');
-thisJSFile = path.basename(__filename);
-
+pathToThisJSFile = path.resolve(__dirname, __filename)
 
 const c = (textToLogToConsole) => {
     console.log(textToLogToConsole);
 }
 
 const getPathUpFolderTree = (pathToClimb, directoryToFind) => {
+    
+    pathToClimbArray = pathToClimb.split(path.sep)
+
+    for (directoryLevel = pathToClimbArray.length; directoryLevel > 0; directoryLevel--) {
+
+        if (pathToClimbArray[directoryLevel] == directoryToFind) {
+            return pathToClimbArray.slice(0, directoryLevel + 1).join(path.sep) 
+        }
+    }
+    
+    return pathToClimb
+}
+
+const findFilePathBreadthFirst = (rootDirectory, ifCorrectFileObj, pathsToExclude=[]) => {
+
+    currentArrayOfFileObj = [rootDirectory]
+
+    // while currentArrayOfFileObj:
+    
+    //     currentFileObj = currentArrayOfFileObj.pop(0)
+    
+    //     if currentFileObj.is_dir(): currentArrayOfFileObj.extend(getArrayOfFileObjFromDir(currentFileObj, pathsToExclude))
+    
+    //     if ifCorrectFileObj(currentFileObj): return currentFileObj
 
 }
 
 
-
-
-    // for x in range(0, len(pathToClimb.parts) - 1):
-
-    //     # print(pathToClimb.parents[x])
-
-    //     if pathToClimb.parents[x].name == directoryToFind:
-    //         return pathToClimb.parents[x]
-
-    // return pathToClimb
 
 
 
@@ -29,18 +42,20 @@ const mainFunction = (arrayOfArguments) => {
 
     c(`Searching for command '${arrayOfArguments[1]}.js' (created by Creed)...`);
 
+    pathToRepos = getPathUpFolderTree(pathToThisJSFile, 'repos')
 
+    // pathToJSFileForImport = findFilePathBreadthFirst(pathToRepos, rifPythonFileToImport, pathsToExclude=[str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')), str(Path(pathToRepos, 'reposFromOthers')), 'node_modules'])
 }
 
 if (require.main === module) {
 
-    c(`${thisJSFile} (created by Creed) is not being imported. It is being run directly...`);
+    c(`${path.basename(pathToThisJSFile)} (created by Creed) is not being imported. It is being run directly...`);
     mainFunction(process.argv.slice(1));
 
 }
 else {
 
-    c(`${thisJSFile} (created by Creed) is being imported. It is not being run directly...`);
+    c(`${path.basename(pathToThisJSFile)} (created by Creed) is being imported. It is not being run directly...`);
 
 }
 
