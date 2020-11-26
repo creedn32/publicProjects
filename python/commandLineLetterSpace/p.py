@@ -9,9 +9,9 @@ from pprint import pprint as p
 import importlib.util
 
 
-def mainFunction():
+def mainFunction(arrayOfArguments):
 
-    p("Searching for command '{}.py' (created by Creed)...".format(sys.argv[1]))
+    p("Searching for command '{}.py' (created by Creed)...".format(arrayOfArguments[1]))
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
@@ -19,23 +19,23 @@ def mainFunction():
 
         if fileObj.is_file() and fileObj.suffix == '.py':
 
-            if fileObj.stem == sys.argv[1]: return True
+            if fileObj.stem == arrayOfArguments[1]: return True
 
         return False
 
     pathToPythonFileForImport = myPyFunc.findFilePathBreadthFirst(pathToRepos, ifPythonFileToImport, pathsToExclude=[str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')), str(Path(pathToRepos, 'reposFromOthers')), 'node_modules'])
 
 
-    importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], pathToPythonFileForImport)
+    importedModuleSpec = importlib.util.spec_from_file_location(arrayOfArguments[1], pathToPythonFileForImport)
     importedModule = importlib.util.module_from_spec(importedModuleSpec)
     importedModuleSpec.loader.exec_module(importedModule)
-    importedModule.mainFunction(sys.argv[1:])
+    importedModule.mainFunction(arrayOfArguments[1:])
     # importedModule.MyClass()
     
 
 if __name__ == '__main__':
     p(str(pathToThisPythonFile.name) + ' (created by Creed) is not being imported. It is being run directly...')
-    mainFunction()
+    mainFunction(sys.argv)
 else:
 	p(str(pathToThisPythonFile.name) + ' (created by Creed) is being imported. It is not being run directly...')
 
