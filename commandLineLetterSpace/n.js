@@ -1,7 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
-configJSON = JSON.parse(fs.readFileSync([...thisFilePathArray.slice(0, thisFilePathArray.length -1), 'nConfig.json'].join(path.sep)));
+configJSON = JSON.parse(fs.readFileSync([...thisFilePathArray.slice(0, thisFilePathArray.length - 1), 'nConfig.json'].join(path.sep)));
 nameOfAuthor = configJSON['nameOfAuthor'];
 
 const c = (textToLogToConsole) => {

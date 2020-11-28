@@ -16,4 +16,4 @@ function main() {
     });
 }
 
-main()
+main();

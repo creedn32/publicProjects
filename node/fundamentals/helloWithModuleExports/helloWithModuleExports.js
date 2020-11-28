@@ -1,6 +1,6 @@
 
 const sayHello = () => { 
-    console.log('say hello'); 
+    console.log('hello with module.exports!'); 
 };
 
 module.exports = sayHello;
