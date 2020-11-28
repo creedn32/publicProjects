@@ -2,11 +2,11 @@ var path = require('path');
 var fs = require('fs');
 thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
 configJSON = JSON.parse(fs.readFileSync([...thisFilePathArray.slice(0, thisFilePathArray.length -1), 'nConfig.json'].join(path.sep)));
-nameOfAuthor = configJSON['nameOfAuthor']
+nameOfAuthor = configJSON['nameOfAuthor'];
 
 const c = (textToLogToConsole) => {
     console.log(textToLogToConsole);
-}
+};
 
 const getPathUpFolderTree = (arrayOfPathToClimb, nameOfDirectoryToFind) => {
 
@@ -18,21 +18,22 @@ const getPathUpFolderTree = (arrayOfPathToClimb, nameOfDirectoryToFind) => {
     }
     
     return arrayOfPathToClimb;
-}
+};
 
 const isDirectory = (fileObjPathArray) => {
     return fs.statSync(pathArrayToStr(fileObjPathArray)).isDirectory();
-}
+};
+
 const isFile = (fileObjPathArray) => {
 
     return fs.statSync(pathArrayToStr(fileObjPathArray)).isFile();
-}
+};
 
 const pathArrayToStr = (pathArray) => {
 
     return pathArray.join(path.sep);
 
-}
+};
 
 const getSuffix = (fileObjPathArray) => {
 
@@ -41,7 +42,7 @@ const getSuffix = (fileObjPathArray) => {
     if (arrayOfFileNameParts.length > 1) return '.'.concat(arrayOfFileNameParts.slice(-1)[0]);
     
     return '';
-
+;
 }
 
 const getStem = (fileObjPathArray) => {
@@ -51,7 +52,7 @@ const getStem = (fileObjPathArray) => {
     if (arrayOfFileNameParts.length > 1) return arrayOfFileNameParts.slice(0, arrayOfFileNameParts.length - 1).join('.');
 
     return arrayOfFileNameParts[0];
-}
+};
 
 const getArrayOfFileObjFromDir = (fileObjPathArray, pathsToExclude) => {
 
@@ -78,7 +79,7 @@ const getArrayOfFileObjFromDir = (fileObjPathArray, pathsToExclude) => {
     });
 
     return arrayOfFileObjFromDir;
-}
+};
 
 const findFilePathBreadthFirst = (rootPathArray, isJSFileToImport, pathsToExclude=[]) => {
 
@@ -97,7 +98,7 @@ const findFilePathBreadthFirst = (rootPathArray, isJSFileToImport, pathsToExclud
 
     }
 
-}
+};
 
 
 
@@ -116,10 +117,12 @@ const mainFunction = (arrayOfArguments) => {
     }, pathsToExclude=[[...rootPathArray, '.history'], [...rootPathArray, '.vscode'], [...rootPathArray, 'reposFromOthers'], [...rootPathArray, 'privateData', 'python', 'dataFromStocks'], ['node_modules'], ['.git']]);
 
     relativePath = './'.concat(path.relative(pathArrayToStr(thisFilePathArray.slice(0, thisFilePathArray.length - 1)), pathArrayToStr(pathToJSFileForImport)))
+    // c(relativePath);
 
-    var importedModule = require(relativePath);
-
-}
+    const mainFunction = require(relativePath);
+    mainFunction();
+    
+};
 
 
 if (require.main === module) {
@@ -133,12 +136,6 @@ if (require.main === module) {
 
 }
 
-
-//     importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], pathToPythonFileForImport)
-//     importedModule = importlib.util.module_from_spec(importedModuleSpec)
-//     importedModuleSpec.loader.exec_module(importedModule)
-//     importedModule.mainFunction(sys.argv[1:])
-//     # importedModule.MyClass()
 
 
 

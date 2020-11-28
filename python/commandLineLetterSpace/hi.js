@@ -1,5 +1,6 @@
 
-const mainFunction = () => {
-    console.log('hi there');
-}
+const sayHello = () => { 
+    console.log('say hello'); 
+};
 
+module.exports = sayHello;
