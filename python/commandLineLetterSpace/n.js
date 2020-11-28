@@ -113,7 +113,7 @@ const mainFunction = (arrayOfArguments) => {
 
     }, pathsToExclude=[[...reposPathArray, '.history'], [...reposPathArray, '.vscode'], [...reposPathArray, 'reposFromOthers'], [...reposPathArray, 'privateData', 'python', 'dataFromStocks'], ['node_modules'], ['.git']]);
 
-    c(pathToJSFileForImport)
+    c(path.relative(pathArrayToStr(thisFilePathArray), pathArrayToStr(pathToJSFileForImport)))
 
 }
 
