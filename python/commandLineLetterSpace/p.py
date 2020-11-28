@@ -23,7 +23,7 @@ def mainFunction(arrayOfArguments):
 
         return False
 
-    pathToPythonFileForImport = myPyFunc.findFilePathBreadthFirst(pathToRepos, ifPythonFileToImport, pathsToExclude=[str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')), str(Path(pathToRepos, 'reposFromOthers')), '.git', 'node_modules'])
+    pathToPythonFileForImport = myPyFunc.findFilePathBreadthFirst(pathToRepos, ifPythonFileToImport, pathsToExclude=[str(Path(pathToRepos, 'privateData', 'python', 'dataFromStocks')), str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')), str(Path(pathToRepos, 'reposFromOthers')), '.git', 'node_modules'])
 
 
     importedModuleSpec = importlib.util.spec_from_file_location(arrayOfArguments[1], pathToPythonFileForImport)
