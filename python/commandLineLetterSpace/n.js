@@ -1,43 +1,99 @@
 var path = require('path');
-pathToThisJSFile = path.resolve(__dirname, __filename)
+var fs = require('fs');
+thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
 
 const c = (textToLogToConsole) => {
     console.log(textToLogToConsole);
 }
 
-const getPathUpFolderTree = (pathToClimb, directoryToFind) => {
-    
-    pathToClimbArray = pathToClimb.split(path.sep)
+const getPathUpFolderTree = (arrayOfPathToClimb, nameOfDirectoryToFind) => {
 
-    for (directoryLevel = pathToClimbArray.length; directoryLevel > 0; directoryLevel--) {
+    for (directoryIndex = arrayOfPathToClimb.length; directoryIndex > 0; directoryIndex--) {
 
-        if (pathToClimbArray[directoryLevel] == directoryToFind) {
-            return pathToClimbArray.slice(0, directoryLevel + 1).join(path.sep) 
+        if (arrayOfPathToClimb[directoryIndex] == nameOfDirectoryToFind) {
+            return arrayOfPathToClimb.slice(0, directoryIndex + 1);
         }
     }
     
-    return pathToClimb
+    return arrayOfPathToClimb;
 }
 
-const findFilePathBreadthFirst = (rootDirectory, ifCorrectFileObj, pathsToExclude=[]) => {
+const isDirectory = (fileObjPathArray) => {
+    return fs.statSync(pathArrayToStr(fileObjPathArray)).isDirectory();
+}
+const isFile = (fileObjPathArray) => {
 
-    currentArrayOfFileObj = [rootDirectory]
+    return fs.statSync(pathArrayToStr(fileObjPathArray)).isFile();
+}
 
-    while (currentArrayOfFileObj) {
+const pathArrayToStr = (pathArray) => {
 
-        currentFileObj = currentArrayOfFileObj.shift();
+    return pathArray.join(path.sep);
 
-        c(currentFileObj);
+}
 
-        return 1;
+const getSuffix = (fileObjPathArray) => {
+
+    arrayOfFileNameParts = fileObjPathArray.slice(-1)[0].split('.');
+
+    if (arrayOfFileNameParts.length > 1) return '.'.concat(arrayOfFileNameParts.slice(-1)[0]);
+    
+    return '';
+
+}
+
+const getStem = (fileObjPathArray) => {
+
+    arrayOfFileNameParts = fileObjPathArray.slice(-1)[0].split('.');
+
+    if (arrayOfFileNameParts.length > 1) return arrayOfFileNameParts.slice(0, arrayOfFileNameParts.length - 1).join('.');
+
+    return arrayOfFileNameParts[0];
+}
+
+const getArrayOfFileObjFromDir = (fileObjPathArray, pathsToExclude) => {
+
+    const fileObjHasPathToExclude = (fileObj, pathsToExclude) => {
+
+        for (let pathToExclude of pathsToExclude) {
+
+            if (pathArrayToStr(fileObj).includes(pathArrayToStr(pathToExclude))) return true;
+
+        }
+
+        return false;
 
     }
-    
 
-    
-    //     if currentFileObj.is_dir(): currentArrayOfFileObj.extend(getArrayOfFileObjFromDir(currentFileObj, pathsToExclude))
-    
-    //     if ifCorrectFileObj(currentFileObj): return currentFileObj
+    arrayOfFileObjFromDir = [];
+
+    fs.readdirSync(pathArrayToStr(fileObjPathArray)).forEach(filename => {
+
+        fileObjInDirToAdd = [...fileObjPathArray, filename];
+
+        if (!fileObjHasPathToExclude(fileObjInDirToAdd, pathsToExclude)) arrayOfFileObjFromDir.push(fileObjInDirToAdd);
+
+    });
+
+    return arrayOfFileObjFromDir;
+}
+
+const findFilePathBreadthFirst = (rootPathArray, isJSFileToImport, pathsToExclude=[]) => {
+
+    arrayOfFileObjs = [rootPathArray];
+
+    while (arrayOfFileObjs.length) {
+
+        fileObjPathArray = arrayOfFileObjs.shift();
+
+        if (isDirectory(fileObjPathArray)) arrayOfFileObjs.push(...getArrayOfFileObjFromDir(fileObjPathArray, pathsToExclude));
+
+        // if (getSuffix(fileObjPathArray) == '.js') c(fileObjPathArray);
+        // // c(getSuffix(fileObjPathArray));
+
+        if (isJSFileToImport(fileObjPathArray)) return fileObjPathArray;
+
+    }
 
 }
 
@@ -47,47 +103,31 @@ const mainFunction = (arrayOfArguments) => {
 
     c(`Searching for command '${arrayOfArguments[1]}.js' (created by Creed)...`);
 
-    pathToRepos = getPathUpFolderTree(pathToThisJSFile, 'repos');
+    reposPathArray = getPathUpFolderTree(thisFilePathArray, 'repos');
 
-    pathToJSFileForImport = findFilePathBreadthFirst(pathToRepos, (fileObj) => {
-        
-        if (fileObj == 1 && fileObj == 2) {
-        
-            if (fileObj == arrayOfArguments[1]) return true;
+    pathToJSFileForImport = findFilePathBreadthFirst(reposPathArray, (fileObjPathArray) => {
 
-        }
-        
+        if (isFile(fileObjPathArray) && getSuffix(fileObjPathArray) == '.js' && getStem(fileObjPathArray) == arrayOfArguments[1]) return true;
+
         return false;
-    
-    }, pathsToExclude=[]);  //, pathsToExclude=[str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')), str(Path(pathToRepos, 'reposFromOthers')), 'node_modules'])
+
+    }, pathsToExclude=[[...reposPathArray, '.history'], [...reposPathArray, '.vscode'], [...reposPathArray, 'reposFromOthers'], [...reposPathArray, 'privateData', 'python', 'dataFromStocks'], ['node_modules'], ['.git']]);
+
+    c(pathToJSFileForImport)
 
 }
 
 
 if (require.main === module) {
 
-    c(`${path.basename(pathToThisJSFile)} (created by Creed) is not being imported. It is being run directly...`);
+    c(`${thisFilePathArray.slice(-1)[0]} (created by Creed) is not being imported. It is being run directly...`);
     mainFunction(process.argv.slice(1));
 
+} else {
+
+    c(`${thisFilePathArray.slice(-1)[0]} (created by Creed) is being imported. It is not being run directly...`);
+
 }
-else {
-
-    c(`${path.basename(pathToThisJSFile)} (created by Creed) is being imported. It is not being run directly...`);
-
-}
-
-
-//     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-
-//     def ifPythonFileToImport(fileObj):
-
-//         if fileObj.is_file() and fileObj.suffix == '.py':
-
-//             if fileObj.stem == sys.argv[1]: return True
-
-//         return False
-
-//     pathToPythonFileForImport = myPyFunc.findFilePathBreadthFirst(pathToRepos, ifPythonFileToImport, pathsToExclude=[str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')), str(Path(pathToRepos, 'reposFromOthers')), 'node_modules'])
 
 
 //     importedModuleSpec = importlib.util.spec_from_file_location(sys.argv[1], pathToPythonFileForImport)
