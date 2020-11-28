@@ -113,6 +113,7 @@ const mainFunction = (arrayOfArguments) => {
 
     }, pathsToExclude=[[...reposPathArray, '.history'], [...reposPathArray, '.vscode'], [...reposPathArray, 'reposFromOthers'], [...reposPathArray, 'privateData', 'python', 'dataFromStocks'], ['node_modules'], ['.git']]);
 
+    // var importedModule = require('hi.js')
     c(path.relative(pathArrayToStr(thisFilePathArray), pathArrayToStr(pathToJSFileForImport)))
 
 }
