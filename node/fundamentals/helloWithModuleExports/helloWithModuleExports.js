@@ -1,6 +1,6 @@
 
-const sayHello = () => { 
-    console.log('hello with module.exports!'); 
+const sayHello = (arrayOfArguments) => { 
+    console.log(`hello! arrayOfArguments: ${arrayOfArguments}`); 
 };
 
 module.exports = sayHello;

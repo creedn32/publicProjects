@@ -104,13 +104,14 @@ const findFilePathBreadthFirst = (rootPathArray, isJSFileToImport, pathsToExclud
 
 const mainFunction = (arrayOfArguments) => {
 
-    c(`Searching for command '${arrayOfArguments[1]}.js' (created by ${nameOfAuthor})...`);
+    // c(arrayOfArguments)
+    c(`Searching for command '${arrayOfArguments[0]}.js' (created by ${nameOfAuthor})...`);
 
     rootPathArray = getPathUpFolderTree(thisFilePathArray, configJSON['nameOfDirectoryToSetAsRoot']);
 
     pathToJSFileForImport = findFilePathBreadthFirst(rootPathArray, (fileObjPathArray) => {
 
-        if (isFile(fileObjPathArray) && getSuffix(fileObjPathArray) == '.js' && getStem(fileObjPathArray) == arrayOfArguments[1]) return true;
+        if (isFile(fileObjPathArray) && getSuffix(fileObjPathArray) == '.js' && getStem(fileObjPathArray) == arrayOfArguments[0]) return true;
 
         return false;
 
@@ -120,7 +121,7 @@ const mainFunction = (arrayOfArguments) => {
     // c(relativePath);
 
     const mainFunction = require(relativePath);
-    mainFunction();
+    mainFunction(arrayOfArguments.slice(1));
     
 };
 
@@ -128,7 +129,8 @@ const mainFunction = (arrayOfArguments) => {
 if (require.main === module) {
 
     c(`${thisFilePathArray.slice(-1)[0]} (created by ${nameOfAuthor}) is not being imported. It is being run directly...`);
-    mainFunction(process.argv.slice(1));
+    // c(process.argv)
+    mainFunction(process.argv.slice(2));
 
 } else {
 
