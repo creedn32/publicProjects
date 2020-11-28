@@ -1,6 +1,8 @@
 var path = require('path');
 var fs = require('fs');
 thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
+configJSON = JSON.parse(fs.readFileSync([...thisFilePathArray.slice(0, thisFilePathArray.length -1), 'nConfig.json'].join(path.sep)));
+nameOfAuthor = configJSON['nameOfAuthor']
 
 const c = (textToLogToConsole) => {
     console.log(textToLogToConsole);
@@ -101,32 +103,33 @@ const findFilePathBreadthFirst = (rootPathArray, isJSFileToImport, pathsToExclud
 
 const mainFunction = (arrayOfArguments) => {
 
-    c(`Searching for command '${arrayOfArguments[1]}.js' (created by Creed)...`);
+    c(`Searching for command '${arrayOfArguments[1]}.js' (created by ${nameOfAuthor})...`);
 
-    reposPathArray = getPathUpFolderTree(thisFilePathArray, 'repos');
+    rootPathArray = getPathUpFolderTree(thisFilePathArray, configJSON['nameOfDirectoryToSetAsRoot']);
 
-    pathToJSFileForImport = findFilePathBreadthFirst(reposPathArray, (fileObjPathArray) => {
+    pathToJSFileForImport = findFilePathBreadthFirst(rootPathArray, (fileObjPathArray) => {
 
         if (isFile(fileObjPathArray) && getSuffix(fileObjPathArray) == '.js' && getStem(fileObjPathArray) == arrayOfArguments[1]) return true;
 
         return false;
 
-    }, pathsToExclude=[[...reposPathArray, '.history'], [...reposPathArray, '.vscode'], [...reposPathArray, 'reposFromOthers'], [...reposPathArray, 'privateData', 'python', 'dataFromStocks'], ['node_modules'], ['.git']]);
+    }, pathsToExclude=[[...rootPathArray, '.history'], [...rootPathArray, '.vscode'], [...rootPathArray, 'reposFromOthers'], [...rootPathArray, 'privateData', 'python', 'dataFromStocks'], ['node_modules'], ['.git']]);
 
-    // var importedModule = require('hi.js')
-    c(path.relative(pathArrayToStr(thisFilePathArray), pathArrayToStr(pathToJSFileForImport)))
+    relativePath = './'.concat(path.relative(pathArrayToStr(thisFilePathArray.slice(0, thisFilePathArray.length - 1)), pathArrayToStr(pathToJSFileForImport)))
+
+    var importedModule = require(relativePath);
 
 }
 
 
 if (require.main === module) {
 
-    c(`${thisFilePathArray.slice(-1)[0]} (created by Creed) is not being imported. It is being run directly...`);
+    c(`${thisFilePathArray.slice(-1)[0]} (created by ${nameOfAuthor}) is not being imported. It is being run directly...`);
     mainFunction(process.argv.slice(1));
 
 } else {
 
-    c(`${thisFilePathArray.slice(-1)[0]} (created by Creed) is being imported. It is not being run directly...`);
+    c(`${thisFilePathArray.slice(-1)[0]} (created by ${nameOfAuthor}) is being imported. It is not being run directly...`);
 
 }
 
