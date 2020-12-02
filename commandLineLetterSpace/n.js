@@ -7,7 +7,9 @@ nameOfAuthor = configJSON['nameOfAuthor'];
 
 
 const c = (textToLogToConsole) => {
+
     console.log(textToLogToConsole);
+
 };
 
 
@@ -15,12 +17,12 @@ const getPathUpFolderTree = (arrayOfPathToClimb, nameOfDirectoryToFind) => {
 
     for (directoryIndex = arrayOfPathToClimb.length; directoryIndex > 0; directoryIndex--) {
 
-        if (arrayOfPathToClimb[directoryIndex] == nameOfDirectoryToFind) {
-            return arrayOfPathToClimb.slice(0, directoryIndex + 1);
-        }
+        if (arrayOfPathToClimb[directoryIndex] == nameOfDirectoryToFind) return arrayOfPathToClimb.slice(0, directoryIndex + 1);
+
     }
-    
+
     return arrayOfPathToClimb;
+
 };
 
 
@@ -50,7 +52,7 @@ const getSuffix = (fileObjPathArray) => {
     arrayOfFileNameParts = fileObjPathArray.slice(-1)[0].split('.');
 
     if (arrayOfFileNameParts.length > 1) return '.'.concat(arrayOfFileNameParts.slice(-1)[0]);
-    
+
     return '';
 
 };
@@ -133,7 +135,7 @@ const importJSFile = (arrayOfArguments) => {
 
     require(relativePathToJSFileForImport)(arrayOfArguments.slice(1));
     // mainFunctionImportedJSFile(arrayOfArguments.slice(1));
-    
+
 };
 
 
