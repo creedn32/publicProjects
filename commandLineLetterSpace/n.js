@@ -122,7 +122,7 @@ const importJSFile = (arrayOfArguments) => {
 
     pathToJSFileForImport = findFilePathBreadthFirst(rootPathArray, (fileObjPathArray) => {
 
-        if (isFile(fileObjPathArray) && getSuffix(fileObjPathArray) == '.js' && getStem(fileObjPathArray) == arrayOfArguments[0]) return true;
+        if (getSuffix(fileObjPathArray) == '.js' && getStem(fileObjPathArray) == arrayOfArguments[0] && isFile(fileObjPathArray)) return true;
 
         return false;
 
