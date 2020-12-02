@@ -102,12 +102,12 @@ const findFilePathBreadthFirst = (rootPathArray, isJSFileToImport, pathsToExclud
 
         fileObjPathArray = arrayOfFileObjects.shift();
 
+        if (isJSFileToImport(fileObjPathArray)) return fileObjPathArray;
+
         if (isDirectory(fileObjPathArray)) arrayOfFileObjects.push(...getArrayOfFileObjectsFromDir(fileObjPathArray, pathsToExclude));
 
         // if (getSuffix(fileObjPathArray) == '.js') c(fileObjPathArray);
         // // c(getSuffix(fileObjPathArray));
-
-        if (isJSFileToImport(fileObjPathArray)) return fileObjPathArray;
 
     }
 
