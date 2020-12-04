@@ -126,7 +126,7 @@ def mainFunction(arrayOfArguments):
 
                         if currentColumnName not in ['Option', 'Type']:
 
-                            myPyAutoGui.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
+                            myPyAutoGui.typeCharactersOnRemoteDesktop(columnData)
 
                         if currentColumnName in columnNameToNumberOfTabsObj:
                             myPyAutoGui.repetitiveKeyPress(columnNameToNumberOfTabsObj[currentColumnName], 'tab')
@@ -178,7 +178,7 @@ def mainFunction(arrayOfArguments):
                         columnData = columnData.lstrip('$').replace('.', '').replace(',', '')
 
 
-                    myPyAutoGui.typeCharactersOnRemoteDesktop(columnData, pyautogui.PAUSE)
+                    myPyAutoGui.typeCharactersOnRemoteDesktop(columnData)
 
                     # for characterToType in columnData:
 
