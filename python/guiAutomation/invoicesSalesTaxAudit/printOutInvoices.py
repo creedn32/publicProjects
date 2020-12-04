@@ -76,7 +76,9 @@ def mainFunction(arrayOfArguments):
             m.doubleClickWhenLocalPNGAppears('blue', parentDir)
             m.clickWhenLocalPNGAppears('sourceDocument', parentDir)
             m.clickWhenLocalPNGAppears('imageButton', parentDir)
-            m.clickWhenLocalPNGAppears('bistrackIcon', parentDir)
+            while not m.locateOnScreenLocal('relatedDocumentsIcon', parentDir):
+                m.clickWhenLocalPNGAppears('bistrackIcon', parentDir)
+                
             m.clickWhenLocalPNGAppears('relatedDocumentsIcon', parentDir)
             m.clickWhenLocalPNGAppears('relatedDocumentsWindow', parentDir)
 
@@ -84,35 +86,29 @@ def mainFunction(arrayOfArguments):
                 pydirectinput.press('down')
 
             m.clickWhenLocalPNGAppears('openInvoice', parentDir)
+            
+            
             m.clickWhenLocalPNGAppears('print', parentDir)
             m.waitUntilLocalPNGAppears('selectPrinter', parentDir)
             pyautogui.press(['c', 'u', 'enter'])
 
-            while not m.locateOnScreenLocal('cutePDFSaveAs', parentDir):
+            # while not m.locateOnScreenLocal('cutePDFSaveAs', parentDir):
 
-                p('Looking for cutePDFSaveAs...')
+            #     p('Looking for cutePDFSaveAs...')
 
-                if m.getCoordinatesIfLocalPNGIsShowing('gpInvoiceWindowNotHighlighted', parentDir):
-                    m.clickWhenLocalPNGAppears('gpInvoiceWindowNotHighlighted', parentDir)
-                elif m.getCoordinatesIfLocalPNGIsShowing('cutePDFSaveAsIcon', parentDir):
-                    m.clickWhenLocalPNGAppears('cutePDFSaveAsIcon', parentDir)
+            #     if m.getCoordinatesIfLocalPNGIsShowing('gpInvoiceWindowNotHighlighted', parentDir):
+            #         m.clickWhenLocalPNGAppears('gpInvoiceWindowNotHighlighted', parentDir)
+            #     elif m.getCoordinatesIfLocalPNGIsShowing('cutePDFSaveAsIcon', parentDir):
+            #         m.clickWhenLocalPNGAppears('cutePDFSaveAsIcon', parentDir)
 
             m.clickWhenLocalPNGAppears('cutePDFSaveAs', parentDir)
 
-            pyautogui.press(['tab'] * 5)
-            m.typeAndWriteOnRemoteDesktop(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[acctNumColIdx] + ' - ' + row[nameColIdx].replace('\\', ''))
-            
+            pyautogui.press(['tab'] * 5)  #5)
+
+            m.typeAndWriteOnRemoteDesktop(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[acctNumColIdx] + ' - ' + row[nameColIdx].replace('\\', '').replace('&', ''))
+
             pyautogui.press('enter')
             
-            # while not m.locateOnScreenLocal('cutePDFSaveAs'):
-            #     m.clickWhenLocalPNGAppears('gpInvoiceWindow', parentDir)
-                
-            # m.clickLocalPNGWhenAppearsAndWaitUntilLocaPNGDisappears('cutePDFSaveButton', 'cutePDFSaveAs', parentDir)
-            
-            # time.sleep(5)
-
-
-
             m.clickLocalPNGWhenAppearsAndWaitUntilLocaPNGDisappears('closeGPInvoice', 'print', parentDir)
 
             while m.locateOnScreenLocal('closeRelatedDocuments', parentDir):
