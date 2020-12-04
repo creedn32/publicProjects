@@ -35,6 +35,9 @@ def mainFunction(arrayOfArguments):
 
     myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
     myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet('Invoices'), invoicesArray)
+
+    myGspreadFunc.setFiltersOnSpreadsheet(spreadsheetLevelObj)
+
     myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
 
 
