@@ -12,32 +12,43 @@ from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGs
 from pprint import pprint as p
 import datetime
 import time
+import json
 
 def mainFunction(arrayOfArguments):
+
+    # p(arrayOfArguments[3])
 
     pathBelowRepos = pathToThisPythonFile
 
     spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[2]).open(arrayOfArguments[1])
-    invoicesArray = spreadsheetLevelObj.worksheet('Invoices').get_all_values()
+    
+    if arrayOfArguments[4] == 'From Google Sheets':
 
-    journalEntryColIdx = 1
-    amountColIdx = 6    
+        invoicesArray = spreadsheetLevelObj.worksheet('Invoices').get_all_values()
+
+    elif arrayOfArguments[4] == 'From Local File':
+
+        with open(arrayOfArguments[5], 'r') as filehandle:
+
+            invoicesArray = json.load(filehandle)
+
+    invoicePulledColIdx = 0
+    journalEntryColIdx = 2
+    amountColIdx = 7
+
 
     for rowIndex, row in enumerate(invoicesArray):
 
-        if rowIndex == 1:
-
+        if rowIndex:
 
             m.clickWhenLocalPNGAppears('search', parentDir)
             m.clickWhenLocalPNGAppears('journalEntryInput', parentDir)
             pyautogui.press(['tab', 'tab'])
-            # m.waitUntilLocalPNGAppears('journalEntryInputClicked', parentDir)
+
             pyautogui.write(invoicesArray[1][journalEntryColIdx])
             pyautogui.press('enter')
             m.waitUntilLocalPNGAppears('completed', parentDir)
             pyautogui.press(['tab'] * 15)
-
-            # m.clickWhenLocalPNGAppears('blue', parentDir)
 
             while not m.locateOnScreenLocal('accountBlue', parentDir):
                 p('Looking for accountBlue...')
@@ -50,7 +61,7 @@ def mainFunction(arrayOfArguments):
             m.doubleClickWhenLocalPNGAppears('blue', parentDir)
             m.clickWhenLocalPNGAppears('sourceDocument', parentDir)
             m.clickWhenLocalPNGAppears('imageButton', parentDir)
-            m.clickWhenLocalPNGAppears('yellowBistrackIcon', parentDir)
+            m.clickWhenLocalPNGAppears('bistrackIcon', parentDir)
             m.clickWhenLocalPNGAppears('relatedDocumentsIcon', parentDir)
             m.clickWhenLocalPNGAppears('relatedDocumentsWindow', parentDir)
 
@@ -61,25 +72,43 @@ def mainFunction(arrayOfArguments):
             m.clickWhenLocalPNGAppears('print', parentDir)
             m.waitUntilLocalPNGAppears('selectPrinter', parentDir)
             pyautogui.press(['c', 'u', 'enter'])
+
+            while not m.locateOnScreenLocal('cutePDFSaveAs', parentDir):
+                if m.getCoordinatesIfLocalPNGIsShowing('gpInvoiceWindowNotHighlighted', parentDir):
+                    m.clickWhenLocalPNGAppears('gpInvoiceWindowNotHighlighted', parentDir)
+
             m.clickWhenLocalPNGAppears('cutePDFSaveAs', parentDir)
+
             pyautogui.press(['tab'] * 5)
-            m.typeAndWriteOnRemoteDesktop(arrayOfArguments[3] + row[journalEntryColIdx] + ' - ' + row[amountColIdx])
-            m.clickLocalPNGWhenAppearsAndWaitUntilLocaPNGDisappears('cutePDFSaveButton', 'cutePDFSaveAs', parentDir)
+            m.typeAndWriteOnRemoteDesktop(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[amountColIdx])
             
-            time.sleep(5)
+            pyautogui.press('enter')
+            
+            # while not m.locateOnScreenLocal('cutePDFSaveAs'):
+            #     m.clickWhenLocalPNGAppears('gpInvoiceWindow', parentDir)
+                
+            # m.clickLocalPNGWhenAppearsAndWaitUntilLocaPNGDisappears('cutePDFSaveButton', 'cutePDFSaveAs', parentDir)
+            
+            # time.sleep(5)
+
+
 
             m.clickLocalPNGWhenAppearsAndWaitUntilLocaPNGDisappears('closeGPInvoice', 'print', parentDir)
-            m.clickLocalPNGWhenAppearsAndWaitUntilLocaPNGDisappears('closeRelatedDocuments', 'relatedDocumentsWindow', parentDir)
+
+            while m.locateOnScreenLocal('closeRelatedDocuments', parentDir):
+                m.clickWhenLocalPNGAppears('closeRelatedDocuments', parentDir)
+
+            m.waitUntilLocalPNGDisappears('relatedDocumentsWindow', parentDir)
 
             m.clickWhenLocalPNGAppears('payablesEntry', parentDir)
 
             m.clickLocalPNGWhenAppearsAndWaitUntilLocaPNGDisappears('closeGPWindow', 'payablesEntryActive', parentDir)
             m.clickLocalPNGWhenAppearsAndWaitUntilLocaPNGDisappears('closeGPWindow', 'transactionEntry', parentDir)
 
+            row[invoicePulledColIdx] = 'Yes'
 
-
-
-
+            with open(arrayOfArguments[5], 'w') as filehandle:
+                json.dump(invoicesArray, filehandle)
 
 
 
