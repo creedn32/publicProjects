@@ -62,7 +62,7 @@ def mainFunction(arrayOfArguments):
 
             pyautogui.press('enter')
 
-            m.waitUntilLocalPNGAppears('completed', parentDir)
+            m.waitUntilLocalPNGAppears('completedOneTransaction', parentDir)
             pyautogui.press(['tab'] * 15)
 
             while not m.locateOnScreenLocal('accountBlue', parentDir):
