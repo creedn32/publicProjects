@@ -34,19 +34,34 @@ def mainFunction(arrayOfArguments):
 
     invoicePulledColIdx = 0
     journalEntryColIdx = 2
-    amountColIdx = 7
+    acctNumColIdx = 5
+    debitColIdx = 7
+    creditColIdx = 8
+    nameColIdx = 11
+
 
 
     for rowIndex, row in enumerate(invoicesArray):
 
-        if rowIndex:
+        if rowIndex and row[invoicePulledColIdx] == '':
 
             m.clickWhenLocalPNGAppears('search', parentDir)
             m.clickWhenLocalPNGAppears('journalEntryInput', parentDir)
-            pyautogui.press(['tab', 'tab'])
 
-            pyautogui.write(invoicesArray[1][journalEntryColIdx])
+            pyautogui.press(['tab'] * 2)
+            pyautogui.write(row[journalEntryColIdx])
+
+            pyautogui.press(['tab'] * 5)
+            pyautogui.write(row[acctNumColIdx])
+
+            pyautogui.press(['tab'] * 4)
+            pyautogui.write(row[debitColIdx])
+
+            pyautogui.press(['tab'] * 5)
+            pyautogui.write(row[creditColIdx])
+
             pyautogui.press('enter')
+
             m.waitUntilLocalPNGAppears('completed', parentDir)
             pyautogui.press(['tab'] * 15)
 
@@ -80,7 +95,7 @@ def mainFunction(arrayOfArguments):
             m.clickWhenLocalPNGAppears('cutePDFSaveAs', parentDir)
 
             pyautogui.press(['tab'] * 5)
-            m.typeAndWriteOnRemoteDesktop(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[amountColIdx])
+            m.typeAndWriteOnRemoteDesktop(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[acctNumColIdx] + ' - ' + row[nameColIdx])
             
             pyautogui.press('enter')
             
