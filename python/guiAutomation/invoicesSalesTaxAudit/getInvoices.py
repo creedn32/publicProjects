@@ -95,7 +95,7 @@ def mainFunction(arrayOfArguments):
             m.clickWhenLocalPNGAppears('cutePDFSaveAs', parentDir)
 
             pyautogui.press(['tab'] * 5)
-            m.typeAndWriteOnRemoteDesktop(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[acctNumColIdx] + ' - ' + row[nameColIdx])
+            m.typeAndWriteOnRemoteDesktop(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[acctNumColIdx] + ' - ' + row[nameColIdx].replace('\\', ''))
             
             pyautogui.press('enter')
             
