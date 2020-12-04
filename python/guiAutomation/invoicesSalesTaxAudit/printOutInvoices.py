@@ -89,8 +89,13 @@ def mainFunction(arrayOfArguments):
             pyautogui.press(['c', 'u', 'enter'])
 
             while not m.locateOnScreenLocal('cutePDFSaveAs', parentDir):
+
+                p('Looking for cutePDFSaveAs...')
+
                 if m.getCoordinatesIfLocalPNGIsShowing('gpInvoiceWindowNotHighlighted', parentDir):
                     m.clickWhenLocalPNGAppears('gpInvoiceWindowNotHighlighted', parentDir)
+                elif m.getCoordinatesIfLocalPNGIsShowing('cutePDFSaveAsIcon', parentDir):
+                    m.clickWhenLocalPNGAppears('cutePDFSaveAsIcon', parentDir)
 
             m.clickWhenLocalPNGAppears('cutePDFSaveAs', parentDir)
 
