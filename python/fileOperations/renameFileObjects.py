@@ -16,13 +16,15 @@ def mainFunction(arrayOfArguments):
     def actionToPerform(fileObj):
 
         originalPath = Path(fileObj.parents[0], fileObj.name)
-        if fileObj.name[2:3] == ' ':
-            newPath = Path(fileObj.parents[0], fileObj.name[3:])
-            p('originalPath: ' + str(originalPath) + '; newPath: ' + str(newPath))
-            try:
-                os.rename(originalPath, newPath)
-            except:
-                pass
+        # newPath = Path(fileObj.parents[0], fileObj.name[1:])
+
+        try: 
+            # p(newPath)
+            # os.rename(originalPath, newPath)
+            # p(int(arrayOfArguments[2]))
+            os.utime(originalPath, (int(arrayOfArguments[2]), int(arrayOfArguments[2])))
+        except:
+            pass
 
     myPyFunc.onAllFileObjInDir(arrayOfArguments[1], actionToPerform)
 
@@ -36,6 +38,16 @@ else:
 	p(str(pathToThisPythonFile.name) + ' is being imported. It is not being run directly...')
 
 
+
+
+
+        # if fileObj.name[2:3] == ' ':
+        #     newPath = Path(fileObj.parents[0], fileObj.name[3:])
+        #     p('originalPath: ' + str(originalPath) + '; newPath: ' + str(newPath))
+        #     try:
+        #         p(1) #os.rename(originalPath, newPath)
+        #     except:
+        #         pass
 
 
 
