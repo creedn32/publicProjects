@@ -1,4 +1,4 @@
-// var patth = require('path');
+// var path = require('path');
 // var fs = require('fs');
 // thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
 
