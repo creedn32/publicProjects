@@ -5,7 +5,6 @@ pathToThisPythonFile = Path(__file__).resolve()
 parentDir = pathToThisPythonFile.parents[0]
 import sys
 sys.path.append(str(pathToThisPythonFile.parents[3]))
-from herokuGorilla.backend.python.myPythonLibrary import myPyFunc
 from herokuGorilla.backend.python.myPythonLibrary import myPyAutoGui as m
 from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGspreadFunc
 
@@ -74,6 +73,7 @@ def mainFunction(arrayOfArguments):
             m.doubleClickWhenLocalPNGAppears('blue', parentDir)
             m.clickWhenLocalPNGAppears('sourceDocument', parentDir)
             m.clickWhenLocalPNGAppears('imageButton', parentDir)
+            
             while not m.locateOnScreenLocal('relatedDocumentsIcon', parentDir):
                 m.clickWhenLocalPNGAppears('bistrackIcon', parentDir)
                 
