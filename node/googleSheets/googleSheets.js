@@ -4,10 +4,11 @@
 
 
 
-const mainFunction = ([firstName, middleName, lastName]) => { 
+const mainFunction = ([googleSheetTitle, googleSheetUsername]) => { 
 
+    console.log(googleSheetTitle);
+    console.log(googleSheetUsername);
 
-    console.log(7);
 };
 
 module.exports = mainFunction;
