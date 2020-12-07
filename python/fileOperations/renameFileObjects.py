@@ -6,23 +6,27 @@ sys.path.append(str(pathToAppend))
 import myPyFunc
 
 from pprint import pprint as p
-import os, re
+import os, re, time
 
 
 
 def mainFunction(arrayOfArguments):
     
+    currentUnixTime = int(time.time())
+
+    # p(currentUnixTime)
 
     def actionToPerform(fileObj):
 
         originalPath = Path(fileObj.parents[0], fileObj.name)
+        
         # newPath = Path(fileObj.parents[0], fileObj.name[1:])
 
         try: 
             # p(newPath)
             # os.rename(originalPath, newPath)
             # p(int(arrayOfArguments[2]))
-            os.utime(originalPath, (int(arrayOfArguments[2]), int(arrayOfArguments[2])))
+            os.utime(originalPath, (currentUnixTime, currentUnixTime))
         except:
             pass
 
