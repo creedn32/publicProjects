@@ -10,8 +10,6 @@ from herokuGorilla.backend.python.myPythonLibrary import myPyAutoGui as m
 from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGspreadFunc
 
 from pprint import pprint as p
-import datetime
-import time
 import json
 
 def mainFunction(arrayOfArguments):
@@ -41,9 +39,9 @@ def mainFunction(arrayOfArguments):
 
 
 
-    for rowIndex, row in enumerate(invoicesArray):
+    for row in invoicesArray:
 
-        if rowIndex and row[invoicePulledColIdx] == '':
+        if row[invoicePulledColIdx] == '':
 
             m.clickWhenLocalPNGAppears('search', parentDir)
             m.clickWhenLocalPNGAppears('journalEntryInput', parentDir)
@@ -123,8 +121,28 @@ def mainFunction(arrayOfArguments):
 
             row[invoicePulledColIdx] = 'Yes'
 
-            with open(arrayOfArguments[5], 'w') as filehandle:
-                json.dump(invoicesArray, filehandle)
+            if arrayOfArguments[4] == 'From Google Sheets':
+
+                clearAndResizeParameters = [
+                    {
+                        'sheetObj': spreadsheetLevelObj.worksheet('Invoices'),
+                        'resizeRows': 2,
+                        'startingRowIndexToClear': 0,
+                        'resizeColumns': 1
+                    },
+                ]
+
+                myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
+                myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet('Invoices'), invoicesArray)
+
+                # myGspreadFunc.setFiltersOnSpreadsheet(spreadsheetLevelObj)
+
+                # myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
+
+            elif arrayOfArguments[4] == 'From Local File':
+
+                with open(arrayOfArguments[5], 'w') as filehandle:
+                    json.dump(invoicesArray, filehandle)
 
 
 
