@@ -1,6 +1,4 @@
 from pathlib import Path
-
-import pyautogui
 pathToThisPythonFile = Path(__file__).resolve()
 import sys
 sys.path.append(str(pathToThisPythonFile.parents[3]))
@@ -9,7 +7,6 @@ from herokuGorilla.backend.python.myPythonLibrary import myPyAutoGui
 from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGspreadFunc
 
 from pprint import pprint as p
-import datetime
 
 
 def getArrayOfPDFFiles(pathToRoot):
