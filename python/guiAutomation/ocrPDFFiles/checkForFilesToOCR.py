@@ -17,10 +17,10 @@ def mainFunction(arrayOfArguments):
     arrayFilenameColIdx = 0
     arrayCompletedStatusColIdx = 1
 
-    filesToReviewArray = spreadsheetLevelObj.worksheet(arrayOfArguments[4]).get_all_values()
+    filesToReviewArray = spreadsheetLevelObj.worksheet(arrayOfArguments[3]).get_all_values()
     filesToReviewArrayFirstRow = filesToReviewArray.pop(0)
 
-    filesCompletedArray = spreadsheetLevelObj.worksheet(arrayOfArguments[3]).get_all_values()
+    filesCompletedArray = spreadsheetLevelObj.worksheet(arrayOfArguments[4]).get_all_values()
     filesCompletedArray = list(filter(lambda x: x[arrayCompletedStatusColIdx] != '', filesCompletedArray))
 
     matchedArray = []
