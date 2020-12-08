@@ -17,7 +17,7 @@ def mainFunction(arrayOfArguments):
 
     pathBelowRepos = pathToThisPythonFile
 
-    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[2]).open(arrayOfArguments[1])
+    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[1]).open(arrayOfArguments[2])
     
     if arrayOfArguments[4] == 'From Google Sheets':
 
