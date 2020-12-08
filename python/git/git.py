@@ -93,7 +93,7 @@ def mainFunction(arrayOfArguments):
 
         return None
 
-    arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, gitFileObjToAdd, pathsToExclude=[str(Path(pathToRepos, '.history')), str(Path(pathToRepos, '.vscode')),  str(Path(pathToRepos, 'reposFromOthers')), 'node_modules'])
+    arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, gitFileObjToAdd, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'),  Path(pathToRepos, 'reposFromOthers'), 'node_modules'])
 
     for gitFileObj in arrayOfGitFileObj:
         runGitProcesses(gitFileObj.parents[0], arrayOfArguments)

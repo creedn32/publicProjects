@@ -9,29 +9,47 @@ from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGs
 from pprint import pprint as p
 
 
-def getArrayOfPDFFiles(pathToRoot):
-
-    def ifPDFFile(fileObj):
-
-        if fileObj.is_file() and fileObj.suffix == '.pdf': return str(fileObj)
-
-        return False
-
-    return myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(pathToRoot), ifPDFFile)
 
 def mainFunction(arrayOfArguments):
 
+    def getArrayOfPDFFiles(pathToRoot, foldersToExclude):
+
+        def ifPDFFile(fileObj):
+
+            # p(fileObj)
+
+            if fileObj.is_file() and fileObj.suffix == '.pdf': return fileObj
+
+            return False
+
+        folderPathsToExclude = []
+
+        for folderToExclude in foldersToExclude:
+
+            folderPathsToExclude.append(Path(pathToRoot, folderToExclude))
+
+        return myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(pathToRoot), ifPDFFile, pathsToExclude=folderPathsToExclude)
+
+
     pathBelowRepos = pathToThisPythonFile
-    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[3]).open(arrayOfArguments[2])
 
-    arrayOfPDFFilesFromDisk = getArrayOfPDFFiles(arrayOfArguments[1])
+    # p(arrayOfArguments)
 
-    arrayUploadToGoogleSheets = []
+    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[1]).open(arrayOfArguments[2])
 
-    for filePath in arrayOfPDFFilesFromDisk:
-        arrayUploadToGoogleSheets.append([filePath, ''])
+    
+    arrayOfPDFFilesFromDisk = getArrayOfPDFFiles(arrayOfArguments[3], arrayOfArguments[5:])
+    
+    arrayOfPDFFilesFromDisk = [[str(e)] for e in arrayOfPDFFilesFromDisk]
+    
 
-    arrayUploadToGoogleSheets.insert(0, ['File Path', 'Completed?'])
+    # arrayUploadToGoogleSheets = []
+
+    # for filePath in arrayOfPDFFilesFromDisk:
+    #     arrayUploadToGoogleSheets.append([filePath, ''])
+
+    arrayOfPDFFilesFromDisk.insert(0, ['File Path'])
+    # p(arrayOfPDFFilesFromDisk)
 
 
     clearAndResizeParameters = [
@@ -44,8 +62,8 @@ def mainFunction(arrayOfArguments):
     ]
 
     myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
-    myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(arrayOfArguments[4]), arrayUploadToGoogleSheets)
-    myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
+    myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(arrayOfArguments[4]), arrayOfPDFFilesFromDisk)
+    # myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
 
 
 if __name__ == '__main__':
