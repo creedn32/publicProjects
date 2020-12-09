@@ -37,7 +37,6 @@ def mainFunction(arrayOfArguments):
     nameColIdx = 11
 
 
-
     for row in invoicesArray:
 
         if row[invoicePulledColIdx] == '':
@@ -46,7 +45,14 @@ def mainFunction(arrayOfArguments):
             m.clickWhenLocalPNGAppears('journalEntryInput', parentDir)
 
             pyautogui.press(['tab'] * 2)
-            pyautogui.write(row[journalEntryColIdx])
+            
+            if row[journalEntryColIdx]: 
+                pyautogui.write(row[journalEntryColIdx])
+            else:
+                pyautogui.hotkey('ctrl', 'a')
+                pyautogui.press('backspace')
+
+            exit()
 
             pyautogui.press(['tab'] * 5)
             pyautogui.write(row[acctNumColIdx])
