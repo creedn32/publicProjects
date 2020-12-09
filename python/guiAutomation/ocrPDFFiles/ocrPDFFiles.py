@@ -74,13 +74,20 @@ def ocrPDFFiles(arrayOfArguments):
 
     filePathColIdx = 0
     completedColIdx = 3
+    lastRowIndexToOCR = None
+
+    for rowIndex, row in enumerate(googleSheetsFileArray):
+
+        if row[completedColIdx] == '':
+
+            lastRowIndexToOCR = rowIndex
 
     currentGroupCount = 0
     currentGroupRowIndices = []
 
     for rowIndex, row in enumerate(googleSheetsFileArray):
 
-        if rowIndex and row[completedColIdx] == '':
+        if row[completedColIdx] == '':
 
             fileObjPath = Path(row[filePathColIdx])
 
@@ -90,15 +97,11 @@ def ocrPDFFiles(arrayOfArguments):
             currentGroupRowIndices.append(rowIndex)
 
 
-            if currentGroupCount == int(arrayOfArguments[5]) or rowIndex == len(googleSheetsFileArray) - 1:
+            if currentGroupCount == int(arrayOfArguments[5]) or rowIndex == lastRowIndexToOCR:
 
                 myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
                 myPyAutoGui.clickWhenLocalPNGAppears('closeActionCompleted', pathToThisPythonFile.parents[0])
                 myPyAutoGui.waitUntilLocalPNGDisappears('closeActionCompleted', pathToThisPythonFile.parents[0])
-
-                # if currentGroupRowIndices[0] == 92:
-
-                pyautogui.press(['alt', 'f', 'w', 'down', 'down', 'enter'])
 
                 for currentGroupRowIndex in currentGroupRowIndices:
 
@@ -123,6 +126,8 @@ def ocrPDFFiles(arrayOfArguments):
                 
                 currentGroupCount = 0
                 currentGroupRowIndices = []
+
+                pyautogui.press(['alt', 'f', 'w', 'down', 'down', 'enter'])
 
 
 
