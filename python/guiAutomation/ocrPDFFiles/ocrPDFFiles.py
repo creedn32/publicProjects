@@ -17,7 +17,18 @@ import platform
 
 def addFileToAcrobatOCRList(fileObj):
 
-    myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
+    while not myPyAutoGui.locateOnScreenLocal('addFilesButton', pathToThisPythonFile.parents[0]) and not myPyAutoGui.locateOnScreenLocal('acrobatStartScreen', pathToThisPythonFile.parents[0]):
+
+        p('Waiting for Acrobat to appear...')
+
+    if myPyAutoGui.locateOnScreenLocal('addFilesButton', pathToThisPythonFile.parents[0]):
+        
+        myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
+    
+    elif myPyAutoGui.locateOnScreenLocal('acrobatStartScreen', pathToThisPythonFile.parents[0]):
+        
+        pyautogui.press(['alt', 'f', 'w', 'down', 'down', 'enter'])
+        myPyAutoGui.clickWhenLocalPNGAppears('addFilesButton', pathToThisPythonFile.parents[0])
 
     pyautogui.press('f')
     myPyAutoGui.getCoordinatesWhenLocalPNGAppears('filenameBoxReady', pathToThisPythonFile.parents[0])
