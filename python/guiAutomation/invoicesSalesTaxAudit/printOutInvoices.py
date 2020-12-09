@@ -1,3 +1,4 @@
+from datetime import date
 from pathlib import Path
 
 import pyautogui, pydirectinput
@@ -10,6 +11,7 @@ from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGs
 
 from pprint import pprint as p
 import json
+import pyperclip
 
 def mainFunction(arrayOfArguments):
 
@@ -30,34 +32,74 @@ def mainFunction(arrayOfArguments):
             invoicesArray = json.load(filehandle)
 
     invoicePulledColIdx = 0
+    typeColIdx = 1
     journalEntryColIdx = 2
+    dateColIdx = 4
     acctNumColIdx = 5
     debitColIdx = 7
     creditColIdx = 8
     nameColIdx = 11
 
+    def paste():
+        pyautogui.keyDown('ctrl')
+        pyautogui.press('v')
+        pyautogui.keyUp('ctrl')
+
+
+    def clearColumnFieldAndPaste(strToPaste):
+        pyperclip.copy(strToPaste)
+        pyautogui.press('backspace')
+        # m.clickWhenLocalPNGAppears('emptyColumnName', parentDir)
+        paste()
+
+    if m.locateOnScreenLocal('searchWindow', parentDir):
+
+        m.clickWhenLocalPNGAppears('closeGPWindow', parentDir)
 
     for row in invoicesArray:
 
         if row[invoicePulledColIdx] == '':
 
             m.clickWhenLocalPNGAppears('search', parentDir)
-            m.clickWhenLocalPNGAppears('journalEntryInput', parentDir)
+            m.clickWhenLocalPNGAppears('searchWindow', parentDir)
+
+            if row[typeColIdx]:
+                clearColumnFieldAndPaste('TRX Date')
+                pyautogui.press(['tab'] * 3)
+                datePartsArray = row[dateColIdx].split('/')
+                dateStr = datePartsArray[0].zfill(2) + datePartsArray[1].zfill(2) + datePartsArray[2]
+                pyautogui.write(dateStr)
+            else:
+                clearColumnFieldAndPaste('Journal Entry')
+                pyautogui.press(['tab'] * 2) 
+                pyautogui.write(row[journalEntryColIdx])
+                pyautogui.press('tab')
 
             pyautogui.press(['tab'] * 2)
-            
-            if row[journalEntryColIdx]: 
-                pyautogui.write(row[journalEntryColIdx])
+
+            # exit()
+
+            if row[typeColIdx]:
+
+                if m.locateOnScreenLocal('accountNumberColumnName', parentDir):
+
+                    clearColumnFieldAndPaste('')
+                    pyautogui.press('tab')
+
             else:
-                pyautogui.hotkey('ctrl', 'a')
-                pyautogui.press('backspace')
 
-            exit()
+                
+                clearColumnFieldAndPaste('Account Number')
+                pyautogui.press(['tab'] * 2) 
+                pyautogui.write(row[acctNumColIdx])
+                pyautogui.press('tab')
+                
 
-            pyautogui.press(['tab'] * 5)
-            pyautogui.write(row[acctNumColIdx])
+            pyautogui.press(['tab'] * 3)
 
-            pyautogui.press(['tab'] * 4)
+            # if row[debitColIdx] != '228.94':
+            #     exit()
+
             pyautogui.write(row[debitColIdx])
 
             pyautogui.press(['tab'] * 5)
@@ -96,20 +138,34 @@ def mainFunction(arrayOfArguments):
             m.waitUntilLocalPNGAppears('selectPrinter', parentDir)
             pyautogui.press(['c', 'u', 'enter'])
 
-            # while not m.locateOnScreenLocal('cutePDFSaveAs', parentDir):
+            while not m.locateOnScreenLocal('cutePDFSaveAsIcon', parentDir):
 
-            #     p('Looking for cutePDFSaveAs...')
+                p('Looking for cutePDFSaveAs...')
 
-            #     if m.getCoordinatesIfLocalPNGIsShowing('gpInvoiceWindowNotHighlighted', parentDir):
-            #         m.clickWhenLocalPNGAppears('gpInvoiceWindowNotHighlighted', parentDir)
+                if m.getCoordinatesIfLocalPNGIsShowing('gpInvoiceWindowNotHighlighted', parentDir):
+                    m.clickWhenLocalPNGAppears('gpInvoiceWindowNotHighlighted', parentDir)
+
             #     elif m.getCoordinatesIfLocalPNGIsShowing('cutePDFSaveAsIcon', parentDir):
             #         m.clickWhenLocalPNGAppears('cutePDFSaveAsIcon', parentDir)
+
+            while not m.locateOnScreenLocal('cutePDFSaveAs', parentDir):
+
+                if m.getCoordinatesIfLocalPNGIsShowing('cutePDFSaveAsIcon', parentDir):
+                    m.clickWhenLocalPNGAppears('cutePDFSaveAsIcon', parentDir)
 
             m.clickWhenLocalPNGAppears('cutePDFSaveAs', parentDir)
 
             pyautogui.press(['tab'] * 5)  #5)
 
-            m.typeAndWriteOnRemoteDesktop(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[acctNumColIdx] + ' - ' + row[nameColIdx].replace('\\', '').replace('&', ''))
+            if row[typeColIdx]:
+
+                pyperclip.copy(arrayOfArguments[3] + '\\' + row[typeColIdx].replace('\\', '').replace('&', ''))
+                paste()
+
+            else:
+                
+                pyperclip.copy(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[acctNumColIdx] + ' - ' + row[nameColIdx].replace('\\', '').replace('&', ''))
+                paste()
 
             pyautogui.press('enter')
             
@@ -143,7 +199,7 @@ def mainFunction(arrayOfArguments):
 
                 # myGspreadFunc.setFiltersOnSpreadsheet(spreadsheetLevelObj)
 
-                # myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
+                myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
 
             elif arrayOfArguments[4] == 'From Local File':
 

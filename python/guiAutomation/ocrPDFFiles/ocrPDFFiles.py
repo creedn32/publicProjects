@@ -35,10 +35,10 @@ def addFileToAcrobatOCRList(fileObj):
 
     pyperclip.copy(str(fileObj))
 
-    if platform.system() == "Darwin":
-        pyautogui.hotkey("command", "v")
+    if platform.system() == 'Darwin':
+        pyautogui.hotkey('command', 'v')
     else:
-        pyautogui.hotkey("ctrl", "v")
+        pyautogui.hotkey('ctrl', 'v')
 
 
     # def type_unicode(word):
