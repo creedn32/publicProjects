@@ -10,6 +10,10 @@ from herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary import myGs
 
 from pprint import pprint as p
 import datetime
+import time
+import re
+import pyperclip
+import platform
 
 def addFileToAcrobatOCRList(fileObj):
 
@@ -18,13 +22,38 @@ def addFileToAcrobatOCRList(fileObj):
     pyautogui.press('f')
     myPyAutoGui.getCoordinatesWhenLocalPNGAppears('filenameBoxReady', pathToThisPythonFile.parents[0])
 
-    pyautogui.write(str(fileObj))
+    pyperclip.copy(str(fileObj))
+
+    if platform.system() == "Darwin":
+        pyautogui.hotkey("command", "v")
+    else:
+        pyautogui.hotkey("ctrl", "v")
+
+
+    # def type_unicode(word):
+    #     for c in word:
+    #         c = '%04x' % ord(c)
+    #         pyautogui.keyDown('optionleft')
+    #         pyautogui.typewrite(c)
+    #         pyautogui.keyUp('optionleft')
+
+
+    # import pyautogui as px
+
+    # def type_unicode(word):
+    #     for char in word:
+    #         num = hex(ord(char))
+    #         px.hotkey('ctrl', 'shift', 'u')
+    #         for n in num:
+    #             px.typewrite(n)
+    #         px.typewrite('\n')
+
+
     pyautogui.press('enter')
     myPyAutoGui.waitUntilLocalPNGDisappears('addFilesDialogBox', pathToThisPythonFile.parents[0])
 
 
 def ocrPDFFiles(arrayOfArguments):
-
 
     pathBelowRepos = pathToThisPythonFile
     spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[1]).open(arrayOfArguments[2])
@@ -32,65 +61,55 @@ def ocrPDFFiles(arrayOfArguments):
     filesSheetName = arrayOfArguments[3]
     googleSheetsFileArray = spreadsheetLevelObj.worksheet(filesSheetName).get_all_values()
 
-    groupMax = 60
-
     filePathColIdx = 0
-    completedColIdx = 1
-    matchedFilePathColIdx = 2
+    completedColIdx = 3
 
     currentGroupCount = 0
     currentGroupRowIndices = []
 
     for rowIndex, row in enumerate(googleSheetsFileArray):
 
-        if rowIndex and row[matchedFilePathColIdx] == '':
+        if rowIndex and row[completedColIdx] == '':
 
             fileObjPath = Path(row[filePathColIdx])
 
-            # addFileToAcrobatOCRList(fileObjPath)
+            addFileToAcrobatOCRList(fileObjPath)
 
             currentGroupCount = currentGroupCount + 1
             currentGroupRowIndices.append(rowIndex)
 
 
-            # row[completedColIdx] = 'Yes - ' + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+            if currentGroupCount == int(arrayOfArguments[5]) or rowIndex == len(googleSheetsFileArray) - 1:
 
-            if currentGroupCount == groupMax or rowIndex == len(googleSheetsFileArray) - 1:
-
-            #     myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
-            #     myPyAutoGui.clickWhenLocalPNGAppears('closeActionCompleted', pathToThisPythonFile.parents[0])
-            #     myPyAutoGui.waitUntilLocalPNGDisappears('closeActionCompleted', pathToThisPythonFile.parents[0])
-
-                # p(currentGroupCount)
+                myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
+                myPyAutoGui.clickWhenLocalPNGAppears('closeActionCompleted', pathToThisPythonFile.parents[0])
+                myPyAutoGui.waitUntilLocalPNGDisappears('closeActionCompleted', pathToThisPythonFile.parents[0])
 
                 # if currentGroupRowIndices[0] == 92:
-                #     p(currentGroupRowIndices)
 
-                # p(currentGroupRowIndices[0])
-                # p(currentGroupRowIndices[59])
-
-
-            #     pyautogui.press(['alt', 'f', 'w', 'down', 'down', 'enter'])
-
-
-            #     clearAndResizeParameters = [
-            #         {
-            #             'sheetObj': spreadsheetLevelObj.worksheet(filesSheetName),
-            #             'resizeRows': 2,
-            #             'startingRowIndexToClear': 0,
-            #             'resizeColumns': 1
-            #         },
-            #     ]
-
-            #     myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
-            #     myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(filesSheetName), googleSheetsFileArray)
-            #     # myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
-
+                pyautogui.press(['alt', 'f', 'w', 'down', 'down', 'enter'])
 
                 for currentGroupRowIndex in currentGroupRowIndices:
 
-                    googleSheetsFileArray[currentGroupRowIndex] = 'Yes - ' + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+                    googleSheetsFileArray[currentGroupRowIndex][completedColIdx] = 'Yes - ' + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
+                clearAndResizeParameters = [
+                    {
+                        'sheetObj': spreadsheetLevelObj.worksheet(arrayOfArguments[4]),
+                        'resizeRows': 2,
+                        'startingRowIndexToClear': 0,
+                        'resizeColumns': 1
+                    },
+                ]
+
+                p('Updating Google Sheets...')
+
+                myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
+                myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(arrayOfArguments[4]), googleSheetsFileArray)
+                # myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
+
+                p('Done updating Google Sheets.')
+                
                 currentGroupCount = 0
                 currentGroupRowIndices = []
 
