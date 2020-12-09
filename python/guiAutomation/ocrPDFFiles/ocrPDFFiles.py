@@ -33,11 +33,13 @@ def ocrPDFFiles(arrayOfArguments):
     googleSheetsFileArray = spreadsheetLevelObj.worksheet(filesSheetName).get_all_values()
 
     groupMax = 60
-    currentGroupCount = 0
 
     filePathColIdx = 0
     completedColIdx = 1
     matchedFilePathColIdx = 2
+
+    currentGroupCount = 0
+    currentGroupRowIndices = []
 
     for rowIndex, row in enumerate(googleSheetsFileArray):
 
@@ -46,17 +48,26 @@ def ocrPDFFiles(arrayOfArguments):
             fileObjPath = Path(row[filePathColIdx])
 
             # addFileToAcrobatOCRList(fileObjPath)
+
             currentGroupCount = currentGroupCount + 1
+            currentGroupRowIndices.append(rowIndex)
+
+
             # row[completedColIdx] = 'Yes - ' + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
-            # if currentGroupCount == groupMax or rowIndex == len(googleSheetsFileArray) - 1:
-
-            #     # p(fileObjPath)
+            if currentGroupCount == groupMax or rowIndex == len(googleSheetsFileArray) - 1:
 
             #     myPyAutoGui.clickWhenLocalPNGAppears('nextButtonBeginOCR', pathToThisPythonFile.parents[0])
             #     myPyAutoGui.clickWhenLocalPNGAppears('closeActionCompleted', pathToThisPythonFile.parents[0])
             #     myPyAutoGui.waitUntilLocalPNGDisappears('closeActionCompleted', pathToThisPythonFile.parents[0])
-            #     currentGroupCount = 0
+
+                # p(currentGroupCount)
+
+                # if currentGroupRowIndices[0] == 92:
+                #     p(currentGroupRowIndices)
+
+                # p(currentGroupRowIndices[0])
+                # p(currentGroupRowIndices[59])
 
 
             #     pyautogui.press(['alt', 'f', 'w', 'down', 'down', 'enter'])
@@ -74,6 +85,16 @@ def ocrPDFFiles(arrayOfArguments):
             #     myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
             #     myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(filesSheetName), googleSheetsFileArray)
             #     # myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
+
+
+                for currentGroupRowIndex in currentGroupRowIndices:
+
+                    googleSheetsFileArray[currentGroupRowIndex] = 'Yes - ' + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+
+                currentGroupCount = 0
+                currentGroupRowIndices = []
+
+
 
 
 def mainFunction(arrayOfArguments):
