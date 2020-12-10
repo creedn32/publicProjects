@@ -66,22 +66,25 @@ def mainFunction(arrayOfArguments):
             fileObj.write('__pycache__')
             fileObj.close()
 
+        gitCommandPrefix = 'git -C ' + str(gitFolderParent)
+
         if arrayOfArguments[1] in ['acp', 'commit']:
             
-            if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolderParent) + ' add .')
+            if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' add .')
 
             commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
             if len(arrayOfArguments) > 3: commitMessage = arrayOfArguments[3]
 
-            subprocess.run('git -C ' + str(gitFolderParent) + ' commit -m \"' + commitMessage + '\"')
+            subprocess.run(gitCommandPrefix + ' commit -m \"' + commitMessage + '\"')
 
-            if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolderParent) + ' push')
+            if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' push')
 
             # if gitFolderParent.name[:6] == 'heroku' and 'includeheroku' in arrayOfArguments:
                 # subprocess.run('git -C ' + str(gitFolderParent) + ' push heroku master')
 
         else:
-            subprocess.run('git -C ' + str(gitFolderParent) + ' ' + ' '.join(arrayOfArguments[1:]))
+            subprocess.run(gitCommandPrefix + ' ' + ' '.join(arrayOfArguments[1:]))
+
 
 
 if __name__ == '__main__':
