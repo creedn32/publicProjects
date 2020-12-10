@@ -8,13 +8,8 @@ import myPythonLibrary.myPyFunc as myPyFunc
 #standard library imports
 import datetime
 from pprint import pprint as p
-import psutil
-from runpy import run_path
 import subprocess
-import os
 
-#third-party imports
-import gspread
 
 
 
@@ -28,11 +23,7 @@ def noGitIgnoreFileFound(gitFolder):
 
             for line in fileObj:
 
-                # p(line)
-
-                if '__pycache__' in line:
-                
-                    return False
+                if '__pycache__' in line: return False
 
             fileObj.write('\n__pycache__')
             fileObj.close()
@@ -44,42 +35,39 @@ def noGitIgnoreFileFound(gitFolder):
 
 
 
-def runGitProcesses(gitFolder, arrayOfArguments):
+def executeGitCommand(gitFolder, arrayOfArguments):
 
     p(str(gitFolder))
 
     if noGitIgnoreFileFound(gitFolder):
+
         fileObj = open(Path(gitFolder, '.gitignore'), 'w')
         fileObj.write('__pycache__')
         fileObj.close()
 
+    executeGitCommandOnHerokuRepos = False
 
-    if len(arrayOfArguments) > 2 and arrayOfArguments[2] in ['includeheroku', 'h']:
-        runGitProcessOnHerokuRepos = True
-    else:
-        runGitProcessOnHerokuRepos = False
+    if len(arrayOfArguments) > 2 and arrayOfArguments[2] in ['includeheroku', 'h']: executeGitCommandOnHerokuRepos = True
 
-    if len(arrayOfArguments) > 3:
-        commitMessage = arrayOfArguments[3]    
-    else:
-        nowObj = datetime.datetime.now()
-        commitMessage = nowObj.strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
-    
-
-    gitProcessToRun = arrayOfArguments[1]
-
-
-    if gitProcessToRun in ['acp']:
-        subprocess.run('git -C ' + str(gitFolder) + ' add .')
-        subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMessage + '\"')
-        subprocess.run('git -C ' + str(gitFolder) + ' push')
+    if arrayOfArguments[1] in ['acp', 'commit']:
         
-        if gitFolder.name[:6] == 'heroku' and runGitProcessOnHerokuRepos:
+        if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolder) + ' add .')
+
+        commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
+        if len(arrayOfArguments) > 3: commitMessage = arrayOfArguments[3]
+
+        subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMessage + '\"')
+
+        if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolder) + ' push')
+
+        if gitFolder.name[:6] == 'heroku' and executeGitCommandOnHerokuRepos:
+
             pass
             # subprocess.run('git -C ' + str(gitFolder) + ' push heroku master')
 
+
     else:
-        subprocess.run('git -C ' + str(gitFolder) + ' ' + gitProcessToRun)
+        subprocess.run('git -C ' + str(gitFolder) + ' ' + ' '.join(arrayOfArguments[1:]))
 
 
 
@@ -87,16 +75,17 @@ def mainFunction(arrayOfArguments):
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    def gitFileObjToAdd(fileObj):
+    def returnGitFolder(fileObj):
 
         if fileObj.name == '.git': return fileObj
 
         return None
 
-    arrayOfGitFileObj = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, gitFileObjToAdd, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'),  Path(pathToRepos, 'reposFromOthers'), 'node_modules'])
+    gitFoldersToExecuteCommandOn = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, returnGitFolder, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'),  Path(pathToRepos, 'reposFromOthers'), 'node_modules'])
 
-    for gitFileObj in arrayOfGitFileObj:
-        runGitProcesses(gitFileObj.parents[0], arrayOfArguments)
+    for gitFolder in gitFoldersToExecuteCommandOn:
+
+        executeGitCommand(gitFolder.parents[0], arrayOfArguments)
 
 
 
