@@ -9,6 +9,7 @@ import myPythonLibrary.myPyFunc as myPyFunc
 import datetime
 from pprint import pprint as p
 import subprocess
+import json
 
 
 
@@ -54,19 +55,37 @@ def mainFunction(arrayOfArguments):
 
     gitFoldersToExecuteCommandOn = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, returnGitFolder, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'),  Path(pathToRepos, 'reposFromOthers'), 'node_modules'])
 
+    # p(Path(pathToRepos, 'privateData', 'python', 'git', 'git.txt').read_text())
+
+    # with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'w') as filehandle:
+    #     json.dump(['hi', 'bue'], filehandle)
+
+    with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'r') as filehandle:
+        arrayOfOtherFolders = json.load(filehandle)
+
+    for otherFolder in arrayOfOtherFolders:
+        gitFoldersToExecuteCommandOn.append(Path(otherFolder[1]))
+
     for gitFolder in gitFoldersToExecuteCommandOn:
 
-        gitFolderParent = gitFolder.parents[0]
+        if str(gitFolder)[0:3] == 'C:\\': 
+        
+            gitFolderParent = gitFolder.parents[0]
+            gitCommandPrefix = 'git -C ' + str(gitFolderParent)
+
+            if noGitIgnoreFileFound(gitFolderParent):
+
+                fileObj = open(Path(gitFolderParent, '.gitignore'), 'w')
+                fileObj.write('__pycache__')
+                fileObj.close()
+
+        elif str(gitFolder)[0:3] == 'Y:\\':
+
+            gitFolderParent = gitFolder
+            gitCommandPrefix = 'git --git-dir=' + arrayOfOtherFolders[0][0] + ' --work-tree=' + arrayOfOtherFolders[0][1]
+            # p(gitCommandPrefix)
 
         p(str(gitFolderParent))
-
-        if noGitIgnoreFileFound(gitFolderParent):
-
-            fileObj = open(Path(gitFolderParent, '.gitignore'), 'w')
-            fileObj.write('__pycache__')
-            fileObj.close()
-
-        gitCommandPrefix = 'git -C ' + str(gitFolderParent)
 
         if arrayOfArguments[1] in ['acp', 'commit']:
             
@@ -83,6 +102,7 @@ def mainFunction(arrayOfArguments):
                 # subprocess.run('git -C ' + str(gitFolderParent) + ' push heroku master')
 
         else:
+
             subprocess.run(gitCommandPrefix + ' ' + ' '.join(arrayOfArguments[1:]))
 
 
