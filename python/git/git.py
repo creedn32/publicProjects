@@ -45,10 +45,6 @@ def executeGitCommand(gitFolder, arrayOfArguments):
         fileObj.write('__pycache__')
         fileObj.close()
 
-    executeGitCommandOnHerokuRepos = False
-
-    if len(arrayOfArguments) > 2 and arrayOfArguments[2] in ['includeheroku', 'h']: executeGitCommandOnHerokuRepos = True
-
     if arrayOfArguments[1] in ['acp', 'commit']:
         
         if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolder) + ' add .')
@@ -60,11 +56,10 @@ def executeGitCommand(gitFolder, arrayOfArguments):
 
         if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolder) + ' push')
 
-        if gitFolder.name[:6] == 'heroku' and executeGitCommandOnHerokuRepos:
+        if gitFolder.name[:6] == 'heroku' and 'includeheroku' in arrayOfArguments:
 
-            pass
+            p('heroku')
             # subprocess.run('git -C ' + str(gitFolder) + ' push heroku master')
-
 
     else:
         subprocess.run('git -C ' + str(gitFolder) + ' ' + ' '.join(arrayOfArguments[1:]))
