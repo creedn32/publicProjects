@@ -37,32 +37,8 @@ def noGitIgnoreFileFound(gitFolder):
 
 def executeGitCommand(gitFolder, arrayOfArguments):
 
-    p(str(gitFolder))
+    pass
 
-    if noGitIgnoreFileFound(gitFolder):
-
-        fileObj = open(Path(gitFolder, '.gitignore'), 'w')
-        fileObj.write('__pycache__')
-        fileObj.close()
-
-    if arrayOfArguments[1] in ['acp', 'commit']:
-        
-        if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolder) + ' add .')
-
-        commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
-        if len(arrayOfArguments) > 3: commitMessage = arrayOfArguments[3]
-
-        subprocess.run('git -C ' + str(gitFolder) + ' commit -m \"' + commitMessage + '\"')
-
-        if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolder) + ' push')
-
-        if gitFolder.name[:6] == 'heroku' and 'includeheroku' in arrayOfArguments:
-
-            p('heroku')
-            # subprocess.run('git -C ' + str(gitFolder) + ' push heroku master')
-
-    else:
-        subprocess.run('git -C ' + str(gitFolder) + ' ' + ' '.join(arrayOfArguments[1:]))
 
 
 
@@ -80,8 +56,32 @@ def mainFunction(arrayOfArguments):
 
     for gitFolder in gitFoldersToExecuteCommandOn:
 
-        executeGitCommand(gitFolder.parents[0], arrayOfArguments)
+        gitFolderParent = gitFolder.parents[0]
 
+        p(str(gitFolderParent))
+
+        if noGitIgnoreFileFound(gitFolderParent):
+
+            fileObj = open(Path(gitFolderParent, '.gitignore'), 'w')
+            fileObj.write('__pycache__')
+            fileObj.close()
+
+        if arrayOfArguments[1] in ['acp', 'commit']:
+            
+            if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolderParent) + ' add .')
+
+            commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
+            if len(arrayOfArguments) > 3: commitMessage = arrayOfArguments[3]
+
+            subprocess.run('git -C ' + str(gitFolderParent) + ' commit -m \"' + commitMessage + '\"')
+
+            if arrayOfArguments[1] == 'acp': subprocess.run('git -C ' + str(gitFolderParent) + ' push')
+
+            # if gitFolderParent.name[:6] == 'heroku' and 'includeheroku' in arrayOfArguments:
+                # subprocess.run('git -C ' + str(gitFolderParent) + ' push heroku master')
+
+        else:
+            subprocess.run('git -C ' + str(gitFolderParent) + ' ' + ' '.join(arrayOfArguments[1:]))
 
 
 if __name__ == '__main__':
