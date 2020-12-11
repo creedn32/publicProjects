@@ -65,6 +65,7 @@ def mainFunction(arrayOfArguments):
 
             gitFoldersToExecuteCommandOn.append(Path(otherFolder))
 
+    p(arrayOfOtherFolders)
     
     gitFoldersToExecuteCommandOn = gitFoldersToExecuteCommandOn[:-3]
     # p(gitFoldersToExecuteCommandOn)
@@ -81,10 +82,9 @@ def mainFunction(arrayOfArguments):
                 fileObj.write('__pycache__')
                 fileObj.close()
 
-        # elif str(gitFolder)[0:3] == 'Y:\\':
+        elif str(gitFolder)[0:3] == 'Y:\\':
 
-        #     gitFolder = gitFolder
-        #     gitCommandPrefix = 'git --git-dir=\"' + arrayOfOtherFolders[0][0] + '\" --work-tree=\"' + arrayOfOtherFolders[0][1] + "\""
+            gitCommandPrefix = 'git --git-dir=\"' + gitFolder + '\" --work-tree=\"' + gitFolder + "\""
 
         p(str(gitFolder))
 
