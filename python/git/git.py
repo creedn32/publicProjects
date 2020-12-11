@@ -81,13 +81,15 @@ def mainFunction(arrayOfArguments):
 
             gitFolderParent = gitFolder
             gitCommandPrefix = 'git --git-dir=\"' + arrayOfOtherFolders[0][0] + '\" --work-tree=\"' + arrayOfOtherFolders[0][1] + "\""
-            
-        # p(gitCommandPrefix)
+
         p(str(gitFolderParent))
 
         if arrayOfArguments[1] in ['acp', 'commit']:
             
-            if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' add .')
+            if arrayOfArguments[1] == 'acp': 
+                
+                p(gitCommandPrefix + ' add .')
+                subprocess.run(gitCommandPrefix + ' add .')
 
             commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
             if len(arrayOfArguments) > 3: commitMessage = arrayOfArguments[3]
