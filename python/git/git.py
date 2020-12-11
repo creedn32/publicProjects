@@ -35,6 +35,7 @@ def mainFunction(arrayOfArguments):
     includeWorkFiles = False
 
     if arrayOfArguments[1] == 'includeWorkFiles':
+
         includeWorkFiles = True
         del arrayOfArguments[1]
 
@@ -60,6 +61,9 @@ def mainFunction(arrayOfArguments):
 
         for otherFolder in arrayOfOtherFolders:
             gitFoldersToExecuteCommandOn.append(Path(otherFolder[1]))
+
+    gitFoldersToExecuteCommandOn = gitFoldersToExecuteCommandOn[:-2]
+    p(gitFoldersToExecuteCommandOn)
 
     for gitFolder in gitFoldersToExecuteCommandOn:
 
