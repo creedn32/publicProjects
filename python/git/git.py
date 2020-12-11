@@ -88,7 +88,7 @@ def mainFunction(arrayOfArguments):
             
             if arrayOfArguments[1] == 'acp': 
 
-                # p(gitCommandPrefix + ' add .')
+                p(gitCommandPrefix + ' add .')
                 subprocess.run(gitCommandPrefix + ' add .')
 
             commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
