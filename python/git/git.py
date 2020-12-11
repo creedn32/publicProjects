@@ -85,7 +85,7 @@ def mainFunction(arrayOfArguments):
 
             gitCommandPrefix = 'git --git-dir=\"' + otherFoldersObj[gitFolderStr] + '\" --work-tree=\"' + gitFolderStr + "\""
 
-        p(gitCommandPrefix)
+        # p(gitCommandPrefix)
         p(gitFolderStr)
 
         if arrayOfArguments[1] in ['acp', 'commit']:
