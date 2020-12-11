@@ -60,6 +60,9 @@ def mainFunction(arrayOfArguments):
     # with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'w') as filehandle:
     #     json.dump(['hi', 'bue'], filehandle)
 
+    p(pathToRepos.parents[0])
+
+    
     with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'r') as filehandle:
         arrayOfOtherFolders = json.load(filehandle)
 
