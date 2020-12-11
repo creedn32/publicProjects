@@ -62,15 +62,14 @@ def mainFunction(arrayOfArguments):
         for otherFolder in arrayOfOtherFolders:
             gitFoldersToExecuteCommandOn.append(Path(otherFolder[1]))
 
-    gitFoldersToExecuteCommandOn = gitFoldersToExecuteCommandOn[:-2]
-    p(gitFoldersToExecuteCommandOn)
+    # gitFoldersToExecuteCommandOn = gitFoldersToExecuteCommandOn[:-1]
 
     for gitFolder in gitFoldersToExecuteCommandOn:
 
         if str(gitFolder)[0:3] == 'C:\\': 
         
             gitFolderParent = gitFolder.parents[0]
-            gitCommandPrefix = 'git -C ' + str(gitFolderParent)
+            gitCommandPrefix = 'git -C \"' + str(gitFolderParent) + "\""
 
             if noGitIgnoreFileFound(gitFolderParent):
 
@@ -81,9 +80,9 @@ def mainFunction(arrayOfArguments):
         elif str(gitFolder)[0:3] == 'Y:\\':
 
             gitFolderParent = gitFolder
-            gitCommandPrefix = 'git --git-dir=' + arrayOfOtherFolders[0][0] + ' --work-tree=' + arrayOfOtherFolders[0][1]
-            # p(gitCommandPrefix)
-
+            gitCommandPrefix = 'git --git-dir=\"' + arrayOfOtherFolders[0][0] + '\" --work-tree=\"' + arrayOfOtherFolders[0][1] + "\""
+            
+        # p(gitCommandPrefix)
         p(str(gitFolderParent))
 
         if arrayOfArguments[1] in ['acp', 'commit']:
