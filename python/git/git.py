@@ -43,7 +43,7 @@ def mainFunction(arrayOfArguments):
 
     def returnGitFolder(fileObj):
 
-        if fileObj.name == '.git': return fileObj
+        if fileObj.name == '.git': return fileObj.parents[0]
 
         return None
 
@@ -59,37 +59,40 @@ def mainFunction(arrayOfArguments):
         with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'r') as filehandle:
             arrayOfOtherFolders = json.load(filehandle)
 
-        p(arrayOfOtherFolders)
+        # p(arrayOfOtherFolders)
 
         for otherFolder in arrayOfOtherFolders:
-            gitFoldersToExecuteCommandOn.append(Path(otherFolder[1]))
 
+            gitFoldersToExecuteCommandOn.append(Path(otherFolder))
+
+    
+    gitFoldersToExecuteCommandOn = gitFoldersToExecuteCommandOn[:-3]
+    # p(gitFoldersToExecuteCommandOn)
 
     for gitFolder in gitFoldersToExecuteCommandOn:
 
-        if str(gitFolder)[0:3] == 'C:\\': 
+        if str(gitFolder)[0:3] == 'C:\\':
         
-            gitFolderParent = gitFolder.parents[0]
-            gitCommandPrefix = 'git -C \"' + str(gitFolderParent) + "\""
+            gitCommandPrefix = 'git -C \"' + str(gitFolder) + "\""
 
-            if noGitIgnoreFileFound(gitFolderParent):
+            if noGitIgnoreFileFound(gitFolder):
 
-                fileObj = open(Path(gitFolderParent, '.gitignore'), 'w')
+                fileObj = open(Path(gitFolder, '.gitignore'), 'w')
                 fileObj.write('__pycache__')
                 fileObj.close()
 
-        elif str(gitFolder)[0:3] == 'Y:\\':
+        # elif str(gitFolder)[0:3] == 'Y:\\':
 
-            gitFolderParent = gitFolder
-            gitCommandPrefix = 'git --git-dir=\"' + arrayOfOtherFolders[0][0] + '\" --work-tree=\"' + arrayOfOtherFolders[0][1] + "\""
+        #     gitFolder = gitFolder
+        #     gitCommandPrefix = 'git --git-dir=\"' + arrayOfOtherFolders[0][0] + '\" --work-tree=\"' + arrayOfOtherFolders[0][1] + "\""
 
-        p(str(gitFolderParent))
+        p(str(gitFolder))
 
         if arrayOfArguments[1] in ['acp', 'commit']:
             
             if arrayOfArguments[1] == 'acp': 
 
-                p(gitCommandPrefix + ' add .')
+                # p(gitCommandPrefix + ' add .')
                 subprocess.run(gitCommandPrefix + ' add .')
 
             commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
@@ -99,8 +102,8 @@ def mainFunction(arrayOfArguments):
 
             if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' push')
 
-            # if gitFolderParent.name[:6] == 'heroku' and 'includeheroku' in arrayOfArguments:
-                # subprocess.run('git -C ' + str(gitFolderParent) + ' push heroku master')
+            # if gitFolder.name[:6] == 'heroku' and 'includeheroku' in arrayOfArguments:
+                # subprocess.run('git -C ' + str(gitFolder) + ' push heroku master')
 
         else:
 
