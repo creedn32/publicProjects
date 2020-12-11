@@ -11,9 +11,6 @@ from pprint import pprint as p
 import subprocess
 import json
 
-
-
-
 def noGitIgnoreFileFound(gitFolder):
 
     for obj in gitFolder.glob('*'):
@@ -33,17 +30,13 @@ def noGitIgnoreFileFound(gitFolder):
 
     return True
 
-
-
-
-def executeGitCommand(gitFolder, arrayOfArguments):
-
-    pass
-
-
-
-
 def mainFunction(arrayOfArguments):
+
+    includeWorkFiles = False
+
+    if arrayOfArguments[1] == 'includeWorkFiles':
+        includeWorkFiles = True
+        del arrayOfArguments[1]
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
@@ -60,14 +53,13 @@ def mainFunction(arrayOfArguments):
     # with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'w') as filehandle:
     #     json.dump(['hi', 'bue'], filehandle)
 
-    p(pathToRepos.parents[0])
+    if includeWorkFiles and pathToRepos.parents[0].name == 'cnaylor':
 
-    
-    with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'r') as filehandle:
-        arrayOfOtherFolders = json.load(filehandle)
+        with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'r') as filehandle:
+            arrayOfOtherFolders = json.load(filehandle)
 
-    for otherFolder in arrayOfOtherFolders:
-        gitFoldersToExecuteCommandOn.append(Path(otherFolder[1]))
+        for otherFolder in arrayOfOtherFolders:
+            gitFoldersToExecuteCommandOn.append(Path(otherFolder[1]))
 
     for gitFolder in gitFoldersToExecuteCommandOn:
 
