@@ -59,10 +59,11 @@ def mainFunction(arrayOfArguments):
         with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'r') as filehandle:
             arrayOfOtherFolders = json.load(filehandle)
 
+        p(arrayOfOtherFolders)
+
         for otherFolder in arrayOfOtherFolders:
             gitFoldersToExecuteCommandOn.append(Path(otherFolder[1]))
 
-    # gitFoldersToExecuteCommandOn = gitFoldersToExecuteCommandOn[:-1]
 
     for gitFolder in gitFoldersToExecuteCommandOn:
 
