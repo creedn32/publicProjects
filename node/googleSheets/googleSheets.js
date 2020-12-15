@@ -1,6 +1,6 @@
 // var path = require('path');
 // var fs = require('fs');
-// thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
+thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
 const {google} = require('googleapis');
 
 let mainLibrary = require('../creedLibrary/mainLibrary')
@@ -20,6 +20,7 @@ const mainFunction = ([googleSheetTitle, googleSheetUsername]) => {
     // time.
     const pathTOTokenFile = 'token.json';
 
+    c(mainLibrary.getPathUpFolderTree(thisFilePathArray, 'repos'));
     // Load client secrets from a local file.
     // fs.readFile('credentials.json', (err, content) => {
     //     if (err) return c('Error loading client secret file:', err);
@@ -113,7 +114,7 @@ const mainFunction = ([googleSheetTitle, googleSheetUsername]) => {
             }
         });
     }
-    
+
 };
 
 module.exports = mainFunction;
