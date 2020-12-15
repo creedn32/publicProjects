@@ -1,3 +1,5 @@
+let path = require('path');
+
 module.exports.getPathUpFolderTree = (arrayOfPathToClimb, nameOfDirectoryToFind) => {
 
     for (directoryIndex = arrayOfPathToClimb.length; directoryIndex > 0; directoryIndex--) {
@@ -7,5 +9,11 @@ module.exports.getPathUpFolderTree = (arrayOfPathToClimb, nameOfDirectoryToFind)
     }
 
     return arrayOfPathToClimb;
+
+};
+
+module.exports.pathArrayToStr = (pathArray) => {
+
+    return pathArray.join(path.sep);
 
 };

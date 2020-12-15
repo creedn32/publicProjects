@@ -1,5 +1,5 @@
-// var path = require('path');
-// var fs = require('fs');
+var path = require('path');
+var fs = require('fs');
 thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
 const {google} = require('googleapis');
 
@@ -9,24 +9,28 @@ let c = console.log.bind(console);
 
 const mainFunction = ([googleSheetTitle, googleSheetUsername]) => { 
 
-    c(googleSheetTitle);
-    c(googleSheetUsername);
-    c(googleSheetsLibrary.getSpreadsheetLevelObj());
+    // c(googleSheetTitle);
+    // c(googleSheetUsername);
+    // c(googleSheetsLibrary.getSpreadsheetLevelObj());
+
+    reposPathArray = mainLibrary.getPathUpFolderTree(thisFilePathArray, 'repos');
+    pathStrToPrivateFolder = mainLibrary.pathArrayToStr(reposPathArray.concat(['privateData']));
+    
 
     // If modifying these scopes, delete token.json.
     const arrayOfScopes = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
     // The file token.json stores the user's access and refresh tokens, and is
     // created automatically when the authorization flow completes for the first
     // time.
-    const pathTOTokenFile = 'token.json';
 
-    c(mainLibrary.getPathUpFolderTree(thisFilePathArray, 'repos'));
+    const pathToTokenFile = pathStrToPrivateFolder + '/' + 'token.json';
+
     // Load client secrets from a local file.
-    // fs.readFile('credentials.json', (err, content) => {
-    //     if (err) return c('Error loading client secret file:', err);
-    //     // Authorize a client with credentials, then call the Google Sheets API.
-    //     authorize(JSON.parse(content), listMajors);
-    // });
+    fs.readFile(pathStrToPrivateFolder + '/python/googleCredentials//usingOAuth/jsonForCredentialsRetrieval.json', (err, content) => {
+        if (err) return c('Error loading client secret file:', err);
+        // Authorize a client with credentials, then call the Google Sheets API.
+        authorize(JSON.parse(content), listMajors);
+    });
 
     // /**
     //  * Create an OAuth2 client with the given credentials, and then execute the
@@ -42,7 +46,7 @@ const mainFunction = ([googleSheetTitle, googleSheetUsername]) => {
 
         // Check if we have previously stored a token.
 
-        fs.readFile(pathTOTokenFile, (err, token) => {
+        fs.readFile(pathToTokenFile, (err, token) => {
             if (err) return getNewToken(oAuth2Client, callback);
             oAuth2Client.setCredentials(JSON.parse(token));
             callback(oAuth2Client);
@@ -55,6 +59,7 @@ const mainFunction = ([googleSheetTitle, googleSheetUsername]) => {
     //  * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
     //  * @param {getEventsCallback} callback The callback for the authorized client.
     //  */
+
     function getNewToken(oAuth2Client, callback) {
         
         const authUrl = oAuth2Client.generateAuthUrl({
@@ -77,9 +82,9 @@ const mainFunction = ([googleSheetTitle, googleSheetUsername]) => {
             if (err) return console.error('Error while trying to retrieve access token', err);
             oAuth2Client.setCredentials(token);
             // Store the token to disk for later program executions
-            fs.writeFile(pathTOTokenFile, JSON.stringify(token), (err) => {
+            fs.writeFile(pathToTokenFile, JSON.stringify(token), (err) => {
                 if (err) return console.error(err);
-                console.log('Token stored to', pathTOTokenFile);
+                console.log('Token stored to', pathToTokenFile);
             });
             callback(oAuth2Client);
         

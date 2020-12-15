@@ -1,7 +1,8 @@
 let path = require('path');
 let fs = require('fs');
-let l = require('../node/creedLibrary/mainLibrary')
+let mainLibrary = require('../node/creedLibrary/mainLibrary')
 let c = console.log.bind(console);
+
 thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
 thisFileParentPathArray = thisFilePathArray.slice(0, thisFilePathArray.length - 1)
 configJSON = JSON.parse(fs.readFileSync([...thisFileParentPathArray, 'nConfig.json'].join(path.sep)));
@@ -10,24 +11,16 @@ nameOfAuthor = configJSON['nameOfAuthor'];
 
 const isDirectory = (fileObjPathArray) => {
 
-    return fs.statSync(pathArrayToStr(fileObjPathArray)).isDirectory();
+    return fs.statSync(mainLibrary.pathArrayToStr(fileObjPathArray)).isDirectory();
 
 };
 
 
 const isFile = (fileObjPathArray) => {
 
-    return fs.statSync(pathArrayToStr(fileObjPathArray)).isFile();
+    return fs.statSync(mainLibrary.pathArrayToStr(fileObjPathArray)).isFile();
 
 };
-
-
-const pathArrayToStr = (pathArray) => {
-
-    return pathArray.join(path.sep);
-
-};
-
 
 const getSuffix = (fileObjPathArray) => {
 
@@ -56,7 +49,7 @@ const getArrayOfFileObjectsFromDir = (fileObjPathArray, pathsToExclude) => {
 
         for (let pathToExclude of pathsToExclude) {
 
-            if (pathArrayToStr(fileObj).includes(pathArrayToStr(pathToExclude))) return true;
+            if (mainLibrary.pathArrayToStr(fileObj).includes(mainLibrary.pathArrayToStr(pathToExclude))) return true;
 
         }
 
@@ -66,7 +59,7 @@ const getArrayOfFileObjectsFromDir = (fileObjPathArray, pathsToExclude) => {
 
     arrayOfFileObjFromDir = [];
 
-    fs.readdirSync(pathArrayToStr(fileObjPathArray)).forEach(filename => {
+    fs.readdirSync(mainLibrary.pathArrayToStr(fileObjPathArray)).forEach(filename => {
 
         fileObjInDirToAdd = [...fileObjPathArray, filename];
 
@@ -102,7 +95,7 @@ const importJSFile = (arrayOfArguments) => {
     // c(arrayOfArguments)
     c(`Searching for command '${arrayOfArguments[0]}.js' (created by ${nameOfAuthor})...`);
 
-    rootPathArray = l.getPathUpFolderTree(thisFilePathArray, configJSON['nameOfDirectoryToSetAsRoot']);
+    rootPathArray = mainLibrary.getPathUpFolderTree(thisFilePathArray, configJSON['nameOfDirectoryToSetAsRoot']);
 
     pathToJSFileForImport = findFilePathBreadthFirst(rootPathArray, (fileObjPathArray) => {
 
@@ -112,7 +105,7 @@ const importJSFile = (arrayOfArguments) => {
 
     }, pathsToExclude=[[...rootPathArray, '.history'], [...rootPathArray, '.vscode'], [...rootPathArray, 'reposFromOthers'], [...rootPathArray, 'privateData', 'python', 'dataFromStocks'], ['node_modules'], ['.git']]);
 
-    relativePathToJSFileForImport = './'.concat(path.relative(pathArrayToStr(thisFileParentPathArray), pathArrayToStr(pathToJSFileForImport)))
+    relativePathToJSFileForImport = './'.concat(path.relative(mainLibrary.pathArrayToStr(thisFileParentPathArray), mainLibrary.pathArrayToStr(pathToJSFileForImport)))
     // c(relativePath);
 
     require(relativePathToJSFileForImport)(arrayOfArguments.slice(1));
