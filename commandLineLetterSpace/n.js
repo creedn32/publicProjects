@@ -1,6 +1,7 @@
 let path = require('path');
 let fs = require('fs');
-let l = require('../node/creedLibrary/creedLibrary')
+let l = require('../node/creedLibrary/mainLibrary')
+let c = console.log.bind(console);
 thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
 thisFileParentPathArray = thisFilePathArray.slice(0, thisFilePathArray.length - 1)
 configJSON = JSON.parse(fs.readFileSync([...thisFileParentPathArray, 'nConfig.json'].join(path.sep)));
@@ -89,8 +90,8 @@ const findFilePathBreadthFirst = (rootPathArray, isJSFileToImport, pathsToExclud
 
         if (isDirectory(fileObjPathArray)) arrayOfFileObjects.push(...getArrayOfFileObjectsFromDir(fileObjPathArray, pathsToExclude));
 
-        // if (getSuffix(fileObjPathArray) == '.js') l.c(fileObjPathArray);
-        // // l.c(getSuffix(fileObjPathArray));
+        // if (getSuffix(fileObjPathArray) == '.js') c(fileObjPathArray);
+        // // c(getSuffix(fileObjPathArray));
 
     }
 
@@ -98,8 +99,8 @@ const findFilePathBreadthFirst = (rootPathArray, isJSFileToImport, pathsToExclud
 
 const importJSFile = (arrayOfArguments) => {
 
-    // l.c(arrayOfArguments)
-    l.c(`Searching for command '${arrayOfArguments[0]}.js' (created by ${nameOfAuthor})...`);
+    // c(arrayOfArguments)
+    c(`Searching for command '${arrayOfArguments[0]}.js' (created by ${nameOfAuthor})...`);
 
     rootPathArray = l.getPathUpFolderTree(thisFilePathArray, configJSON['nameOfDirectoryToSetAsRoot']);
 
@@ -112,7 +113,7 @@ const importJSFile = (arrayOfArguments) => {
     }, pathsToExclude=[[...rootPathArray, '.history'], [...rootPathArray, '.vscode'], [...rootPathArray, 'reposFromOthers'], [...rootPathArray, 'privateData', 'python', 'dataFromStocks'], ['node_modules'], ['.git']]);
 
     relativePathToJSFileForImport = './'.concat(path.relative(pathArrayToStr(thisFileParentPathArray), pathArrayToStr(pathToJSFileForImport)))
-    // l.c(relativePath);
+    // c(relativePath);
 
     require(relativePathToJSFileForImport)(arrayOfArguments.slice(1));
     // mainFunctionImportedJSFile(arrayOfArguments.slice(1));
@@ -122,13 +123,13 @@ const importJSFile = (arrayOfArguments) => {
 
 if (require.main === module) {
 
-    l.c(`${thisFilePathArray[thisFilePathArray.length - 1]} (created by ${nameOfAuthor}) is not being imported. It is being run directly...`);
-    // l.c(process.argv)
+    c(`${thisFilePathArray[thisFilePathArray.length - 1]} (created by ${nameOfAuthor}) is not being imported. It is being run directly...`);
+    // c(process.argv)
     importJSFile(process.argv.slice(2));
 
 } else {
 
-    l.c(`${thisFilePathArray[thisFilePathArray.length - 1]} (created by ${nameOfAuthor}) is being imported. It is not being run directly...`);
+    c(`${thisFilePathArray[thisFilePathArray.length - 1]} (created by ${nameOfAuthor}) is being imported. It is not being run directly...`);
 
 }
 

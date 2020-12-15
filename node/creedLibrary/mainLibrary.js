@@ -1,10 +1,3 @@
-
-module.exports.c = (textToLogToConsole) => {
-
-    console.log(textToLogToConsole);
-
-};
-
 module.exports.getPathUpFolderTree = (arrayOfPathToClimb, nameOfDirectoryToFind) => {
 
     for (directoryIndex = arrayOfPathToClimb.length; directoryIndex > 0; directoryIndex--) {
