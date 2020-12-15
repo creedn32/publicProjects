@@ -9,7 +9,7 @@ module.exports.getSpreadsheetLevelObj = () => {
 
 };
 
-module.exports.getGoogleSheetsLevelObj = (pathArrayBelowRepos, googleSheetsUsername) => {
+module.exports.runFunctionOnGoogleSheets = (pathArrayBelowRepos, googleSheetsUsername, callback) => {
 
     const pathArrayRepos = mainLibrary.getPathArrayUpFolderTree(pathArrayBelowRepos, 'repos');
     const pathStrOAuthFolder = mainLibrary.pathArrayToStr(pathArrayRepos.concat(['privateData', 'python', 'googleCredentials', 'usingOAuthGspread']));
@@ -20,13 +20,13 @@ module.exports.getGoogleSheetsLevelObj = (pathArrayBelowRepos, googleSheetsUsern
     fs.readFile(pathStrOAuthFolder + '/jsonCredentialsFile.json', (err, content) => {
         
         if (err) return c('Error loading client secret file:', err);
-        spreadsheetLevelObj = authorize(JSON.parse(content));
+        authorize(JSON.parse(content), callback);
 
     });
 
     // return spreadsheetLevelObj;
 
-    function authorize(credentials) {
+    function authorize(credentials, callback) {
 
         const {client_secret, client_id, redirect_uris} = credentials.installed;
         const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
@@ -36,8 +36,9 @@ module.exports.getGoogleSheetsLevelObj = (pathArrayBelowRepos, googleSheetsUsern
         fs.readFile(pathStrTokenFile, (err, token) => {
 
             if (err) return c('Token failed.'); // getNewToken(oAuth2Client, callback);
-            return oAuth2Client.setCredentials(JSON.parse(token));
-
+            oAuth2Client.setCredentials(JSON.parse(token));
+            // const sheets = google.sheets({version: 'v4', oAuth2Client});
+            callback(oAuth2Client);
         });
     }
 
