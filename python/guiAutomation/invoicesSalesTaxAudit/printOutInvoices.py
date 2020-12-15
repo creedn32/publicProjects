@@ -39,6 +39,7 @@ def mainFunction(arrayOfArguments):
     debitColIdx = 7
     creditColIdx = 8
     nameColIdx = 11
+    notesColIdx = 18
 
     def paste():
         pyautogui.keyDown('ctrl')
@@ -164,7 +165,7 @@ def mainFunction(arrayOfArguments):
 
             else:
                 
-                pyperclip.copy(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[acctNumColIdx] + ' - ' + row[nameColIdx].replace('\\', '').replace('&', ''))
+                pyperclip.copy(arrayOfArguments[3] + '\\' + row[journalEntryColIdx] + ' - ' + row[acctNumColIdx] + ' - ' + row[nameColIdx].replace('\\', '').replace('&', '').replace('/', '') + ' - ' + row[notesColIdx])
                 paste()
 
             pyautogui.press('enter')
