@@ -122,13 +122,13 @@ const importJSFile = (arrayOfArguments) => {
 
 if (require.main === module) {
 
-    l.c(`${thisFilePathArray.slice(-1)[0]} (created by ${nameOfAuthor}) is not being imported. It is being run directly...`);
+    l.c(`${thisFilePathArray[thisFilePathArray.length - 1]} (created by ${nameOfAuthor}) is not being imported. It is being run directly...`);
     // l.c(process.argv)
     importJSFile(process.argv.slice(2));
 
 } else {
 
-    l.c(`${thisFilePathArray.slice(-1)[0]} (created by ${nameOfAuthor}) is being imported. It is not being run directly...`);
+    l.c(`${thisFilePathArray[thisFilePathArray.length - 1]} (created by ${nameOfAuthor}) is being imported. It is not being run directly...`);
 
 }
 
