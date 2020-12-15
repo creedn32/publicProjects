@@ -1,125 +1,48 @@
-var path = require('path');
-var fs = require('fs');
-thisFilePathArray = path.resolve(__dirname, __filename).split(path.sep);
-const {google} = require('googleapis');
+let path = require('path');
+pathArrayThisFile = path.resolve(__dirname, __filename).split(path.sep);
 
-let mainLibrary = require('../creedLibrary/mainLibrary')
-let googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary')
+// let mainLibrary = require('../creedLibrary/mainLibrary');
+let googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary/googleSheetsLibrary');
 let c = console.log.bind(console);
 
-const mainFunction = ([googleSheetTitle, googleSheetUsername]) => { 
+const mainFunction = ([googleSheetTitle, googleSheetsUsername]) => { 
 
-    // c(googleSheetTitle);
-    // c(googleSheetUsername);
     // c(googleSheetsLibrary.getSpreadsheetLevelObj());
 
-    reposPathArray = mainLibrary.getPathUpFolderTree(thisFilePathArray, 'repos');
-    pathStrToPrivateFolder = mainLibrary.pathArrayToStr(reposPathArray.concat(['privateData']));
-    
+    googleSheetsLevelObj = googleSheetsLibrary.getGoogleSheetsLevelObj(pathArrayThisFile, googleSheetsUsername);
 
-    // If modifying these scopes, delete token.json.
-    const arrayOfScopes = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
-    // The file token.json stores the user's access and refresh tokens, and is
-    // created automatically when the authorization flow completes for the first
-    // time.
+    // setTimeout(() => {c(googleSheetsLevelObj);}, 10000);
 
-    const pathToTokenFile = pathStrToPrivateFolder + '/' + 'token.json';
+    // function listMajors(auth) {
 
-    // Load client secrets from a local file.
-    fs.readFile(pathStrToPrivateFolder + '/python/googleCredentials//usingOAuth/jsonForCredentialsRetrieval.json', (err, content) => {
-        if (err) return c('Error loading client secret file:', err);
-        // Authorize a client with credentials, then call the Google Sheets API.
-        authorize(JSON.parse(content), listMajors);
-    });
+    //     const sheets = google.sheets({version: 'v4', auth});
 
-    // /**
-    //  * Create an OAuth2 client with the given credentials, and then execute the
-    //  * given callback function.
-    //  * @param {Object} credentials The authorization client credentials.
-    //  * @param {function} callback The callback to call with the authorized client.
-    //  */
+    //     sheets.spreadsheets.values.get({
 
-    function authorize(credentials, callback) {
+    //         spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
+    //         range: 'Class Data!A2:E',
 
-        const {client_secret, client_id, redirect_uris} = credentials.installed;
-        const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+    //     }, (err, res) => {
 
-        // Check if we have previously stored a token.
+    //         if (err) return c('The API returned an error: ' + err);
+            
+    //         const rows = res.data.values;
+            
+    //         if (rows.length) {
+                
+    //             c('Name, Major:');
+    //             // Print columns A and E, which correspond to indices 0 and 4.
+    //             rows.map((row) => {
+    //                 c(`${row[0]}, ${row[4]}`);
+    //             });
+            
+    //         } else {
 
-        fs.readFile(pathToTokenFile, (err, token) => {
-            if (err) return getNewToken(oAuth2Client, callback);
-            oAuth2Client.setCredentials(JSON.parse(token));
-            callback(oAuth2Client);
-        });
-    }
-
-    // /**
-    //  * Get and store new token after prompting for user authorization, and then
-    //  * execute the given callback with the authorized OAuth2 client.
-    //  * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
-    //  * @param {getEventsCallback} callback The callback for the authorized client.
-    //  */
-
-    function getNewToken(oAuth2Client, callback) {
-        
-        const authUrl = oAuth2Client.generateAuthUrl({
-            access_type: 'offline',
-            scope: arrayOfScopes,
-        });
-        
-        console.log('Authorize this app by visiting this url:', authUrl);
-        
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-        });
-    
-        rl.question('Enter the code from that page here: ', (code) => {
-        rl.close();
-        
-        oAuth2Client.getToken(code, (err, token) => {
-
-            if (err) return console.error('Error while trying to retrieve access token', err);
-            oAuth2Client.setCredentials(token);
-            // Store the token to disk for later program executions
-            fs.writeFile(pathToTokenFile, JSON.stringify(token), (err) => {
-                if (err) return console.error(err);
-                console.log('Token stored to', pathToTokenFile);
-            });
-            callback(oAuth2Client);
-        
-        });
-    
-    });
-    
-    }
-
-    // /**
-    //  * Prints the names and majors of students in a sample spreadsheet:
-    //  * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-    //  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
-    //  */
-    
-    function listMajors(auth) {
-        const sheets = google.sheets({version: 'v4', auth});
-        sheets.spreadsheets.values.get({
-            spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-            range: 'Class Data!A2:E',
-        }, (err, res) => {
-            if (err) return console.log('The API returned an error: ' + err);
-            const rows = res.data.values;
-            if (rows.length) {
-            console.log('Name, Major:');
-            // Print columns A and E, which correspond to indices 0 and 4.
-            rows.map((row) => {
-                console.log(`${row[0]}, ${row[4]}`);
-            });
-            } else {
-            console.log('No data found.');
-            }
-        });
-    }
-
+    //             c('No data found.');
+            
+    //         }
+    //     });
+    // }
 };
 
 module.exports = mainFunction;
