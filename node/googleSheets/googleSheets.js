@@ -6,45 +6,46 @@ let googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary/googleShe
 let c = console.log.bind(console);
 const {google} = require('googleapis');
 
-const mainFunction = ([googleSheetTitle, googleSheetsUsername]) => { 
+const mainFunction = async ([googleSheetsUsername, googleSpreadsheetTitle, googleSheetTitle]) => { 
 
     // c(googleSheetsLibrary.getSpreadsheetLevelObj());
 
-    googleSheetsLibrary.runFunctionOnGoogleSheets(pathArrayThisFile, googleSheetsUsername, listMajors);
+    const googleAccountLevelObj = await googleSheetsLibrary.getGoogleAccountLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle);
+    
+    const googleSpreadsheetID = await googleSheetsLibrary.getGoogleSpreadsheetID(googleAccountLevelObj, googleSpreadsheetTitle);
 
-    // setTimeout(() => {c(googleSheetsLevelObj);}, 10000);
-};
+    const googleSheetsLevelObj = google.sheets({version: 'v4', auth: googleAccountLevelObj});
 
 
-function listMajors(auth) {
-
-    const sheets = google.sheets({version: 'v4', auth});
-
-    sheets.spreadsheets.values.get({
-
-        spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-        range: 'Class Data!A2:E',
-
-    }, (err, res) => {
-
-        if (err) return c('The API returned an error: ' + err);
+    try {
         
-        const rows = res.data.values;
-        
+        const googleSheetValues = await googleSheetsLevelObj.spreadsheets.values.get({
+
+            spreadsheetId: googleSpreadsheetID,
+            range: googleSheetTitle,
+
+        });
+
+        const rows = googleSheetValues.data.values;
+
         if (rows.length) {
-            
-            c('Name, Major:');
-            // Print columns A and E, which correspond to indices 0 and 4.
-            rows.map((row) => {
-                c(`${row[0]}, ${row[4]}`);
-            });
+                
+            c(rows);
         
         } else {
 
             c('No data found.');
         
         }
-    });
-}
+
+    } catch (error) {
+
+        c('The API returned an error: ' + error);
+
+    }
+
+
+};
+
 
 module.exports = mainFunction;
