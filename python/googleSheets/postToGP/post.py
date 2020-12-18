@@ -30,13 +30,15 @@ def mainFunction(arrayOfArguments):
     pyautogui.PAUSE = 0.01
     sendingKeystrokes = True
 
-    pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-    arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials', 'usingServiceAccount', 'jsonWithAPIKey.json']
+    # pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
+    # arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials', 'usingServiceAccount', 'jsonWithAPIKey.json']
 
-    gspObj = gspread.service_account(filename=myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath))
-    gspSpreadsheet = gspObj.open('Transactions To Post')
-    gspToPostFromSheet = gspSpreadsheet.worksheet(arrayOfArguments[1])
-    toPostFromArray = gspToPostFromSheet.get_all_values()
+    # gspObj = gspread.service_account(filename=myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath))
+
+    pathBelowRepos = pathToThisPythonFile
+    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[1]).open('Transactions To Post')
+    sheetName = arrayOfArguments[2]
+    toPostFromArray = spreadsheetLevelObj.worksheet(sheetName).get_all_values()
 
     # charactersNeedingShift = (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(range(40, 44)) + list(range(33, 39)))
     # p(charactersNeedingShift)
@@ -57,7 +59,7 @@ def mainFunction(arrayOfArguments):
 
 
 
-    if 'Bank Transactions' in arrayOfArguments[1]:
+    if 'Bank Transactions' in sheetName:
 
         columnNameToNumberOfTabsObj['Checkbook ID'] = 2
         columnNameToNumberOfTabsObj['Amount'] = 6
@@ -144,7 +146,7 @@ def mainFunction(arrayOfArguments):
 
 
 
-    elif arrayOfArguments[1] == 'Bank Transfers':
+    elif sheetName == 'Bank Transfers':
 
         # p(columnNameToIndexObj)
 
