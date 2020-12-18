@@ -125,12 +125,12 @@ module.exports.getGoogleSpreadsheetID = async (googleAccountLevelObj, googleSpre
     // while (pageToken) {
 
     //     if (pageToken) {
-            
+
     //         params['pageToken'] = pageToken;
 
     //     }
 
-    // } 
+    // }
 
 
     //     if pageToken:
@@ -144,7 +144,41 @@ module.exports.getGoogleSpreadsheetID = async (googleAccountLevelObj, googleSpre
 
 
     const driveList = await googleDriveLevelObj.files.list(params=params);
-    
+
     return driveList.data.files[0].id;
 
+};
+
+
+module.exports.getArrayOfValues = async (googleAccountLevelObj, googleSpreadsheetTitle, googleSheetTitle) => {
+
+    const googleSpreadsheetID = await module.exports.getGoogleSpreadsheetID(googleAccountLevelObj, googleSpreadsheetTitle);
+    const googleSheetsLevelObj = google.sheets({version: 'v4', auth: googleAccountLevelObj});
+
+    try {
+
+        const googleSheetValues = await googleSheetsLevelObj.spreadsheets.values.get({
+
+            spreadsheetId: googleSpreadsheetID,
+            range: googleSheetTitle,
+
+        });
+
+        let rows = googleSheetValues.data.values;
+
+        if (rows.length) {
+
+            const maxRowLength = Math.max(...rows.map(row => row.length));
+
+            let newRows = rows.map(row => row.concat(Array(maxRowLength - row.length).fill('')));
+
+            return newRows;
+
+        }
+
+    } catch (error) {
+
+        c('The API returned an error: ' + error);
+
+    }
 };
