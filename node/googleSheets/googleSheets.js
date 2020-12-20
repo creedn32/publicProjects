@@ -12,47 +12,53 @@ const mainFunction = async ([googleSheetsUsername, googleSpreadsheetTitle, googl
 
     c(await googleSheetsLibrary.getArrayOfValues(googleAccountLevelObj, googleSpreadsheetTitle, googleSheetTitle));
 
-    const updateSheet = async () => {
+    // class googleSheetsSheetLevelObj {
+    //     constructor() {
 
-        const googleSheetsLevelObj = google.sheets({version: 'v4', auth: googleAccountLevelObj});
+    //     }
+    // }
 
-        const request = {
+    // const updateSheet = async () => {
 
-            spreadsheetId: await googleSheetsLibrary.getGoogleSpreadsheetID(googleAccountLevelObj, googleSpreadsheetTitle),
+    //     const googleSheetsLevelObj = google.sheets({version: 'v4', auth: googleAccountLevelObj});
 
-            resource: {
+    //     const request = {
 
-                valueInputOption: 'RAW',
+    //         spreadsheetId: await googleSheetsLibrary.getGoogleSpreadsheetID(googleAccountLevelObj, googleSpreadsheetTitle),
 
-                data: {
+    //         resource: {
 
-                    range: googleSheetTitle + '!' + 'A1',
-                    values: [
-                        ['test'],
-                        ['data'],
-                        ['data']
-                    ]
-                },
+    //             valueInputOption: 'RAW',
 
-            },
+    //             data: {
 
-            auth: googleAccountLevelObj,
-        };
+    //                 range: googleSheetTitle,
+    //                 values: [
+    //                     ['test1'],
+    //                     ['data1'],
+    //                     ['data1']
+    //                 ]
+    //             },
 
-        try {
+    //         },
 
-            const response = await googleSheetsLevelObj.spreadsheets.values.batchUpdate(request);
-            // c(JSON.stringify(response, null, 2));
+    //         auth: googleAccountLevelObj,
+    //     };
 
-        } catch (err) {
+    //     try {
 
-            c(err);
+    //         const response = await googleSheetsLevelObj.spreadsheets.values.batchUpdate(request);
+    //         // c(JSON.stringify(response, null, 2));
 
-        }
+    //     } catch (err) {
 
-    }
+    //         c(err);
 
-    await updateSheet();
+    //     }
+
+    // }
+
+    // await updateSheet();
     
 }
 

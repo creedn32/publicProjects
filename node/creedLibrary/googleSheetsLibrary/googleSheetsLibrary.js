@@ -5,12 +5,6 @@ const fs = require('fs');
 const {google} = require('googleapis');
 const readline = require('readline');
 
-// module.exports.getSpreadsheetLevelObj = () => {
-
-//     return 1;
-
-// };
-
 module.exports.getGoogleAccountLevelObj = async (pathArrayBelowRepos, googleSheetsUsername) => {
 
     const pathArrayRepos = mainLibrary.getPathArrayUpFolderTree(pathArrayBelowRepos, 'repos');
