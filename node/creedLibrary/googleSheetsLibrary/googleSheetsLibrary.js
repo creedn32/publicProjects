@@ -5,11 +5,11 @@ const fs = require('fs');
 const {google} = require('googleapis');
 const readline = require('readline');
 
-module.exports.getSpreadsheetLevelObj = () => {
+// module.exports.getSpreadsheetLevelObj = () => {
 
-    return 1;
+//     return 1;
 
-};
+// };
 
 module.exports.getGoogleAccountLevelObj = async (pathArrayBelowRepos, googleSheetsUsername) => {
 

@@ -4,8 +4,8 @@ let mainLibrary = require('../node/creedLibrary/mainLibrary/mainLibrary')
 let c = console.log.bind(console);
 
 pathArrayThIsFile = path.resolve(__dirname, __filename).split(path.sep);
-pathArrayThIsFileParent = pathArrayThIsFile.slice(0, pathArrayThIsFile.length - 1)
-configJSON = JSON.parse(fs.readFileSync([...pathArrayThIsFileParent, 'nConfig.json'].join(path.sep)));
+pathArrayThisFileParent = pathArrayThIsFile.slice(0, pathArrayThIsFile.length - 1)
+configJSON = JSON.parse(fs.readFileSync([...pathArrayThisFileParent, 'nConfig.json'].join(path.sep)));
 nameOfAuthor = configJSON['nameOfAuthor'];
 
 
@@ -98,6 +98,8 @@ const importJSFile = (arrayOfArguments) => {
 
     pathArrayRoot = mainLibrary.getPathArrayUpFolderTree(pathArrayThIsFile, configJSON['nameOfDirectoryToSetAsRoot']);
 
+    // c(pathArrayRoot);
+    
     pathArrayFileForImport = findPathArrayToFileBreadthFirst(pathArrayRoot, (pathArrayFileObj) => {
 
         if (getPathArraySuffix(pathArrayFileObj) == '.js' && getPathArrayStem(pathArrayFileObj) == arrayOfArguments[0] && pathArrayIsFile(pathArrayFileObj)) return true;
@@ -108,7 +110,10 @@ const importJSFile = (arrayOfArguments) => {
 
     // c(pathArrayFileForImport)
 
-    pathStrRelativeJSFileForImport = './'.concat(path.relative(mainLibrary.pathArrayToStr(pathArrayThIsFileParent), mainLibrary.pathArrayToStr(pathArrayFileForImport)))
+    // c(pathArrayThisFileParent);
+    // c(pathArrayFileForImport);
+
+    pathStrRelativeJSFileForImport = './'.concat(path.relative(mainLibrary.pathArrayToStr(pathArrayThisFileParent), mainLibrary.pathArrayToStr(pathArrayFileForImport)))
     // c(pathStrRelativeJSFileForImport);
 
     require(pathStrRelativeJSFileForImport)(arrayOfArguments.slice(1));
