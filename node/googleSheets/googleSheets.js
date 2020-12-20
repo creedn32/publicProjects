@@ -9,14 +9,49 @@ const {google} = require('googleapis');
 const mainFunction = async ([googleSheetsUsername, googleSpreadsheetTitle, googleSheetTitle]) => {
 
     const googleAccountLevelObj = await googleSheetsLibrary.getGoogleAccountLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle);
+    const googleSheetsLevelObj = googleSheetsLibrary.getGoogleSheetsLevelObj(googleAccountLevelObj);
+    const spreadsheetLevelObj = await googleSheetsLibrary.getSpreadsheetLevelObj(googleAccountLevelObj, googleSpreadsheetTitle);
+    const sheetLevelObj = googleSheetsLibrary.getSheetLevelObj();
+    c(sheetLevelObj.getArrayOfValues());
 
-    c(await googleSheetsLibrary.getArrayOfValues(googleAccountLevelObj, googleSpreadsheetTitle, googleSheetTitle));
 
-    // class googleSheetsSheetLevelObj {
-    //     constructor() {
 
-    //     }
-    // }
+
+
+    // // class GoogleSheetsSheetLevelObj {
+        
+    // //     constructor() {
+
+    // //         this.googleSheetsLevelObj = 
+
+    // //     }
+
+
+    
+    // let sheetLevelObj = new GoogleSheetsSheetLevelObj();
+
+    // c(sheetLevelObj.propertyInfo);
+    // c(sheetLevelObj.getArrayOfValues());
+
+
+    // module.exports.getArrayOfValues = async (googleAccountLevelObj, googleSpreadsheetTitle, googleSheetTitle) => {
+
+    //     const googleSpreadsheetID = await module.exports.getGoogleSpreadsheetID(googleAccountLevelObj, googleSpreadsheetTitle);
+    //     const googleSheetsLevelObj = module.exports.getGoogleSheetsLevelObj(googleAccountLevelObj);
+
+    
+    // };
+
+
+
+
+
+    // c(await googleSheetsLibrary.getArrayOfValues(googleAccountLevelObj, googleSpreadsheetTitle, googleSheetTitle));
+
+
+
+
+
 
     // const updateSheet = async () => {
 

@@ -98,6 +98,11 @@ module.exports.getGoogleAccountLevelObj = async (pathArrayBelowRepos, googleShee
     }
 };
 
+module.exports.getGoogleSheetsLevelObj = (googleAccountLevelObj) => {
+
+    return google.sheets({version: 'v4', auth: googleAccountLevelObj});
+}
+
 
 module.exports.getGoogleSpreadsheetID = async (googleAccountLevelObj, googleSpreadsheetTitle) => {
 
@@ -144,35 +149,52 @@ module.exports.getGoogleSpreadsheetID = async (googleAccountLevelObj, googleSpre
 };
 
 
-module.exports.getArrayOfValues = async (googleAccountLevelObj, googleSpreadsheetTitle, googleSheetTitle) => {
+module.exports.getSpreadsheetLevelObj = async (googleAccountLevelObj, googleSpreadsheetTitle) => {
 
-    const googleSpreadsheetID = await module.exports.getGoogleSpreadsheetID(googleAccountLevelObj, googleSpreadsheetTitle);
-    const googleSheetsLevelObj = google.sheets({version: 'v4', auth: googleAccountLevelObj});
+    return {
 
-    try {
+        googleSpreadsheetID: await module.exports.getGoogleSpreadsheetID(googleAccountLevelObj, googleSpreadsheetTitle)
 
-        const googleSheetValues = await googleSheetsLevelObj.spreadsheets.values.get({
+    };
+};
 
-            spreadsheetId: googleSpreadsheetID,
-            range: googleSheetTitle,
+module.exports.getSheetLevelObj = () => {
 
-        });
+    return {
 
-        let rows = googleSheetValues.data.values;
+        getArrayOfValues: function() {
 
-        if (rows.length) {
+            try {
 
-            const maxRowLength = Math.max(...rows.map(row => row.length));
+                // const googleSheetValues = await googleSheetsLevelObj.spreadsheets.values.get({
 
-            let newRows = rows.map(row => row.concat(Array(maxRowLength - row.length).fill('')));
+                //     spreadsheetId: googleSpreadsheetID,
+                //     range: googleSheetTitle,
 
-            return newRows;
+                // });
+
+                // let rows = googleSheetValues.data.values;
+
+                // if (rows.length) {
+
+                //     const maxRowLength = Math.max(...rows.map(row => row.length));
+
+                //     let newRows = rows.map(row => row.concat(Array(maxRowLength - row.length).fill('')));
+
+                //     return newRows;
+
+                // }
+
+                return 1;
+
+            } catch (error) {
+
+                c('The API returned an error: ' + error);
+
+            }
+
 
         }
-
-    } catch (error) {
-
-        c('The API returned an error: ' + error);
-
-    }
-};
+    
+    };
+}
