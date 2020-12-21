@@ -98,9 +98,9 @@ module.exports.getGoogleAccountLevelObj = async (pathArrayBelowRepos, googleShee
     }
 };
 
-module.exports.getGoogleSheetsLevelObj = (googleAccountLevelObj) => {
+module.exports.getGoogleSheetsValuesLevelObj = (googleAccountLevelObj) => {
 
-    return google.sheets({version: 'v4', auth: googleAccountLevelObj});
+    return google.sheets({version: 'v4', auth: googleAccountLevelObj}).spreadsheets.values;
 }
 
 
@@ -158,10 +158,11 @@ module.exports.getSpreadsheetLevelObj = async (googleAccountLevelObj, googleSpre
     };
 };
 
-module.exports.getSheetLevelObj = () => {
+module.exports.getSheetLevelObj = (googleSheetsValuesLevelObj) => {
 
     return {
 
+        googleSheetsValuesLevelObj: googleSheetsValuesLevelObj,
         getArrayOfValues: function() {
 
             try {

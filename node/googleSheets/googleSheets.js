@@ -9,9 +9,9 @@ const {google} = require('googleapis');
 const mainFunction = async ([googleSheetsUsername, googleSpreadsheetTitle, googleSheetTitle]) => {
 
     const googleAccountLevelObj = await googleSheetsLibrary.getGoogleAccountLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle);
-    const googleSheetsLevelObj = googleSheetsLibrary.getGoogleSheetsLevelObj(googleAccountLevelObj);
+    const googleSheetsValuesLevelObj = googleSheetsLibrary.getGoogleSheetsValuesLevelObj(googleAccountLevelObj);
     const spreadsheetLevelObj = await googleSheetsLibrary.getSpreadsheetLevelObj(googleAccountLevelObj, googleSpreadsheetTitle);
-    const sheetLevelObj = googleSheetsLibrary.getSheetLevelObj();
+    const sheetLevelObj = googleSheetsLibrary.getSheetLevelObj(googleSheetsValuesLevelObj);
     c(sheetLevelObj.getArrayOfValues());
 
 
