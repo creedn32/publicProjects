@@ -10,13 +10,13 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
 
     c(await sheetLevelObj.getArrayOfValues());
 
-    sheetLevelObj.updateSheet(
-        [
-            ['test5'],
-            ['data3'],
-            ['data4']
-        ]
-    );
+    // sheetLevelObj.updateSheet(
+    //     [
+    //         ['test5'],
+    //         ['data3'],
+    //         ['data4']
+    //     ]
+    // );
 }
 
 module.exports = getSheetAndUpdateSheet;
