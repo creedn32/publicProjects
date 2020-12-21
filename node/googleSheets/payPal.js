@@ -4,27 +4,34 @@ pathArrayThisFile = path.resolve(__dirname, __filename).split(path.sep);
 let googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary/googleSheetsLibrary');
 let c = console.log.bind(console);
 
-const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTitle, googleSheetTitle]) => {
+const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTitle, firstGoogleSheetTitle, secondGoogleSheetTitle]) => {
 
-    test1SheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, googleSheetTitle);
-    test2SheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, googleSheetTitle.slice(0, -1) + '2');
+    test1SheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, firstGoogleSheetTitle);
+    test2SheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, secondGoogleSheetTitle);
 
     arrayOfValues = await test1SheetLevelObj.getArrayOfValues();
 
-    const expandedArrayOfValues = arrayOfValues.reduce(function(runningArray, currentElement) {
+    const expandedArrayOfValues = arrayOfValues.reduce(function(accumulator, currentElement, currentIndex) {
 
-        // c('before');
-        // c(r);
-        // c(currentElement);
-        runningArray.push(currentElement, ['a']);
-        // runningArray.push(currentElement + 1, currentElement + 2);
-        // c('after');
-        // c(r)
-        return runningArray;
+        firstPart = currentElement.slice(0, 5);
+        secondPart = currentElement.slice(9, currentElement.length)
+
+        if (currentIndex > 0) {
+
+            accumulator.push(firstPart.concat(currentElement[5], ...secondPart), firstPart.concat(currentElement[6], ...secondPart), firstPart.concat(currentElement[7], ...secondPart));
+
+        } else {
+
+            accumulator.push(firstPart.concat('Amount', ...secondPart));
+
+        }
+
+        return accumulator;
+
 
     }, []);
 
-    c(expandedArrayOfValues)
+    // c(expandedArrayOfValues)
 
     test2SheetLevelObj.updateSheet(expandedArrayOfValues);
 
