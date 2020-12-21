@@ -141,7 +141,6 @@ module.exports.getGoogleSpreadsheetID = async (googleAccountLevelObj, googleSpre
 
     // return files
 
-
     const driveList = await googleDriveLevelObj.files.list(params=params);
 
     return driveList.data.files[0].id;
@@ -155,5 +154,80 @@ module.exports.getSpreadsheetLevelObj = async (googleAccountLevelObj, googleSpre
 
         googleSpreadsheetID: await module.exports.getGoogleSpreadsheetID(googleAccountLevelObj, googleSpreadsheetTitle)
 
+    };
+};
+
+
+module.exports.getSheetLevelObj = async (pathBelowRepos, googleSheetsUsername, googleSpreadsheetTitle, googleSheetTitle) => {
+
+    const googleAccountLevelObj = await module.exports.getGoogleAccountLevelObj(pathBelowRepos, googleSheetsUsername, googleSpreadsheetTitle);
+    const googleSheetsValuesLevelObj = module.exports.getGoogleSheetsValuesLevelObj(googleAccountLevelObj);
+    const spreadsheetID = await module.exports.getGoogleSpreadsheetID(googleAccountLevelObj, googleSpreadsheetTitle);
+
+    return {
+
+        googleAccountLevelObj: googleAccountLevelObj,
+        googleSheetsValuesLevelObj: googleSheetsValuesLevelObj,
+        spreadsheetLevelObj: await module.exports.getSpreadsheetLevelObj(googleAccountLevelObj, googleSpreadsheetTitle),
+        spreadsheetID: spreadsheetID,
+        getArrayOfValues: async function() {
+
+            try {
+
+                const request = {
+
+                    spreadsheetId: spreadsheetID,
+                    range: googleSheetTitle,
+
+                };
+
+                const response = await googleSheetsValuesLevelObj.get(request);
+                const sheetArrayOfArrays = response.data.values;
+
+                const maxRowLength = Math.max(...sheetArrayOfArrays.map(row => row.length));
+                const rowsWithFill = sheetArrayOfArrays.map(row => row.concat(Array(maxRowLength - row.length).fill('')));
+                return rowsWithFill;
+
+            } catch (error) {
+
+                c('The API returned an error: ' + error);
+
+            }
+
+        },
+        updateSheet: async function(arrayToUpload) {
+
+            const request = {
+
+                spreadsheetId: spreadsheetID,
+
+                resource: {
+
+                    valueInputOption: 'RAW',
+
+                    data: {
+
+                        range: googleSheetTitle,
+                        values: arrayToUpload
+                    },
+
+                },
+
+                auth: googleAccountLevelObj,
+
+            };
+
+            try {
+
+                const response = await googleSheetsValuesLevelObj.batchUpdate(request);
+                // c(JSON.stringify(response, null, 2));
+
+            } catch (err) {
+
+                c(err);
+
+            }
+
+        }
     };
 };
