@@ -5,7 +5,7 @@ let googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary/googleShe
 let c = console.log.bind(console);
 const {google} = require('googleapis');
 
-const mainFunction = async ([googleSheetsUsername, googleSpreadsheetTitle, googleSheetTitle]) => {
+const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTitle, googleSheetTitle]) => {
 
     let sheetLevelObj = {
 
@@ -98,4 +98,4 @@ const mainFunction = async ([googleSheetsUsername, googleSpreadsheetTitle, googl
 }
 
 
-module.exports = mainFunction;
+module.exports = getSheetAndUpdateSheet;
