@@ -4,13 +4,14 @@ pathArrayThisFile = path.resolve(__dirname, __filename).split(path.sep);
 let googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary/googleSheetsLibrary');
 let c = console.log.bind(console);
 
-const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTitle, firstGoogleSheetTitle, secondGoogleSheetTitle, thirdGoogleSheetTitle, bankName, userName, firstCheckbook, secondCheckbook]) => {
+const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTitle, bankSheetTitle, bankNewSheetTitle, transfersToPostSheetTitle, transactionsToPostSheetTitle, bankName, userName, firstCheckbook, secondCheckbook, glForFees]) => {
 
-    test1SheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, firstGoogleSheetTitle);
-    test2SheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, secondGoogleSheetTitle);
-    test3SheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, thirdGoogleSheetTitle);
+    bankSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, bankSheetTitle);
+    bankNewSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, bankNewSheetTitle);
+    transfersToPostSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, transfersToPostSheetTitle);
+    transactionsToPostSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, transactionsToPostSheetTitle);
 
-    arrayOfValues = await test1SheetLevelObj.getArrayOfValues();
+    arrayOfValues = await bankSheetLevelObj.getArrayOfValues();
 
     const expandedArrayOfValues = arrayOfValues.reduce(function(accumulator, currentElement, currentIndex) {
 
@@ -52,7 +53,9 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
 
     }, []);
 
-    transactionsToPostArray = [['Transfer Date', 'Description', 'Transfer From Checkbook ID', 'Amount', 'Transfer To Checkbook ID', 'Status', 'Person']];
+    transfersToPostArray = [['Transfer Date', 'Description', 'Transfer From Checkbook ID', 'Amount', 'Transfer To Checkbook ID', 'Status', 'Person']];
+    feesToPostArray = [['Option', 'Type', 'Transaction Date', 'Checkbook ID', 'Paid To or Rcvd From', 'Description', 'Amount', 'Account', 'Amount2', 'Status', 'Person']];
+
 
     expandedArrayOfValues.forEach((row) => {
 
@@ -68,14 +71,21 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
 
             description = transferFromCheckbook + ' to ' + transferToCheckbook;
 
-            transactionsToPostArray.push([row[0], description, transferFromCheckbook, Math.abs(row[6]), transferToCheckbook, '', userName])
+            transfersToPostArray.push([row[0], description, transferFromCheckbook, Math.abs(row[6]), transferToCheckbook, '', userName])
+
+        }
+        
+        if (row[5] === 'Fee') {
+
+            feesToPostArray.push(['Enter Transaction', 'Decrease Adjustment', row[0], firstCheckbook, firstCheckbook, 'Fee', Math.abs(row[6]), glForFees, Math.abs(row[6]), '', userName]);
 
         }
 
     });
 
-    test2SheetLevelObj.updateSheet(expandedArrayOfValues);
-    test3SheetLevelObj.updateSheet(transactionsToPostArray);
+    bankNewSheetLevelObj.updateSheet(expandedArrayOfValues);
+    transfersToPostSheetLevelObj.updateSheet(transfersToPostArray);
+    transactionsToPostSheetLevelObj.updateSheet(feesToPostArray);
 
 }
 
