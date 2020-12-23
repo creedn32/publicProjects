@@ -14,6 +14,8 @@ def mainFunction(arrayOfArguments):
 
     def getArrayOfPDFFiles(pathToRoot, foldersToExclude):
 
+        # p(foldersToExclude)
+
         def ifPDFFile(fileObj):
 
             # p(fileObj)
@@ -22,23 +24,27 @@ def mainFunction(arrayOfArguments):
 
             return False
 
-        folderPathsToExclude = []
+        # folderPathsToExclude = []
 
-        for folderToExclude in foldersToExclude:
+        # for folderToExclude in foldersToExclude:
 
-            folderPathsToExclude.append(Path(pathToRoot, folderToExclude))
+        #     folderPathsToExclude.append(Path(pathToRoot, folderToExclude))
 
-        return myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(pathToRoot), ifPDFFile, pathsToExclude=folderPathsToExclude)
-
-
-    pathBelowRepos = pathToThisPythonFile
+        return myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(pathToRoot), ifPDFFile, pathsToExclude=foldersToExclude)
 
     # p(arrayOfArguments)
 
-    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[1]).open(arrayOfArguments[2])
+    googleAccountUsername = arrayOfArguments[1]
+    googleSpreadsheetTitle = arrayOfArguments[2]
+    googleSheetTitleToSaveListTo = arrayOfArguments[3]
+    pathToRootToBeginSearching = arrayOfArguments[4]
+    arrayOfFoldersToExclude = arrayOfArguments[5:]
 
+    pathBelowRepos = pathToThisPythonFile
+
+    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=googleAccountUsername).open(googleSpreadsheetTitle)
     
-    arrayOfPDFFilesFromDisk = getArrayOfPDFFiles(arrayOfArguments[3], arrayOfArguments[5:])
+    arrayOfPDFFilesFromDisk = getArrayOfPDFFiles(pathToRootToBeginSearching, arrayOfFoldersToExclude)
     
     arrayOfPDFFilesFromDisk = [[str(e)] for e in arrayOfPDFFilesFromDisk]
     
@@ -54,7 +60,7 @@ def mainFunction(arrayOfArguments):
 
     clearAndResizeParameters = [
         {
-            'sheetObj': spreadsheetLevelObj.worksheet(arrayOfArguments[4]),
+            'sheetObj': spreadsheetLevelObj.worksheet(googleSheetTitleToSaveListTo),
             'resizeRows': 2,
             'startingRowIndexToClear': 0,
             'resizeColumns': 1
@@ -62,7 +68,7 @@ def mainFunction(arrayOfArguments):
     ]
 
     myGspreadFunc.clearAndResizeSheets(clearAndResizeParameters)
-    myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(arrayOfArguments[4]), arrayOfPDFFilesFromDisk)
+    myGspreadFunc.displayArray(spreadsheetLevelObj.worksheet(googleSheetTitleToSaveListTo), arrayOfPDFFilesFromDisk)
     # myGspreadFunc.autoAlignColumnsInSpreadsheet(spreadsheetLevelObj)
 
 
