@@ -32,13 +32,13 @@ def mainFunction(arrayOfArguments):
 
         return myPyFunc.getArrayOfFileObjInTreeBreadthFirst(Path(pathToRoot), ifPDFFile, pathsToExclude=foldersToExclude)
 
-    # p(arrayOfArguments)
-
     googleAccountUsername = arrayOfArguments[1]
     googleSpreadsheetTitle = arrayOfArguments[2]
     googleSheetTitleToSaveListTo = arrayOfArguments[3]
     pathToRootToBeginSearching = arrayOfArguments[4]
     arrayOfFoldersToExclude = arrayOfArguments[5:]
+
+    arrayOfFoldersToExclude = [e.replace('\\\\', '\\') for e in arrayOfFoldersToExclude]
 
     pathBelowRepos = pathToThisPythonFile
 
