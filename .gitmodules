@@ -7,6 +7,3 @@
 [submodule "node/herokuHelloNode"]
 	path = node/herokuHelloNode
 	url = https://github.com/creednaylor/herokuHelloNode.git
-[submodule "herokuDolphin"]
-	path = herokuDolphin
-	url = https://github.com/creednaylor/herokuDolphin.git
