@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 pathToThisPythonFile = Path(__file__).resolve()
 # print(pathToThisPythonFile)
-sys.path.append(str(Path(pathToThisPythonFile.parents[2], 'herokuGorilla', 'backend', 'python')))
+sys.path.append(str(Path(pathToThisPythonFile.parents[3], 'herokuGorilla', 'backend', 'python')))
 import myPythonLibrary.myPyFunc as myPyFunc
 import googleSheetsApps.processIsNotRunning as processIsNotRunning
 
