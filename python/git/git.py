@@ -90,14 +90,14 @@ def mainFunction(arrayOfArguments):
 
         if arrayOfArguments[1] in ['acp', 'commit']:
             
-            if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' add .')
+            if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' add .', shell=True)
 
             commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
             if len(arrayOfArguments) > 3: commitMessage = arrayOfArguments[3]
 
-            subprocess.run(gitCommandPrefix + ' commit -m \"' + commitMessage + '\"')
+            subprocess.run(gitCommandPrefix + ' commit -m \"' + commitMessage + '\"', shell=True)
 
-            if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' push')
+            if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' push', shell=True)
 
             # if gitFolder.name[:6] == 'heroku' and 'includeheroku' in arrayOfArguments:
                 # subprocess.run('git -C ' + gitFolderStr + ' push heroku master')
