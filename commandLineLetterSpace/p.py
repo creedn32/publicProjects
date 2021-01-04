@@ -35,6 +35,7 @@ def mainFunction(arrayOfArguments):
 
 if __name__ == '__main__':
     p(str(pathToThisPythonFile.name) + ' (created by Creed) is not being imported. It is being run directly...')
+    # p('sys.argv: ' + str(sys.argv))
     mainFunction(sys.argv)
 else:
 	p(str(pathToThisPythonFile.name) + ' (created by Creed) is being imported. It is not being run directly...')

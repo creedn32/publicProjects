@@ -71,7 +71,7 @@ def mainFunction(arrayOfArguments):
 
         gitFolderStr = str(gitFolder)
 
-        if gitFolderStr[0:3] == 'C:\\':
+        if gitFolderStr[0:3] in ['C:\\', '/mn']:
         
             gitCommandPrefix = 'git -C \"' + gitFolderStr + "\""
 
@@ -104,7 +104,11 @@ def mainFunction(arrayOfArguments):
 
         else:
 
-            subprocess.run(gitCommandPrefix + ' ' + ' '.join(arrayOfArguments[1:]))
+            subprocessToRun = gitCommandPrefix + ' ' + ' '.join(arrayOfArguments[1:])
+            # p('subProcessToRun: ' + subprocessToRun)
+            # subprocessToRun = 'echo a'
+
+            subprocess.run(subprocessToRun, shell=True)
 
 
 
