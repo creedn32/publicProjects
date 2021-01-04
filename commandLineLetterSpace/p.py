@@ -1,7 +1,7 @@
 from pathlib import Path
 pathToThisPythonFile = Path(__file__).resolve()
 import sys
-pathToAppend = Path(pathToThisPythonFile.parents[1], 'herokuGorilla', 'backend', 'python', 'myPythonLibrary')
+pathToAppend = Path(pathToThisPythonFile.parents[2], 'herokuGorilla', 'backend', 'python', 'myPythonLibrary')
 sys.path.append(str(pathToAppend))
 import myPyFunc
 
