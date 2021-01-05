@@ -7,9 +7,9 @@ pathToFileWithVariable="$pathToThisFileDirectoryLinuxFormat/../../privateData/co
 source $pathToFileWithVariable
 # echo $variableFromFile
 
-shortenedPathToThisFileDirectoryLinuxFormat="c:${pathToThisFileDirectoryLinuxFormat:6}/p.py"
-# echo $shortenedPathToThisFileDirectoryLinuxFormat
-pathToThisFileDirectoryWindowsFormat=${shortenedPathToThisFileDirectoryLinuxFormat//\//\\}
+modifiedDirectory="c:${pathToThisFileDirectoryLinuxFormat:6}/p.py"
+# echo $modifiedDirectory
+pathToThisFileDirectoryWindowsFormat=${modifiedDirectory//\//\\}
 commandToExecute="$variableFromFile $pathToThisFileDirectoryWindowsFormat $@"
 # echo $commandToExecute
 $commandToExecute
