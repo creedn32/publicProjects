@@ -2,7 +2,7 @@
 from pathlib import Path
 import sys
 pathToThisPythonFile = Path(__file__).resolve()
-sys.path.append(str(pathToThisPythonFile.parents[3]))
+sys.path.append(str(pathToThisPythonFile.parents[4]))
 import herokuGorilla.backend.python.myPythonLibrary.myPyFunc as myPyFunc
 import herokuGorilla.backend.python.myPythonLibrary.myPyAutoGui as myPyAutoGui
 import herokuGorilla.backend.python.googleSheets.myGoogleSheetsLibrary.myGoogleSheetsFunc as myGoogleSheetsFunc
