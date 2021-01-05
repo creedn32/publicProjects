@@ -1,5 +1,15 @@
 #!/bin/bash
 
-pathToScript="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/p.py $@"
-# echo $pathToScript
-python3 $pathToScript
+pathToThisFileDirectoryLinuxFormat="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# echo $pathToThisFileDirectoryLinuxFormat
+pathToFileWithVariable="$pathToThisFileDirectoryLinuxFormat/../../privateData/commandLineLetterSpace/fileWithVariable.sh"
+
+source $pathToFileWithVariable
+# echo $variableFromFile
+
+shortenedPathToThisFileDirectoryLinuxFormat="c:${pathToThisFileDirectoryLinuxFormat:6}/p.py"
+# echo $shortenedPathToThisFileDirectoryLinuxFormat
+pathToThisFileDirectoryWindowsFormat=${shortenedPathToThisFileDirectoryLinuxFormat//\//\\}
+commandToExecute="$variableFromFile $pathToThisFileDirectoryWindowsFormat $@"
+# echo $commandToExecute
+$commandToExecute
