@@ -25,7 +25,6 @@ def mainFunction(arrayOfArguments):
         if pathToRoot in str(pathToThisPythonFile):
             pathToRootOnThisMachine = pathToRoot
 
-
     for processToStart in processCollectionToStart:
 
         replacedProcessToStart = processToStart.replace('!root!', pathToRootOnThisMachine)
