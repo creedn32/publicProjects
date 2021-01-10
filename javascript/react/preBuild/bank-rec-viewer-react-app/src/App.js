@@ -2,22 +2,40 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+
+  // const [groceryList, setGroceryList] = useState([]);
+  // const [input, setInput] = useState('');
+
+  // const onInputChange = e => {
+  //   setInput(e.target.value);
+  // }
+
+  // const onButtonClick = () => {
+  //   const newGroceryItem = input;
+
+  //   addToGroceryList();    
+  // }
+  
+  // const onInputKeyPress = e => {
+  //     if(e.key === 'Enter'){
+  //       addToGroceryList();
+  //     }
+  // }
+  
+  // const addToGroceryList = () => {
+  //   setGroceryList([...groceryList, input]);
+  //   setInput('');
+  // }
+
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        Bank Transactions
       </header>
+      <ul>
+        {/* <GroceryList groceryList={groceryList}/> */}
+      </ul>
     </div>
   );
 }
