@@ -1,31 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
 
 function App() {
 
-  // const [groceryList, setGroceryList] = useState([]);
-  // const [input, setInput] = useState('');
+  const [bankTransactionsArray, setBankTransactionsArray] = useState([]);
+  // setBankTransactionsArray(['a', 'b', 'c']);
+  // console.log(bankTransactionsArray);
+  console.log('hi');
 
-  // const onInputChange = e => {
-  //   setInput(e.target.value);
-  // }
-
-  // const onButtonClick = () => {
-  //   const newGroceryItem = input;
-
-  //   addToGroceryList();    
-  // }
-  
-  // const onInputKeyPress = e => { 
-  //     if(e.key === 'Enter'){
-  //       addToGroceryList();
-  //     }
-  // }
-  
-  // const addToGroceryList = () => {
-  //   setGroceryList([...groceryList, input]);
-  //   setInput('');
-  // }
 
 
   return (
@@ -34,7 +17,7 @@ function App() {
         Bank Transactions
       </header>
       <ul>
-        {/* <GroceryList groceryList={groceryList}/> */}
+        {/* <BankTransactionsArray bankTransactionsArray={bankTransactionsArray}/> */}
       </ul>
     </div>
   );
