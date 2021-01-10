@@ -1,15 +1,10 @@
-import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
+import { initialBankTransactionsArray } from './data/sampleData'
 
 function App() {
 
-  const [bankTransactionsArray, setBankTransactionsArray] = useState([]);
-  // setBankTransactionsArray(['a', 'b', 'c']);
-  // console.log(bankTransactionsArray);
-  console.log('hi');
-
-
+  const [bankTransactionsArray, setBankTransactionsArray] = useState(initialBankTransactionsArray);
 
   return (
     <div className="App">
@@ -17,7 +12,9 @@ function App() {
         Bank Transactions
       </header>
       <ul>
-        {/* <BankTransactionsArray bankTransactionsArray={bankTransactionsArray}/> */}
+        {bankTransactionsArray.map(bankTransaction => (
+          <li>{bankTransaction}</li>
+        ))}
       </ul>
     </div>
   );
