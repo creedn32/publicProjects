@@ -87,6 +87,8 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
     transfersToPostSheetLevelObj.updateSheet(transfersToPostArray);
     transactionsToPostSheetLevelObj.updateSheet(feesToPostArray);
 
+    // c(expandedArrayOfValues);
+
 }
 
 module.exports = getSheetAndUpdateSheet;
