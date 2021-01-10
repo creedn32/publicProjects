@@ -16,7 +16,7 @@ function App() {
   //   addToGroceryList();    
   // }
   
-  // const onInputKeyPress = e => {
+  // const onInputKeyPress = e => { 
   //     if(e.key === 'Enter'){
   //       addToGroceryList();
   //     }
