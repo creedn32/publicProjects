@@ -86,30 +86,29 @@ def mainFunction(arrayOfArguments):
             gitCommandPrefix = 'git --git-dir=\"' + otherFoldersObj[gitFolderStr] + '\" --work-tree=\"' + gitFolderStr + "\""
 
         # p(gitCommandPrefix)
-        p(gitFolderStr)
+        
 
-        if arrayOfArguments[1] in ['acp', 'commit']:
-            
-            if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' add .', shell=True)
+        if arrayOfArguments[1] == 'acp':
+
+            subprocessesToRun = [gitCommandPrefix + ' add .']
 
             commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
             if len(arrayOfArguments) > 3: commitMessage = arrayOfArguments[3]
 
-            subprocess.run(gitCommandPrefix + ' commit -m \"' + commitMessage + '\"', shell=True)
-
-            if arrayOfArguments[1] == 'acp': subprocess.run(gitCommandPrefix + ' push', shell=True)
+            subprocessesToRun.append(gitCommandPrefix + ' commit -m \"' + commitMessage + '\"')
+            subprocessesToRun.append(gitCommandPrefix + ' push')
 
             # if gitFolder.name[:6] == 'heroku' and 'includeheroku' in arrayOfArguments:
                 # subprocess.run('git -C ' + gitFolderStr + ' push heroku master')
 
         else:
 
-            subprocessToRun = gitCommandPrefix + ' ' + ' '.join(arrayOfArguments[1:])
-            # p('subProcessToRun: ' + subprocessToRun)
-            # subprocessToRun = 'echo a'
+            subprocessesToRun = [gitCommandPrefix + ' ' + ' '.join(arrayOfArguments[1:])]
 
+        for subprocessToRun in subprocessesToRun:
+            p(subprocessToRun)
+            # p(gitFolderStr)
             subprocess.run(subprocessToRun, shell=True)
-
 
 
 if __name__ == '__main__':
