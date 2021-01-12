@@ -92,7 +92,7 @@ def mainFunction(arrayOfArguments):
 
             subprocessesToRun = [gitCommandPrefix + ' add .']
 
-            commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added/committed/pushed using Creed\'s Python script'
+            commitMessage = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + ', added, committed, & pushed using python script'
             if len(arrayOfArguments) > 3: commitMessage = arrayOfArguments[3]
 
             subprocessesToRun.append(gitCommandPrefix + ' commit -m \"' + commitMessage + '\"')
