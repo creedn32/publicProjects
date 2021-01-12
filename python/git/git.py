@@ -39,7 +39,7 @@ def mainFunction(arrayOfArguments):
         return None
 
     includeWorkFiles = False
-    p(arrayOfArguments)
+    # p(arrayOfArguments)
 
     if arrayOfArguments[1] == 'includeWorkFiles':
 
