@@ -32,7 +32,14 @@ def noGitIgnoreFileFound(gitFolder):
 
 def mainFunction(arrayOfArguments):
 
+    def returnGitFolder(fileObj):
+
+        if fileObj.name == '.git': return fileObj.parents[0]
+
+        return None
+
     includeWorkFiles = False
+    p(arrayOfArguments)
 
     if arrayOfArguments[1] == 'includeWorkFiles':
 
@@ -41,31 +48,18 @@ def mainFunction(arrayOfArguments):
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
-    def returnGitFolder(fileObj):
-
-        if fileObj.name == '.git': return fileObj.parents[0]
-
-        return None
-
     gitFoldersToExecuteCommandOn = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, returnGitFolder, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'),  Path(pathToRepos, 'reposFromOthers'), 'node_modules'])
-
-    # p(Path(pathToRepos, 'privateData', 'python', 'git', 'git.txt').read_text())
-
-    # with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'w') as filehandle:
-    #     json.dump(['hi', 'bue'], filehandle)
 
     if includeWorkFiles and pathToRepos.parents[0].name == 'cnaylor':
 
         with open(Path(pathToRepos, 'privateData', 'python', 'git', 'git.json'), 'r') as filehandle:
+            
             otherFoldersObj = json.load(filehandle)
 
         for otherFolder in otherFoldersObj:
 
             gitFoldersToExecuteCommandOn.append(Path(otherFolder))
 
-
-    # gitFoldersToExecuteCommandOn = gitFoldersToExecuteCommandOn[:-2]
-    # p(gitFoldersToExecuteCommandOn)
 
     for gitFolder in gitFoldersToExecuteCommandOn:
 
