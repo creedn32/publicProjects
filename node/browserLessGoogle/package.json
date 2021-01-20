@@ -3,9 +3,9 @@
   "description": "Exported package from browserless, ready to go!",
   "version": "0.0.1",
   "scripts": {
-    "start": "node index.js"
+    "start": "node browserlessGoogle.js"
   },
   "dependencies": {
-    "puppeteer": "5.4.1"
+    "puppeteer": "^5.4.1"
   }
 }
