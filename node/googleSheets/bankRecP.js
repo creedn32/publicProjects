@@ -17,12 +17,12 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
     transfersToPostSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, transfersToPostSheetTitle);
     transactionsToPostSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, transactionsToPostSheetTitle);
 
-    arrayOfValues = await bankSheetLevelObj.getArrayOfValues();
+    bankArray = await bankSheetLevelObj.getArrayOfValues();
 
-    const expandedArrayOfValues = arrayOfValues.reduce(function(accumulator, currentElement, currentIndex) {
+    const expandedBankArray = bankArray.reduce(function(accumulator, currentElement, currentIndex) {
 
-        firstPart = currentElement.slice(0, 5);
-        secondPart = currentElement.slice(9, currentElement.length)
+        arrayBeforeAmount = currentElement.slice(0, 5);
+        arrayAfterAmount = currentElement.slice(9, currentElement.length)
         transactionTypes = ['Gross', 'Fee'];
 
         if (currentIndex > 0) {
@@ -42,20 +42,19 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
                 }
 
                 if (currentAmount) {
-                    
-                    accumulator.push(firstPart.concat(transactionType, currentAmount, secondPart));
+
+                    accumulator.push(arrayBeforeAmount.concat(transactionType, currentAmount, arrayAfterAmount));
 
                 }
             });
 
         } else {
 
-            accumulator.push(firstPart.concat('Type', 'Amount', ...secondPart));
+            accumulator.push(arrayBeforeAmount.concat('Type', 'Amount', ...arrayAfterAmount));
 
         }
 
         return accumulator;
-
 
     }, []);
 
@@ -63,7 +62,7 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
     feesToPostArray = [['Option', 'Type', 'Transaction Date', 'Checkbook ID', 'Paid To or Rcvd From', 'Description', 'Amount', 'Account', 'Amount2', 'Status', 'Person']];
 
 
-    expandedArrayOfValues.forEach((row) => {
+    expandedBankArray.forEach((row) => {
 
         if (row[10] === receivingBankFromPayPalData) {
 
@@ -72,7 +71,7 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
             if (row[6] > 0) {
 
                 [transferFromCheckbook, transferToCheckbook] = [defaultTransferToCheckbook, defaultTransferFromCheckbook];
-            
+
             }
 
             description = transferFromCheckbook + ' to ' + transferToCheckbook;
@@ -80,7 +79,7 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
             transfersToPostArray.push([row[0], description, transferFromCheckbook, Math.abs(row[6]), transferToCheckbook, '', accountantName])
 
         }
-        
+
         if (row[5] === 'Fee') {
 
             adjustmentType = 'Decrease Adjustment';
@@ -93,11 +92,11 @@ const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTi
 
     });
 
-    bankNewSheetLevelObj.updateSheet(expandedArrayOfValues);
+    bankNewSheetLevelObj.updateSheet(expandedBankArray);
     transfersToPostSheetLevelObj.updateSheet(transfersToPostArray);
     transactionsToPostSheetLevelObj.updateSheet(feesToPostArray);
 
-    // c(expandedArrayOfValues);
+    // c(expandedBankArray);
 
 }
 
