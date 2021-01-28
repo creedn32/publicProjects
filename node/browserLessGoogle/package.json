@@ -6,6 +6,7 @@
     "start": "node browserlessGoogle.js"
   },
   "dependencies": {
-    "puppeteer": "^5.4.1"
+    "puppeteer": "^5.4.1",
+    "puppeteer-extra-plugin-stealth": "^2.6.7"
   }
 }
