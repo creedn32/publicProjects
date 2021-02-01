@@ -11,6 +11,8 @@ import importlib.util
 
 def mainFunction(arrayOfArguments):
 
+    # p(arrayOfArguments)
+
     p("Searching for command '{}.py' (created by Creed)...".format(arrayOfArguments[1]))
 
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')

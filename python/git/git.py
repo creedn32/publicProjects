@@ -49,6 +49,7 @@ def mainFunction(arrayOfArguments):
     pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
 
     gitFoldersToExecuteCommandOn = myPyFunc.getArrayOfFileObjInTreeBreadthFirst(pathToRepos, returnGitFolder, pathsToExclude=[Path(pathToRepos, '.history'), Path(pathToRepos, '.vscode'),  Path(pathToRepos, 'reposFromOthers'), 'node_modules'])
+    # p(gitFoldersToExecuteCommandOn)
 
     if includeWorkFiles and pathToRepos.parents[0].name == 'cnaylor':
 
@@ -64,8 +65,9 @@ def mainFunction(arrayOfArguments):
     for gitFolder in gitFoldersToExecuteCommandOn:
 
         gitFolderStr = str(gitFolder)
+        # p(gitFolderStr)
 
-        if gitFolderStr[0:3] in ['C:\\', '/mn']:
+        if gitFolderStr[0:1] in ['C', '/']:
         
             gitCommandPrefix = 'git -C \"' + gitFolderStr + "\""
 
@@ -75,7 +77,7 @@ def mainFunction(arrayOfArguments):
                 fileObj.write('__pycache__')
                 fileObj.close()
 
-        elif gitFolderStr[0:3] == 'Y:\\':
+        elif gitFolderStr[0:1] == 'Y':
 
             gitCommandPrefix = 'git --git-dir=\"' + otherFoldersObj[gitFolderStr] + '\" --work-tree=\"' + gitFolderStr + "\""
 

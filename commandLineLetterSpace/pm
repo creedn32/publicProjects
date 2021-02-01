@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# echo $@
+pathToThisFileDirectory="$(dirname $(greadlink -f $0))"
+# echo $pathToThisFileDirectory
+
+pythonExeToUse=$pathToThisFileDirectory/../../../pythonVirtualEnvs/creedVirtualEnv/bin/python3
+$pythonExeToUse $pathToThisFileDirectory/p.py $@
