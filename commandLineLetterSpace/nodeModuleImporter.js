@@ -5,7 +5,7 @@ let c = console.log.bind(console);
 
 pathArrayThIsFile = path.resolve(__dirname, __filename).split(path.sep);
 pathArrayThisFileParent = pathArrayThIsFile.slice(0, pathArrayThIsFile.length - 1)
-configJSON = JSON.parse(fs.readFileSync([...pathArrayThisFileParent, 'nConfig.json'].join(path.sep)));
+configJSON = JSON.parse(fs.readFileSync([...pathArrayThisFileParent, 'nodeModuleImporterConfig.json'].join(path.sep)));
 nameOfAuthor = configJSON['nameOfAuthor'];
 
 
