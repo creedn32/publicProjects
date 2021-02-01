@@ -7,7 +7,7 @@ pathToFileWithVariable="$pathToThisFileDirectoryLinuxFormat/../../privateData/co
 source $pathToFileWithVariable
 # echo $variableFromFile
 
-modifiedDirectory="c:${pathToThisFileDirectoryLinuxFormat:6}/pythonModuleImporter.py"
+modifiedDirectory="c:${pathToThisFileDirectoryLinuxFormat:6}/moduleImporters/pythonModuleImporter.py"
 # echo $modifiedDirectory
 pathToThisFileDirectoryWindowsFormat=${modifiedDirectory//\//\\}
 commandToExecute="$variableFromFile $pathToThisFileDirectoryWindowsFormat $@"

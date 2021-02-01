@@ -5,4 +5,4 @@ pathToThisFileDirectory="$(dirname $(greadlink -f $0))"
 # echo $pathToThisFileDirectory
 
 pythonExeToUse=$pathToThisFileDirectory/../../../pythonVirtualEnvs/creedVirtualEnv/bin/python3
-$pythonExeToUse $pathToThisFileDirectory/pythonModuleImporter.py $@
+$pythonExeToUse $pathToThisFileDirectory/moduleImporters/pythonModuleImporter.py $@

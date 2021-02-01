@@ -1,13 +1,11 @@
-let path = require('path');
-let fs = require('fs');
-let mainLibrary = require('../node/creedLibrary/mainLibrary/mainLibrary')
-let c = console.log.bind(console);
+const path = require('path');
+const fs = require('fs');
+const mainLibrary = require('../../node/creedLibrary/mainLibrary/mainLibrary')
+const c = console.log.bind(console);
 
-pathArrayThIsFile = path.resolve(__dirname, __filename).split(path.sep);
-pathArrayThisFileParent = pathArrayThIsFile.slice(0, pathArrayThIsFile.length - 1)
-configJSON = JSON.parse(fs.readFileSync([...pathArrayThisFileParent, 'nodeModuleImporterConfig.json'].join(path.sep)));
-nameOfAuthor = configJSON['nameOfAuthor'];
-
+const pathArrayThIsFile = path.resolve(__dirname, __filename).split(path.sep);
+const pathArrayThisFileParent = pathArrayThIsFile.slice(0, pathArrayThIsFile.length - 1)
+const { nameOfAuthor, nameOfDirectoryToSetAsRoot } = JSON.parse(fs.readFileSync([...pathArrayThisFileParent, 'nodeModuleImporterConfig.json'].join(path.sep)));
 
 const pathArrayIsDirectory = (pathArrayFileObj) => {
 
@@ -96,7 +94,7 @@ const importJSFile = (arrayOfArguments) => {
     // c(arrayOfArguments)
     c(`Searching for command '${arrayOfArguments[0]}.js' (created by ${nameOfAuthor})...`);
 
-    pathArrayRoot = mainLibrary.getPathArrayUpFolderTree(pathArrayThIsFile, configJSON['nameOfDirectoryToSetAsRoot']);
+    pathArrayRoot = mainLibrary.getPathArrayUpFolderTree(pathArrayThIsFile, nameOfDirectoryToSetAsRoot);
 
     // c(pathArrayRoot);
     
