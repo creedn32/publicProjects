@@ -1,1 +1,1 @@
-require('./puppeteerGoogle')();
+require('./puppeteerGoogle')(process.argv.slice(2));

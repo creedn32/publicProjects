@@ -3,10 +3,18 @@ const puppeteer = require('puppeteer-extra');
 const stealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(stealthPlugin);
 
-const { savedUsername, savedPassword } = require('../../../privateData/node/browserlessGoogle/loginData');
+const browserlessGoogle = async ([...loginCredentials]) => {
 
+  let [ username, password ] = loginCredentials;
 
-const browserlessGoogle = async () => {
+  if (!loginCredentials.length) {
+
+    ({ username, password } = require('../../../privateData/node/puppeteerGoogle/loginData'));
+
+  }
+  
+  // c(username);
+  // c(password);
 
   const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
@@ -20,19 +28,20 @@ const browserlessGoogle = async () => {
 
   emailInputSelector = 'input[type="email"]';
   await page.waitForSelector(emailInputSelector);
-  await page.type(emailInputSelector, savedUsername);
+  await page.type(emailInputSelector, username);
 
   await page.click("#identifierNext");
   await navigationPromise;
 
   // await page.waitForSelector(, { visible: true });
-  // await page.type(, savedUsername);
+  // await page.type(, username);
 
   // await page.waitForSelector("#passwordNext", { visible: true });
   // await page.click("#passwordNext");
 
   // await browser.close();
   // await page.screenshot({path: 'screenshot.png'});
+
 };
 
 module.exports = browserlessGoogle;
