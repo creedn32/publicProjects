@@ -1,5 +1,8 @@
 const c = console.log.bind(console);
 const puppeteer = require('puppeteer-extra');
+const stealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(stealthPlugin);
+
 const { savedUsername, savedPassword } = require('../../../privateData/node/browserlessGoogle/loginData');
 
 
