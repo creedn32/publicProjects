@@ -1,8 +1,8 @@
-const mainLibrary = require('../mainLibrary/mainLibrary');
 const c = console.log.bind(console);
+const mainLibrary = require('../mainLibrary/mainLibrary');
 
 const fs = require('fs');
-const {google} = require('googleapis');
+const { google } = require('googleapis');
 const readline = require('readline');
 
 module.exports.getGoogleAccountLevelObj = async (pathArrayBelowRepos, googleSheetsUsername) => {

@@ -1,23 +1,24 @@
-let path = require('path');
+const c = console.log.bind(console);
+const path = require('path');
 pathArrayThisFile = path.resolve(__dirname, __filename).split(path.sep);
+c(pathArrayThisFile);
 
-let googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary/googleSheetsLibrary');
-let c = console.log.bind(console);
+const googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary/googleSheetsLibrary');
 
-const getSheetAndUpdateSheet = async ([googleSheetsUsername, googleSpreadsheetTitle, receivingBankFromPayPalData, accountantName, defaultTransferFromCheckbook, defaultTransferToCheckbook]) => {
+const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetTitle, receivingBankFromPayPalData, accountantName, defaultTransferFromCheckbook, defaultTransferToCheckbook]) => {
 
-    bankSheetTitle = 'bank';
+    const bankSheetTitle = 'bank';
     expandedBankSheetTitle = 'expandedBank';
     transfersToPostSheetTitle = 'transfersToPost';
     transactionsToPostSheetTitle = 'transactionsToPost';
     glForFees = '01-000-5321';
 
-    bankSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, bankSheetTitle);
-    bankNewSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, expandedBankSheetTitle);
-    transfersToPostSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, transfersToPostSheetTitle);
-    transactionsToPostSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleSheetsUsername, googleSpreadsheetTitle, transactionsToPostSheetTitle);
+    const bankSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, bankSheetTitle);
+    const bankNewSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, expandedBankSheetTitle);
+    const transfersToPostSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, transfersToPostSheetTitle);
+    const transactionsToPostSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, transactionsToPostSheetTitle);
 
-    bankArray = await bankSheetLevelObj.getArrayOfValues();
+    const bankArray = await bankSheetLevelObj.getArrayOfValues();
 
     const expandedBankArray = bankArray.reduce(function(accumulator, currentElement, currentIndex) {
 
