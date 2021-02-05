@@ -1,7 +1,7 @@
 const c = console.log.bind(console);
 const path = require('path');
 pathArrayThisFile = path.resolve(__dirname, __filename).split(path.sep);
-c(pathArrayThisFile);
+// c(pathArrayThisFile);
 
 const googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary/googleSheetsLibrary');
 
