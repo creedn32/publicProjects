@@ -12,6 +12,7 @@ const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetT
     transfersToPostSheetTitle = 'transfersToPost';
     transactionsToPostSheetTitle = 'transactionsToPost';
     glForFees = '01-000-5321';
+    c(1);
 
     const bankSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, bankSheetTitle);
     const bankNewSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, expandedBankSheetTitle);
