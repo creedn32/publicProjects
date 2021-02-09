@@ -36,7 +36,7 @@ def mainFunction(arrayOfArguments):
     # gspObj = gspread.service_account(filename=myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath))
 
     pathBelowRepos = pathToThisPythonFile
-    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, pathBelowRepos, googleAccountUsername=arrayOfArguments[1]).open('Transactions To Post')
+    spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, arrayOfArguments[3], googleAccountUsername=arrayOfArguments[1], pathStrToJSONCredentialsFile=arrayOfArguments[4]).open('Transactions To Post')
     sheetName = arrayOfArguments[2]
     toPostFromArray = spreadsheetLevelObj.worksheet(sheetName).get_all_values()
 
