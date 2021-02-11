@@ -30,19 +30,16 @@ def mainFunction(arrayOfArguments):
     pyautogui.PAUSE = 0.01
     sendingKeystrokes = True
 
-    # pathToRepos = myPyFunc.getPathUpFolderTree(pathToThisPythonFile, 'repos')
-    # arrayOfPartsToAddToPath = ['privateData', 'python', 'googleCredentials', 'usingServiceAccount', 'jsonWithAPIKey.json']
-
     # gspObj = gspread.service_account(filename=myPyFunc.addToPath(pathToRepos, arrayOfPartsToAddToPath))
 
-    pathBelowRepos = pathToThisPythonFile
+    # p(arrayOfArguments)
+
     spreadsheetLevelObj = myGspreadFunc.getSpreadsheetLevelObj(True, arrayOfArguments[3], googleAccountUsername=arrayOfArguments[1], pathStrToJSONCredentialsFile=arrayOfArguments[4]).open('Transactions To Post')
     sheetName = arrayOfArguments[2]
     toPostFromArray = spreadsheetLevelObj.worksheet(sheetName).get_all_values()
 
     # charactersNeedingShift = (list(range(123, 127)) + list(range(94, 96)) + list(range(62, 91)) + [60, 58] + list(range(40, 44)) + list(range(33, 39)))
     # p(charactersNeedingShift)
-
 
     columnNameToIndexObj = {}
 
