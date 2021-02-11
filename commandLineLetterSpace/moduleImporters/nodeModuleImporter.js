@@ -123,13 +123,13 @@ const importJSFile = (arrayOfArguments) => {
 
 if (require.main === module) {
 
-    c(`${pathArrayThIsFile[pathArrayThIsFile.length - 1]} (created by ${nameOfAuthor}) is not being imported. It is being run directly...`);
+    c(`${pathArrayThIsFile[pathArrayThIsFile.length - 1]} (created by ${nameOfAuthor}) is not being required as a module, it is being called directly...`);
     // c(process.argv)
     importJSFile(process.argv.slice(2));
 
 } else {
 
-    c(`${pathArrayThIsFile[pathArrayThIsFile.length - 1]} (created by ${nameOfAuthor}) is being imported. It is not being run directly...`);
+    c(`${pathArrayThIsFile[pathArrayThIsFile.length - 1]} (created by ${nameOfAuthor}) is being required as a module...`);
 
 }
 

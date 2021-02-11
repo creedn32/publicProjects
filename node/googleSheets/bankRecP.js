@@ -12,7 +12,6 @@ const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetT
     transfersToPostSheetTitle = 'transfersToPost';
     transactionsToPostSheetTitle = 'transactionsToPost';
     glForFees = '01-000-5321';
-    c(1);
 
     const bankSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, bankSheetTitle);
     const bankNewSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, expandedBankSheetTitle);
@@ -103,3 +102,14 @@ const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetT
 }
 
 module.exports = getSheetAndUpdateSheet;
+
+if (require.main === module) {
+
+    getSheetAndUpdateSheet(process.argv.slice(2));
+    console.log(path.basename(__filename) + ' is not being required as a module, it is being called directly...');
+
+} else {
+
+    console.log(__filename + ' is being required as a module...');
+    
+}
