@@ -8,10 +8,10 @@ const googleSheetsLibrary = require('../creedLibrary/googleSheetsLibrary/googleS
 const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetTitle, receivingBankFromPayPalData, accountantName, defaultTransferFromCheckbook, defaultTransferToCheckbook]) => {
 
     const bankSheetTitle = 'bank';
-    expandedBankSheetTitle = 'expandedBank';
-    transfersToPostSheetTitle = 'transfersToPost';
-    transactionsToPostSheetTitle = 'transactionsToPost';
-    glForFees = '01-000-5321';
+    const expandedBankSheetTitle = 'expandedBank';
+    const transfersToPostSheetTitle = 'transfersToPost';
+    const transactionsToPostSheetTitle = 'transactionsToPost';
+    const glForFees = '01-000-5321';
 
     const bankSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, bankSheetTitle);
     const bankNewSheetLevelObj = await googleSheetsLibrary.getSheetLevelObj(pathArrayThisFile, googleAccountUsername, googleSpreadsheetTitle, expandedBankSheetTitle);
