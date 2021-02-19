@@ -83,7 +83,18 @@ const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetT
 
         }
 
+        if (row[2] === firstAccount && row[4] === accountingSystemStandardReport) {
+
+            // c(row);
+
+            comparisonObj[row[0]][firstAccount][accountingSystemStandardReport]['Adjusted Amount'] = row[7]
+            comparisonObj[row[0]][firstAccount][accountingSystemStandardReport]['Date Of Data Pull'] = row[1]
+
+        }
+
     });
+
+    // c(JSON.stringify(comparisonObj));
 
     comparisonArray = [
 
