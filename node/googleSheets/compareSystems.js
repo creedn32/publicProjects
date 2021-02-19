@@ -77,20 +77,33 @@ const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetT
 
     dataArray.forEach((row) => {
 
-        if (row[0] != 'Date') {
+        const dateFromRow = row[0];
+        const adjustedAmountFromRow = row[7];
+        const dateOfDataPullFromRow = row[1];
+        const accountFromRow = row[2];
+        const reportFromRow = row[4];
 
-            comparisonObj[row[0]] = emptyDataPointObj;
+        if (dateFromRow != 'Date') {
 
-        }
-
-        if (row[2] === firstAccount && row[4] === accountingSystemStandardReport) {
-
-            // c(row);
-
-            comparisonObj[row[0]][firstAccount][accountingSystemStandardReport]['Adjusted Amount'] = row[7]
-            comparisonObj[row[0]][firstAccount][accountingSystemStandardReport]['Date Of Data Pull'] = row[1]
+            comparisonObj[dateFromRow] = JSON.parse(JSON.stringify(emptyDataPointObj));
 
         }
+
+        for (const account of [firstAccount]) {
+            
+            for (const report of [accountingSystemStandardReport, firstAccountReport]) {
+
+                if (accountFromRow === account && reportFromRow === report) {
+    
+                    comparisonObj[dateFromRow][account][report]['Adjusted Amount'] = adjustedAmountFromRow;
+                    comparisonObj[dateFromRow][account][report]['Date Of Data Pull'] = dateOfDataPullFromRow;
+        
+                }
+
+            }
+
+        }
+        
 
     });
 

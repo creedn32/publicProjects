@@ -16,11 +16,14 @@ module.exports.getGoogleAccountLevelObj = async (pathArrayBelowRepos, googleShee
     try {
 
         const jsonCredentialsFileData = await fs.promises.readFile(pathStrOAuthFolder + '/jsonCredentialsFile.json');
+        // jsonCredentialsFileDataParsed = JSON.parse(jsonCredentialsFileData);
+        // c(jsonCredentialsFileDataParsed);
+
         return await authorize(JSON.parse(jsonCredentialsFileData));
 
     } catch (error) {
 
-        c('Error loading client secret file:', err);
+        c('Error loading client secret file:', error);
 
     }
 
