@@ -20,7 +20,7 @@ const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetT
         [firstAccount]: {
 
             [accountingSystemStandardReport]: {
-            
+
                 'Amount': 0,
                 'Prior EOY': 0,
                 'Adjusted Amount': 0,
@@ -102,7 +102,7 @@ const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetT
             '',
             '',
             ''
-        
+
         ],
         [
 
@@ -148,7 +148,7 @@ const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetT
                 comparisonObj[balanceDate][thirdAccount][accountingSystemStandardReport]['Date Of Data Pull']
 
             ]
-        
+
         );
 
     }
