@@ -113,7 +113,16 @@ const getSheetAndUpdateSheet = async ([googleAccountUsername, googleSpreadsheetT
 
             for (const report of accountsAndReportsObj[account]) {
 
-                if (accountFromRow === account && reportFromRow === report) {
+                dateOfDataPullFromRowForComparison = dateOfDataPullFromRow.replaceAll(/^([A-Za-z\s])+/g, '0');
+                
+                if (dateOfDataPullFromRowForComparison.match(/^([^\s]+)/g).length > 1) {
+                
+                    c(dateOfDataPullFromRowForComparison.match(/^([^\s]+)/g));
+                
+                }
+
+
+                if (accountFromRow === account && reportFromRow === report && dateOfDataPullFromRowForComparison > comparisonObj[dateFromRow][account][report]['Date Of Data Pull']) {
 
                     // propertiesToAdd = [dateFromRow, account, report];
 
