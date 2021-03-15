@@ -29,8 +29,6 @@ const tasksTable = [
 ];
 
 
-
-
 typesToDelete.forEach((typeToDeleteElement) => {
 
   const filteredActivitiesTable = activitiesTable.filter(activity => {
@@ -43,18 +41,15 @@ typesToDelete.forEach((typeToDeleteElement) => {
 
   filteredActivitiesTable.forEach((activitiesElement) => {
 
-    eval(tableName).forEach((tableElement) => {
-      if ((!(activitiesElement[2] in recordsToDelete)) && (!(activitiesElement[2] in recordsNotToDelete))) {
-        if (activitiesElement[2] === tableElement[0]) {
-          if (tableElement[1] !== null) {
-            recordsToDelete[tableElement[0]] = tableElement[0];
-          }
-          else {
-            recordsNotToDelete[tableElement[0]] = tableElement[0];
-          }
-        }
+    if ((!(activitiesElement[2] in recordsToDelete)) && (!(activitiesElement[2] in recordsNotToDelete))) {
+      tableElement = eval(tableName)[activitiesElement[2] - 1];
+      if (tableElement[1] != null) {
+        recordsToDelete[tableElement[0]] = tableElement[0];
       }
-    });
+      else {
+        recordsNotToDelete[tableElement[0]] = tableElement[0];
+      }
+    }
   });
 
   console.log('Delete these records from ' + tableName + ':');
@@ -62,6 +57,5 @@ typesToDelete.forEach((typeToDeleteElement) => {
   console.log('Dont delete these records from ' + tableName + ':');
   console.log(recordsToDelete);
   
-
 });
 
