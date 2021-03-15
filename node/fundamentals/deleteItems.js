@@ -43,7 +43,7 @@ typesToDelete.forEach((typeToDeleteElement) => {
 
     if ((!(activitiesElement[2] in recordsToDelete)) && (!(activitiesElement[2] in recordsNotToDelete))) {
       tableElement = eval(tableName)[activitiesElement[2] - 1];
-      if (tableElement[1] != null) {
+      if (tableElement[1] !== null) {
         recordsToDelete[tableElement[0]] = tableElement[0];
       }
       else {
@@ -55,7 +55,7 @@ typesToDelete.forEach((typeToDeleteElement) => {
   console.log('Delete these records from ' + tableName + ':');
   console.log(recordsToDelete);
   console.log('Dont delete these records from ' + tableName + ':');
-  console.log(recordsToDelete);
+  console.log(recordsNotToDelete);
   
 });
 
