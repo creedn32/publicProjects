@@ -1,33 +1,47 @@
 const sampleFunc = () => {
   console.log('hi');
+};
+
+function otherSampleFunc() {
+  console.log('buenos dias');
 }
 
-const mealsForADay = [{
-  calories: 500,
-  name: 'Scott'
-}, {
-  calories: 3000,
-  name: 'Scott'
-}, {
-  calories: 1,
-  name: 'Creed'
-}, {
-  calories: 2,
-  name: 'Creed'
-}]
+const sampleObj = {
+  sampleValue: 1,
+  sampleFunc
+};
 
-const personToCalories = mealsForADay
-  .reduce((accum, meal) => {
+const secondSampleObj = {
+  sampleFunc: sampleFunc
+};
 
-    const { name, calories: caloriesInAMeal } = meal;
-    const previouslyStoredCalories = accum[name] ?? 0;
+const thirdSampleObj = {
+  secondSampleFunc: () => {
+    console.log('hello');
+  }
+};
 
-    const totalCalories = previouslyStoredCalories + caloriesInAMeal;
+const fourthSampleObj = {
+  secondSampleFunc: function() {
+    console.log('good day');
+  }
+};
 
-    return {
-      ...accum,
-      [name]: totalCalories,
-    }
-  }, {})
+// const fifthSampleObj = {
+//   function sayHi() {
+//     console.log('Hi there');
+//   }
+// };
 
-  console.log(personToCalories);
+const sixthSampleObj = {
+  otherSampleFunc
+}
+
+
+console.log(sampleObj);
+sampleObj['sampleFunc']();
+secondSampleObj['sampleFunc']();
+thirdSampleObj['secondSampleFunc']();
+fourthSampleObj['secondSampleFunc']();
+// fifthSampleObj['sayHi']();
+sixthSampleObj['otherSampleFunc']();
