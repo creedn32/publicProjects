@@ -4,7 +4,7 @@ const sampleFunc = () => {
 
 function otherSampleFunc() {
   console.log('buenos dias');
-}
+};
 
 const sampleObj = {
   sampleValue: 1,
@@ -35,13 +35,19 @@ const fourthSampleObj = {
 
 const sixthSampleObj = {
   otherSampleFunc
-}
+};
 
+const seventhSampleObj = {
+  thirdSampleFunc() {
+    console.log('buenas noches');
+  }
+};
 
 console.log(sampleObj);
-sampleObj['sampleFunc']();
-secondSampleObj['sampleFunc']();
-thirdSampleObj['secondSampleFunc']();
-fourthSampleObj['secondSampleFunc']();
+sampleObj.sampleFunc();
+secondSampleObj.sampleFunc();
+thirdSampleObj.secondSampleFunc();
+fourthSampleObj.secondSampleFunc();
 // fifthSampleObj['sayHi']();
-sixthSampleObj['otherSampleFunc']();
+sixthSampleObj.otherSampleFunc();
+seventhSampleObj.thirdSampleFunc();
