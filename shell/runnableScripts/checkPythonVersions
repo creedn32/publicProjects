@@ -1,0 +1,54 @@
+#!/bin/zsh
+
+red='\033[0;31m'
+green='\033[0;32m'
+blue='\033[0;34m'
+purple='\033[0;35m'
+cyan='\033[0;36m'
+yellow='\033[1;33m'
+lightCyan='\033[1;36m'
+noColor='\033[0m'
+
+echo ''
+echo -e "${lightCyan}pyenv versions${noColor}"
+pyenv versions
+
+echo ''
+echo -e "${red}pyenv which python${noColor}"
+pyenv which python
+
+echo ''
+echo -e "${red}pyenv which pip${noColor}"
+pyenv which pip
+
+echo ''
+echo -e "${green}pyenv which python3.9${noColor}"
+pyenv which python3
+
+echo ''
+echo -e "${green}pyenv which pip${noColor}"
+pyenv which pip3
+
+echo ''
+echo -e "${blue}which python${noColor}"
+which python
+echo -e "${blue}python --version${noColor}"
+python --version
+
+echo ''
+echo -e "${purple}which pip${noColor}"
+which pip
+echo -e "${purple}pip --version${noColor}"
+pip --version
+
+echo ''
+echo -e "${cyan}which python3${noColor}"
+which python3
+echo -e "${cyan}python3 --version${noColor}"
+python3 --version
+
+echo ''
+echo -e "${yellow}which pip3${noColor}"
+which pip3
+echo -e "${yellow}pip3 --version${noColor}"
+pip3 --version
