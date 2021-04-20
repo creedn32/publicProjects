@@ -13,41 +13,52 @@
 #    * ie, <this file name> <a git commit message>
 #    * if no argument exists it will just add the date
 # =================
+
 ARGUMENTS_PASSED_IN=""
 COMMIT_MESSAGE=""
 CURRENT_DATE=""
+
 git_add_all_changes() {
     git add -A
 }
+
 git_commit_changes() {
     git commit -m "${COMMIT_MESSAGE}"
 }
+
 git_push_to_remote() {
     git push
 }
+
 run_git_save_piece() {
     git_add_all_changes
     git_commit_changes
     git_push_to_remote  
 }
+
 run() {
     set_vars "$@"
     run_git_save_piece
 }
+
 set_arguments_passed_in() {
     ARGUMENTS_PASSED_IN="${@:1}"
 }
+
 set_current_date() {
     CURRENT_DATE="$(date)"
 }
+
 set_commit_message_when_has_arguments_passed_in() {
     COMMIT_MESSAGE="${CURRENT_DATE} - ${ARGUMENTS_PASSED_IN}"
 }
+
 set_commit_message_when_no_arguments_passed_in() {
     COMMIT_MESSAGE="${CURRENT_DATE}"
 }
+
 set_commit_message() {
-    # The -n means string has content/ is not empty
+    # The -n means string has content and thus is not empty
     if [ -n "${COMMIT_MESSAGE}" ];
     then
         set_commit_message_when_has_arguments_passed_in
@@ -55,9 +66,11 @@ set_commit_message() {
         set_commit_message_when_no_arguments_passed_in
     fi
 }
+
 set_vars() {
     set_arguments_passed_in
     set_current_date
     set_commit_message
 }
+
 run "$@"
