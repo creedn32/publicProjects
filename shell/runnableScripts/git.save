@@ -1,5 +1,5 @@
 #!/bin/bash
-# =================
+# ==================
 # Required Global Environment Variables
 # * None
 #
@@ -12,7 +12,7 @@
 # *  words after the command - the git commit message
 #    * ie, <this file name> <a git commit message>
 #    * if no argument exists it will just add the date
-# =================
+# ==================
 ​
 ARGUMENTS_PASSED_IN=""
 COMMIT_MESSAGE=""
