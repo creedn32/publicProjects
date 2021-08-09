@@ -10,45 +10,53 @@ lightCyan='\033[1;36m'
 noColor='\033[0m'
 
 echo ''
-echo -e "${lightCyan}pyenv versions${noColor}"
+echo -e "${lightCyan}command: pyenv versions${noColor}"
 pyenv versions
 
 echo ''
-echo -e "${red}pyenv which python${noColor}"
+echo -e "${red}command: pyenv which python${noColor}"
 pyenv which python
 
 echo ''
-echo -e "${red}pyenv which pip${noColor}"
+echo -e "${red}command: pyenv which pip${noColor}"
 pyenv which pip
 
 echo ''
-echo -e "${green}pyenv which python3.9${noColor}"
+echo -e "${green}command: pyenv which python3.9${noColor}"
 pyenv which python3
 
 echo ''
-echo -e "${green}pyenv which pip${noColor}"
+echo -e "${green}command: pyenv which pip${noColor}"
 pyenv which pip3
 
 echo ''
-echo -e "${blue}which python${noColor}"
+echo -e "${blue}command: which python${noColor}"
 which python
-echo -e "${blue}python --version${noColor}"
+
+echo ''
+echo -e "${blue}command: python --version${noColor}"
 python --version
 
 echo ''
-echo -e "${purple}which pip${noColor}"
+echo -e "${purple}command: which pip${noColor}"
 which pip
-echo -e "${purple}pip --version${noColor}"
+
+echo ''
+echo -e "${purple}command: pip --version${noColor}"
 pip --version
 
 echo ''
-echo -e "${cyan}which python3${noColor}"
+echo -e "${cyan}command: which python3${noColor}"
 which python3
-echo -e "${cyan}python3 --version${noColor}"
+
+echo ''
+echo -e "${cyan}command: python3 --version${noColor}"
 python3 --version
 
 echo ''
-echo -e "${yellow}which pip3${noColor}"
+echo -e "${yellow}command: which pip3${noColor}"
 which pip3
-echo -e "${yellow}pip3 --version${noColor}"
+
+echo ''
+echo -e "${yellow}command: pip3 --version${noColor}"
 pip3 --version
