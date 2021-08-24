@@ -1,2 +1,0 @@
-youtube-dl --referer "https://zoom.us/" \
---add-header "Cookie: <cookie string>" '<video_url>'
