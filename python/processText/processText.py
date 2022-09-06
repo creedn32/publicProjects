@@ -16,7 +16,7 @@ def phraseNotInArrays(phraseToCheck, phrasesToExclude, partialPhrasesToExclude):
         if phraseFromArray.lower() == phraseToCheck:
             return False
 
-    for phraseFromArray in partialPhrasesToExclude:
+    for phraseFromArray in partialPhrasesToExclude:ssdfg
         if phraseFromArray.lower() in phraseToCheck:
             return False
 
